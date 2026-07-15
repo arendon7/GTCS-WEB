@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Greenatics | Economía circular que vuelve a la tierra",
+  title: "Greenatics + Wondergreen | Nutrir el suelo, cerrar el ciclo",
   description:
-    "Soluciones de aprovechamiento de residuos orgánicos, plantas, biofábricas y nutrición agrícola para municipios, ESP y agroindustria.",
+    "Wondergreen, fertilizantes organominerales y bioinsumos respaldados por el ecosistema circular de Greenatics: plantas, parques ambientales, biofábricas y operación territorial.",
   other: {
     "codex-preview": "development",
   },
