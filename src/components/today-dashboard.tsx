@@ -6,17 +6,17 @@ import { StatusPill } from "@/components/status-pill";
 import { useOpsStore } from "@/components/ops-store";
 import { getLaborHours, getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
 import { employees, plantBaselines } from "@/lib/mock-data";
+import { bogotaDateKey, bogotaTime } from "@/lib/time";
 
 function Metric({ label, value, note }: { label: string; value: string; note: string }) {
   return <div className="metric-block"><span>{label}</span><strong>{value}</strong><small>{note}</small></div>;
 }
 
-const dateFmt = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "America/Bogota" });
 const statusLabel: Record<AcceptanceStatus, string> = { accepted: "Aceptado", conditioned: "Condicionado", rejected: "Rechazado" };
 
 function timeLabel(iso?: string) {
   if (!iso) return "—";
-  return new Intl.DateTimeFormat("es-CO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "America/Bogota" }).format(new Date(iso));
+  return bogotaTime.format(new Date(iso));
 }
 
 export function TodayDashboard() {
@@ -30,8 +30,8 @@ export function TodayDashboard() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const currentDateKey = dateFmt.format(new Date(nowIso ?? "2026-08-11T12:00:00-05:00"));
-  const todayReceptions = receptions.filter((reception) => dateFmt.format(new Date(reception.endedAt)) === currentDateKey);
+  const currentDateKey = bogotaDateKey(nowIso ?? "2026-08-11T12:00:00-05:00");
+  const todayReceptions = receptions.filter((reception) => bogotaDateKey(reception.endedAt) === currentDateKey);
   const receivedKg = todayReceptions.reduce((sum,reception)=>sum+reception.netWeightKg,0);
   const running = activities.filter((activity) => activity.status === "running");
   const workerRows = running.flatMap((activity) => activity.workerIds.map((workerId) => ({ activity, worker: employees.find((item) => item.id === workerId) })));

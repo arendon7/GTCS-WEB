@@ -3,9 +3,9 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { AcceptanceStatus, ActivityRecord, ActivityUnit, IncidentRecord, NoveltyType, ReceptionRecord, WasteType } from "@/lib/domain";
 import { employees, seedActivities, seedIncidents, seedReceptions } from "@/lib/mock-data";
+import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
 
 const STORAGE_KEY = "greenatics-ops-mvp-001";
-const bogotaDate = new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "America/Bogota" });
 
 type Result = { ok: true } | { ok: false; error: string };
 type CreateResult = { ok: true; id: string } | { ok: false; error: string };
@@ -38,11 +38,10 @@ function wasteCode(wasteType: WasteType) {
 }
 
 function createLotCode(receptions: ReceptionRecord[], plantId: string, wasteType: WasteType, endedAt: string) {
-  const date = bogotaDate.format(new Date(endedAt));
-  const compactDate = date.slice(2).replaceAll("-", "");
+  const date = bogotaDateKey(endedAt);
   const prefix = plantId === "yarumal" ? "YAR" : "TAM";
-  const sequence = receptions.filter((reception) => reception.plantId === plantId && bogotaDate.format(new Date(reception.endedAt)) === date).length + 1;
-  return `${prefix}-${wasteCode(wasteType)}-${compactDate}-${String(sequence).padStart(3, "0")}`;
+  const sequence = receptions.filter((reception) => reception.plantId === plantId && bogotaDateKey(reception.endedAt) === date).length + 1;
+  return `${prefix}-${wasteCode(wasteType)}-${compactBogotaDate(endedAt)}-${String(sequence).padStart(3, "0")}`;
 }
 
 export function OpsStoreProvider({ children }: { children: ReactNode }) {
