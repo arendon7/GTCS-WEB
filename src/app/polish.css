@@ -51,6 +51,9 @@
   color: var(--green-800);
 }
 
+/* Dark surfaces need a light accent even when markup uses the default eyebrow class. */
+.quote-summary .eyebrow:not(.eyebrow--light) { color: #d8ffbe; }
+
 /* Lime surfaces require the darkest brand green for readable small text. */
 .closing-cta .eyebrow:not(.eyebrow--light) { color: var(--green-950); }
 
