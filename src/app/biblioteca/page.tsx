@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LibraryExplorer } from "@/components/library-explorer";
 import { libraryResources } from "@/data/library";
 
 export const metadata: Metadata = {
   title: "Biblioteca técnica",
-  description: "Guías de cultivo, diagnóstico, catálogos, huertas, casos, metodologías y herramientas públicas de Greenatics y Wondergreen.",
+  description: "Guías de cultivo, diagnóstico, catálogos, manuales, huertas, casos, metodologías y herramientas públicas de Greenatics y Wondergreen.",
   alternates: { canonical: "/biblioteca/" },
 };
-
-const categories = ["Cultivos", "Hogar", "Comercial", "Tecnología", "Operación", "Impacto"] as const;
 
 export default function LibraryPage() {
   return (
@@ -38,25 +37,8 @@ export default function LibraryPage() {
 
       <section className="library-section">
         <div className="container">
-          {categories.map((category) => {
-            const resources = libraryResources.filter((resource) => resource.category === category);
-            if (!resources.length) return null;
-            return (
-              <div className="library-group" key={category}>
-                <div className="library-group-heading"><span>{category}</span><strong>{resources.length} recurso{resources.length === 1 ? "" : "s"}</strong></div>
-                <div className="library-grid">
-                  {resources.map((resource) => (
-                    <Link className="library-card" href={resource.href} key={resource.slug}>
-                      <div className="library-card-meta"><span>{resource.format}</span><em>{resource.status === "publicado" ? "Publicado" : "En validación"}</em></div>
-                      <h2>{resource.title}</h2>
-                      <p>{resource.summary}</p>
-                      <strong>Consultar recurso →</strong>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+          <div className="section-heading"><span className="eyebrow">Explorador</span><h2>Encuentra el recurso que necesitas.</h2><p>Busca por cultivo, problema, tipo de documento o tema.</p></div>
+          <LibraryExplorer resources={libraryResources} />
         </div>
       </section>
 
