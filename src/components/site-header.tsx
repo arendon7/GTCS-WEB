@@ -16,7 +16,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
-          <Link className="button button--ghost header-shop" href="/wondergreen/">Wondergreen</Link>
+          <Link className="button button--ghost header-shop" href="/wondergreen/cotizador/">Cotizar</Link>
           <a className="button button--dark" href={opsUrl}>Acceso Greenatics</a>
         </div>
 
@@ -25,7 +25,7 @@ export function SiteHeader() {
           <div className="mobile-menu-panel">
             <Link href="/diagnostico/">Diagnóstico Greenatics</Link>
             {primaryNav.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-            <Link href="/wondergreen/">Wondergreen</Link>
+            <Link href="/wondergreen/cotizador/">Cotizar Wondergreen</Link>
             <a href={opsUrl}>Acceso Greenatics</a>
           </div>
         </details>
