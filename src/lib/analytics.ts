@@ -74,21 +74,16 @@ function parseKey(key: string) {
 
 export function addDaysKey(key: string, days: number) {
   const { year, month, day } = parseKey(key);
-  const date = new Date(Date.UTC(year, month - 1, day + days));
-  return date.toISOString().slice(0, 10);
+  return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
 }
 
 function mondayKey(key: string) {
   const { year, month, day } = parseKey(key);
   const weekday = new Date(Date.UTC(year, month - 1, day, 12)).getUTCDay();
-  const offset = (weekday + 6) % 7;
-  return addDaysKey(key, -offset);
+  return addDaysKey(key, -((weekday + 6) % 7));
 }
 
-function monthStartKey(key: string) {
-  return `${key.slice(0, 7)}-01`;
-}
-
+function monthStartKey(key: string) { return `${key.slice(0, 7)}-01`; }
 function monthEndKey(key: string) {
   const { year, month } = parseKey(key);
   return new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
@@ -104,7 +99,7 @@ function shortDayLabel(key: string) {
   return new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", timeZone: "UTC" }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
-function allOperationalKeys(input: Omit<DashboardAnalyticsInput, "preset" | "anchorKey" | "plantId" | "nowIso">) {
+function allOperationalKeys(input: Omit<DashboardAnalyticsInput, "preset" | "anchorKey" | "plantId" | "nowIso">, nowIso?: string) {
   const keys = [
     ...input.activities.flatMap((item) => [item.plannedStart, item.actualStart, item.actualEnd].filter(Boolean) as string[]),
     ...input.receptions.flatMap((item) => [item.startedAt, item.endedAt]),
@@ -112,8 +107,9 @@ function allOperationalKeys(input: Omit<DashboardAnalyticsInput, "preset" | "anc
     ...input.tickets.flatMap((item) => [item.openedAt, item.repairStartedAt, item.closedAt].filter(Boolean) as string[]),
     ...input.piles.flatMap((item) => [item.startedAt, item.maturationStartedAt, item.closedAt].filter(Boolean) as string[]),
     ...input.measurements.map((item) => item.recordedAt),
-  ].map(bogotaDateKey).sort();
-  return keys;
+  ].map(bogotaDateKey);
+  if (nowIso && (input.activities.some((item) => item.actualStart && !item.actualEnd) || input.tickets.some((item) => item.status !== "closed"))) keys.push(bogotaDateKey(nowIso));
+  return keys.sort();
 }
 
 export function resolveDashboardPeriod(preset: DashboardPreset, anchorKey: string, keys: string[] = []): DashboardPeriod {
@@ -158,9 +154,8 @@ function filterPlant<T extends { plantId: string }>(items: T[], plantId: PlantFi
   return plantId === "all" ? items : items.filter((item) => item.plantId === plantId);
 }
 
-function pct(numerator: number, denominator: number) {
-  return denominator > 0 ? (numerator / denominator) * 100 : 0;
-}
+function pct(numerator: number, denominator: number) { return denominator > 0 ? (numerator / denominator) * 100 : 0; }
+function isNonConforming(receipt: ReceptionRecord) { return receipt.acceptance === "conditioned" || receipt.acceptance === "rejected"; }
 
 function rank(map: Map<string, { label: string; value: number; detail?: string }>) {
   return [...map.entries()].map(([id, item]) => ({ id, ...item })).filter((item) => item.value > 0).sort((a, b) => b.value - a.value);
@@ -178,23 +173,11 @@ function periodDayKeys(period: DashboardPeriod) {
 
 function splitIntoBuckets(period: DashboardPeriod) {
   const days = periodDayKeys(period);
-  if (period.preset !== "history" || days.length <= 45) {
-    return days.map((key) => ({ key, startKey: key, endKey: key, label: shortDayLabel(key) }));
-  }
-  const months = [...new Set(days.map((key) => key.slice(0, 7)))];
-  return months.map((month) => {
-    const startKey = `${month}-01`;
-    const endKey = monthEndKey(startKey);
-    return { key: month, startKey, endKey, label: monthLabel(startKey).replace(/^./, (char) => char.toUpperCase()) };
-  });
+  if (period.preset !== "history" || days.length <= 45) return days.map((key) => ({ key, startKey: key, endKey: key, label: shortDayLabel(key) }));
+  return [...new Set(days.map((key) => key.slice(0, 7)))].map((month) => ({ key: month, startKey: `${month}-01`, endKey: monthEndKey(`${month}-01`), label: monthLabel(`${month}-01`).replace(/^./, (char) => char.toUpperCase()) }));
 }
 
-function summarizePlant(
-  plantId: string,
-  plantName: string,
-  period: DashboardPeriod,
-  input: DashboardAnalyticsInput,
-): PlantComparisonRow {
+function summarizePlant(plantId: string, plantName: string, period: DashboardPeriod, input: DashboardAnalyticsInput): PlantComparisonRow {
   const activities = input.activities.filter((item) => item.plantId === plantId);
   const receipts = input.receptions.filter((item) => item.plantId === plantId && inPeriod(item.endedAt, period));
   const tickets = input.tickets.filter((item) => item.plantId === plantId);
@@ -206,13 +189,13 @@ function summarizePlant(
   const receivedKg = receipts.reduce((sum, item) => sum + item.netWeightKg, 0);
   const rejectionKg = receipts.reduce((sum, item) => sum + item.rejectionKg, 0);
   const delayed = scheduled.filter((item) => item.status === "delayed" || item.status === "missed").length;
-  const nonConforming = receipts.filter((item) => item.acceptance !== "accepted").length;
+  const nonConforming = receipts.filter(isNonConforming).length;
   const activeTickets = tickets.filter((item) => item.status !== "closed" && overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso) > 0).length;
   return { plantId, plant: plantName, receivedKg, rejectionPct: pct(rejectionKg, receivedKg), laborHours, compliancePct: pct(executed.length, scheduled.length), downtimeMinutes, attention: delayed + nonConforming + incidents.length + activeTickets };
 }
 
 export function buildOperationalAnalytics(input: DashboardAnalyticsInput): DashboardAnalytics {
-  const period = resolveDashboardPeriod(input.preset, input.anchorKey, allOperationalKeys(input));
+  const period = resolveDashboardPeriod(input.preset, input.anchorKey, allOperationalKeys(input, input.nowIso));
   const activities = filterPlant(input.activities, input.plantId);
   const receptions = filterPlant(input.receptions, input.plantId);
   const incidents = filterPlant(input.incidents, input.plantId);
@@ -223,7 +206,7 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   const periodReceipts = receptions.filter((item) => inPeriod(item.endedAt, period));
   const receivedKg = periodReceipts.reduce((sum, item) => sum + item.netWeightKg, 0);
   const rejectionKg = periodReceipts.reduce((sum, item) => sum + item.rejectionKg, 0);
-  const nonConformingReceipts = periodReceipts.filter((item) => item.acceptance !== "accepted").length;
+  const nonConformingReceipts = periodReceipts.filter(isNonConforming).length;
 
   const scheduled = activities.filter((item) => item.source === "scheduled" && inPeriod(item.plannedStart, period));
   const executedScheduled = scheduled.filter((item) => Boolean(item.actualStart));
@@ -265,9 +248,9 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
 
   const openIncidents = incidents.filter((item) => item.status === "open" && inPeriod(item.openedAt, period)).length;
   const activeMaintenance = tickets.filter((item) => item.status !== "closed" && overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso) > 0).length;
-
   const closedPiles = piles.filter((item) => item.status === "closed" && inPeriod(item.closedAt, period));
   const averageClosedYieldPct = closedPiles.length ? closedPiles.reduce((sum, item) => sum + compostYieldPct(item), 0) / closedPiles.length : 0;
+
   const latestCompost = piles.filter((item) => item.status !== "closed").map((pile) => {
     const latest = input.measurements.filter((measurement) => measurement.pileId === pile.id).sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())[0];
     return { pileId: pile.id, code: pile.code, plant: pile.plant, status: pile.status, temperatureC: latest ? averageTemperature(latest) : undefined, humidityPct: latest?.humidityPct, recordedAt: latest?.recordedAt };
@@ -275,31 +258,26 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
 
   const trend = splitIntoBuckets(period).map((bucket) => {
     const bucketPeriod: DashboardPeriod = { ...period, startKey: bucket.startKey, endKey: bucket.endKey };
-    const bucketReceipts = receptions.filter((item) => inPeriod(item.endedAt, bucketPeriod));
-    const bucketReceived = bucketReceipts.reduce((sum, item) => sum + item.netWeightKg, 0);
-    const bucketLabor = activities.reduce((sum, item) => sum + overlapMinutes(item.actualStart, item.actualEnd, bucketPeriod, input.nowIso) * item.workerIds.length / 60, 0);
-    const bucketDowntime = tickets.reduce((sum, item) => sum + overlapMinutes(item.openedAt, item.closedAt, bucketPeriod, input.nowIso), 0);
-    return { key: bucket.key, label: bucket.label, receivedKg: bucketReceived, laborHours: bucketLabor, downtimeMinutes: bucketDowntime };
+    return {
+      key: bucket.key,
+      label: bucket.label,
+      receivedKg: receptions.filter((item) => inPeriod(item.endedAt, bucketPeriod)).reduce((sum, item) => sum + item.netWeightKg, 0),
+      laborHours: activities.reduce((sum, item) => sum + overlapMinutes(item.actualStart, item.actualEnd, bucketPeriod, input.nowIso) * item.workerIds.length / 60, 0),
+      downtimeMinutes: tickets.reduce((sum, item) => sum + overlapMinutes(item.openedAt, item.closedAt, bucketPeriod, input.nowIso), 0),
+    };
   });
 
-  const events: OperationalEvent[] = [];
-  for (const receipt of periodReceipts) events.push({ id: `receipt-${receipt.id}`, at: receipt.endedAt, plant: receipt.plant, kind: "reception", title: `Recepción · ${receipt.lotCode}`, detail: `${receipt.netWeightKg.toLocaleString("es-CO")} kg · ${pct(receipt.rejectionKg, receipt.netWeightKg).toFixed(1)} % rechazo` });
-  for (const activity of activities) if (inPeriod(activity.actualEnd ?? activity.actualStart, period) && activity.actualStart) events.push({ id: `activity-${activity.id}`, at: activity.actualEnd ?? activity.actualStart, plant: activity.plant, kind: "activity", title: activity.title, detail: `${activity.process} · ${activity.workerIds.length} trabajador${activity.workerIds.length === 1 ? "" : "es"}` });
-  for (const ticket of tickets) {
-    if (inPeriod(ticket.openedAt, period)) events.push({ id: `maintenance-open-${ticket.id}`, at: ticket.openedAt, plant: ticket.plant, kind: "maintenance", title: `Falla · ${ticket.title}`, detail: equipment.find((item) => item.id === ticket.equipmentId)?.name ?? "Equipo" });
-    if (ticket.closedAt && inPeriod(ticket.closedAt, period)) events.push({ id: `maintenance-close-${ticket.id}`, at: ticket.closedAt, plant: ticket.plant, kind: "maintenance", title: `Reparación cerrada · ${ticket.title}`, detail: ticket.resolution ?? "Cierre de mantenimiento" });
-  }
-  for (const pile of piles) {
-    if (inPeriod(pile.startedAt, period)) events.push({ id: `pile-open-${pile.id}`, at: pile.startedAt, plant: pile.plant, kind: "compost", title: `Pila creada · ${pile.code}`, detail: `${pile.initialWeightKg.toLocaleString("es-CO")} kg iniciales` });
-    if (pile.closedAt && inPeriod(pile.closedAt, period)) events.push({ id: `pile-close-${pile.id}`, at: pile.closedAt, plant: pile.plant, kind: "compost", title: `Pila cerrada · ${pile.code}`, detail: `${compostYieldPct(pile).toFixed(1)} % rendimiento` });
-  }
-  events.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+  const events: OperationalEvent[] = [
+    ...activities.filter((item) => inPeriod(item.actualStart, period)).map((item) => ({ id: `activity-${item.id}`, at: item.actualStart!, plant: item.plant, kind: "activity" as const, title: item.title, detail: `${item.process} · ${item.workerIds.length} trabajador${item.workerIds.length === 1 ? "" : "es"}` })),
+    ...periodReceipts.map((item) => ({ id: `reception-${item.id}`, at: item.endedAt, plant: item.plant, kind: "reception" as const, title: `Recepción ${item.lotCode}`, detail: `${(item.netWeightKg / 1000).toFixed(2)} t · ${item.generator}` })),
+    ...tickets.filter((item) => inPeriod(item.openedAt, period)).map((item) => ({ id: `maintenance-${item.id}`, at: item.openedAt, plant: item.plant, kind: "maintenance" as const, title: item.title, detail: item.status === "closed" ? "Mantenimiento cerrado" : "Mantenimiento abierto" })),
+    ...piles.filter((item) => inPeriod(item.startedAt, period)).map((item) => ({ id: `compost-${item.id}`, at: item.startedAt, plant: item.plant, kind: "compost" as const, title: `Pila ${item.code}`, detail: `${item.initialWeightKg.toFixed(0)} kg iniciales` })),
+  ].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()).slice(0, 30);
 
   const plantNames = new Map<string, string>();
-  for (const item of [...input.activities, ...input.receptions, ...input.tickets, ...input.piles, ...input.equipment]) plantNames.set(item.plantId, item.plant);
+  for (const item of [...input.activities, ...input.receptions, ...input.tickets, ...input.piles]) plantNames.set(item.plantId, item.plant);
   if (!plantNames.has("yarumal")) plantNames.set("yarumal", "Yarumal");
   if (!plantNames.has("tamesis")) plantNames.set("tamesis", "Támesis");
-  const plantComparison = [...plantNames.entries()].map(([id, name]) => summarizePlant(id, name, period, input)).sort((a, b) => a.plant.localeCompare(b.plant));
 
   return {
     period,
@@ -325,21 +303,27 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
     processHours: rank(processMap),
     workerHours: rank(workerMap),
     equipmentDowntime: rank(equipmentMap),
-    plantComparison,
-    events: events.slice(0, 14),
+    plantComparison: [...plantNames.entries()].map(([id, name]) => summarizePlant(id, name, period, input)).sort((a, b) => a.plant.localeCompare(b.plant, "es")),
+    events,
     latestCompost,
-    dataCounts: { activities: activities.length, receptions: periodReceipts.length, tickets: maintenanceTickets, piles: piles.length },
+    dataCounts: {
+      activities: activities.filter((item) => overlapMinutes(item.actualStart, item.actualEnd, period, input.nowIso) > 0 || inPeriod(item.plannedStart, period)).length,
+      receptions: periodReceipts.length,
+      tickets: maintenanceTickets,
+      piles: piles.filter((item) => inPeriod(item.startedAt, period) || inPeriod(item.closedAt, period) || item.status !== "closed").length,
+    },
   };
 }
 
 function csvCell(value: string | number) {
-  const text = String(value).replaceAll('"', '""');
-  return `"${text}"`;
+  const text = String(value);
+  return /[;"\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
 export function analyticsCsv(analytics: DashboardAnalytics) {
   const rows: Array<Array<string | number>> = [
     ["GREENATICS OPS", analytics.period.label],
+    [],
     ["Indicador", "Valor"],
     ["Recibido kg", analytics.receivedKg.toFixed(2)],
     ["Rechazo kg", analytics.rejectionKg.toFixed(2)],
