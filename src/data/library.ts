@@ -13,10 +13,10 @@ export const libraryResources: LibraryResource[] = [
     slug: "guia-deficiencias",
     category: "Cultivos",
     title: "Guía práctica para identificar deficiencias nutricionales",
-    summary: "Diagnóstico visual inicial para aguacate, cacao, café, pastos y limón Tahití, con filtros para no confundir síntomas con otros problemas del lote.",
+    summary: "Borrador de diagnóstico visual inicial para aguacate, cacao, café, pastos y limón Tahití; pendiente de cerrar trazabilidad y validación de la fuente técnica.",
     href: "/biblioteca/guia-deficiencias/",
     format: "Guía web",
-    status: "publicado",
+    status: "en-validacion",
   },
   {
     slug: "manual-uso-wondergreen",
