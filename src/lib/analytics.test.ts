@@ -27,6 +27,7 @@ describe("dashboard analytics", () => {
     const result = buildOperationalAnalytics({ activities, receptions, incidents: [], tickets, equipment, piles, measurements: [], workers, preset: "day", anchorKey: "2026-08-11", plantId: "all", nowIso: "2026-08-11T16:00:00-05:00" });
     expect(result.receivedKg).toBe(1500);
     expect(result.rejectionPct).toBeCloseTo(10, 5);
+    expect(result.rejectionCoveragePct).toBe(100);
     expect(result.laborHours).toBe(4);
     expect(result.scheduledCount).toBe(2);
     expect(result.executedScheduledCount).toBe(1);
@@ -44,6 +45,16 @@ describe("dashboard analytics", () => {
     expect(result.rejectionKg).toBe(20);
     expect(result.nonConformingReceipts).toBe(0);
     expect(result.exceptionsCount).toBe(0);
+  });
+
+  it("calculates rejection percentage only on mass with quantified rejection", () => {
+    const quantified: ReceptionRecord = { id: "rq", plantId: "tamesis", plant: "Támesis", generator: "Q", route: "Q", wasteType: "FORSU", netWeightKg: 1000, rejectionKg: 50, rejectionKnown: true, acceptance: "unknown", startedAt: "2026-08-11T10:00:00-05:00", endedAt: "2026-08-11T10:00:00-05:00", lotCode: "HQ", source: "historical" };
+    const unquantified: ReceptionRecord = { id: "ru", plantId: "tamesis", plant: "Támesis", generator: "U", route: "U", wasteType: "FORSU", netWeightKg: 500, rejectionKg: 0, rejectionKnown: false, acceptance: "unknown", startedAt: "2026-08-11T11:00:00-05:00", endedAt: "2026-08-11T11:00:00-05:00", lotCode: "HU", source: "historical" };
+    const result = buildOperationalAnalytics({ activities: [], receptions: [quantified, unquantified], incidents: [], tickets: [], equipment: [], piles: [], measurements: [], workers: [], preset: "day", anchorKey: "2026-08-11", plantId: "all", nowIso: "2026-08-11T16:00:00-05:00" });
+    expect(result.receivedKg).toBe(1500);
+    expect(result.rejectionKg).toBe(50);
+    expect(result.rejectionPct).toBe(5);
+    expect(result.rejectionCoveragePct).toBeCloseTo(66.6667, 3);
   });
 
   it("filters the same semantic metrics by plant", () => {
