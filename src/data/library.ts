@@ -22,10 +22,10 @@ export const libraryResources: LibraryResource[] = [
     slug: "manual-uso-wondergreen",
     category: "Cultivos",
     title: "Manual de uso en campo Wondergreen",
-    summary: "Checklist previo, vía operativa, reglas generales de aplicación, errores a evitar y seguimiento sin convertir el manual en una receta universal.",
+    summary: "Borrador operativo con checklist, vía de aplicación y seguimiento; pendiente de cerrar trazabilidad y validación de la fuente técnica.",
     href: "/biblioteca/manual-uso-wondergreen/",
     format: "Manual",
-    status: "publicado",
+    status: "en-validacion",
   },
   {
     slug: "cacao",
