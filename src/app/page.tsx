@@ -18,7 +18,7 @@ export default function Home() {
             <span className="eyebrow">Economía circular aplicada</span>
             <h1>Lo orgánico no termina como residuo. <em>Vuelve a la vida.</em></h1>
             <p className="lead">Conectamos gestión de residuos, plantas de aprovechamiento, nutrición vegetal y datos para cerrar el ciclo con resultados reales.</p>
-            <div className="button-row"><Link className="button button--primary" href="/wondergreen/">Comprar Wondergreen</Link><Link className="button button--light" href="/municipios/">Soluciones para municipios</Link></div>
+            <div className="button-row"><Link className="button button--primary" href="/wondergreen/">Comprar Wondergreen</Link><Link className="button button--light" href="/diagnostico/">¿Qué solución necesito?</Link></div>
           </div>
           <div className="cycle-visual" aria-label="Ciclo Greenatics: residuo, transformación, producto, suelo e impacto">
             <div className="cycle-center"><img src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" /></div>
@@ -27,7 +27,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="audience-section" id="soluciones"><div className="container"><div className="section-heading"><span className="eyebrow">¿Qué necesitas resolver?</span><h2>Una empresa. Tres puertas de entrada.</h2></div><div className="audience-grid">{audiences.map((item) => <article className="audience-card" key={item.title}><span className="eyebrow">{item.kicker}</span><h3>{item.title}</h3><p>{item.copy}</p><Link href={item.href}>{item.cta} →</Link></article>)}</div></div></section>
+      <section className="audience-section" id="soluciones"><div className="container"><div className="section-heading"><span className="eyebrow">¿Qué necesitas resolver?</span><h2>Una empresa. Tres puertas de entrada.</h2></div><div className="audience-grid">{audiences.map((item) => <article className="audience-card" key={item.title}><span className="eyebrow">{item.kicker}</span><h3>{item.title}</h3><p>{item.copy}</p><Link href={item.href}>{item.cta} →</Link></article>)}</div><div className="diagnostic-entry"><div><strong>¿No sabes por dónde empezar?</strong><span>Dos preguntas te llevan a la ruta Greenatics más útil.</span></div><Link className="button button--dark" href="/diagnostico/">Hacer diagnóstico</Link></div></div></section>
 
       <section className="wondergreen-band"><div className="container wg-intro"><div className="wg-brand-column"><span className="eyebrow eyebrow--light">Producto inmediato · una marca Greenatics</span><div className="wondergreen-official-lockup"><img className="official-logo" src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" /></div><h2>Nutrición pensada como un sistema, no como una lista de productos.</h2></div><div><p>Encuentra la línea adecuada según la etapa: suelo, crecimiento, balance, floración o producción.</p><div className="button-row"><Link className="button button--light" href="/wondergreen/cultivos/">Buscar por cultivo</Link><Link className="button button--outline-light" href="/wondergreen/cotizador/">Cotizar</Link></div></div></div><div className="container product-grid">{featuredProducts.map((product) => <ProductCard key={product.slug} product={product} />)}</div><div className="container band-cta"><Link className="button button--light" href="/wondergreen/">Explorar Wondergreen</Link></div></section>
 
