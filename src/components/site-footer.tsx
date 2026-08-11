@@ -5,10 +5,9 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div>
-          <div className="greenatics-footer-logo-wrap">
-            <img className="official-logo greenatics-footer-logo" src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-          </div>
+          <div className="greenatics-footer-logo-wrap"><img className="official-logo greenatics-footer-logo" src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /></div>
           <p>Transformamos residuos en vida.</p>
+          <Link href="/nosotros/">Conoce Greenatics →</Link>
         </div>
         <div>
           <strong>Explora</strong>
@@ -21,6 +20,7 @@ export function SiteFooter() {
         </div>
         <div>
           <strong>Plataforma</strong>
+          <Link href="/diagnostico/">Diagnóstico Greenatics</Link>
           <Link href="/contacto/">Contacto</Link>
           <Link href="/acceso/">Acceso Greenatics</Link>
           <span>Medellín · Colombia</span>
