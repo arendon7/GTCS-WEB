@@ -5,7 +5,7 @@ test("dashboard changes horizon and plant without changing metric semantics", as
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
   await expect(page.getByLabel("Indicadores operativos").getByText("3.94 t", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Semana" }).click();
-  await expect(page.getByText(/10 ago|11 ago/i).first()).toBeVisible();
+  await expect(page.getByText(/10 de ago|11 de ago/i).first()).toBeVisible();
   await page.getByLabel("Planta").selectOption("yarumal");
   await expect(page.getByLabel("Indicadores operativos").getByText("1.84 t", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Comparación operacional" })).toBeVisible();
