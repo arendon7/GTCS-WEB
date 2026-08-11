@@ -6,10 +6,11 @@ import { InventoryStoreProvider } from "@/components/inventory-store";
 import { CommercialStoreProvider } from "@/components/commercial-store";
 import { ExpenseStoreProvider } from "@/components/expense-store";
 import { PurchaseRequestStoreProvider } from "@/components/purchase-request-store";
+import { SettlementStoreProvider } from "@/components/settlement-store";
 import "./globals.css";
 
 export const metadata: Metadata = { title: "GREENATICS OPS", description: "Operación, trazabilidad y gestión de GREENATICS" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="es"><body><OpsStoreProvider><MaintenanceStoreProvider><CompostStoreProvider><InventoryStoreProvider><CommercialStoreProvider><ExpenseStoreProvider><PurchaseRequestStoreProvider>{children}</PurchaseRequestStoreProvider></ExpenseStoreProvider></CommercialStoreProvider></InventoryStoreProvider></CompostStoreProvider></MaintenanceStoreProvider></OpsStoreProvider></body></html>;
+  return <html lang="es"><body><OpsStoreProvider><MaintenanceStoreProvider><CompostStoreProvider><InventoryStoreProvider><CommercialStoreProvider><ExpenseStoreProvider><PurchaseRequestStoreProvider><SettlementStoreProvider>{children}</SettlementStoreProvider></PurchaseRequestStoreProvider></ExpenseStoreProvider></CommercialStoreProvider></InventoryStoreProvider></CompostStoreProvider></MaintenanceStoreProvider></OpsStoreProvider></body></html>;
 }

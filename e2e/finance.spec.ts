@@ -32,6 +32,7 @@ test("economic center shows canonical flows separately and never invents profit"
 
   const commercial=page.getByLabel("Flujo comercial");
   const expenses=page.getByLabel("Flujo de gastos");
+  const note=page.getByRole("note");
   await expect(page.getByRole("heading",{name:"Finanzas"})).toBeVisible();
   await expect(commercial).toContainText(/120[.]000/);
   await expect(commercial).toContainText("1 venta");
@@ -39,7 +40,9 @@ test("economic center shows canonical flows separately and never invents profit"
   await expect(commercial).toContainText("kg");
   await expect(expenses).toContainText(/185[.]000/);
   await expect(expenses).toContainText("1 registro");
-  await expect(page.getByRole("note")).toContainText("no se restan");
+  await expect(note).toContainText("facturación no significa recaudo");
+  await expect(note).toContainText("gasto registrado no significa pago");
+  await expect(note).toContainText("no representa utilidad ni saldo bancario");
   await expect(page.getByRole("heading",{name:/^(Utilidad|Margen|Pérdida)$/})).toHaveCount(0);
   await expect(page.getByText(/65[.]000/)).toHaveCount(0);
 });
