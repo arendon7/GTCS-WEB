@@ -9,6 +9,10 @@
 }
 
 @media (min-width: 981px) {
+  .library-grid:has(> .library-card:only-child) {
+    grid-template-columns: 1fr;
+  }
+
   .library-grid .library-card:only-child {
     min-height: 0;
     display: grid;
