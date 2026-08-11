@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "check": "tsc --noEmit",
-    "audit:static": "node scripts/audit-static.mjs"
+    "audit:static": "node scripts/audit-static.mjs",
+    "test:visual": "playwright test"
   },
   "dependencies": {
     "next": "^16.1.0",
@@ -15,6 +16,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
