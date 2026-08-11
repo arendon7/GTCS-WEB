@@ -6,13 +6,7 @@ export function SiteFooter() {
       <div className="container footer-grid">
         <div>
           <div className="greenatics-footer-logo-wrap">
-            <img
-              className="official-logo greenatics-footer-logo"
-              src="/brand/greenatics-horizontal.webp"
-              alt="Greenatics"
-              width="360"
-              height="66"
-            />
+            <img className="official-logo greenatics-footer-logo" src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
           </div>
           <p>Transformamos residuos en vida.</p>
         </div>
@@ -21,7 +15,9 @@ export function SiteFooter() {
           <Link href="/wondergreen/">Wondergreen</Link>
           <Link href="/municipios/">Municipios y ESP</Link>
           <Link href="/empresas/">Empresas</Link>
+          <Link href="/tecnologia/">Tecnología</Link>
           <Link href="/proyectos/">Proyectos</Link>
+          <Link href="/impacto/">Impacto</Link>
         </div>
         <div>
           <strong>Plataforma</strong>
