@@ -58,6 +58,22 @@
 .leaf-a { color: var(--green-950); }
 .leaf-b { background: var(--green-800); }
 
+/* Keep wide diagnostic tables inside their cards instead of expanding the whole document. */
+.deficiency-stack,
+.deficiency-crop,
+.deficiency-table-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.deficiency-crop { overflow: hidden; }
+.deficiency-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 .contact-page--expanded {
   min-height: auto;
   padding-bottom: 86px;
