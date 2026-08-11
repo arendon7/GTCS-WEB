@@ -5,6 +5,7 @@ test("home exposes the daily operational surface", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Calendario", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Recepciones", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Compostaje", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Equipos", exact: true })).toBeVisible();
 });
 
@@ -47,4 +48,24 @@ test("maintenance ticket follows stopped to repairing to available", async ({ pa
   await page.getByRole("button", { name: "Cerrar reparación" }).click();
   await expect(page.getByText("Disponible", { exact: true })).toBeVisible();
   await expect(page.getByText("Reparación cerrada y equipo disponible.")).toBeVisible();
+});
+
+test("operator can create, monitor and close a compost pile", async ({ page }) => {
+  await page.goto("/compost/new");
+  await page.getByLabel(/TAM-FORSU-260811-001/).check();
+  await page.getByLabel("Ubicación").fill("Zona QA");
+  await page.getByLabel("Peso inicial medido (kg)").fill("1800");
+  await page.getByRole("button", { name: "Crear pila" }).click();
+  await expect(page.getByRole("heading", { name: /TAM-COMP-/ })).toBeVisible();
+  await page.getByLabel("Temperatura punto 1 (°C)").fill("55");
+  await page.getByLabel("Temperatura punto 2 (°C)").fill("57");
+  await page.getByLabel("Temperatura punto 3 (°C)").fill("56");
+  await page.getByLabel(/Humedad/).fill("60");
+  await page.getByRole("button", { name: "Guardar control" }).click();
+  await expect(page.getByText("56.0 °C promedio").first()).toBeVisible();
+  await page.getByRole("button", { name: "Pasar a maduración" }).click();
+  await expect(page.getByLabel("Peso final medido (kg)")).toBeVisible();
+  await page.getByLabel("Peso final medido (kg)").fill("720");
+  await page.getByRole("button", { name: "Cerrar pila" }).click();
+  await expect(page.getByText("40.0 %", { exact: true })).toBeVisible();
 });
