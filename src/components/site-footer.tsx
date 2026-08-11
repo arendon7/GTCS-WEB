@@ -1,12 +1,19 @@
 import Link from "next/link";
-import { BrandName } from "@/components/brand-name";
 
 export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
         <div>
-          <BrandName inverse />
+          <div className="greenatics-footer-logo-wrap">
+            <img
+              className="official-logo greenatics-footer-logo"
+              src="/brand/greenatics-horizontal.webp"
+              alt="Greenatics"
+              width="360"
+              height="66"
+            />
+          </div>
           <p>Transformamos residuos en vida.</p>
         </div>
         <div>
