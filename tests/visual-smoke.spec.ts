@@ -23,6 +23,8 @@ const routes = [
   ["huertas", "/biblioteca/huertas/"],
   ["nosotros", "/nosotros/"],
   ["diagnostico", "/diagnostico/"],
+  ["contacto", "/contacto/"],
+  ["acceso", "/acceso/"],
 ] as const;
 
 const screenshotRoutes = new Set([
@@ -32,6 +34,7 @@ const screenshotRoutes = new Set([
   "yarumal",
   "biblioteca",
   "guia-deficiencias",
+  "contacto",
 ]);
 
 for (const [slug, route] of routes) {
