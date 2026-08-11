@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/nosotros",
     "/diagnostico",
+    "/biblioteca",
     "/wondergreen",
     "/wondergreen/cultivos",
     "/wondergreen/cotizador",
@@ -28,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticRoutes.map((route) => ({
       url: `${base}${route}/`,
       changeFrequency: "weekly" as const,
-      priority: route === "" ? 1 : 0.8,
+      priority: route === "" ? 1 : route === "/biblioteca" ? 0.85 : 0.8,
     })),
     ...products.map((product) => ({
       url: `${base}/wondergreen/productos/${product.slug}/`,
