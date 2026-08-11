@@ -3,9 +3,9 @@ import { test, expect } from "@playwright/test";
 test("home exposes the daily operational surface", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Calendario" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Recepciones" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Equipos" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Calendario", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Recepciones", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Equipos", exact: true })).toBeVisible();
 });
 
 test("operator can register a reception and get a generated lot", async ({ page }) => {
