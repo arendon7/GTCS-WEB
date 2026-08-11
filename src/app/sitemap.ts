@@ -26,7 +26,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/proyectos/tamesis",
     "/impacto",
     "/contacto",
-    "/acceso",
   ];
 
   return [
