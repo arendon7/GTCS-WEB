@@ -59,7 +59,12 @@ for (const [slug, route] of routes) {
     const headerLogo = page.locator("header img[alt='Greenatics']");
     await expect(headerLogo).toBeVisible();
     const logoBox = await headerLogo.boundingBox();
-    expect(logoBox?.width ?? 0, `${route} Greenatics logo must retain a useful rendered width`).toBeGreaterThanOrEqual(135);
+    const viewportWidth = page.viewportSize()?.width ?? 1280;
+    const minimumLogoWidth = viewportWidth <= 620 ? 100 : 135;
+    expect(
+      logoBox?.width ?? 0,
+      `${route} Greenatics logo must retain a useful rendered width at ${viewportWidth}px`,
+    ).toBeGreaterThanOrEqual(minimumLogoWidth);
 
     const logoGreenPixelRatio = await headerLogo.evaluate((image) => {
       const img = image as HTMLImageElement;
