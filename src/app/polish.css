@@ -22,6 +22,42 @@
   max-width: 172px;
 }
 
+/* Accessible interface contrast without changing official logo or product artwork colors. */
+.button--primary { background: var(--green-800); }
+.eyebrow:not(.eyebrow--light),
+.cycle-node strong,
+.audience-card a,
+.product-card-footer a,
+.product-card .eyebrow,
+.knowledge-card-kicker,
+.knowledge-inline-link,
+.stage-track span,
+.stage-track em,
+.library-journey span,
+.library-card-meta span,
+.library-card > strong,
+.contact-prep-grid article > span,
+.contact-panel > span,
+.diagnostic-number,
+.capability-grid span,
+.quote-row > div > span,
+.crop-card > span,
+.crop-card > strong,
+.crop-context span,
+.crop-stage-number,
+.wg-tool-card:not(.wg-tool-card--dark) a,
+.about-cap-grid article > span,
+.about-principle-list article > span {
+  color: var(--green-800);
+}
+
+/* Lime surfaces require the darkest brand green for readable small text. */
+.closing-cta .eyebrow:not(.eyebrow--light) { color: var(--green-950); }
+
+/* White fails on the light-green decorative leaf; keep the brand hue and invert text. */
+.leaf-a { color: var(--green-950); }
+.leaf-b { background: var(--green-800); }
+
 .contact-page--expanded {
   min-height: auto;
   padding-bottom: 86px;
@@ -46,7 +82,6 @@
 }
 
 .contact-prep-grid article > span {
-  color: var(--green-700);
   font-size: .75rem;
   font-weight: 800;
   letter-spacing: .08em;
