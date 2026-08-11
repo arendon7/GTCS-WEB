@@ -1,0 +1,21 @@
+"use client";
+
+import Link from "next/link";
+import { useSupplyStore } from "@/components/supply-store";
+import { supplyCategoryLabel } from "@/lib/supply-domain";
+
+const movementLabel={receipt:"Recepción",consumption:"Consumo",adjustment_in:"Ajuste entrada",adjustment_out:"Ajuste salida"} as const;
+
+export function SuppliesView(){
+  const {stocks,lots,movements,receipts}=useSupplyStore();
+  return <>
+    <header className="page-header"><div><p className="eyebrow">Inventario físico</p><h1>Insumos</h1><p className="lede">Existencia real de materias primas, insumos, repuestos, empaques y consumibles. Comprar o pagar no aumenta stock: solo una recepción física medida.</p></div><div className="header-actions"><Link className="button secondary" href="/supplies/consume">Registrar consumo</Link><Link className="button primary" href="/supplies/receipts/new">Recibir insumo</Link></div></header>
+
+    <section className="metrics-grid" aria-label="Indicadores de insumos"><div className="metric-block"><span>Insumos con stock</span><strong>{stocks.length}</strong><small>por planta + maestro</small></div><div className="metric-block"><span>Lotes con saldo</span><strong>{lots.length}</strong><small>trazabilidad física</small></div><div className="metric-block"><span>Recepciones</span><strong>{receipts.length}</strong><small>mediciones registradas</small></div><div className="metric-block"><span>Movimientos</span><strong>{movements.length}</strong><small>kardex append-only</small></div></section>
+
+    <section className="panel mb-4" aria-label="Stock de insumos"><div className="section-head"><div><p className="eyebrow">Snapshot actual</p><h2>Stock por insumo</h2></div></div>{stocks.length?<div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{stocks.map((row)=><article className="rounded-xl border border-[var(--line)] p-4" key={`${row.plantId}-${row.supplyId}`}><span className="quiet">{row.plant} · {supplyCategoryLabel[row.category]}</span><strong className="mt-1 block text-sm">{row.supplyName}</strong><strong className="mt-3 block text-2xl">{row.quantity.toLocaleString("es-CO",{maximumFractionDigits:2})} {row.unit}</strong><span className="mt-1 block text-xs text-[var(--muted)]">{row.lots} lote{row.lots===1?"":"s"} con saldo</span></article>)}</div>:<div className="rounded-xl border border-dashed border-[var(--line)] p-8 text-center"><strong className="block text-sm">Aún no hay insumos recibidos</strong><p className="quiet mt-2">El stock nace únicamente al registrar una recepción física.</p></div>}</section>
+
+    <div className="grid gap-4 xl:grid-cols-2"><section className="panel"><div className="section-head"><div><p className="eyebrow">Lotes</p><h2>Saldo por lote</h2></div></div>{lots.length?<div className="worker-list">{lots.map((lot)=><div className="worker-row" key={`${lot.plantId}-${lot.supplyId}-${lot.lotCode}`}><div className="grow"><strong>{lot.lotCode}</strong><span>{lot.supplyName} · {lot.plant}</span></div><div className="right"><strong>{lot.quantity.toLocaleString("es-CO",{maximumFractionDigits:2})} {lot.unit}</strong><small>{supplyCategoryLabel[lot.category]}</small></div></div>)}</div>:<p className="quiet">Sin lotes con saldo.</p>}</section>
+      <section className="panel"><div className="section-head"><div><p className="eyebrow">Kardex</p><h2>Movimientos recientes</h2></div></div>{movements.length?<div className="grid gap-1">{movements.slice(0,30).map((movement)=><div className="grid gap-2 border-t border-[var(--line)] py-3 first:border-t-0 sm:grid-cols-[110px_1fr_150px] sm:items-center" key={movement.id}><span className={`status-pill ${movement.kind==="receipt"||movement.kind==="adjustment_in"?"status-normal":"status-planned"}`}>{movementLabel[movement.kind]}</span><div><strong className="block text-xs">{movement.supplyName} · {movement.lotCode}</strong><span className="text-[10px] text-[var(--muted)]">{movement.plant} · {movement.occurredOn}{movement.destination?` · ${movement.destination}`:""}</span></div><strong className="text-right text-sm">{movement.kind==="consumption"||movement.kind==="adjustment_out"?"−":"+"} {movement.quantity.toLocaleString("es-CO",{maximumFractionDigits:2})} {movement.unit}</strong></div>)}</div>:<p className="quiet">Sin movimientos físicos.</p>}</section></div>
+  </>;
+}
