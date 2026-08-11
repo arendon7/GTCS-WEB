@@ -13,10 +13,11 @@ const seedProducts: ProductMaster[] = [
 ];
 
 type Result = { ok:true } | { ok:false; error:string };
+type DispatchResult = { ok:true; movementId:string } | { ok:false; error:string };
 type CreateProductResult = { ok:true; id:string } | { ok:false; error:string };
 type ProductionResult = { ok:true; id:string; lotCode:string } | { ok:false; error:string };
 type NewProduction = { plantId:string; productId:string; quantity:number; sourceProcess:string; sourcePileId?:string; note?:string };
-type NewDispatch = { plantId:string; productId:string; lotCode:string; quantity:number; destination:string; note?:string };
+type NewDispatch = { plantId:string; productId:string; lotCode:string; quantity:number; destination:string; note?:string; referenceId?:string };
 
 type InventoryStore = {
   products: ProductMaster[];
@@ -27,7 +28,7 @@ type InventoryStore = {
   lots: ReturnType<typeof lotStocks>;
   createProduct:(name:string,unit:InventoryUnit)=>CreateProductResult;
   recordProduction:(payload:NewProduction)=>ProductionResult;
-  dispatch:(payload:NewDispatch)=>Result;
+  dispatch:(payload:NewDispatch)=>DispatchResult;
   resetInventoryDemo:()=>void;
 };
 
@@ -110,9 +111,10 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
       if(!payload.destination.trim()) return {ok:false,error:"Indica el destino de la salida."};
       const available=stockForLot(movements,payload.plantId,payload.productId,payload.lotCode);
       if(payload.quantity>available+1e-9) return {ok:false,error:`Stock insuficiente en ${payload.lotCode}. Disponible: ${available.toLocaleString("es-CO")} ${product.unit}.`};
-      const movement:InventoryMovement={id:crypto.randomUUID(),plantId:payload.plantId,plant:plantName(payload.plantId),productId:product.id,productName:product.name,unit:product.unit,lotCode:payload.lotCode,kind:"dispatch",quantity:payload.quantity,occurredAt:new Date().toISOString(),destination:payload.destination.trim(),note:payload.note?.trim()||undefined};
+      const movementId=crypto.randomUUID();
+      const movement:InventoryMovement={id:movementId,plantId:payload.plantId,plant:plantName(payload.plantId),productId:product.id,productName:product.name,unit:product.unit,lotCode:payload.lotCode,kind:"dispatch",quantity:payload.quantity,occurredAt:new Date().toISOString(),referenceId:payload.referenceId,destination:payload.destination.trim(),note:payload.note?.trim()||undefined};
       setMovements((current)=>[movement,...current]);
-      return {ok:true};
+      return {ok:true,movementId};
     },
     resetInventoryDemo(){ setProducts(seedProducts); setProductions([]); setMovements([]); window.localStorage.removeItem(STORAGE_KEY); },
   }),[products,productions,movements,ready,stocks,lots]);
