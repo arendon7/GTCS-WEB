@@ -1,0 +1,8 @@
+{"from":"product:greenatics-ops","to":"module:planning","type":"contains"}
+{"from":"product:greenatics-ops","to":"module:daily-ops","type":"contains"}
+{"from":"product:greenatics-ops","to":"module:maintenance","type":"contains"}
+{"from":"module:planning","to":"view:calendar","type":"renders_in"}
+{"from":"module:daily-ops","to":"view:today","type":"renders_in"}
+{"from":"module:daily-ops","to":"view:dashboard","type":"aggregates_to"}
+{"from":"source:nelson","to":"module:maintenance","type":"informs"}
+{"from":"source:carlos-plan","to":"module:planning","type":"informs"}

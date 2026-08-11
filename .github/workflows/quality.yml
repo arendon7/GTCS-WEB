@@ -1,0 +1,35 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [develop]
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Canonical project files
+        run: |
+          test -f PRODUCT.md
+          test -f DESIGN.md
+          test -f AGENTS.md
+          test -f knowledge/memory.jsonl
+      - name: Validate JSONL memory
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for line in Path('knowledge/memory.jsonl').read_text().splitlines(): json.loads(line)
+          print('memory.jsonl OK')
+          PY
+      - name: Install and verify app
+        run: |
+          npm install --ignore-scripts
+          npm run typecheck
+          npm run lint
+          npm run build

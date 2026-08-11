@@ -1,0 +1,9 @@
+{"id":"product:greenatics-ops","type":"product","label":"GREENATICS OPS"}
+{"id":"module:planning","type":"module","label":"Planeación"}
+{"id":"module:daily-ops","type":"module","label":"Operación diaria"}
+{"id":"module:maintenance","type":"module","label":"Mantenimiento"}
+{"id":"view:today","type":"view","label":"Hoy"}
+{"id":"view:calendar","type":"view","label":"Calendario"}
+{"id":"view:dashboard","type":"view","label":"Dashboard"}
+{"id":"source:nelson","type":"source","label":"Ajustes Nelson"}
+{"id":"source:carlos-plan","type":"source","label":"Programación Carlos Uribe"}
