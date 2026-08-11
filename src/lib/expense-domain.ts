@@ -41,6 +41,7 @@ export type OperationalExpenseRecord = {
   equipmentName?:string;
   processRef?:string;
   evidenceRef?:string;
+  purchaseRequestId?:string;
   note?:string;
   recordedAt:string;
 };
@@ -58,6 +59,7 @@ export type NewOperationalExpense = {
   equipmentName?:string;
   processRef?:string;
   evidenceRef?:string;
+  purchaseRequestId?:string;
   note?:string;
 };
 
