@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://greenatics.com.co";
   const staticRoutes = [
     "",
+    "/diagnostico",
     "/wondergreen",
     "/wondergreen/cultivos",
     "/wondergreen/cotizador",
