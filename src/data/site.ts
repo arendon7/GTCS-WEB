@@ -8,10 +8,10 @@ export const site = {
 };
 
 export const primaryNav = [
-  { href: "/wondergreen/", label: "Wondergreen" },
   { href: "/municipios/", label: "Municipios y ESP" },
   { href: "/empresas/", label: "Empresas" },
   { href: "/tecnologia/", label: "Tecnología" },
   { href: "/proyectos/", label: "Proyectos" },
+  { href: "/biblioteca/", label: "Biblioteca" },
   { href: "/impacto/", label: "Impacto" },
 ];
