@@ -34,7 +34,7 @@ test("dashboard shows gross billing for selected period while stock remains curr
   await expect(stock).toContainText("kg");
 
   await page.getByLabel("Fecha").fill("2026-08-10");
-  await expect(sales).toContainText("$0");
+  await expect(sales).toContainText("0 ventas");
   await expect(sales).toContainText("Sin ventas registradas en este periodo.");
   await expect(stock).toContainText("190");
   await expect(stock).toContainText("kg");
