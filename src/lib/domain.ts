@@ -3,11 +3,12 @@ export type ActivityStatus = "running" | "planned" | "done" | "delayed" | "misse
 export type AlertSeverity = "high" | "medium" | "low";
 export type ActivityUnit = "kg" | "t" | "L" | "unidades" | "m3";
 export type NoveltyType = "equipment_failure" | "delay" | "quality" | "safety" | "other";
-export type AcceptanceStatus = "accepted" | "conditioned" | "rejected";
+export type AcceptanceStatus = "accepted" | "conditioned" | "rejected" | "unknown";
 export type WasteType = "FORSU" | "PODA" | "GALLINAZA" | "MATERIA_PRIMA" | "OTRO";
+export type HistoricalProvenance = { importRunId: string; sourceName: string; sourceRowIds: string[] };
 
 export type PlantSummary = { id: string; name: string; status: PlantStatus; receivedT: number; processedT: number; planCompliancePct: number };
-export type Worker = { id: string; name: string; plantId: string };
+export type Worker = { id: string; name: string; plantId: string; historical?: boolean };
 export type OpsAlert = { id: string; severity: AlertSeverity; title: string; detail: string; plant: string };
 
 export type ActivityRecord = {
@@ -27,7 +28,8 @@ export type ActivityRecord = {
   unit?: ActivityUnit;
   noveltyType?: NoveltyType;
   novelty?: string;
-  source: "scheduled" | "unplanned";
+  source: "scheduled" | "unplanned" | "historical";
+  provenance?: HistoricalProvenance;
 };
 
 export type IncidentRecord = {
@@ -57,7 +59,9 @@ export type ReceptionRecord = {
   startedAt: string;
   endedAt: string;
   lotCode: string;
-  source: "demo" | "local";
+  source: "demo" | "local" | "historical";
+  timePrecision?: "datetime" | "date_only";
+  provenance?: HistoricalProvenance;
 };
 
 export function getDurationMinutes(activity: ActivityRecord, nowIso?: string) {

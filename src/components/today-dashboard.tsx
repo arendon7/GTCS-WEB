@@ -8,14 +8,13 @@ import { useMaintenanceStore } from "@/components/maintenance-store";
 import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics } from "@/lib/analytics";
 import { getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
-import { employees } from "@/lib/mock-data";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
 
 function Metric({ label, value, note }: { label: string; value: string; note: string }) {
   return <div className="metric-block"><span>{label}</span><strong>{value}</strong><small>{note}</small></div>;
 }
 
-const statusLabel: Record<AcceptanceStatus, string> = { accepted: "Aceptado", conditioned: "Condicionado", rejected: "Rechazado" };
+const statusLabel: Record<AcceptanceStatus, string> = { accepted: "Aceptado", conditioned: "Condicionado", rejected: "Rechazado", unknown: "Sin dato histórico" };
 const dayFormatter = new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "America/Bogota" });
 
 function timeLabel(iso?: string) {
@@ -24,7 +23,7 @@ function timeLabel(iso?: string) {
 }
 
 export function TodayDashboard() {
-  const { activities, incidents, receptions, ready, resetDemo } = useOpsStore();
+  const { activities, incidents, receptions, workers, ready, resetDemo } = useOpsStore();
   const { equipment, tickets } = useMaintenanceStore();
   const { piles, measurements } = useCompostStore();
   const [nowIso, setNowIso] = useState(() => new Date().toISOString());
@@ -36,12 +35,12 @@ export function TodayDashboard() {
   }, []);
 
   const currentDateKey = bogotaDateKey(nowIso);
-  const analytics = useMemo(() => buildOperationalAnalytics({ activities, receptions, incidents, tickets, equipment, piles, measurements, workers: employees, preset: "day", anchorKey: currentDateKey, plantId: "all", nowIso }), [activities, receptions, incidents, tickets, equipment, piles, measurements, currentDateKey, nowIso]);
+  const analytics = useMemo(() => buildOperationalAnalytics({ activities, receptions, incidents, tickets, equipment, piles, measurements, workers, preset: "day", anchorKey: currentDateKey, plantId: "all", nowIso }), [activities, receptions, incidents, tickets, equipment, piles, measurements, workers, currentDateKey, nowIso]);
   const todayReceptions = receptions.filter((reception) => bogotaDateKey(reception.endedAt) === currentDateKey);
   const running = activities.filter((activity) => activity.status === "running");
-  const workerRows = running.flatMap((activity) => activity.workerIds.map((workerId) => ({ activity, worker: employees.find((item) => item.id === workerId) })));
+  const workerRows = running.flatMap((activity) => activity.workerIds.map((workerId) => ({ activity, worker: workers.find((item) => item.id === workerId) })));
   const delayed = activities.filter((activity) => (activity.status === "delayed" || activity.status === "missed") && bogotaDateKey(activity.plannedStart) === currentDateKey);
-  const nonConforming = todayReceptions.filter((reception)=>reception.acceptance !== "accepted");
+  const nonConforming = todayReceptions.filter((reception)=>reception.acceptance === "conditioned" || reception.acceptance === "rejected");
   const openIncidents = incidents.filter((incident) => incident.status === "open");
   const activeMaintenance = tickets.filter((ticket) => ticket.status !== "closed");
   const currentAttentionCount = activeMaintenance.length + openIncidents.length + nonConforming.length + delayed.length;

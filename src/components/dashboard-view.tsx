@@ -6,7 +6,6 @@ import { useOpsStore } from "@/components/ops-store";
 import { useMaintenanceStore } from "@/components/maintenance-store";
 import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics, analyticsCsv, type DashboardPreset, type RankedValue } from "@/lib/analytics";
-import { employees } from "@/lib/mock-data";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
 
 function formatTons(kg: number) { return `${(kg / 1000).toFixed(2)} t`; }
@@ -39,7 +38,7 @@ function ExportCsvButton({ csv, filename }: { csv: string; filename: string }) {
 }
 
 export function DashboardView() {
-  const { activities, receptions, incidents } = useOpsStore();
+  const { activities, receptions, incidents, workers } = useOpsStore();
   const { equipment, tickets } = useMaintenanceStore();
   const { piles, measurements } = useCompostStore();
   const [nowIso, setNowIso] = useState(() => new Date().toISOString());
@@ -52,7 +51,7 @@ export function DashboardView() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const analytics = useMemo(() => buildOperationalAnalytics({ activities, receptions, incidents, tickets, equipment, piles, measurements, workers: employees, preset, anchorKey, plantId, nowIso }), [activities, receptions, incidents, tickets, equipment, piles, measurements, preset, anchorKey, plantId, nowIso]);
+  const analytics = useMemo(() => buildOperationalAnalytics({ activities, receptions, incidents, tickets, equipment, piles, measurements, workers, preset, anchorKey, plantId, nowIso }), [activities, receptions, incidents, tickets, equipment, piles, measurements, workers, preset, anchorKey, plantId, nowIso]);
   const maxReceived = Math.max(...analytics.trend.map((point) => point.receivedKg), 0);
   const maxLabor = Math.max(...analytics.trend.map((point) => point.laborHours), 0);
   const csv = useMemo(() => analyticsCsv(analytics), [analytics]);

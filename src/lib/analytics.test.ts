@@ -37,6 +37,15 @@ describe("dashboard analytics", () => {
     expect(result.exceptionsCount).toBe(2);
   });
 
+  it("does not turn unknown historical acceptance into a non-conformity", () => {
+    const historical: ReceptionRecord = { id: "rh", plantId: "tamesis", plant: "Támesis", generator: "Histórico", route: "Histórica", wasteType: "FORSU", netWeightKg: 700, rejectionKg: 20, acceptance: "unknown", startedAt: "2026-08-11T13:00:00-05:00", endedAt: "2026-08-11T13:00:00-05:00", lotCode: "HIST-1", source: "historical" };
+    const result = buildOperationalAnalytics({ activities: [], receptions: [historical], incidents: [], tickets: [], equipment: [], piles: [], measurements: [], workers: [], preset: "day", anchorKey: "2026-08-11", plantId: "all", nowIso: "2026-08-11T16:00:00-05:00" });
+    expect(result.receivedKg).toBe(700);
+    expect(result.rejectionKg).toBe(20);
+    expect(result.nonConformingReceipts).toBe(0);
+    expect(result.exceptionsCount).toBe(0);
+  });
+
   it("filters the same semantic metrics by plant", () => {
     const result = buildOperationalAnalytics({ activities, receptions, incidents: [], tickets, equipment, piles, measurements: [], workers, preset: "day", anchorKey: "2026-08-11", plantId: "yarumal", nowIso: "2026-08-11T16:00:00-05:00" });
     expect(result.receivedKg).toBe(0);

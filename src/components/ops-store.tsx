@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { AcceptanceStatus, ActivityRecord, ActivityUnit, IncidentRecord, NoveltyType, ReceptionRecord, WasteType } from "@/lib/domain";
+import type { AcceptanceStatus, ActivityRecord, ActivityUnit, IncidentRecord, NoveltyType, ReceptionRecord, WasteType, Worker } from "@/lib/domain";
+import type { ImportRun } from "@/lib/importer";
+import { buildCanonicalPromotion } from "@/lib/import-promotion";
 import { employees, seedActivities, seedIncidents, seedReceptions } from "@/lib/mock-data";
 import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
 
@@ -10,19 +12,22 @@ const STORAGE_KEY = "greenatics-ops-mvp-001";
 type Result = { ok: true } | { ok: false; error: string };
 type CreateResult = { ok: true; id: string } | { ok: false; error: string };
 type CreateReceptionResult = { ok: true; id: string; lotCode: string } | { ok: false; error: string };
+type PromotionResult = { ok: true; activities: number; receptions: number } | { ok: false; error: string };
 type FinishPayload = { quantity?: number; unit?: ActivityUnit; noveltyType?: NoveltyType; novelty?: string; openIncident?: boolean };
 type NewActivityPayload = { plantId: string; title: string; process: string; workerIds: string[]; equipment?: string };
-type NewReceptionPayload = { plantId: string; generator: string; route: string; wasteType: WasteType; netWeightKg: number; rejectionKg: number; acceptance: AcceptanceStatus; observation?: string; startedAt: string };
+type NewReceptionPayload = { plantId: string; generator: string; route: string; wasteType: WasteType; netWeightKg: number; rejectionKg: number; acceptance: Exclude<AcceptanceStatus, "unknown">; observation?: string; startedAt: string };
 
 type OpsStore = {
   activities: ActivityRecord[];
   incidents: IncidentRecord[];
   receptions: ReceptionRecord[];
+  workers: Worker[];
   ready: boolean;
   startActivity: (id: string, workerIds: string[]) => Result;
   finishActivity: (id: string, payload: FinishPayload) => Result;
   createActivity: (payload: NewActivityPayload) => CreateResult;
   createReception: (payload: NewReceptionPayload) => CreateReceptionResult;
+  promoteHistoricalImport: (run: ImportRun) => PromotionResult;
   resetDemo: () => void;
 };
 
@@ -48,6 +53,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
   const [activities, setActivities] = useState<ActivityRecord[]>(seedActivities);
   const [incidents, setIncidents] = useState<IncidentRecord[]>(seedIncidents);
   const [receptions, setReceptions] = useState<ReceptionRecord[]>(seedReceptions);
+  const [workers, setWorkers] = useState<Worker[]>(employees);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -55,10 +61,11 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
         if (raw) {
-          const parsed = JSON.parse(raw) as { activities?: ActivityRecord[]; incidents?: IncidentRecord[]; receptions?: ReceptionRecord[] };
+          const parsed = JSON.parse(raw) as { activities?: ActivityRecord[]; incidents?: IncidentRecord[]; receptions?: ReceptionRecord[]; workers?: Worker[] };
           if (parsed.activities?.length) setActivities(parsed.activities);
           if (parsed.incidents) setIncidents(parsed.incidents);
           if (parsed.receptions) setReceptions(parsed.receptions);
+          if (parsed.workers?.length) setWorkers(parsed.workers);
         }
       } catch {
         window.localStorage.removeItem(STORAGE_KEY);
@@ -71,13 +78,14 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ activities, incidents, receptions }));
-  }, [activities, incidents, receptions, ready]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ activities, incidents, receptions, workers }));
+  }, [activities, incidents, receptions, workers, ready]);
 
   const value = useMemo<OpsStore>(() => ({
     activities,
     incidents,
     receptions,
+    workers,
     ready,
     startActivity(id, workerIds) {
       const activity = activities.find((item) => item.id === id);
@@ -86,7 +94,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       if (workerIds.length === 0) return { ok: false, error: "Selecciona al menos un trabajador." };
       const conflict = workerConflict(activities, workerIds, id);
       if (conflict) {
-        const name = employees.find((worker) => worker.id === conflict)?.name ?? "Un trabajador";
+        const name = workers.find((worker) => worker.id === conflict)?.name ?? "Un trabajador";
         return { ok: false, error: `${name} ya está en otra actividad en curso.` };
       }
       const actualStart = new Date().toISOString();
@@ -114,7 +122,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       if (payload.workerIds.length === 0) return { ok: false, error: "Selecciona al menos un trabajador." };
       const conflict = workerConflict(activities, payload.workerIds);
       if (conflict) {
-        const name = employees.find((worker) => worker.id === conflict)?.name ?? "Un trabajador";
+        const name = workers.find((worker) => worker.id === conflict)?.name ?? "Un trabajador";
         return { ok: false, error: `${name} ya está en otra actividad en curso.` };
       }
       const plant = payload.plantId === "yarumal" ? "Yarumal" : "Támesis";
@@ -139,13 +147,25 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       setReceptions((current) => [reception, ...current]);
       return { ok: true, id, lotCode };
     },
+    promoteHistoricalImport(run) {
+      if (activities.some((item) => item.provenance?.importRunId === run.id) || receptions.some((item) => item.provenance?.importRunId === run.id)) {
+        return { ok: false, error: "Esta corrida ya fue promovida al modelo operacional." };
+      }
+      const promotion = buildCanonicalPromotion(run);
+      if (promotion.errors.length) return { ok: false, error: promotion.errors.join(" ") };
+      setWorkers((current) => [...current, ...promotion.workers.filter((worker) => !current.some((item) => item.id === worker.id))]);
+      setActivities((current) => [...promotion.activities.filter((activity) => !current.some((item) => item.id === activity.id)), ...current]);
+      setReceptions((current) => [...promotion.receptions.filter((reception) => !current.some((item) => item.id === reception.id)), ...current]);
+      return { ok: true, activities: promotion.activities.length, receptions: promotion.receptions.length };
+    },
     resetDemo() {
       setActivities(seedActivities);
       setIncidents(seedIncidents);
       setReceptions(seedReceptions);
+      setWorkers(employees);
       window.localStorage.removeItem(STORAGE_KEY);
     },
-  }), [activities, incidents, receptions, ready]);
+  }), [activities, incidents, receptions, workers, ready]);
 
   return <OpsStoreContext.Provider value={value}>{children}</OpsStoreContext.Provider>;
 }

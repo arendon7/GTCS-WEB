@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useOpsStore } from "@/components/ops-store";
 import { historicalQaFixture } from "@/lib/import-fixtures";
 import { dryRunLegacyImport, sha256Text, type ImportRun, type LegacyImportPayload } from "@/lib/importer";
 
@@ -22,6 +23,7 @@ function statusLabel(status: "valid" | "warning" | "quarantined" | "duplicate") 
 }
 
 export function ImportsView() {
+  const { promoteHistoricalImport } = useOpsStore();
   const [sourceText, setSourceText] = useState("");
   const [runs, setRuns] = useState<ImportRun[]>([]);
   const [message, setMessage] = useState("");
@@ -55,8 +57,15 @@ export function ImportsView() {
   }
 
   function promote(runId: string) {
-    setRuns((current) => current.map((run) => run.id === runId ? { ...run, promoted: true } : run));
-    setMessage("Candidatos válidos aprobados en staging. La fuente original permanece intacta.");
+    const run = runs.find((item) => item.id === runId);
+    if (!run) return;
+    const result = promoteHistoricalImport(run);
+    if (!result.ok) {
+      setMessage(result.error);
+      return;
+    }
+    setRuns((current) => current.map((item) => item.id === runId ? { ...item, promoted: true } : item));
+    setMessage(`Promoción canónica completada: ${result.activities} actividades y ${result.receptions} recepciones. Cuarentena y duplicados quedaron fuera.`);
   }
 
   return <>
@@ -64,7 +73,7 @@ export function ImportsView() {
       <div>
         <p className="eyebrow">Calidad de datos</p>
         <h1>Importaciones históricas</h1>
-        <p className="lede">Fuente → staging inmutable → validación → aprobación. Cuarentena y duplicados nunca entran silenciosamente al modelo operacional.</p>
+        <p className="lede">Fuente → staging inmutable → validación → promoción canónica. Cuarentena y duplicados nunca entran silenciosamente al modelo operacional.</p>
       </div>
       <div className="header-actions">
         <button className="button secondary" type="button" onClick={loadFixture}>Cargar fixture histórico QA</button>
@@ -75,7 +84,7 @@ export function ImportsView() {
     <section className="panel" style={{ maxWidth: 1440, margin: "0 auto 16px" }}>
       <div className="section-head">
         <div><h2>Entrada de staging</h2><p className="quiet">JSON histórico normalizado por un adapter. El XLSX real llegará a esta misma frontera.</p></div>
-        <span className="status-pill status-planned">Sin escritura canónica</span>
+        <span className="status-pill status-planned">Promoción controlada</span>
       </div>
       <label htmlFor="historical-source" className="quiet">Contrato histórico</label>
       <textarea
