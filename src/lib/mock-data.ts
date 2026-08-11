@@ -1,4 +1,4 @@
-import type { ActivityRecord, IncidentRecord, PlantSummary, Worker } from "@/lib/domain";
+import type { ActivityRecord, IncidentRecord, PlantSummary, ReceptionRecord, Worker } from "@/lib/domain";
 
 export const employees: Worker[] = [
   { id: "w-alejandro", name: "Alejandro", plantId: "tamesis" },
@@ -22,9 +22,12 @@ export const seedActivities: ActivityRecord[] = [
 
 export const seedIncidents: IncidentRecord[] = [];
 
-export const plantBaselines: PlantSummary[] = [
-  { id: "yarumal", name: "Yarumal", status: "normal", receivedT: 3.4, processedT: 2.8, planCompliancePct: 91 },
-  { id: "tamesis", name: "Támesis", status: "attention", receivedT: 2.1, processedT: 1.47, planCompliancePct: 76 },
+export const seedReceptions: ReceptionRecord[] = [
+  { id: "rec-001", plantId: "yarumal", plant: "Yarumal", generator: "Aguas del Norte", route: "Ruta selectiva", wasteType: "FORSU", netWeightKg: 1840, rejectionKg: 85, acceptance: "accepted", observation: "Recepción normal.", startedAt: "2026-08-11T09:48:00-05:00", endedAt: "2026-08-11T10:11:00-05:00", lotCode: "YAR-FORSU-260811-001", source: "demo" },
+  { id: "rec-002", plantId: "tamesis", plant: "Támesis", generator: "Ruta municipal", route: "Orgánicos centro", wasteType: "FORSU", netWeightKg: 2100, rejectionKg: 126, acceptance: "conditioned", observation: "Se observan impropios; se acepta con observación.", startedAt: "2026-08-11T10:36:00-05:00", endedAt: "2026-08-11T11:04:00-05:00", lotCode: "TAM-FORSU-260811-001", source: "demo" },
 ];
 
-export const todayBaseline = { receivedT: 5.5, processedT: 4.27 };
+export const plantBaselines: PlantSummary[] = [
+  { id: "yarumal", name: "Yarumal", status: "normal", receivedT: 0, processedT: 2.8, planCompliancePct: 91 },
+  { id: "tamesis", name: "Támesis", status: "attention", receivedT: 0, processedT: 1.47, planCompliancePct: 76 },
+];

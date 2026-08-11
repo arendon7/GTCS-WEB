@@ -3,6 +3,8 @@ export type ActivityStatus = "running" | "planned" | "done" | "delayed" | "misse
 export type AlertSeverity = "high" | "medium" | "low";
 export type ActivityUnit = "kg" | "t" | "L" | "unidades" | "m3";
 export type NoveltyType = "equipment_failure" | "delay" | "quality" | "safety" | "other";
+export type AcceptanceStatus = "accepted" | "conditioned" | "rejected";
+export type WasteType = "FORSU" | "PODA" | "GALLINAZA" | "MATERIA_PRIMA" | "OTRO";
 
 export type PlantSummary = { id: string; name: string; status: PlantStatus; receivedT: number; processedT: number; planCompliancePct: number };
 export type Worker = { id: string; name: string; plantId: string };
@@ -41,6 +43,23 @@ export type IncidentRecord = {
   status: "open" | "closed";
 };
 
+export type ReceptionRecord = {
+  id: string;
+  plantId: string;
+  plant: string;
+  generator: string;
+  route: string;
+  wasteType: WasteType;
+  netWeightKg: number;
+  rejectionKg: number;
+  acceptance: AcceptanceStatus;
+  observation?: string;
+  startedAt: string;
+  endedAt: string;
+  lotCode: string;
+  source: "demo" | "local";
+};
+
 export function getDurationMinutes(activity: ActivityRecord, nowIso?: string) {
   if (!activity.actualStart) return 0;
   const end = activity.actualEnd ?? nowIso;
@@ -50,4 +69,13 @@ export function getDurationMinutes(activity: ActivityRecord, nowIso?: string) {
 
 export function getLaborHours(activity: ActivityRecord, nowIso?: string) {
   return (getDurationMinutes(activity, nowIso) * activity.workerIds.length) / 60;
+}
+
+export function getRejectionPct(reception: Pick<ReceptionRecord, "netWeightKg" | "rejectionKg">) {
+  if (reception.netWeightKg <= 0) return 0;
+  return (reception.rejectionKg / reception.netWeightKg) * 100;
+}
+
+export function getReceptionDurationMinutes(reception: Pick<ReceptionRecord, "startedAt" | "endedAt">) {
+  return Math.max(0, (new Date(reception.endedAt).getTime() - new Date(reception.startedAt).getTime()) / 60000);
 }
