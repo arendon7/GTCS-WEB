@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext,useContext,useEffect,useMemo,useState,type ReactNode } from "react";
+import { createContext,useCallback,useContext,useEffect,useMemo,useState,type ReactNode } from "react";
 import { useExpenseStore } from "@/components/expense-store";
 import { validatePurchaseRequest,validateTransition,type NewPurchaseRequest,type PurchaseRequestEvent,type PurchaseRequestRecord,type PurchaseRequestStatus } from "@/lib/purchase-request-domain";
 
@@ -47,7 +47,7 @@ export function PurchaseRequestStoreProvider({children}:{children:ReactNode}){
     window.localStorage.setItem(STORAGE_KEY,JSON.stringify({requests,events}));
   },[requests,events,ready]);
 
-  function transition(requestId:string,to:PurchaseRequestStatus,actor:string,note?:string):Result{
+  const transition=useCallback((requestId:string,to:PurchaseRequestStatus,actor:string,note?:string):Result=>{
     const request=requests.find((item)=>item.id===requestId);
     if(!request)return {ok:false,error:"Solicitud no encontrada."};
     const validation=validateTransition({from:request.status,to,actor,note});
@@ -56,7 +56,7 @@ export function PurchaseRequestStoreProvider({children}:{children:ReactNode}){
     setRequests((current)=>current.map((item)=>item.id===requestId?{...item,status:to}:item));
     setEvents((current)=>[{id:crypto.randomUUID(),requestId,kind:to,actor:actor.trim(),at,note:note?.trim()||undefined},...current]);
     return {ok:true,id:requestId};
-  }
+  },[requests]);
 
   const value=useMemo<PurchaseRequestStore>(()=>({
     requests,events,ready,
@@ -97,9 +97,7 @@ export function PurchaseRequestStoreProvider({children}:{children:ReactNode}){
       setEvents((current)=>[{id:crypto.randomUUID(),requestId:request.id,kind:"fulfilled",actor:payload.actor.trim(),at,note:payload.note?.trim()||undefined,expenseId:expenseResult.id,actualAmountCop:payload.actualAmountCop},...current]);
       return {ok:true,id:expenseResult.id};
     },
-  // transition is intentionally only used inside the guarded public actions above.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }),[requests,events,ready,recordExpense]);
+  }),[requests,events,ready,recordExpense,transition]);
 
   return <PurchaseRequestContext.Provider value={value}>{children}</PurchaseRequestContext.Provider>;
 }
