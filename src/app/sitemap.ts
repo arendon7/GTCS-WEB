@@ -13,9 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/wondergreen/cotizador",
     "/municipios",
     "/empresas",
+    "/tecnologia",
     "/proyectos",
     "/proyectos/yarumal",
     "/proyectos/tamesis",
+    "/impacto",
     "/contacto",
     "/acceso",
   ];
