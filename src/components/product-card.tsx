@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProductVisual } from "@/components/product-visual";
 import type { Product } from "@/data/products";
 
 function cop(value: number) {
@@ -16,7 +17,7 @@ export function ProductCard({ product }: { product: Product }) {
         <span className="eyebrow">{product.family} · {product.format}</span>
         <span className="product-pill">{product.presentation}</span>
       </div>
-      <div className="product-orb" aria-hidden="true"><span>{product.family}</span></div>
+      <ProductVisual product={product} context="card" />
       <h3>{product.name}</h3>
       <p>{product.stage}</p>
       {product.formula ? <span className="formula">{product.formula}</span> : null}
