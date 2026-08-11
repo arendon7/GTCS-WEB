@@ -10,6 +10,7 @@ export type ImportIssueCode =
   | "MASS_NON_POSITIVE"
   | "UNIT_CONVERTED_TON_TO_KG"
   | "UNIT_AMBIGUOUS"
+  | "REJECTION_UNQUANTIFIED"
   | "PLANT_UNKNOWN"
   | "DUPLICATE_EXACT";
 
@@ -23,6 +24,8 @@ export type LegacyReceiptRow = {
   netWeight: number;
   massUnit: string;
   rejectionKg?: number;
+  rejectionKnown?: boolean;
+  timePrecision?: "datetime" | "date_only";
 };
 
 export type LegacyLogRow = {
@@ -61,6 +64,8 @@ export type StagedReceipt = {
   wasteType: string;
   netWeightKg?: number;
   rejectionKg: number;
+  rejectionKnown: boolean;
+  timePrecision: "datetime" | "date_only";
   raw: LegacyReceiptRow;
 };
 
@@ -147,7 +152,8 @@ function receiptFingerprint(row: LegacyReceiptRow) {
     normalizeText(row.wasteType).toLocaleLowerCase("es-CO"),
     row.netWeight,
     normalizeText(row.massUnit).toLocaleLowerCase("es-CO"),
-    row.rejectionKg ?? 0,
+    row.rejectionKg ?? null,
+    row.rejectionKnown ?? row.rejectionKg !== undefined,
   ]);
 }
 
@@ -162,9 +168,7 @@ function logFingerprint(row: LegacyLogRow) {
   ]);
 }
 
-function pushIssue(issues: ImportIssue[], issue: ImportIssue) {
-  issues.push(issue);
-}
+function pushIssue(issues: ImportIssue[], issue: ImportIssue) { issues.push(issue); }
 
 function finalStatus(hasError: boolean, hasWarning: boolean): ImportRowStatus {
   if (hasError) return "quarantined";
@@ -202,10 +206,12 @@ export function dryRunLegacyImport(payload: LegacyImportPayload, sourceHash: str
   const logFingerprints = new Set<string>();
 
   const receipts: StagedReceipt[] = payload.receipts.map((raw) => {
+    const rejectionKnown = raw.rejectionKnown ?? raw.rejectionKg !== undefined;
+    const timePrecision = raw.timePrecision ?? "datetime";
     const fingerprint = receiptFingerprint(raw);
     if (receiptFingerprints.has(fingerprint)) {
       pushIssue(issues, { rowId: raw.rowId, code: "DUPLICATE_EXACT", field: "row", severity: "warning", detail: "La fila repite exactamente una recepción ya vista en esta fuente." });
-      return { rowId: raw.rowId, status: "duplicate", generator: raw.generator, route: raw.route, wasteType: raw.wasteType, rejectionKg: raw.rejectionKg ?? 0, raw };
+      return { rowId: raw.rowId, status: "duplicate", generator: raw.generator, route: raw.route, wasteType: raw.wasteType, rejectionKg: raw.rejectionKg ?? 0, rejectionKnown, timePrecision, raw };
     }
     receiptFingerprints.add(fingerprint);
 
@@ -239,6 +245,11 @@ export function dryRunLegacyImport(payload: LegacyImportPayload, sourceHash: str
       pushIssue(issues, { rowId: raw.rowId, code: "UNIT_AMBIGUOUS", field: "massUnit", severity: "error", sourceValue: raw.massUnit, detail: "La unidad de masa no es inequívoca y no se convierte automáticamente." });
     }
 
+    if (!rejectionKnown) {
+      hasWarning = true;
+      pushIssue(issues, { rowId: raw.rowId, code: "REJECTION_UNQUANTIFIED", field: "rejectionKg", severity: "warning", detail: "La fuente describe rechazo pero no aporta una masa cuantificable en kg; se conserva como desconocida, no como cero observado." });
+    }
+
     return {
       rowId: raw.rowId,
       status: finalStatus(hasError, hasWarning),
@@ -250,6 +261,8 @@ export function dryRunLegacyImport(payload: LegacyImportPayload, sourceHash: str
       wasteType: normalizeText(raw.wasteType),
       netWeightKg,
       rejectionKg: raw.rejectionKg ?? 0,
+      rejectionKnown,
+      timePrecision,
       raw,
     };
   });
@@ -343,8 +356,14 @@ export function dryRunLegacyImport(payload: LegacyImportPayload, sourceHash: str
   };
 }
 
-export async function sha256Text(value: string) {
-  const bytes = new TextEncoder().encode(value);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
+export async function sha256Bytes(value: ArrayBuffer | Uint8Array) {
+  const source = value instanceof Uint8Array ? value : new Uint8Array(value);
+  const owned = new Uint8Array(source.byteLength);
+  owned.set(source);
+  const digest = await crypto.subtle.digest("SHA-256", owned.buffer);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+export async function sha256Text(value: string) {
+  return sha256Bytes(new TextEncoder().encode(value));
 }

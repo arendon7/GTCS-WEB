@@ -86,13 +86,14 @@ export function buildCanonicalPromotion(run: ImportRun): CanonicalPromotion {
       wasteType: canonicalWaste,
       netWeightKg: row.netWeightKg,
       rejectionKg: row.rejectionKg,
+      rejectionKnown: row.rejectionKnown,
       acceptance: "unknown",
-      observation: "Registro histórico importado. Estado de aceptación no disponible en la fuente.",
+      observation: row.rejectionKnown ? "Registro histórico importado. Estado de aceptación no disponible en la fuente." : "Registro histórico importado. Estado de aceptación y masa de rechazo no disponibles en la fuente.",
       startedAt: row.date,
       endedAt: row.date,
       lotCode: `HIST-${plantPrefix(row.plantId)}-${canonicalWaste}-${compactDate(row.date)}-${rowSlug}`,
       source: "historical",
-      timePrecision: "datetime",
+      timePrecision: row.timePrecision,
       provenance: { importRunId: run.id, sourceName: run.sourceName, sourceRowIds: [row.rowId] },
     });
   }

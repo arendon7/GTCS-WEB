@@ -54,6 +54,7 @@ export type ReceptionRecord = {
   wasteType: WasteType;
   netWeightKg: number;
   rejectionKg: number;
+  rejectionKnown?: boolean;
   acceptance: AcceptanceStatus;
   observation?: string;
   startedAt: string;
