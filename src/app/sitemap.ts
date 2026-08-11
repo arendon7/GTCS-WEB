@@ -11,7 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/nosotros",
     "/diagnostico",
     "/biblioteca",
-    "/biblioteca/manual-uso-wondergreen",
     "/biblioteca/catalogo-wondergreen",
     "/biblioteca/pastos-gramineas",
     "/biblioteca/huertas",
