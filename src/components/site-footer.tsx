@@ -20,10 +20,12 @@ export function SiteFooter() {
           <strong>Explora</strong>
           <Link href="/wondergreen/">Wondergreen</Link>
           <Link href="/municipios/">Municipios y ESP</Link>
-          <Link href="/contacto/">Contacto</Link>
+          <Link href="/empresas/">Empresas</Link>
+          <Link href="/proyectos/">Proyectos</Link>
         </div>
         <div>
           <strong>Plataforma</strong>
+          <Link href="/contacto/">Contacto</Link>
           <Link href="/acceso/">Acceso Greenatics</Link>
           <span>Medellín · Colombia</span>
         </div>
