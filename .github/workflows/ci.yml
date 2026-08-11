@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,3 +18,18 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: npm run audit:static
+      - name: Install Chromium for visual QA
+        run: npx playwright install --with-deps chromium
+      - name: Run desktop and mobile visual smoke
+        run: npm run test:visual
+      - name: Upload visual QA artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: greenatics-public-web-visual-qa
+          path: |
+            qa-screenshots/
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
+          retention-days: 14
