@@ -18,7 +18,7 @@ async function receiveMelaza(page:Page,quantity:string){
   await page.getByLabel("Unidad").selectOption("kg");
   await page.getByLabel("Cantidad medida").fill(quantity);
   await page.getByLabel("Fecha de recepción").fill("2026-08-11");
-  await page.getByLabel(/Compra real relacionada/).selectOption({label:/Proveedor Insumos QA · Compra melaza QA/});
+  await page.getByLabel(/Compra real relacionada/).selectOption({label:"2026-08-11 · Proveedor Insumos QA · Compra melaza QA"});
   await page.getByRole("button",{name:"Registrar recepción física"}).click();
   await expect(page).toHaveURL(/\/supplies$/);
 }
@@ -33,7 +33,6 @@ test("financial purchase can have measured physical receipts and stock only refl
   await expect(stock).toContainText("100 kg");
   await expect(stock).toContainText("2 lotes con saldo");
   await expect(stock).not.toContainText("185000");
-  await expect(page.getByText("2").filter({visible:true}).first()).toBeVisible();
 });
 
 test("consumption reduces an exact supply lot and blocks over-consumption",async({page})=>{
