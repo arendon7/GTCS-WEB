@@ -1,5 +1,6 @@
 create schema if not exists private;
 revoke all on schema private from public, anon, authenticated;
+grant usage on schema private to authenticated;
 
 do $$ begin
   alter table equipment add column if not exists area text;
@@ -60,10 +61,34 @@ as $$
   );
 $$;
 
+create or replace function private.sync_equipment_status_from_ticket()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.status = 'open' then
+    update public.equipment set status = 'stopped' where id = new.equipment_id;
+  elsif new.status = 'repairing' then
+    update public.equipment set status = 'maintenance' where id = new.equipment_id;
+  elsif new.status = 'closed' then
+    update public.equipment set status = 'available' where id = new.equipment_id;
+  end if;
+  return new;
+end;
+$$;
+
 revoke all on function private.has_plant_access(uuid) from public;
 revoke all on function private.has_plant_role(uuid, text[]) from public;
+revoke all on function private.sync_equipment_status_from_ticket() from public;
 grant execute on function private.has_plant_access(uuid) to authenticated;
 grant execute on function private.has_plant_role(uuid, text[]) to authenticated;
+
+drop trigger if exists maintenance_ticket_sync_equipment_status on maintenance_tickets;
+create trigger maintenance_ticket_sync_equipment_status
+after insert or update of status on maintenance_tickets
+for each row execute function private.sync_equipment_status_from_ticket();
 
 alter table profiles enable row level security;
 alter table plant_memberships enable row level security;
@@ -94,12 +119,14 @@ using ((select private.has_plant_role(id, array['admin','director'])))
 with check ((select private.has_plant_role(id, array['admin','director'])));
 
 create policy "employees_member_select" on employees for select to authenticated using ((select private.has_plant_access(plant_id)));
-create policy "employees_supervisor_write" on employees for all to authenticated
+create policy "employees_supervisor_insert" on employees for insert to authenticated
+with check ((select private.has_plant_role(plant_id, array['supervisor','admin','director'])));
+create policy "employees_supervisor_update" on employees for update to authenticated
 using ((select private.has_plant_role(plant_id, array['supervisor','admin','director'])))
 with check ((select private.has_plant_role(plant_id, array['supervisor','admin','director'])));
 
 create policy "scheduled_member_select" on scheduled_activities for select to authenticated using ((select private.has_plant_access(plant_id)));
-create policy "scheduled_planner_write" on scheduled_activities for insert to authenticated
+create policy "scheduled_planner_insert" on scheduled_activities for insert to authenticated
 with check ((select private.has_plant_role(plant_id, array['supervisor','technical','admin','director'])));
 create policy "scheduled_planner_update" on scheduled_activities for update to authenticated
 using ((select private.has_plant_role(plant_id, array['supervisor','technical','admin','director'])))
@@ -143,4 +170,4 @@ create policy "maintenance_repair_update" on maintenance_tickets for update to a
 using ((select private.has_plant_role(plant_id, array['maintenance','supervisor','technical','admin','director'])))
 with check ((select private.has_plant_role(plant_id, array['maintenance','supervisor','technical','admin','director'])));
 
--- Deletes are intentionally not granted for operational records. Corrections should be auditable updates/versioned actions.
+-- Operational tables deliberately have no DELETE policies. Corrections remain auditable updates/versioned actions.
