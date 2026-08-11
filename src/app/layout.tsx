@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./commerce.css";
 import "./brand.css";
@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: "Greenatics",
   category: "environment",
+  icons: { icon: "/brand/greenatics-symbol.svg" },
+  manifest: "/manifest.webmanifest",
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
@@ -35,6 +37,11 @@ export const metadata: Metadata = {
     title: "Greenatics | Transformamos residuos en vida",
     description: site.description,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#008b4c",
+  colorScheme: "light",
 };
 
 const organizationSchema = {
