@@ -5,6 +5,7 @@ import { expect, test } from "@playwright/test";
 const routes = [
   ["home", "/"],
   ["wondergreen", "/wondergreen/"],
+  ["wondergreen-hogar", "/wondergreen/hogar/"],
   ["cultivos", "/wondergreen/cultivos/"],
   ["cafe", "/wondergreen/cultivos/cafe/"],
   ["cotizador", "/wondergreen/cotizador/"],
@@ -16,11 +17,22 @@ const routes = [
   ["yarumal", "/proyectos/yarumal/"],
   ["impacto", "/impacto/"],
   ["biblioteca", "/biblioteca/"],
+  ["guia-deficiencias", "/biblioteca/guia-deficiencias/"],
+  ["catalogo-wondergreen", "/biblioteca/catalogo-wondergreen/"],
+  ["pastos-gramineas", "/biblioteca/pastos-gramineas/"],
+  ["huertas", "/biblioteca/huertas/"],
   ["nosotros", "/nosotros/"],
   ["diagnostico", "/diagnostico/"],
 ] as const;
 
-const screenshotRoutes = new Set(["home", "wondergreen", "yarumal", "biblioteca"]);
+const screenshotRoutes = new Set([
+  "home",
+  "wondergreen",
+  "wondergreen-hogar",
+  "yarumal",
+  "biblioteca",
+  "guia-deficiencias",
+]);
 
 for (const [slug, route] of routes) {
   test(`${slug} renders without visual/runtime regressions`, async ({ page }, testInfo) => {
@@ -40,6 +52,9 @@ for (const [slug, route] of routes) {
 
     const headerLogo = page.locator("header img[alt='Greenatics']");
     await expect(headerLogo).toBeVisible();
+    const logoBox = await headerLogo.boundingBox();
+    expect(logoBox?.width ?? 0, `${route} Greenatics logo must retain a useful rendered width`).toBeGreaterThanOrEqual(135);
+
     const logoGreenPixelRatio = await headerLogo.evaluate((image) => {
       const img = image as HTMLImageElement;
       const canvas = document.createElement("canvas");
