@@ -24,7 +24,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
 
   const sourceReceipts = receptions.filter((reception)=>pile.sourceReceiptIds.includes(reception.id));
   const latest = pileMeasurements[0];
-  const saveMeasurement = () => { const parsedTemps = temps.map(Number); const humidityValue = humidity.trim() ? Number(humidity) : undefined; const result = recordMeasurement({ pileId: pile.id, temperaturePointsC: parsedTemps, humidityPct: humidityValue, notes }); if (!result.ok) return setFeedback(result.error); setTemps(["","",""]); setHumidity(""); setNotes(""); setFeedback("Control registrado."); };
+  const saveMeasurement = () => { const parsedTemps = temps.map((value)=>value.trim()==="" ? Number.NaN : Number(value)); const humidityValue = humidity.trim() ? Number(humidity) : undefined; const result = recordMeasurement({ pileId: pile.id, temperaturePointsC: parsedTemps, humidityPct: humidityValue, notes }); if (!result.ok) return setFeedback(result.error); setTemps(["","",""]); setHumidity(""); setNotes(""); setFeedback("Control registrado."); };
   const mature = () => { const result = startMaturation(pile.id); setFeedback(result.ok ? "Pila pasada a maduración." : result.error); };
   const close = () => { const result = closePile(pile.id, Number(finalWeight)); if (!result.ok) return setFeedback(result.error); setFinalWeight(""); setFeedback("Pila cerrada y rendimiento calculado."); };
   const changeTemp = (index:number,value:string) => setTemps((current)=>current.map((item,i)=>i===index?value:item));
