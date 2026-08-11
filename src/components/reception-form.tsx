@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useOpsStore } from "@/components/ops-store";
 import type { AcceptanceStatus, WasteType } from "@/lib/domain";
 
+type ManualAcceptanceStatus = Exclude<AcceptanceStatus, "unknown">;
+
 export function ReceptionForm() {
   const router = useRouter();
   const { createReception } = useOpsStore();
@@ -16,7 +18,7 @@ export function ReceptionForm() {
   const [wasteType, setWasteType] = useState<WasteType>("FORSU");
   const [netWeightKg, setNetWeightKg] = useState("");
   const [rejectionKg, setRejectionKg] = useState("0");
-  const [acceptance, setAcceptance] = useState<AcceptanceStatus>("accepted");
+  const [acceptance, setAcceptance] = useState<ManualAcceptanceStatus>("accepted");
   const [observation, setObservation] = useState("");
   const [feedback, setFeedback] = useState("");
 
@@ -43,7 +45,7 @@ export function ReceptionForm() {
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Peso neto (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={netWeightKg} onChange={(e)=>setNetWeightKg(e.target.value)} placeholder="Ej. 1840"/></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Rechazo (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={rejectionKg} onChange={(e)=>setRejectionKg(e.target.value)} placeholder="0"/></label>
       <div className="rounded-xl bg-[var(--surface-soft)] p-4"><span className="quiet">Calidad de separación</span><strong className="mt-1 block text-2xl">{rejectionPct === null ? "—" : `${rejectionPct.toFixed(1)} %`}</strong><span className="mt-1 block text-xs text-[var(--muted)]">rechazo sobre peso neto</span></div>
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Estado de aceptación<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={acceptance} onChange={(e)=>setAcceptance(e.target.value as AcceptanceStatus)}><option value="accepted">Aceptado</option><option value="conditioned">Aceptado condicionado</option><option value="rejected">Rechazado</option></select></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Estado de aceptación<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={acceptance} onChange={(e)=>setAcceptance(e.target.value as ManualAcceptanceStatus)}><option value="accepted">Aceptado</option><option value="conditioned">Aceptado condicionado</option><option value="rejected">Rechazado</option></select></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Observación <span className="font-normal">(opcional)</span><textarea className="min-h-24 rounded-lg border border-[var(--line)] p-3 text-sm text-[var(--ink)]" value={observation} onChange={(e)=>setObservation(e.target.value)} placeholder="Solo si hay algo relevante para trazabilidad"/></label>
     </div>
     <div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]"><strong className="text-[var(--ink)]">Evidencia:</strong> el adapter de fotografía/tiquete se conectará a SharePoint o Storage en la siguiente capa de persistencia; este MVP no simula una carga de archivos.</div>
