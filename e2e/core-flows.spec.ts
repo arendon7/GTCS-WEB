@@ -40,7 +40,8 @@ test("maintenance ticket follows stopped to repairing to available", async ({ pa
   await page.goto("/equipment/eq-tam-bp01");
   await expect(page.getByText("Detenido", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Iniciar reparación" }).click();
-  await expect(page.getByText("En reparación", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Cerrar reparación" })).toBeVisible();
+  await expect(page.getByLabel("Causa encontrada")).toBeVisible();
   await page.getByLabel("Causa encontrada").fill("Obstrucción QA");
   await page.getByLabel("Acción realizada").fill("Limpieza y prueba funcional QA");
   await page.getByRole("button", { name: "Cerrar reparación" }).click();
