@@ -3,3 +3,29 @@
   width: max-content;
   max-width: 100%;
 }
+
+.cycle-visual {
+  width: min(100%, 520px);
+}
+
+@media (min-width: 981px) {
+  .library-grid .library-card:only-child {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: .7fr 1.4fr 1.8fr auto;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .library-grid .library-card:only-child .library-card-meta,
+  .library-grid .library-card:only-child h2,
+  .library-grid .library-card:only-child p,
+  .library-grid .library-card:only-child > strong {
+    margin: 0;
+  }
+
+  .library-grid .library-card:only-child > strong {
+    align-self: center;
+    white-space: nowrap;
+  }
+}
