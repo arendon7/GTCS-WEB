@@ -18,15 +18,17 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: npm run audit:static
-      - name: Install Chromium for visual QA
+      - name: Install Chromium for browser QA
         run: npx playwright install --with-deps chromium
       - name: Run desktop and mobile visual smoke
         run: npm run test:visual
-      - name: Upload visual QA artifacts
+      - name: Run accessibility gate
+        run: npm run test:a11y
+      - name: Upload browser QA artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v5
         with:
-          name: greenatics-public-web-visual-qa
+          name: greenatics-public-web-browser-qa
           path: |
             qa-screenshots/
             playwright-report/
