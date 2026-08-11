@@ -78,9 +78,23 @@ export function aggregateSupplyStocks(movements:SupplyMovement[]){
   return [...map.values()].filter((row)=>Math.abs(row.quantity)>1e-9).sort((a,b)=>a.supplyName.localeCompare(b.supplyName,"es"));
 }
 
+export function isIsoCalendarDate(value:string){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+  const [year,month,day]=value.split("-").map(Number);
+  const parsed=new Date(Date.UTC(year,month-1,day));
+  return parsed.getUTCFullYear()===year&&parsed.getUTCMonth()===month-1&&parsed.getUTCDate()===day;
+}
+
 export function validateSupplyReceipt(input:{name:string;quantity:number;receivedOn:string}){
   if(!normalizeSupplyKey(input.name))return {ok:false as const,error:"Indica el insumo recibido."};
   if(!Number.isFinite(input.quantity)||input.quantity<=0)return {ok:false as const,error:"La cantidad recibida debe ser mayor que cero."};
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(input.receivedOn))return {ok:false as const,error:"Indica una fecha de recepción válida."};
+  if(!isIsoCalendarDate(input.receivedOn))return {ok:false as const,error:"Indica una fecha de recepción válida."};
+  return {ok:true as const};
+}
+
+export function validateSupplyConsumption(input:{quantity:number;occurredOn:string;destination:string}){
+  if(!Number.isFinite(input.quantity)||input.quantity<=0)return {ok:false as const,error:"La cantidad consumida debe ser mayor que cero."};
+  if(!isIsoCalendarDate(input.occurredOn))return {ok:false as const,error:"Indica una fecha de consumo válida."};
+  if(!input.destination.trim())return {ok:false as const,error:"Indica el destino o uso del consumo."};
   return {ok:true as const};
 }
