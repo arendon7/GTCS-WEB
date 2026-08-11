@@ -33,18 +33,21 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as { activities?: ActivityRecord[]; incidents?: IncidentRecord[] };
-        if (parsed.activities?.length) setActivities(parsed.activities);
-        if (parsed.incidents) setIncidents(parsed.incidents);
+    const timer = window.setTimeout(() => {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { activities?: ActivityRecord[]; incidents?: IncidentRecord[] };
+          if (parsed.activities?.length) setActivities(parsed.activities);
+          if (parsed.incidents) setIncidents(parsed.incidents);
+        }
+      } catch {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } finally {
+        setReady(true);
       }
-    } catch {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } finally {
-      setReady(true);
-    }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -77,8 +80,9 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       if (payload.quantity !== undefined && (!Number.isFinite(payload.quantity) || payload.quantity <= 0)) return { ok: false, error: "La cantidad debe ser mayor que cero." };
       const actualEnd = new Date().toISOString();
       if (new Date(actualEnd) < new Date(activity.actualStart)) return { ok: false, error: "La hora final no puede ser anterior al inicio." };
-      setActivities((current) => current.map((item) => item.id === id ? { ...item, ...payload, actualEnd, status: "done" } : item));
-      if (payload.openIncident && payload.noveltyType) {
+      const { openIncident, ...activityUpdates } = payload;
+      setActivities((current) => current.map((item) => item.id === id ? { ...item, ...activityUpdates, actualEnd, status: "done" } : item));
+      if (openIncident && payload.noveltyType) {
         const severity = payload.noveltyType === "safety" || payload.noveltyType === "equipment_failure" ? "high" : "medium";
         setIncidents((current) => [{ id: crypto.randomUUID(), activityId: activity.id, plantId: activity.plantId, plant: activity.plant, title: payload.noveltyType === "equipment_failure" ? `Falla reportada · ${activity.title}` : `Novedad · ${activity.title}`, detail: payload.novelty?.trim() || "Novedad reportada durante la actividad.", severity, equipment: activity.equipment, openedAt: actualEnd, status: "open" }, ...current]);
       }
