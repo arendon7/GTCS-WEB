@@ -12,7 +12,6 @@ const seedProducts: ProductMaster[] = [
   { id:"material-estabilizado", name:"Material estabilizado / compost", unit:"kg", active:true, createdAt:"2026-08-11T00:00:00-05:00" },
 ];
 
-type Result = { ok:true } | { ok:false; error:string };
 type DispatchResult = { ok:true; movementId:string } | { ok:false; error:string };
 type CreateProductResult = { ok:true; id:string } | { ok:false; error:string };
 type ProductionResult = { ok:true; id:string; lotCode:string } | { ok:false; error:string };
@@ -29,7 +28,6 @@ type InventoryStore = {
   createProduct:(name:string,unit:InventoryUnit)=>CreateProductResult;
   recordProduction:(payload:NewProduction)=>ProductionResult;
   dispatch:(payload:NewDispatch)=>DispatchResult;
-  resetInventoryDemo:()=>void;
 };
 
 const InventoryContext=createContext<InventoryStore|null>(null);
@@ -116,7 +114,6 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
       setMovements((current)=>[movement,...current]);
       return {ok:true,movementId};
     },
-    resetInventoryDemo(){ setProducts(seedProducts); setProductions([]); setMovements([]); window.localStorage.removeItem(STORAGE_KEY); },
   }),[products,productions,movements,ready,stocks,lots]);
 
   return <InventoryContext.Provider value={value}>{children}</InventoryContext.Provider>;
