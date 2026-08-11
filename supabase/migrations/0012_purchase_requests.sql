@@ -26,7 +26,7 @@ create table if not exists purchase_request_events (
   actor_name text not null check (btrim(actor_name) <> ''),
   actor_user_id uuid references auth.users(id) default auth.uid(),
   note text,
-  expense_id uuid,
+  expense_id uuid references operational_expenses(id),
   actual_amount_cop numeric check (actual_amount_cop is null or actual_amount_cop > 0),
   occurred_at timestamptz not null default now()
 );
@@ -113,7 +113,6 @@ declare
   current_request public.purchase_requests;
   supplier_uuid uuid;
   expense_uuid uuid;
-  supplier_key text;
 begin
   select * into current_request
   from public.purchase_requests
@@ -127,11 +126,10 @@ begin
   if btrim(coalesce(p_supplier_name,'')) = '' then raise exception 'Indica el proveedor real'; end if;
   if p_actual_amount_cop is null or p_actual_amount_cop <= 0 then raise exception 'El monto real debe ser mayor que cero'; end if;
 
-  supplier_key := private.normalize_supplier_name(p_supplier_name);
-  select id into supplier_uuid from public.suppliers where normalized_key = supplier_key;
-  if supplier_uuid is null then
-    insert into public.suppliers(name,created_by) values(btrim(p_supplier_name),auth.uid()) returning id into supplier_uuid;
-  end if;
+  insert into public.suppliers(name,created_by)
+  values(btrim(p_supplier_name),auth.uid())
+  on conflict (normalized_key) do update set name = public.suppliers.name
+  returning id into supplier_uuid;
 
   insert into public.operational_expenses(
     plant_id,record_type,supplier_id,category,concept,amount_cop,document_date,document_ref,
@@ -153,10 +151,45 @@ begin
 end;
 $$;
 
+create or replace function public.decide_purchase_request(
+  p_request_id uuid,
+  p_decision text,
+  p_actor_name text,
+  p_note text default null
+)
+returns public.purchase_requests
+language sql
+security invoker
+set search_path = ''
+as $$
+  select private.transition_purchase_request(p_request_id,p_decision,p_actor_name,p_note);
+$$;
+
+create or replace function public.fulfill_purchase_request(
+  p_request_id uuid,
+  p_actor_name text,
+  p_supplier_name text,
+  p_actual_amount_cop numeric,
+  p_document_date date,
+  p_document_ref text default null,
+  p_note text default null
+)
+returns uuid
+language sql
+security invoker
+set search_path = ''
+as $$
+  select private.fulfill_purchase_request(p_request_id,p_actor_name,p_supplier_name,p_actual_amount_cop,p_document_date,p_document_ref,p_note);
+$$;
+
 revoke all on function private.transition_purchase_request(uuid,text,text,text) from public;
 revoke all on function private.fulfill_purchase_request(uuid,text,text,numeric,date,text,text) from public;
+revoke all on function public.decide_purchase_request(uuid,text,text,text) from public, anon;
+revoke all on function public.fulfill_purchase_request(uuid,text,text,numeric,date,text,text) from public, anon;
 grant execute on function private.transition_purchase_request(uuid,text,text,text) to authenticated;
 grant execute on function private.fulfill_purchase_request(uuid,text,text,numeric,date,text,text) to authenticated;
+grant execute on function public.decide_purchase_request(uuid,text,text,text) to authenticated;
+grant execute on function public.fulfill_purchase_request(uuid,text,text,numeric,date,text,text) to authenticated;
 
 alter table purchase_requests enable row level security;
 alter table purchase_request_events enable row level security;
@@ -173,7 +206,8 @@ using (exists (
   where pr.id=request_id and private.has_plant_access(pr.plant_id)
 ));
 
--- No direct UPDATE/DELETE policies. Decisions and fulfillment occur only through guarded functions.
+-- No direct UPDATE/DELETE policies. Decisions and fulfillment occur only through guarded RPCs.
 -- Estimated request amount is never copied as actual spend; fulfillment requires an explicit actual amount.
 -- Fulfillment creates the actual operational expense atomically and only then marks the request fulfilled.
+-- Supplier creation/reuse is concurrency-safe through the normalized unique key.
 -- No inventory movement is created by this workflow.
