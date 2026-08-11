@@ -11,6 +11,7 @@ export const primaryNav = [
   { href: "/wondergreen/", label: "Wondergreen" },
   { href: "/municipios/", label: "Municipios y ESP" },
   { href: "/empresas/", label: "Empresas" },
+  { href: "/tecnologia/", label: "Tecnología" },
   { href: "/proyectos/", label: "Proyectos" },
-  { href: "/#impacto", label: "Impacto" },
+  { href: "/impacto/", label: "Impacto" },
 ];
