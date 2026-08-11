@@ -4,9 +4,11 @@ create table if not exists inventory_products (
   unit text not null check (unit in ('kg','L','unidades')),
   active boolean not null default true,
   created_by uuid references auth.users(id) default auth.uid(),
-  created_at timestamptz not null default now(),
-  unique (lower(name), unit)
+  created_at timestamptz not null default now()
 );
+
+create unique index if not exists inventory_products_name_unit_uidx
+  on inventory_products(lower(name), unit);
 
 create table if not exists production_records (
   id uuid primary key default gen_random_uuid(),
