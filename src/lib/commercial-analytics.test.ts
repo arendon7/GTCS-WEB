@@ -36,6 +36,6 @@ describe("commercial analytics", () => {
     expect(result.customers[0].label).toBe("Cliente Uno");
     expect(result.customers[0].grossCop).toBe(164000);
     expect(result.customers[0].quantities).toEqual([{unit:"kg",quantity:80}]);
-    expect(result.products.find((item)=>item.productId==="solid")?.grossCop).toBe(164000);
+    expect(result.products.find((item)=>item.id==="solid")?.grossCop).toBe(164000);
   });
 });
