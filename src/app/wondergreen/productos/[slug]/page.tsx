@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { JsonLd } from "@/components/json-ld";
+import { ProductVisual } from "@/components/product-visual";
 import { getProduct, products } from "@/data/products";
 import { site } from "@/data/site";
 
@@ -66,7 +67,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         { name: product.name, url: productUrl },
       ]} />
       <div className="container product-detail-grid">
-        <div className={`product-stage family-${product.family.toLowerCase()}`}><span>{product.family}</span><strong>{product.format}</strong><em>{product.formula || "Materia orgánica"}</em></div>
+        <ProductVisual product={product} context="detail" />
         <div className="product-info">
           <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
           <span className="eyebrow">{product.family} · {product.stage}</span>
