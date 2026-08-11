@@ -57,6 +57,28 @@
 .contact-prep-grid ul { margin: 0; padding-left: 18px; color: var(--muted); }
 .contact-prep-grid li { margin: 7px 0; }
 
+.not-found-page {
+  min-height: 68vh;
+  display: grid;
+  place-items: center;
+  padding: 90px 0;
+  background: radial-gradient(circle at 70% 20%, rgba(152,207,79,.22), transparent 28%), #f8fbf5;
+}
+
+.not-found-card {
+  max-width: 760px;
+  text-align: center;
+}
+
+.not-found-card > img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  margin-bottom: 26px;
+}
+
+.not-found-card .button-row { justify-content: center; }
+
 @media (min-width: 981px) {
   .header-inner { gap: 18px; }
   .desktop-nav { gap: 18px; }
@@ -99,4 +121,5 @@
   }
   .contact-prep-section { padding: 72px 0; }
   .contact-prep-grid article { padding: 24px; }
+  .not-found-page { padding: 70px 0; }
 }
