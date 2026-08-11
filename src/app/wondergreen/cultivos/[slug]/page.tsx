@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { crops, getCrop } from "@/data/crops";
+import { site } from "@/data/site";
 
 export function generateStaticParams() {
   return crops.map((crop) => ({ slug: crop.slug }));
@@ -11,9 +13,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const crop = getCrop(slug);
   if (!crop) return {};
+  const canonical = `/wondergreen/cultivos/${crop.slug}/`;
+  const description = `${crop.headline} Guía orientativa por etapa y objetivo agronómico.`;
   return {
     title: `Wondergreen para ${crop.name}`,
-    description: `${crop.headline} Guía orientativa por etapa y objetivo agronómico.`,
+    description,
+    alternates: { canonical },
+    openGraph: { title: `Wondergreen para ${crop.name}`, description, url: canonical },
   };
 }
 
@@ -22,8 +28,16 @@ export default async function CropPage({ params }: { params: Promise<{ slug: str
   const crop = getCrop(slug);
   if (!crop) notFound();
 
+  const cropUrl = `${site.url}/wondergreen/cultivos/${crop.slug}/`;
+
   return (
     <>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", url: `${site.url}/` },
+        { name: "Wondergreen", url: `${site.url}/wondergreen/` },
+        { name: "Cultivos", url: `${site.url}/wondergreen/cultivos/` },
+        { name: crop.name, url: cropUrl },
+      ]} />
       <section className="crop-detail-hero">
         <div className="container crop-detail-grid">
           <div>
