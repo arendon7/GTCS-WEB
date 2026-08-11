@@ -8,7 +8,24 @@
   width: min(100%, 520px);
 }
 
+.site-header .brand-link {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  min-width: 172px;
+}
+
+.site-header .greenatics-header-logo {
+  display: block;
+  width: 172px;
+  min-width: 172px;
+  max-width: 172px;
+}
+
 @media (min-width: 981px) {
+  .header-inner { gap: 18px; }
+  .desktop-nav { gap: 18px; }
+
   .library-grid:has(> .library-card:only-child) {
     grid-template-columns: 1fr;
   }
@@ -31,5 +48,14 @@
   .library-grid .library-card:only-child > strong {
     align-self: center;
     white-space: nowrap;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-header .brand-link { min-width: 142px; }
+  .site-header .greenatics-header-logo {
+    width: 142px;
+    min-width: 142px;
+    max-width: 142px;
   }
 }
