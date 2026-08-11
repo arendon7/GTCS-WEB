@@ -12,6 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/wondergreen/cultivos",
     "/wondergreen/cotizador",
     "/municipios",
+    "/empresas",
+    "/proyectos",
+    "/proyectos/yarumal",
+    "/proyectos/tamesis",
     "/contacto",
     "/acceso",
   ];
