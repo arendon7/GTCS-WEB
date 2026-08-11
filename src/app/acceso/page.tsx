@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Acceso Greenatics" };
+export const metadata: Metadata = {
+  title: "Acceso Greenatics",
+  description: "Puerta de acceso a GREENATICS OPS, la aplicación autenticada de operación interna.",
+  robots: { index: false, follow: false },
+};
 
 export default function AccessPage() {
   return (
