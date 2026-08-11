@@ -1,14 +1,23 @@
 export type LibraryResource = {
   slug: string;
-  category: "Cultivos" | "Tecnología" | "Operación" | "Impacto" | "Comercial";
+  category: "Cultivos" | "Hogar" | "Tecnología" | "Operación" | "Impacto" | "Comercial";
   title: string;
   summary: string;
   href: string;
-  format: "Guía web" | "Caso" | "Metodología" | "Herramienta";
+  format: "Guía web" | "Catálogo web" | "Caso" | "Metodología" | "Herramienta" | "Línea";
   status: "publicado" | "en-validacion";
 };
 
 export const libraryResources: LibraryResource[] = [
+  {
+    slug: "guia-deficiencias",
+    category: "Cultivos",
+    title: "Guía práctica para identificar deficiencias nutricionales",
+    summary: "Diagnóstico visual inicial para aguacate, cacao, café, pastos y limón Tahití, con filtros para no confundir síntomas con otros problemas del lote.",
+    href: "/biblioteca/guia-deficiencias/",
+    format: "Guía web",
+    status: "publicado",
+  },
   {
     slug: "cacao",
     category: "Cultivos",
@@ -48,10 +57,55 @@ export const libraryResources: LibraryResource[] = [
   {
     slug: "pastos-gramineas",
     category: "Cultivos",
-    title: "Programa orientativo para pastos y gramíneas",
-    summary: "Ruta enfocada en rebrote, biomasa, recuperación y soporte orgánico del suelo.",
+    title: "Nutrición regenerativa para pastos y gramíneas",
+    summary: "Mini catálogo técnico enfocado en biomasa, rebrote, recuperación del potrero, suelo y acompañamiento por lote.",
+    href: "/biblioteca/pastos-gramineas/",
+    format: "Catálogo web",
+    status: "publicado",
+  },
+  {
+    slug: "pastos-programa",
+    category: "Cultivos",
+    title: "Programa orientativo Wondergreen para pastos y gramíneas",
+    summary: "Ruta corta por lluvia, crecimiento activo, rebrote, sostenimiento y recuperación de suelo.",
     href: "/wondergreen/cultivos/pastos-gramineas/",
     format: "Guía web",
+    status: "publicado",
+  },
+  {
+    slug: "huertas",
+    category: "Hogar",
+    title: "Guía para huertas urbanas, escolares y comunitarias",
+    summary: "Ruta desde espacio, suelo y establecimiento hasta seguimiento, cosecha y aprendizaje circular, sin recetas universales.",
+    href: "/biblioteca/huertas/",
+    format: "Guía web",
+    status: "publicado",
+  },
+  {
+    slug: "wondergreen-hogar",
+    category: "Hogar",
+    title: "Wondergreen Nutrients Hogar",
+    summary: "Kits de cultivo para uso práctico en casa, matera y huerta urbana, organizados por objetivo y etapa.",
+    href: "/wondergreen/hogar/",
+    format: "Línea",
+    status: "en-validacion",
+  },
+  {
+    slug: "catalogo-wondergreen",
+    category: "Comercial",
+    title: "Catálogo técnico-comercial Wondergreen",
+    summary: "El portafolio como sistema: objetivo → etapa → familia → formato → validación técnica antes de comprar.",
+    href: "/biblioteca/catalogo-wondergreen/",
+    format: "Catálogo web",
+    status: "publicado",
+  },
+  {
+    slug: "cotizador-wondergreen",
+    category: "Comercial",
+    title: "Cotizador de catálogo Wondergreen",
+    summary: "Herramienta de estimación con precios de catálogo vigentes, sin confirmar inventario, logística ni prescripción técnica.",
+    href: "/wondergreen/cotizador/",
+    format: "Herramienta",
     status: "publicado",
   },
   {
@@ -79,15 +133,6 @@ export const libraryResources: LibraryResource[] = [
     summary: "Contrato de publicación que separa datos internos, conciliados y aprobados antes de mostrarlos públicamente.",
     href: "/impacto/",
     format: "Metodología",
-    status: "publicado",
-  },
-  {
-    slug: "cotizador-wondergreen",
-    category: "Comercial",
-    title: "Cotizador de catálogo Wondergreen",
-    summary: "Herramienta de estimación con precios de catálogo vigentes, sin confirmar inventario, logística ni prescripción técnica.",
-    href: "/wondergreen/cotizador/",
-    format: "Herramienta",
     status: "publicado",
   },
 ];
