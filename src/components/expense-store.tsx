@@ -47,6 +47,7 @@ export function ExpenseStoreProvider({children}:{children:ReactNode}){
     recordExpense(payload){
       const validation=validateOperationalExpense(payload);
       if(!validation.ok)return validation;
+      if(payload.purchaseRequestId&&expenses.some((item)=>item.purchaseRequestId===payload.purchaseRequestId))return {ok:false,error:"Esta solicitud de compra ya tiene un gasto real vinculado."};
       const normalizedKey=normalizeSupplierKey(payload.supplierName);
       const existing=suppliers.find((item)=>item.normalizedKey===normalizedKey);
       const supplier:SupplierRecord=existing??{
@@ -72,6 +73,7 @@ export function ExpenseStoreProvider({children}:{children:ReactNode}){
         equipmentName:payload.equipmentName?.trim()||undefined,
         processRef:payload.processRef?.trim()||undefined,
         evidenceRef:payload.evidenceRef?.trim()||undefined,
+        purchaseRequestId:payload.purchaseRequestId||undefined,
         note:payload.note?.trim()||undefined,
         recordedAt:new Date().toISOString(),
       };
