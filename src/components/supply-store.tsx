@@ -2,7 +2,7 @@
 
 import { createContext,useContext,useEffect,useMemo,useState,type ReactNode } from "react";
 import { useExpenseStore } from "@/components/expense-store";
-import { aggregateSupplyStocks,normalizeSupplyKey,supplyIdFromKey,supplyLotStocks,supplyStockForLot,validateSupplyReceipt,type SupplyCategory,type SupplyMaster,type SupplyMovement,type SupplyReceipt } from "@/lib/supply-domain";
+import { aggregateSupplyStocks,normalizeSupplyKey,supplyIdFromKey,supplyLotStocks,supplyStockForLot,validateSupplyConsumption,validateSupplyReceipt,type SupplyCategory,type SupplyMaster,type SupplyMovement,type SupplyReceipt } from "@/lib/supply-domain";
 import type { InventoryUnit } from "@/lib/inventory-domain";
 
 const STORAGE_KEY="greenatics-ops-supplies-mvp-014";
@@ -28,7 +28,10 @@ export function SupplyStoreProvider({children}:{children:ReactNode}){
   const value=useMemo<Store>(()=>({supplies,receipts,movements,stocks,lots,ready,
     receiveSupply(input){
       const validation=validateSupplyReceipt({name:input.supplyName,quantity:input.quantity,receivedOn:input.receivedOn});if(!validation.ok)return validation;
-      if(input.expenseId&&!expenses.some((e)=>e.id===input.expenseId))return {ok:false,error:"La compra/gasto enlazado no existe."};
+      const linkedExpense=input.expenseId?expenses.find((e)=>e.id===input.expenseId):undefined;
+      if(input.expenseId&&!linkedExpense)return {ok:false,error:"La compra/gasto enlazado no existe."};
+      if(linkedExpense&&linkedExpense.plantId!==input.plantId)return {ok:false,error:"La compra/gasto pertenece a otra planta."};
+      if(linkedExpense&&linkedExpense.recordType!=="purchase")return {ok:false,error:"Solo una compra real puede enlazarse a recepción física."};
       const key=normalizeSupplyKey(input.supplyName);const existing=supplies.find((s)=>s.normalizedKey===key&&s.unit===input.unit);
       if(existing&&(existing.category!==input.category))return {ok:false,error:"El insumo ya existe con otra categoría; revisa el maestro antes de recibir."};
       const supply:SupplyMaster=existing??{id:supplyIdFromKey(`${key}-${input.unit.toLocaleLowerCase("es-CO")}`),name:input.supplyName.trim().replace(/\s+/g," "),normalizedKey:key,category:input.category,unit:input.unit,active:true,createdAt:new Date().toISOString()};
@@ -39,8 +42,7 @@ export function SupplyStoreProvider({children}:{children:ReactNode}){
     },
     consumeSupply(input){
       const supply=supplies.find((s)=>s.id===input.supplyId&&s.active);if(!supply)return {ok:false,error:"Insumo no encontrado."};
-      if(!Number.isFinite(input.quantity)||input.quantity<=0)return {ok:false,error:"La cantidad consumida debe ser mayor que cero."};
-      if(!input.destination.trim())return {ok:false,error:"Indica el destino o uso del consumo."};
+      const validation=validateSupplyConsumption({quantity:input.quantity,occurredOn:input.occurredOn,destination:input.destination});if(!validation.ok)return validation;
       const available=supplyStockForLot(movements,input.plantId,input.supplyId,input.lotCode);if(input.quantity>available+1e-9)return {ok:false,error:`Stock insuficiente en ${input.lotCode}. Disponible: ${available.toLocaleString("es-CO")} ${supply.unit}.`};
       const id=crypto.randomUUID();setMovements((current)=>[{id,plantId:input.plantId,plant:plantName(input.plantId),supplyId:supply.id,supplyName:supply.name,category:supply.category,unit:supply.unit,lotCode:input.lotCode,kind:"consumption",quantity:input.quantity,occurredOn:input.occurredOn,destination:input.destination.trim(),equipmentId:input.equipmentId||undefined,processRef:input.processRef?.trim()||undefined,note:input.note?.trim()||undefined,recordedAt:new Date().toISOString()},...current]);return {ok:true,id};
     }
