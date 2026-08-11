@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { JsonLd } from "@/components/json-ld";
 import { getProduct, products } from "@/data/products";
 import { site } from "@/data/site";
@@ -59,6 +60,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <section className="product-detail">
       <JsonLd data={productSchema} />
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", url: `${site.url}/` },
+        { name: "Wondergreen", url: `${site.url}/wondergreen/` },
+        { name: product.name, url: productUrl },
+      ]} />
       <div className="container product-detail-grid">
         <div className={`product-stage family-${product.family.toLowerCase()}`}><span>{product.family}</span><strong>{product.format}</strong><em>{product.formula || "Materia orgánica"}</em></div>
         <div className="product-info">
