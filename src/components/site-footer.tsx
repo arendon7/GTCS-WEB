@@ -17,6 +17,7 @@ export function SiteFooter() {
           <Link href="/tecnologia/">Tecnología</Link>
           <Link href="/proyectos/">Proyectos</Link>
           <Link href="/impacto/">Impacto</Link>
+          <Link href="/biblioteca/">Biblioteca técnica</Link>
         </div>
         <div>
           <strong>Plataforma</strong>
