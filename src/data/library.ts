@@ -4,7 +4,7 @@ export type LibraryResource = {
   title: string;
   summary: string;
   href: string;
-  format: "Guía web" | "Catálogo web" | "Caso" | "Metodología" | "Herramienta" | "Línea";
+  format: "Guía web" | "Catálogo web" | "Manual" | "Caso" | "Metodología" | "Herramienta" | "Línea";
   status: "publicado" | "en-validacion";
 };
 
@@ -19,10 +19,19 @@ export const libraryResources: LibraryResource[] = [
     status: "publicado",
   },
   {
+    slug: "manual-uso-wondergreen",
+    category: "Cultivos",
+    title: "Manual de uso en campo Wondergreen",
+    summary: "Checklist previo, vía operativa, reglas generales de aplicación, errores a evitar y seguimiento sin convertir el manual en una receta universal.",
+    href: "/biblioteca/manual-uso-wondergreen/",
+    format: "Manual",
+    status: "publicado",
+  },
+  {
     slug: "cacao",
     category: "Cultivos",
-    title: "Programa orientativo Wondergreen para cacao",
-    summary: "Ruta por establecimiento, formación, floración, llenado y recuperación, con selección por objetivo y etapa.",
+    title: "Programa de campo Wondergreen para cacao",
+    summary: "Establecimiento, formación, floración, llenado y recuperación, con checklist, alertas, aplicación y seguimiento.",
     href: "/wondergreen/cultivos/cacao/",
     format: "Guía web",
     status: "publicado",
@@ -30,8 +39,8 @@ export const libraryResources: LibraryResource[] = [
   {
     slug: "cafe",
     category: "Cultivos",
-    title: "Programa orientativo Wondergreen para café",
-    summary: "Lectura por levante, mantenimiento, floración, llenado y recuperación del cafetal.",
+    title: "Programa de campo Wondergreen para café",
+    summary: "Levante, mantenimiento, floración, llenado y recuperación con lectura de lote y seguimiento operativo.",
     href: "/wondergreen/cultivos/cafe/",
     format: "Guía web",
     status: "publicado",
@@ -39,8 +48,8 @@ export const libraryResources: LibraryResource[] = [
   {
     slug: "aguacate",
     category: "Cultivos",
-    title: "Programa orientativo Wondergreen para aguacate",
-    summary: "Formación, mantenimiento, prefloración, cuajado, llenado y poscosecha bajo criterio agronómico.",
+    title: "Programa de campo Wondergreen para aguacate",
+    summary: "Formación, mantenimiento, prefloración, cuajado, llenado y poscosecha con alertas de suelo, agua y raíces.",
     href: "/wondergreen/cultivos/aguacate/",
     format: "Guía web",
     status: "publicado",
@@ -48,8 +57,8 @@ export const libraryResources: LibraryResource[] = [
   {
     slug: "limon-tahiti",
     category: "Cultivos",
-    title: "Programa orientativo Wondergreen para limón Tahití",
-    summary: "Nutrición organizada según flujos vegetativos y reproductivos del cultivo.",
+    title: "Programa de campo Wondergreen para limón Tahití",
+    summary: "Nutrición organizada según los flujos vegetativos y reproductivos, con alertas sanitarias y radiculares.",
     href: "/wondergreen/cultivos/limon-tahiti/",
     format: "Guía web",
     status: "publicado",
@@ -66,8 +75,8 @@ export const libraryResources: LibraryResource[] = [
   {
     slug: "pastos-programa",
     category: "Cultivos",
-    title: "Programa orientativo Wondergreen para pastos y gramíneas",
-    summary: "Ruta corta por lluvia, crecimiento activo, rebrote, sostenimiento y recuperación de suelo.",
+    title: "Programa de campo Wondergreen para pastos y gramíneas",
+    summary: "Suelo, lluvias, crecimiento activo, sostenimiento y rebrote leídos por hectárea y manejo del potrero.",
     href: "/wondergreen/cultivos/pastos-gramineas/",
     format: "Guía web",
     status: "publicado",
