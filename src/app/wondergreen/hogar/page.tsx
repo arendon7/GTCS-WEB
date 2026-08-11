@@ -6,8 +6,9 @@ import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Wondergreen Nutrients Hogar",
-  description: "Kits de cultivo para uso práctico en casa, matera y huerta urbana. Arquitectura comercial en validación, con recomendación por objetivo y etapa.",
+  description: "Concepto en validación para kits de cultivo de uso práctico en casa, matera y huerta urbana, organizado por objetivo y etapa.",
   alternates: { canonical: "/wondergreen/hogar/" },
+  robots: { index: false, follow: false },
 };
 
 const stages = [
@@ -32,10 +33,10 @@ export default function WondergreenHomePage() {
         <div className="container home-garden-grid">
           <div>
             <Link className="back-link" href="/wondergreen/">← Wondergreen</Link>
-            <span className="eyebrow">Wondergreen Nutrients Hogar</span>
+            <span className="eyebrow">Wondergreen Nutrients Hogar · concepto en validación</span>
             <h1>Kits de cultivo para uso práctico en casa, matera y huerta urbana.</h1>
             <p className="lead">Una experiencia más simple para quien no necesita un portafolio agrícola completo, pero sí quiere entender qué hacer con su planta según objetivo, etapa y condición.</p>
-            <div className="home-status">Arquitectura comercial validada · composición final, dosis, empaques y precios aún sujetos a Product Truth vigente.</div>
+            <div className="home-status">Concepto comercial en validación · composición, dosis, empaques, maestros, logística y precios pendientes de Product Truth vigente.</div>
           </div>
           <div className="home-garden-visual" aria-hidden="true"><div className="home-pot"><span></span><i></i><b></b></div><div className="home-soil-ring">suelo</div><div className="home-care-ring">cuidado</div></div>
         </div>
@@ -46,7 +47,7 @@ export default function WondergreenHomePage() {
       </section>
 
       <section className="knowledge-section knowledge-section--soft">
-        <div className="container"><div className="section-heading"><span className="eyebrow">Familias Hogar</span><h2>Elegir por necesidad, no por nombre de producto.</h2><p>Estas cuatro familias ordenan la experiencia doméstica. Todavía no se muestran como SKU comprables hasta cerrar maestros, fichas, presentaciones y logística.</p></div><div className="home-kit-grid">{homeKitFamilies.map((kit, index) => <article key={kit.name}><span>{String(index + 1).padStart(2,"0")}</span><h3>{kit.name}</h3><p>{kit.use}</p><small>{kit.state}</small></article>)}</div></div>
+        <div className="container"><div className="section-heading"><span className="eyebrow">Familias Hogar</span><h2>Elegir por necesidad, no por nombre de producto.</h2><p>Estas cuatro familias ordenan una posible experiencia doméstica. No se muestran como SKU comprables hasta cerrar maestros, fichas, presentaciones y logística.</p></div><div className="home-kit-grid">{homeKitFamilies.map((kit, index) => <article key={kit.name}><span>{String(index + 1).padStart(2,"0")}</span><h3>{kit.name}</h3><p>{kit.use}</p><small>{kit.state}</small></article>)}</div></div>
       </section>
 
       <section className="home-learning-band">
