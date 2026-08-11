@@ -13,7 +13,7 @@ async function submitRequest(page:Page,input:{concept:string;estimate:string;jus
 
 test("approved request becomes one real expense using actual amount, never estimate",async({page})=>{
   await submitRequest(page,{concept:"Rodamiento solicitud QA",estimate:"200000"});
-  let card=page.locator("article").filter({hasText:"Rodamiento solicitud QA"});
+  const card=page.locator("article").filter({hasText:"Rodamiento solicitud QA"});
   await expect(card).toContainText("Pendiente");
   await expect(card).toContainText(/200[.]000/);
 
