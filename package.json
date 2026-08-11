@@ -1,0 +1,27 @@
+{
+  "name": "greenatics-public-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check": "tsc --noEmit",
+    "audit:static": "node scripts/audit-static.mjs",
+    "test:visual": "playwright test",
+    "test:a11y": "playwright test tests/accessibility.spec.ts"
+  },
+  "dependencies": {
+    "next": "^16.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.11.3",
+    "@playwright/test": "^1.62.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0"
+  }
+}
