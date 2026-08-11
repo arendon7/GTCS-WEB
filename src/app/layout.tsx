@@ -3,6 +3,7 @@ import "./globals.css";
 import "./commerce.css";
 import "./brand.css";
 import "./solutions.css";
+import "./tech-impact.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { site } from "@/data/site";
