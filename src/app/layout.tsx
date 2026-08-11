@@ -7,6 +7,7 @@ import "./tech-impact.css";
 import "./diagnostic.css";
 import "./about.css";
 import "./library.css";
+import "./knowledge.css";
 import "./polish.css";
 import { JsonLd } from "@/components/json-ld";
 import { SiteHeader } from "@/components/site-header";
