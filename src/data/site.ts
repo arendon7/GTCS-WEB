@@ -10,7 +10,7 @@ export const site = {
 export const primaryNav = [
   { href: "/wondergreen/", label: "Wondergreen" },
   { href: "/municipios/", label: "Municipios y ESP" },
-  { href: "/#soluciones", label: "Soluciones" },
+  { href: "/empresas/", label: "Empresas" },
+  { href: "/proyectos/", label: "Proyectos" },
   { href: "/#impacto", label: "Impacto" },
-  { href: "/contacto/", label: "Contacto" },
 ];
