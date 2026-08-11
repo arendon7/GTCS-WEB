@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "audit:static": "node scripts/audit-static.mjs"
   },
   "dependencies": {
     "next": "^16.1.0",
