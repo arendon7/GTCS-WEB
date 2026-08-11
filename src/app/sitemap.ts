@@ -16,7 +16,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/biblioteca/pastos-gramineas",
     "/biblioteca/huertas",
     "/wondergreen",
-    "/wondergreen/hogar",
     "/wondergreen/cultivos",
     "/wondergreen/cotizador",
     "/municipios",
