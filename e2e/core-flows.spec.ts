@@ -6,6 +6,8 @@ test("home exposes the daily operational surface", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Calendario", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Recepciones", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Compostaje", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Producción", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Inventario", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Equipos", exact: true })).toBeVisible();
 });
 
