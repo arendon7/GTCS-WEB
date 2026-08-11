@@ -37,7 +37,31 @@ for (const [slug, route] of routes) {
 
     await expect(page.locator("body")).toBeVisible();
     await expect(page.locator("h1").first()).toBeVisible();
-    await expect(page.locator("header img[alt='Greenatics']")).toBeVisible();
+
+    const headerLogo = page.locator("header img[alt='Greenatics']");
+    await expect(headerLogo).toBeVisible();
+    const logoGreenPixelRatio = await headerLogo.evaluate((image) => {
+      const img = image as HTMLImageElement;
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const context = canvas.getContext("2d");
+      if (!context || !canvas.width || !canvas.height) return 0;
+      context.drawImage(img, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let greenPixels = 0;
+      let sampledPixels = 0;
+      for (let index = 0; index < pixels.length; index += 16) {
+        const r = pixels[index];
+        const g = pixels[index + 1];
+        const b = pixels[index + 2];
+        const a = pixels[index + 3];
+        sampledPixels += 1;
+        if (a > 32 && g > r + 18 && g > b + 18) greenPixels += 1;
+      }
+      return sampledPixels ? greenPixels / sampledPixels : 0;
+    });
+    expect(logoGreenPixelRatio, `${route} Greenatics logo must contain visible brand-green pixels`).toBeGreaterThan(0.03);
 
     const geometry = await page.evaluate(() => ({
       viewport: window.innerWidth,
