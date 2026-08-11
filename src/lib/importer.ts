@@ -357,8 +357,10 @@ export function dryRunLegacyImport(payload: LegacyImportPayload, sourceHash: str
 }
 
 export async function sha256Bytes(value: ArrayBuffer | Uint8Array) {
-  const bytes = value instanceof Uint8Array ? value : new Uint8Array(value);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const source = value instanceof Uint8Array ? value : new Uint8Array(value);
+  const owned = new Uint8Array(source.byteLength);
+  owned.set(source);
+  const digest = await crypto.subtle.digest("SHA-256", owned.buffer);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
