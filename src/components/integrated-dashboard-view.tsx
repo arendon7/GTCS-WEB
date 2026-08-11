@@ -50,18 +50,22 @@ function ExportCsvButton({csv,filename}:{csv:string;filename:string}){
   return <button className="button secondary" type="button" onClick={download}>Exportar CSV</button>;
 }
 
-export function IntegratedDashboardView(){
+export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
   const {activities,receptions,incidents,workers}=useOpsStore();
   const {equipment,tickets}=useMaintenanceStore();
   const {piles,measurements}=useCompostStore();
   const {productions,movements}=useInventoryStore();
   const {sales}=useCommercialStore();
-  const [nowIso,setNowIso]=useState(()=>new Date().toISOString());
+  const [nowIso,setNowIso]=useState(initialNowIso);
   const [preset,setPreset]=useState<DashboardPreset>("day");
-  const [anchorKey,setAnchorKey]=useState(()=>bogotaDateKey(new Date()));
+  const [anchorKey,setAnchorKey]=useState(()=>bogotaDateKey(initialNowIso));
   const [plantId,setPlantId]=useState("all");
 
-  useEffect(()=>{const timer=window.setInterval(()=>setNowIso(new Date().toISOString()),60_000);return()=>window.clearInterval(timer);},[]);
+  useEffect(()=>{
+    setNowIso(new Date().toISOString());
+    const timer=window.setInterval(()=>setNowIso(new Date().toISOString()),60_000);
+    return()=>window.clearInterval(timer);
+  },[]);
 
   const analytics=useMemo(()=>buildOperationalAnalytics({activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso}),[activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso]);
   const inventory=useMemo(()=>buildInventoryAnalytics({productions,movements,period:analytics.period,plantId}),[productions,movements,analytics.period,plantId]);
