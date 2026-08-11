@@ -17,12 +17,13 @@ async function createExpense(page:Page,input:{plant?:"Támesis"|"Yarumal";type?:
 test("records operational purchase without implying payment",async({page})=>{
   await createExpense(page,{supplier:"Ferretería Industrial S.A.S.",category:"Repuesto / mantenimiento",concept:"Rodamiento molino",amount:"185000",documentRef:"FV-1024"});
   await expect(page.getByRole("heading",{name:"Compras y gastos"})).toBeVisible();
-  await expect(page.getByText("Rodamiento molino")).toBeVisible();
-  await expect(page.getByText("Ferretería Industrial S.A.S.")).toBeVisible();
-  await expect(page.getByText(/185[.]000/).first()).toBeVisible();
-  await expect(page.getByText("pago no modelado")).toBeVisible();
-  await expect(page.getByText("FV-1024")).toBeVisible();
-  await expect(page.getByText("Compra").first()).toBeVisible();
+  const card=page.locator("article").filter({hasText:"Rodamiento molino"});
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("Ferretería Industrial S.A.S.");
+  await expect(card).toContainText(/185[.]000/);
+  await expect(card).toContainText("pago no modelado");
+  await expect(card).toContainText("FV-1024");
+  await expect(card).toContainText("Compra");
 });
 
 test("filters append-only expense ledger by plant and category",async({page})=>{
