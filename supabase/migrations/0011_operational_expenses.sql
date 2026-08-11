@@ -1,3 +1,24 @@
+create or replace function private.normalize_customer_name(value text)
+returns text
+language sql
+immutable
+set search_path = ''
+as $$
+  select btrim(
+    regexp_replace(
+      regexp_replace(
+        lower(translate(btrim(value), 'ÁÉÍÓÚÜÑáéíóúüñ', 'AEIOUUNaeiouun')),
+        '[^a-z0-9 ]+',
+        '',
+        'g'
+      ),
+      '[[:space:]]+',
+      ' ',
+      'g'
+    )
+  );
+$$;
+
 create or replace function private.normalize_supplier_name(value text)
 returns text
 language sql
@@ -6,8 +27,13 @@ set search_path = ''
 as $$
   select btrim(
     regexp_replace(
-      lower(translate(btrim(value), 'ÁÉÍÓÚÜÑáéíóúüñ', 'AEIOUUNaeiouun')),
-      '[^a-z0-9]+',
+      regexp_replace(
+        lower(translate(btrim(value), 'ÁÉÍÓÚÜÑáéíóúüñ', 'AEIOUUNaeiouun')),
+        '[^a-z0-9 ]+',
+        '',
+        'g'
+      ),
+      '[[:space:]]+',
       ' ',
       'g'
     )
@@ -48,7 +74,9 @@ create index if not exists operational_expenses_supplier_date_idx on operational
 create index if not exists operational_expenses_category_date_idx on operational_expenses(category, document_date desc);
 create index if not exists operational_expenses_equipment_idx on operational_expenses(equipment_id) where equipment_id is not null;
 
+revoke all on function private.normalize_customer_name(text) from public;
 revoke all on function private.normalize_supplier_name(text) from public;
+grant execute on function private.normalize_customer_name(text) to authenticated;
 grant execute on function private.normalize_supplier_name(text) to authenticated;
 
 alter table suppliers enable row level security;
@@ -73,6 +101,8 @@ create policy "operational_expenses_insert" on operational_expenses for insert t
 with check ((select private.has_plant_role(plant_id, array['operator','supervisor','technical','admin','director'])));
 
 -- No UPDATE/DELETE policies in this MVP.
+-- Customer and supplier normalizers intentionally match the TypeScript adapters: punctuation is removed,
+-- whitespace is collapsed and accents/case are ignored, so S.A.S. and SAS resolve to the same key.
 -- A registered purchase/expense is an operational economic record, not proof of payment.
 -- It does not create inventory movements, maintenance tickets, cash movements or production cost allocation.
 -- Future corrections must use explicit reversal/adjustment transactions to preserve auditability.
