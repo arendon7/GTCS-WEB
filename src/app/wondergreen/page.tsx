@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BrandName } from "@/components/brand-name";
 import { ProductCard } from "@/components/product-card";
 import { products } from "@/data/products";
 
@@ -24,7 +23,9 @@ export default function WondergreenPage() {
         <div className="container wg-hero-grid">
           <div>
             <span className="eyebrow">Una marca Greenatics</span>
-            <BrandName brand="wondergreen" />
+            <div className="wg-brand-hero">
+              <img className="official-logo" src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
+            </div>
             <h1>La nutrición cambia cuando cambia tu cultivo.</h1>
             <p className="lead">Por eso organizamos Wondergreen por objetivo y etapa: entiende qué necesitas primero; elige el producto después.</p>
             <div className="button-row">
