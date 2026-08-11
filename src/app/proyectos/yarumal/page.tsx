@@ -34,6 +34,16 @@ export default function YarumalPage() {
         </div>
       </section>
 
+      <section className="project-media">
+        <div className="container">
+          <div className="section-heading"><span className="eyebrow">Archivo visual del proyecto</span><h2>Evidencia real antes que fotografía genérica.</h2><p>Estas vistas provienen de la documentación técnica histórica del proyecto Yarumal y se identifican expresamente como archivo; no se presentan como registro fotográfico del estado actual.</p></div>
+          <div className="project-media-grid">
+            <figure><img src="/projects/yarumal/aerial-01.webp" alt="Vista aérea de archivo del predio del proyecto Yarumal" width="420" height="236" /><figcaption>Vista aérea de archivo del predio/proyecto Yarumal. Fuente: documentación técnica Greenatics.</figcaption></figure>
+            <figure><img src="/projects/yarumal/aerial-02.webp" alt="Segunda vista aérea de archivo del predio del proyecto Yarumal" width="420" height="236" /><figcaption>Vista aérea de archivo del predio/proyecto Yarumal. Fuente: documentación técnica Greenatics.</figcaption></figure>
+          </div>
+        </div>
+      </section>
+
       <section className="project-case-section"><div className="container"><div className="section-heading"><span className="eyebrow">Qué demuestra este caso</span><h2>Una planta es un sistema de operación.</h2></div><div className="project-cap-grid">{capabilities.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
 
       <section className="project-case-section route-section"><div className="container"><div className="section-heading"><span className="eyebrow">Trazabilidad digital documentada</span><h2>El residuo deja una huella de información durante todo el proceso.</h2></div><div className="project-cap-grid">{digitalEvidence.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="validation-note"><strong>Datos de impacto:</strong> los registros operativos existentes son internos y varían por periodo. No se exponen como cifras permanentes hasta pasar por el contrato de publicación de GREENATICS OPS.</div></div></section>
