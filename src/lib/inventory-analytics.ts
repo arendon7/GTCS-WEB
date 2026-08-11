@@ -65,14 +65,17 @@ export function buildInventoryAnalytics(input: {
   const currentLots = lotStocks(movements).filter((item) => item.quantity > 0);
   const currentProducts = aggregateProductStocks(movements).filter((item) => item.quantity > 0);
 
-  const events: InventoryAnalyticsEvent[] = periodMovements.map((movement) => ({
-    id: `inventory-${movement.id}`,
-    at: movement.occurredAt,
-    plant: movement.plant,
-    kind: movement.kind === "production" ? "production" : movement.kind === "dispatch" ? "dispatch" : "adjustment",
-    title: movement.kind === "production" ? `Producción ${movement.lotCode}` : movement.kind === "dispatch" ? `Salida ${movement.lotCode}` : `Ajuste ${movement.lotCode}`,
-    detail: `${movement.productName} · ${movement.quantity.toLocaleString("es-CO")} ${movement.unit}${movement.destination ? ` · ${movement.destination}` : ""}`,
-  })).sort((a,b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+  const events: InventoryAnalyticsEvent[] = periodMovements.map((movement): InventoryAnalyticsEvent => {
+    const kind: InventoryAnalyticsEvent["kind"] = movement.kind === "production" ? "production" : movement.kind === "dispatch" ? "dispatch" : "adjustment";
+    return {
+      id: `inventory-${movement.id}`,
+      at: movement.occurredAt,
+      plant: movement.plant,
+      kind,
+      title: movement.kind === "production" ? `Producción ${movement.lotCode}` : movement.kind === "dispatch" ? `Salida ${movement.lotCode}` : `Ajuste ${movement.lotCode}`,
+      detail: `${movement.productName} · ${movement.quantity.toLocaleString("es-CO")} ${movement.unit}${movement.destination ? ` · ${movement.destination}` : ""}`,
+    };
+  }).sort((a,b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 
   return {
     productionByUnit: unitMetrics(periodProductions),
