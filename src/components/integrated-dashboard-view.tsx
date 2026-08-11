@@ -62,7 +62,6 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
   const [plantId,setPlantId]=useState("all");
 
   useEffect(()=>{
-    setNowIso(new Date().toISOString());
     const timer=window.setInterval(()=>setNowIso(new Date().toISOString()),60_000);
     return()=>window.clearInterval(timer);
   },[]);
