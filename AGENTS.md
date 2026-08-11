@@ -29,10 +29,23 @@ Si un skill externo contradice una decisión canónica del producto, gana la dec
 7. Taste pre-flight;
 8. performance React/Next;
 9. QA visual;
-10. evidencia en PR.
+10. unit tests cuando exista lógica derivada;
+11. Playwright desktop + móvil para flujos críticos;
+12. evidencia en PR.
+
+## Definición de CI verde
+Un PR funcional no se considera verde únicamente porque compile. El workflow debe completar:
+- archivos canónicos + memoria JSONL;
+- typecheck;
+- lint;
+- unit tests;
+- build de producción;
+- browser E2E en Chromium desktop y móvil.
+
+Cualquier excepción debe quedar explícitamente justificada en el PR; nunca se elimina un gate solo para obtener PASS.
 
 ## Nunca
-- desarrollar features directamente en `main`;
+- desarrollar features directamente en `main` o `develop`;
 - borrar una buena versión para reemplazarla;
 - marcar gates como PASS sin evidencia;
 - guardar secretos;
