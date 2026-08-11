@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrandName } from "@/components/brand-name";
 import { primaryNav } from "@/data/site";
 
 export function SiteHeader() {
@@ -9,7 +8,13 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container header-inner">
         <Link className="brand-link" href="/" aria-label="Greenatics inicio">
-          <BrandName />
+          <img
+            className="official-logo greenatics-header-logo"
+            src="/brand/greenatics-horizontal.webp"
+            alt="Greenatics"
+            width="360"
+            height="66"
+          />
         </Link>
 
         <nav className="desktop-nav" aria-label="Navegación principal">
@@ -19,7 +24,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="header-actions">
-          <Link className="button button--ghost header-shop" href="/wondergreen/">Comprar</Link>
+          <Link className="button button--ghost header-shop" href="/wondergreen/">Wondergreen</Link>
           <a className="button button--dark" href={opsUrl}>Acceso Greenatics</a>
         </div>
 
@@ -29,7 +34,7 @@ export function SiteHeader() {
             {primaryNav.map((item) => (
               <Link key={item.href} href={item.href}>{item.label}</Link>
             ))}
-            <Link href="/wondergreen/">Comprar Wondergreen</Link>
+            <Link href="/wondergreen/">Wondergreen</Link>
             <a href={opsUrl}>Acceso Greenatics</a>
           </div>
         </details>
