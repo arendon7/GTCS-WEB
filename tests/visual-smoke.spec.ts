@@ -18,6 +18,7 @@ const routes = [
   ["impacto", "/impacto/"],
   ["biblioteca", "/biblioteca/"],
   ["guia-deficiencias", "/biblioteca/guia-deficiencias/"],
+  ["manual-uso-wondergreen", "/biblioteca/manual-uso-wondergreen/"],
   ["catalogo-wondergreen", "/biblioteca/catalogo-wondergreen/"],
   ["pastos-gramineas", "/biblioteca/pastos-gramineas/"],
   ["huertas", "/biblioteca/huertas/"],
@@ -31,9 +32,11 @@ const screenshotRoutes = new Set([
   "home",
   "wondergreen",
   "wondergreen-hogar",
+  "cafe",
   "yarumal",
   "biblioteca",
   "guia-deficiencias",
+  "manual-uso-wondergreen",
   "contacto",
 ]);
 
