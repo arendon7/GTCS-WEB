@@ -23,8 +23,9 @@ test("production creates lot stock and dispatch cannot make it negative", async 
   await page.getByLabel(/Cantidad de salida/).fill("300");
   await page.getByLabel("Destino").fill("Cliente QA");
   await page.getByRole("button", { name: "Registrar salida" }).click();
-  await expect(page.getByRole("alert")).toContainText("Stock insuficiente");
-  await expect(page.getByRole("alert")).toContainText("250");
+  const businessAlert = page.locator('p[role="alert"]');
+  await expect(businessAlert).toContainText("Stock insuficiente");
+  await expect(businessAlert).toContainText("250");
 
   await page.getByLabel(/Cantidad de salida/).fill("60");
   await page.getByRole("button", { name: "Registrar salida" }).click();
