@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BrandName } from "@/components/brand-name";
 import { ProductCard } from "@/components/product-card";
 import { featuredProducts } from "@/data/products";
 
@@ -15,16 +14,21 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
+            <div className="hero-brand-lockup">
+              <img className="official-logo" src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
+            </div>
             <span className="eyebrow">Economía circular aplicada</span>
             <h1>Lo orgánico no termina como residuo. <em>Vuelve a la vida.</em></h1>
-            <p className="lead">Greenatics conecta gestión de residuos, plantas de aprovechamiento, nutrición vegetal y datos para cerrar el ciclo con resultados reales.</p>
+            <p className="lead">Conectamos gestión de residuos, plantas de aprovechamiento, nutrición vegetal y datos para cerrar el ciclo con resultados reales.</p>
             <div className="button-row">
               <Link className="button button--primary" href="/wondergreen/">Comprar Wondergreen</Link>
               <Link className="button button--light" href="/municipios/">Soluciones para municipios</Link>
             </div>
           </div>
           <div className="cycle-visual" aria-label="Ciclo Greenatics: residuo, transformación, producto, suelo e impacto">
-            <div className="cycle-center"><BrandName inverse /></div>
+            <div className="cycle-center">
+              <img src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" />
+            </div>
             <div className="cycle-node node-1"><strong>01</strong><span>Residuo</span></div>
             <div className="cycle-node node-2"><strong>02</strong><span>Transformación</span></div>
             <div className="cycle-node node-3"><strong>03</strong><span>Producto</span></div>
@@ -52,13 +56,25 @@ export default function Home() {
 
       <section className="wondergreen-band">
         <div className="container wg-intro">
-          <div><span className="eyebrow eyebrow--light">Producto inmediato</span><BrandName brand="wondergreen" inverse /><h2>Nutrición pensada como un sistema, no como una lista de productos.</h2></div>
-          <p>Encuentra la línea adecuada según la etapa: suelo, crecimiento, balance, floración o producción.</p>
+          <div className="wg-brand-column">
+            <span className="eyebrow eyebrow--light">Producto inmediato · una marca Greenatics</span>
+            <div className="wondergreen-official-lockup">
+              <img className="official-logo" src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
+            </div>
+            <h2>Nutrición pensada como un sistema, no como una lista de productos.</h2>
+          </div>
+          <div>
+            <p>Encuentra la línea adecuada según la etapa: suelo, crecimiento, balance, floración o producción.</p>
+            <div className="button-row">
+              <Link className="button button--light" href="/wondergreen/cultivos/">Buscar por cultivo</Link>
+              <Link className="button button--outline-light" href="/wondergreen/cotizador/">Cotizar</Link>
+            </div>
+          </div>
         </div>
         <div className="container product-grid">
           {featuredProducts.map((product) => <ProductCard key={product.slug} product={product} />)}
         </div>
-        <div className="container band-cta"><Link className="button button--light" href="/wondergreen/">Explorar portafolio completo</Link></div>
+        <div className="container band-cta"><Link className="button button--light" href="/wondergreen/">Explorar Wondergreen</Link></div>
       </section>
 
       <section className="impact-section" id="impacto">
