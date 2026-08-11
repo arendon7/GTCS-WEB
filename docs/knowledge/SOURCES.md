@@ -10,7 +10,9 @@
 8. MANUAL DE SEGUIMIENTO AL PROCESO PRODUCTIVO 181125.docx / Manual operativo y de registro digital Planta Yarumal
 9. PROYECTO PLANTAS REGIONALES DE TRATAMIENTO Y APROVECHAMIENTO DE RESIDUOS SÓLIDOS URBANOS 2.docx
 10. Documentos técnicos y de proyectos Greenatics disponibles en SharePoint
-11. Conversaciones y definición comercial/técnica del proyecto Greenatics
+11. Fotografías reales de producto Wondergreen recuperadas de File Library: `1000472122.png` (2GROW sólido) y `1000472121.png` (2GROW 20 L)
+12. `Información wondergreen.docx` (2023), únicamente como referencia histórica/editorial; contiene afirmaciones y recomendaciones que requieren revalidación antes de publicación.
+13. Conversaciones y definición comercial/técnica del proyecto Greenatics
 
 ## Reglas de precedencia
 - Producto/regulatorio: ficha técnica/registro/etiqueta aprobada > catálogo > guía interna > conversación.
@@ -19,8 +21,11 @@
 - Operación: GREENATICS OPS / registros operativos > manual operativo > resumen comercial.
 - Ingeniería/proyectos: documento técnico vigente y aprobado > propuesta histórica > resumen conversacional.
 - Marca: activo oficial y manual vigente > cualquier reconstrucción visual.
+- Imagen de producto: fotografía real aprobada del empaque vigente > render aprobado > representación gráfica temporal > stock genérico.
 
 ## Regla de publicación web
 Las guías por cultivo pueden orientar por objetivo, etapa y familia de producto, pero no deben publicar dosis definitivas, frecuencias cerradas, compatibilidades ni claims de desempeño sin la fuente técnica vigente correspondiente.
 
 Las cifras de operación e impacto solo se publican mediante el `IMPACT_PUBLICATION_CONTRACT.md`. Las capacidades de proyectos históricos no deben presentarse como capacidad actual sin una validación específica.
+
+La biblioteca pública no enlaza documentos internos de SharePoint directamente: publica versiones web gobernadas o archivos expresamente aprobados para difusión.
