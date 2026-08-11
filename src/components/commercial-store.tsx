@@ -14,7 +14,6 @@ type CommercialStore = {
   sales: SaleRecord[];
   ready:boolean;
   recordSale:(payload:NewSale)=>SaleResult;
-  resetCommercialDemo:()=>void;
 };
 
 const CommercialContext=createContext<CommercialStore|null>(null);
@@ -95,7 +94,6 @@ export function CommercialStoreProvider({children}:{children:ReactNode}){
       setSales((current)=>[sale,...current]);
       return {ok:true,id:saleId,movementId:dispatchResult.movementId};
     },
-    resetCommercialDemo(){setCustomers([]);setSales([]);window.localStorage.removeItem(STORAGE_KEY);},
   }),[customers,sales,ready,products,dispatch]);
 
   return <CommercialContext.Provider value={value}>{children}</CommercialContext.Provider>;
