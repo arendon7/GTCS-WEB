@@ -9,5 +9,11 @@ El documento contiene imágenes embebidas de archivo técnico, incluidas vistas 
 - no se altere su sentido mediante edición engañosa;
 - se prioricen fotografías reales frente a stock genérico.
 
+### Derivados web incorporados
+- `public/projects/yarumal/aerial-01.webp`
+- `public/projects/yarumal/aerial-02.webp`
+
+Ambos son recortes optimizados de fotografías aéreas embebidas en el documento técnico fuente. Su uso web debe conservar la leyenda de archivo/procedencia.
+
 ## Regla futura
 Cada fotografía pública debe registrar: proyecto, origen, fecha aproximada si existe, tipo (`actual`, `archivo`, `render`, `plano`) y aprobación para publicación.
