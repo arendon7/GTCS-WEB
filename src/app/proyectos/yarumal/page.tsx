@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Proyecto Yarumal",
-  description: "Caso Greenatics de operación técnica, aprovechamiento y trazabilidad digital de residuos orgánicos en Yarumal, Antioquia.",
+  description: "Caso documentado Greenatics de operación técnica, aprovechamiento y trazabilidad digital de residuos orgánicos en Yarumal, Antioquia.",
 };
 
 const capabilities = [
@@ -29,8 +29,8 @@ export default function YarumalPage() {
     <>
       <section className="project-case-hero">
         <div className="container project-case-grid">
-          <div><Link className="back-link" href="/proyectos/">← Proyectos</Link><span className="eyebrow">Caso Greenatics · Yarumal</span><h1>Operar bien comienza mucho antes del compostaje.</h1><p className="lead">El caso Yarumal muestra una operación que empieza controlando lo que entra, continúa con tratamiento y trazabilidad, y termina con productos, reportes y mejora continua.</p></div>
-          <aside className="project-factbox"><span>Alcance público</span><p>Publicamos capacidades y metodología verificables. Balances de masa, toneladas, eficiencias y otros indicadores operativos se incorporarán con fecha de corte y validación específica.</p></aside>
+          <div><Link className="back-link" href="/proyectos/">← Proyectos</Link><span className="eyebrow">Caso documentado · Yarumal</span><h1>Operar bien comienza mucho antes del compostaje.</h1><p className="lead">La experiencia documentada en Yarumal permite mostrar cómo Greenatics ha estructurado control de ingreso, tratamiento, trazabilidad, productos, reportes y mejora operativa.</p></div>
+          <aside className="project-factbox"><span>Contexto de publicación</span><p>Esta página documenta experiencia técnica y aprendizajes del proyecto. No afirma el estado operativo presente de la instalación. Cualquier cifra o condición actual requiere un corte y validación específicos.</p></aside>
         </div>
       </section>
 
@@ -46,9 +46,9 @@ export default function YarumalPage() {
 
       <section className="project-case-section"><div className="container"><div className="section-heading"><span className="eyebrow">Qué demuestra este caso</span><h2>Una planta es un sistema de operación.</h2></div><div className="project-cap-grid">{capabilities.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
 
-      <section className="project-case-section route-section"><div className="container"><div className="section-heading"><span className="eyebrow">Trazabilidad digital documentada</span><h2>El residuo deja una huella de información durante todo el proceso.</h2></div><div className="project-cap-grid">{digitalEvidence.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="validation-note"><strong>Datos de impacto:</strong> los registros operativos existentes son internos y varían por periodo. No se exponen como cifras permanentes hasta pasar por el contrato de publicación de GREENATICS OPS.</div></div></section>
+      <section className="project-case-section route-section"><div className="container"><div className="section-heading"><span className="eyebrow">Trazabilidad digital documentada</span><h2>El residuo deja una huella de información durante todo el proceso.</h2></div><div className="project-cap-grid">{digitalEvidence.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="validation-note"><strong>Datos de impacto:</strong> los registros existentes varían por periodo. Ningún valor se presenta como cifra actual permanente hasta pasar por el contrato de publicación de GREENATICS OPS.</div></div></section>
 
-      <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Aplicar el método</span><h2>¿Necesitas estructurar o fortalecer una operación similar?</h2></div><Link className="button button--dark" href="/contacto/">Solicitar diagnóstico</Link></div></section>
+      <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Aplicar el aprendizaje</span><h2>¿Necesitas estructurar o fortalecer una operación similar?</h2></div><Link className="button button--dark" href="/contacto/">Solicitar diagnóstico</Link></div></section>
     </>
   );
 }
