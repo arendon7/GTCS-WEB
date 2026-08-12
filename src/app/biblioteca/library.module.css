@@ -84,6 +84,15 @@
   .headerLink { display: none; }
   .libraryGrid, .ruleGrid { grid-template-columns: 1fr; }
   .cropBlock { scroll-margin-top: 78px; padding: 22px 18px; }
+  .tableWrap { overflow: visible; border: 0; border-radius: 0; }
+  .table { display: block; width: 100%; min-width: 0; border-collapse: separate; background: transparent; }
+  .table thead { display: none; }
+  .table tbody { display: grid; gap: 10px; }
+  .table tr { display: block; overflow: hidden; width: 100%; border: 1px solid var(--line); border-radius: 16px; background: white; }
+  .table td { display: grid; grid-template-columns: minmax(98px, .72fr) minmax(0, 1.28fr); gap: 10px; width: 100%; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: .88rem; }
+  .table td::before { content: attr(data-label); color: var(--green800); font-size: .68rem; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+  .table tr td:last-child { border-bottom: 0; }
+  .notes { margin-top: 14px; }
   .cropActions { margin-top: 20px; }
   .cropCta { min-height: 54px; padding: 14px 16px; }
   .closingInner, .footerInner { flex-direction: column; align-items: flex-start; }
