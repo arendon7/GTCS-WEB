@@ -52,10 +52,9 @@ export async function POST(request:NextRequest){
 
   const admin=createAdminClient();
   const baseUrl=(process.env.APP_BASE_URL||request.nextUrl.origin).replace(/\/$/,"");
-  let invitedUserId:string|undefined;
   const {data,error}=await admin.auth.admin.inviteUserByEmail(parsed.value.email,{data:{display_name:parsed.value.displayName},redirectTo:`${baseUrl}/account/setup`});
   if(error)return noStoreJson({ok:false,error:error.message.includes("already")?"Ese correo ya pertenece a un usuario. Edita sus membresías en lugar de invitarlo de nuevo.":"No fue posible enviar la invitación."},error.message.includes("already")?409:502);
-  invitedUserId=data.user?.id;
+  const invitedUserId=data.user?.id;
   if(!invitedUserId)return noStoreJson({ok:false,error:"Supabase no devolvió el usuario invitado."},502);
 
   const {error:membershipError}=await context.supabase.rpc("admin_set_user_memberships",{target_user:invitedUserId,target_display_name:parsed.value.displayName,assignments:parsed.value.assignments});
