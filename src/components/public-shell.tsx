@@ -22,7 +22,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 
           <div className={styles.actions}>
             <Link className={styles.contact} href="/contacto">Contacto</Link>
-            <Link className={styles.ops} href="/app">Acceder a Greenatics</Link>
+            <a className={styles.ops} href="/app">Acceder a Greenatics</a>
           </div>
         </div>
       </header>
@@ -47,7 +47,11 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             <div className={styles.footerLinks} key={group.title}>
               <strong>{group.title}</strong>
               {group.links.map((link) => (
-                <Link href={link.href} key={link.href}>{link.label}</Link>
+                link.href === "/app" ? (
+                  <a href={link.href} key={link.href}>{link.label}</a>
+                ) : (
+                  <Link href={link.href} key={link.href}>{link.label}</Link>
+                )
               ))}
             </div>
           ))}
