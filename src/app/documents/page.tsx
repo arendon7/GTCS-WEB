@@ -95,11 +95,17 @@ function DocumentList({ documents }: { documents: readonly SharePointDocumentRef
 
 export default async function DocumentsPage() {
   const access = await getOpsServerAccess();
-  if (!access.ok && (access.reason === "configuration" || access.reason === "session")) {
-    redirect("/login?next=%2Fdocuments");
+  if (!access.ok) {
+    switch (access.reason) {
+      case "configuration":
+      case "session":
+        redirect("/login?next=%2Fdocuments");
+      case "membership":
+        return <AppShell><AccessProblem reason="membership" /></AppShell>;
+      case "backend":
+        return <AppShell><AccessProblem reason="backend" /></AppShell>;
+    }
   }
-
-  if (!access.ok) return <AppShell><AccessProblem reason={access.reason} /></AppShell>;
 
   const config = parseSharePointGraphRuntimeConfig(process.env);
   if (!config.ok) return <AppShell><PendingIntegration /></AppShell>;
