@@ -18,24 +18,63 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   const [notes, setNotes] = useState("");
   const [finalWeight, setFinalWeight] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [busy, setBusy] = useState(false);
   const [nowIso] = useState(()=>new Date().toISOString());
 
   if (!pile) return <section className="panel mx-auto max-w-4xl"><h1 className="text-2xl">Pila no encontrada</h1><Link className="button secondary mt-5" href="/compost">Volver</Link></section>;
 
   const sourceReceipts = receptions.filter((reception)=>pile.sourceReceiptIds.includes(reception.id));
   const latest = pileMeasurements[0];
-  const saveMeasurement = () => { const parsedTemps = temps.map((value)=>value.trim()==="" ? Number.NaN : Number(value)); const humidityValue = humidity.trim() ? Number(humidity) : undefined; const result = recordMeasurement({ pileId: pile.id, temperaturePointsC: parsedTemps, humidityPct: humidityValue, notes }); if (!result.ok) return setFeedback(result.error); setTemps(["","",""]); setHumidity(""); setNotes(""); setFeedback("Control registrado."); };
-  const mature = () => { const result = startMaturation(pile.id); setFeedback(result.ok ? "Pila pasada a maduración." : result.error); };
-  const close = () => { const result = closePile(pile.id, Number(finalWeight)); if (!result.ok) return setFeedback(result.error); setFinalWeight(""); setFeedback("Pila cerrada y rendimiento calculado."); };
+  const saveMeasurement = async () => {
+    if (busy) return;
+    setBusy(true);
+    setFeedback("");
+    try {
+      const parsedTemps = temps.map((value)=>value.trim()==="" ? Number.NaN : Number(value));
+      const humidityValue = humidity.trim() ? Number(humidity) : undefined;
+      const result = await recordMeasurement({ pileId: pile.id, temperaturePointsC: parsedTemps, humidityPct: humidityValue, notes });
+      if (!result.ok) return setFeedback(result.error);
+      setTemps(["","",""]);
+      setHumidity("");
+      setNotes("");
+      setFeedback("Control registrado.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const mature = async () => {
+    if (busy) return;
+    setBusy(true);
+    setFeedback("");
+    try {
+      const result = await startMaturation(pile.id);
+      setFeedback(result.ok ? "Pila pasada a maduración." : result.error);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const close = async () => {
+    if (busy) return;
+    setBusy(true);
+    setFeedback("");
+    try {
+      const result = await closePile(pile.id, Number(finalWeight));
+      if (!result.ok) return setFeedback(result.error);
+      setFinalWeight("");
+      setFeedback("Pila cerrada y rendimiento calculado.");
+    } finally {
+      setBusy(false);
+    }
+  };
   const changeTemp = (index:number,value:string) => setTemps((current)=>current.map((item,i)=>i===index?value:item));
 
   return <>
     <header className="page-header"><div><p className="eyebrow">{pile.plant} · {pile.location}</p><h1>{pile.code}</h1><p className="lede">Trazabilidad de origen, controles y cierre de la pila.</p></div><div className="header-actions"><Link className="button secondary" href="/compost">Volver</Link><CompostStatusPill status={pile.status}/></div></header>
     <section className="panel mx-auto max-w-5xl"><div className="grid gap-4 md:grid-cols-4"><div><span className="quiet">Peso inicial</span><strong className="mt-1 block text-xl">{pile.initialWeightKg.toLocaleString("es-CO")} kg</strong></div><div><span className="quiet">Edad</span><strong className="mt-1 block text-xl">{Math.floor(compostAgeDays(pile,nowIso))} días</strong></div><div><span className="quiet">Última temperatura</span><strong className="mt-1 block text-xl">{latest ? `${averageTemperature(latest).toFixed(1)} °C` : "—"}</strong></div><div><span className="quiet">Última humedad</span><strong className="mt-1 block text-xl">{latest?.humidityPct !== undefined ? `${latest.humidityPct.toFixed(1)} %` : "—"}</strong></div></div><div className="mt-5 border-t border-[var(--line)] pt-4"><span className="quiet">Lotes de origen</span><div className="mt-2 flex flex-wrap gap-2">{sourceReceipts.map((reception)=><span className="rounded-full bg-[var(--surface-soft)] px-3 py-1.5 text-xs font-semibold" key={reception.id}>{reception.lotCode}</span>)}</div></div></section>
 
-    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Control técnico</p><h2>Temperatura y humedad</h2></div><span className="quiet">3–5 puntos por control</span></div><div className="grid gap-3 sm:grid-cols-3">{temps.map((value,index)=><label className="grid gap-2 text-xs font-bold text-[var(--muted)]" key={index}>Temperatura punto {index+1} (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={value} onChange={(event)=>changeTemp(index,event.target.value)}/></label>)}</div><div className="mt-3 flex gap-2">{temps.length < 5 && <button className="button secondary" type="button" onClick={()=>setTemps((current)=>[...current,""])}>+ Punto</button>}{temps.length > 3 && <button className="button secondary" type="button" onClick={()=>setTemps((current)=>current.slice(0,-1))}>Quitar punto</button>}</div><div className="mt-5 grid gap-4 md:grid-cols-2"><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad (%) <span className="font-normal">(si se mide)</span><input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={humidity} onChange={(event)=>setHumidity(event.target.value)}/></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Observación <span className="font-normal">(opcional)</span><input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={notes} onChange={(event)=>setNotes(event.target.value)}/></label></div><div className="mt-5 flex justify-end"><button className="button primary" type="button" onClick={saveMeasurement}>Guardar control</button></div></section>}
+    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Control técnico</p><h2>Temperatura y humedad</h2></div><span className="quiet">3–5 puntos por control</span></div><div className="grid gap-3 sm:grid-cols-3">{temps.map((value,index)=><label className="grid gap-2 text-xs font-bold text-[var(--muted)]" key={index}>Temperatura punto {index+1} (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={value} onChange={(event)=>changeTemp(index,event.target.value)}/></label>)}</div><div className="mt-3 flex gap-2">{temps.length < 5 && <button className="button secondary" type="button" disabled={busy} onClick={()=>setTemps((current)=>[...current,""])}>+ Punto</button>}{temps.length > 3 && <button className="button secondary" type="button" disabled={busy} onClick={()=>setTemps((current)=>current.slice(0,-1))}>Quitar punto</button>}</div><div className="mt-5 grid gap-4 md:grid-cols-2"><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad (%) <span className="font-normal">(si se mide)</span><input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={humidity} onChange={(event)=>setHumidity(event.target.value)}/></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Observación <span className="font-normal">(opcional)</span><input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={notes} onChange={(event)=>setNotes(event.target.value)}/></label></div><div className="mt-5 flex justify-end"><button className="button primary" type="button" disabled={busy} onClick={saveMeasurement}>{busy ? "Guardando…" : "Guardar control"}</button></div></section>}
 
-    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Etapa</p><h2>{pile.status === "active" ? "Proceso activo" : "Maduración"}</h2></div>{pile.status === "active" ? <button className="button secondary" type="button" onClick={mature}>Pasar a maduración</button> : <span className="quiet">{Math.floor(maturationDays(pile,nowIso))} días en maduración</span>}</div>{pile.status === "maturing" && <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="grid grow gap-2 text-xs font-bold text-[var(--muted)]">Peso final medido (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={finalWeight} onChange={(event)=>setFinalWeight(event.target.value)}/></label><button className="button primary" type="button" onClick={close}>Cerrar pila</button></div>}</section>}
+    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Etapa</p><h2>{pile.status === "active" ? "Proceso activo" : "Maduración"}</h2></div>{pile.status === "active" ? <button className="button secondary" type="button" disabled={busy} onClick={mature}>{busy ? "Actualizando…" : "Pasar a maduración"}</button> : <span className="quiet">{Math.floor(maturationDays(pile,nowIso))} días en maduración</span>}</div>{pile.status === "maturing" && <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="grid grow gap-2 text-xs font-bold text-[var(--muted)]">Peso final medido (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={finalWeight} onChange={(event)=>setFinalWeight(event.target.value)}/></label><button className="button primary" type="button" disabled={busy} onClick={close}>{busy ? "Cerrando…" : "Cerrar pila"}</button></div>}</section>}
 
     {feedback && <p className="panel mx-auto mt-4 max-w-5xl bg-[var(--blue-soft)] text-sm font-semibold text-[var(--blue)]" role="status">{feedback}</p>}
 
