@@ -3,6 +3,9 @@ import { test, expect } from "@playwright/test";
 test("dashboard changes horizon and plant without changing metric semantics", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
+
+  // Keep this contract independent from the wall-clock day so CI does not flip at midnight.
+  await page.getByLabel("Fecha").fill("2026-08-11");
   await expect(page.getByLabel("Indicadores operativos").getByText("3.94 t", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Semana" }).click();
   await expect(page.getByText(/10 de ago|11 de ago/i).first()).toBeVisible();
