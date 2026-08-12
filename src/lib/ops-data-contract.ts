@@ -129,7 +129,6 @@ function numberOrUndefined(value?: number | string | null) {
 
 function scheduledStatus(row: RemoteScheduledActivityRow): ActivityRecord["status"] {
   if (row.status === "planned" || row.status === "delayed" || row.status === "missed") return row.status;
-  if (row.status === "rescheduled") return "planned";
   throw new Error(`Actividad programada ${row.id} está ${row.status} pero no tiene ejecución enlazada.`);
 }
 
@@ -187,7 +186,7 @@ export function mapRemoteActivities(
   });
 
   const pending = scheduledRows
-    .filter((row) => !actualScheduledIds.has(row.id))
+    .filter((row) => row.status !== "rescheduled" && !actualScheduledIds.has(row.id))
     .map((row): ActivityRecord => {
       const plant = plants.get(row.plant_id);
       if (!plant) throw new Error(`Sin membresía visible para la planta remota ${row.plant_id}.`);
