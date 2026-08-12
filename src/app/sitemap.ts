@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/nosotros",
     "/diagnostico",
     "/servicios",
+    "/parque-ambiental",
     "/biblioteca",
     "/biblioteca/guia-deficiencias",
     "/biblioteca/catalogo-wondergreen",
@@ -34,7 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticRoutes.map((route) => ({
       url: `${base}${route}/`,
       changeFrequency: "weekly" as const,
-      priority: route === "" ? 1 : route === "/wondergreen" || route === "/servicios" ? 0.9 : route.startsWith("/biblioteca") ? 0.85 : 0.8,
+      priority: route === "" ? 1 : route === "/wondergreen" || route === "/servicios" ? 0.9 : route === "/parque-ambiental" ? 0.86 : route.startsWith("/biblioteca") ? 0.85 : 0.8,
     })),
     ...services.map((service) => ({
       url: `${base}/servicios/${service.slug}/`,
