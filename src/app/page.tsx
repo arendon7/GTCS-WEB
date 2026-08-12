@@ -13,28 +13,28 @@ const doors = [
     kicker: "Producto agrícola",
     title: "Wondergreen",
     copy: "Fertilizantes organominerales sólidos y líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico.",
-    href: "#wondergreen",
+    href: "/wondergreen",
     cta: "Conocer Wondergreen",
   },
   {
     kicker: "Territorios",
     title: "Municipios y ESP",
     copy: "Diagnóstico, rutas selectivas, plantas, rehabilitación, operación y trazabilidad para convertir planeación en capacidad real.",
-    href: "#soluciones",
+    href: "/servicios#municipios",
     cta: "Explorar soluciones",
   },
   {
     kicker: "Generadores",
     title: "Empresas",
     copy: "Caracterización, separación, recolección, tratamiento, infraestructura y evidencia para corrientes orgánicas empresariales.",
-    href: "#soluciones",
+    href: "/servicios#empresas",
     cta: "Explorar soluciones",
   },
   {
     kicker: "Ingeniería + biología",
     title: "Plantas y tecnología",
     copy: "Compostaje, digestión anaerobia, biogás, biol, fertilizantes y operación basada en parámetros, mantenimiento y datos.",
-    href: "#tecnologia",
+    href: "/servicios#infraestructura",
     cta: "Entender la tecnología",
   },
 ];
@@ -65,9 +65,9 @@ const techSteps = [
 ];
 
 const knowledge = [
-  ["Guías por cultivo", "Café, cacao, aguacate, limón Tahití y pastos ya cuentan con conocimiento técnico que estamos llevando a la web."],
-  ["Deficiencias nutricionales", "Lectura de síntomas, posibles confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante."],
-  ["Uso Wondergreen", "Etapa, objetivo, formato, complemento, aplicación, seguimiento y ajuste como una ruta técnica, no una receta automática."],
+  ["Guías por cultivo", "Café, cacao, aguacate, limón Tahití y pastos ya cuentan con programas web orientativos por etapa y contexto.", "/wondergreen/cultivos"],
+  ["Deficiencias nutricionales", "Lectura de síntomas, posibles confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante.", "/biblioteca/guia-deficiencias"],
+  ["Uso Wondergreen", "Etapa, objetivo, formato, complemento, aplicación, seguimiento y ajuste como una ruta técnica, no una receta automática.", "/biblioteca"],
 ];
 
 export default function Home() {
@@ -79,10 +79,10 @@ export default function Home() {
             <img className={styles.brandLogo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
           </Link>
           <nav className={styles.nav} aria-label="Navegación pública">
-            <a href="#soluciones">Soluciones</a>
-            <a href="#wondergreen">Wondergreen</a>
+            <Link href="/servicios">Soluciones</Link>
+            <Link href="/wondergreen">Wondergreen</Link>
             <a href="#tecnologia">Tecnología</a>
-            <a href="#conocimiento">Conocimiento</a>
+            <Link href="/biblioteca">Conocimiento</Link>
             <a href="#impacto">Impacto</a>
           </nav>
           <div className={styles.headerActions}>
@@ -107,8 +107,8 @@ export default function Home() {
                 Greenatics conecta planeación, aprovechamiento, plantas, biotecnología, operación, Wondergreen y datos. No trabajamos una etapa aislada: diseñamos cómo el residuo entra, se transforma, se controla y vuelve al ciclo productivo.
               </p>
               <div className={styles.buttonRow}>
-                <a className={`${styles.button} ${styles.buttonPrimary}`} href="#wondergreen">Descubrir Wondergreen</a>
-                <a className={`${styles.button} ${styles.buttonGhost}`} href="#soluciones">Conocer nuestras soluciones</a>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen">Descubrir Wondergreen</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/servicios">Conocer nuestras soluciones</Link>
               </div>
             </div>
 
@@ -135,7 +135,7 @@ export default function Home() {
               <p>
                 No somos únicamente una empresa de fertilizantes y tampoco únicamente una empresa de residuos. Greenatics une ambas puntas: gestionar biomasa residual de manera técnicamente controlada y convertir parte de ese proceso en recursos que puedan retornar a sistemas productivos, con información suficiente para operar, medir y aprender.
               </p>
-              <a className={styles.inlineLink} href="#soluciones">Ver cómo cerramos el ciclo →</a>
+              <Link className={styles.inlineLink} href="/servicios">Ver cómo cerramos el ciclo →</Link>
             </div>
           </div>
         </section>
@@ -152,7 +152,7 @@ export default function Home() {
                   <span className={styles.eyebrow}>{item.kicker}</span>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
-                  <a href={item.href}>{item.cta} →</a>
+                  <Link href={item.href}>{item.cta} →</Link>
                 </article>
               ))}
             </div>
@@ -212,7 +212,7 @@ export default function Home() {
             </div>
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen">Explorar Wondergreen</Link>
-              <a className={`${styles.button} ${styles.buttonOutlineLight}`} href="#conocimiento">Ver conocimiento por cultivo</a>
+              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Ver conocimiento por cultivo</Link>
             </div>
           </div>
         </section>
@@ -241,12 +241,12 @@ export default function Home() {
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Conocimiento que se usa</span>
               <h2>Las guías dejan de vivir escondidas en un PDF.</h2>
-              <p>El conocimiento ya construido en Greenatics Marketing Studio se convertirá progresivamente en rutas web conectadas a cultivos, productos, síntomas y acompañamiento.</p>
+              <p>El conocimiento ya construido en Greenatics Marketing Studio ya se convierte en rutas web conectadas a cultivos, productos, síntomas y acompañamiento.</p>
             </div>
             <div className={styles.knowledgeGrid}>
-              {knowledge.map(([title, copy]) => (
+              {knowledge.map(([title, copy, href]) => (
                 <article className={styles.knowledgeCard} key={title}>
-                  <span className={styles.eyebrow}>Biblioteca Wondergreen</span><h3>{title}</h3><p>{copy}</p><a href="#contacto">Quiero conocer más →</a>
+                  <span className={styles.eyebrow}>Biblioteca Wondergreen</span><h3>{title}</h3><p>{copy}</p><Link href={href}>Abrir recurso →</Link>
                 </article>
               ))}
             </div>
@@ -291,7 +291,7 @@ export default function Home() {
           </div>
           <div className={styles.footerLinks}>
             <strong>Explorar</strong>
-            <a href="#soluciones">Soluciones</a><a href="#wondergreen">Wondergreen</a><a href="#tecnologia">Tecnología</a><a href="#conocimiento">Conocimiento</a>
+            <Link href="/servicios">Soluciones</Link><Link href="/wondergreen">Wondergreen</Link><a href="#tecnologia">Tecnología</a><Link href="/biblioteca">Conocimiento</Link>
           </div>
           <div className={styles.footerLinks}>
             <strong>Plataforma</strong>
