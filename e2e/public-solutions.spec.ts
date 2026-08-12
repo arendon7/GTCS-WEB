@@ -24,5 +24,5 @@ test("public solutions route keeps the bridge to OPS", async ({ page }) => {
   await page.goto("/soluciones");
   await page.getByRole("link", { name: "Acceder a Greenatics" }).click();
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByText("GREENATICS OPS", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });
