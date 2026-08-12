@@ -31,9 +31,9 @@ describe("public navigation and indexing contract", () => {
     const rules = Array.isArray(config.rules) ? config.rules : [config.rules];
     const disallow = rules.flatMap((rule) => Array.isArray(rule.disallow) ? rule.disallow : rule.disallow ? [rule.disallow] : []);
 
-    expect(disallow).toContain("/app");
-    expect(disallow).toContain("/dashboard");
-    expect(disallow).toContain("/api/");
+    for (const path of ["/app", "/dashboard", "/login", "/receptions", "/sales", "/supplies", "/api/"]) {
+      expect(disallow).toContain(path);
+    }
     expect(config.sitemap).toBe(`${publicSite.publicDomainTarget}/sitemap.xml`);
   });
 });
