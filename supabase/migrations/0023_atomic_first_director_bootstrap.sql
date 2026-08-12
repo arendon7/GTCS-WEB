@@ -86,7 +86,7 @@ begin
   from public.plants p
   where p.active
     and p.code = any(target_plant_codes)
-  on conflict (user_id, plant_id) do update
+  on conflict on constraint plant_memberships_pkey do update
     set role = 'director',
         active = true;
 
