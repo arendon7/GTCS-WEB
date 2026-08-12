@@ -18,7 +18,7 @@ test("Wondergreen exposes fertilizers, bioinputs and technology narrative", asyn
   await expect(page.getByRole("heading", { name: "Dos grandes líneas dentro de una misma marca." })).toBeVisible();
 
   const portfolio = page.locator("#portafolio");
-  await expect(portfolio.getByText("2Grow 15-3-3", { exact: true })).toBeVisible();
+  await expect(portfolio.getByText("2Grow Sólido · 15-3-3", { exact: true })).toBeVisible();
   await expect(portfolio.getByText("Extracto de Neem", { exact: true })).toBeVisible();
   await expect(portfolio.getByText("Extracto Ajo–Ají", { exact: true })).toBeVisible();
 
