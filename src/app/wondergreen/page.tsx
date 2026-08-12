@@ -1,54 +1,57 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { products } from "@/data/products";
+import { bioinputs, pricedProducts, products, technicalPortfolio } from "@/data/products";
 
 export const metadata: Metadata = {
-  title: "Wondergreen",
-  description: "Portafolio Wondergreen de nutrición vegetal organizado por etapa, cultivo y objetivo, con guías técnicas y herramientas de compra.",
+  title: "Wondergreen · Fertilizantes y bioinsumos",
+  description: "Portafolio Wondergreen de acondicionadores, fertilizantes organominerales sólidos y líquidos, bioinsumos, guías de cultivo y herramientas de selección.",
   alternates: { canonical: "/wondergreen/" },
 };
 
 const stages = [
-  ["Suelo", "Compost", "Preparación, materia orgánica y acondicionamiento."],
-  ["Crecer", "2GROW", "Brotación, establecimiento y recuperación vegetativa."],
-  ["Balancear", "2BALANCE", "Mantenimiento y nutrición balanceada."],
-  ["Florecer", "2BLOOM", "Transición reproductiva y floración."],
-  ["Producir", "2FRUIT", "Llenado, engrose y fase productiva."],
+  ["Suelo", "Compost", "Preparar, recuperar y trabajar la matriz orgánica del suelo."],
+  ["Crecer", "2GROW", "Acompañar establecimiento, brotación y desarrollo vegetativo."],
+  ["Balancear", "2BALANCE", "Sostener programas de nutrición equilibrada y mantenimiento."],
+  ["Florecer", "2BLOOM", "Acompañar la transición reproductiva y la etapa de floración."],
+  ["Producir", "2FRUIT", "Orientar el programa hacia desarrollo, llenado y fase productiva."],
+  ["Proteger / complementar", "Bioinsumos", "Incorporar herramientas botánicas y microbiológicas dentro de programas de manejo integrado."],
+];
+
+const portfolioMap = [
+  ["Acondicionadores", "Compost", "Sólido", "5 kg · 40 kg", "Suelo, materia orgánica y preparación."],
+  ["2GROW", "15-3-3 sólido + referencias líquidas", "Sólido / líquido", "5–40 kg · 1–1000 L", "Crecimiento y desarrollo vegetativo."],
+  ["2BALANCE", "7-7-7 sólido + 70-70-70 líquido", "Sólido / líquido", "5–40 kg · 1–1000 L", "Balance y mantenimiento."],
+  ["2BLOOM", "3-8-3 sólido + 30-80-30 líquido", "Sólido / líquido", "5–40 kg · 1–1000 L", "Transición reproductiva y floración."],
+  ["2FRUIT", "3-3-8 sólido + 30-30-80 líquido", "Sólido / líquido", "5–40 kg · 1–1000 L", "Fase productiva y llenado."],
+  ["Bioinsumos", "Ajo + Ají · Neem · Beauveria · Metarhizium · Bacillus subtilis · Trichoderma", "Líquido", "1 L · 5 L · 20 L", "Herramientas botánicas y microbiológicas sujetas a ficha/registro vigente."],
 ];
 
 export default function WondergreenPage() {
+  const fertilizerProducts = products.filter((product) => product.category !== "Bioinsumo");
   return (
     <>
-      <section className="wg-hero">
-        <div className="container wg-hero-grid">
-          <div>
-            <span className="eyebrow">Una marca Greenatics</span>
-            <div className="wg-brand-hero"><img className="official-logo" src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" /></div>
-            <h1>La nutrición cambia cuando cambia tu cultivo.</h1>
-            <p className="lead">Por eso organizamos Wondergreen por objetivo y etapa: entiende qué necesitas primero; elige el producto después.</p>
-            <div className="button-row"><Link className="button button--primary" href="/wondergreen/cultivos/">Buscar por cultivo</Link><Link className="button button--ghost" href="/wondergreen/cotizador/">Calcular pedido</Link></div>
-          </div>
-          <div className="leaf-system" aria-hidden="true"><div className="leaf leaf-a">GROW</div><div className="leaf leaf-b">BALANCE</div><div className="leaf leaf-c">BLOOM</div><div className="leaf leaf-d">FRUIT</div><div className="leaf-core">W</div></div>
-        </div>
-      </section>
+      <section className="wg-hero wg-hero--depth"><div className="container wg-hero-grid"><div><span className="eyebrow">Una marca Greenatics</span><div className="wg-brand-hero"><img className="official-logo" src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" /></div><h1>Fertilizantes y bioinsumos para pensar la nutrición como un sistema por etapas.</h1><p className="lead">Wondergreen nace de la lógica circular de Greenatics: recuperar materia orgánica, desarrollar productos de valor y acompañar al productor con herramientas técnicas. El portafolio reúne acondicionadores de suelo, fertilizantes organominerales sólidos y líquidos y una línea técnica de bioinsumos.</p><div className="button-row"><Link className="button button--primary" href="/wondergreen/cultivos/">Buscar por cultivo</Link><Link className="button button--ghost" href="/wondergreen/cotizador/">Ver referencias con precio</Link></div></div><div className="leaf-system" aria-hidden="true"><div className="leaf leaf-a">GROW</div><div className="leaf leaf-b">BALANCE</div><div className="leaf leaf-c">BLOOM</div><div className="leaf leaf-d">FRUIT</div><div className="leaf-core">W</div></div></div></section>
 
-      <section className="stage-section"><div className="container"><div className="section-heading"><span className="eyebrow">El sistema Wondergreen</span><h2>Empieza por la etapa.</h2></div><div className="stage-track">{stages.map(([title, family, copy], index) => <article key={family}><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><em>{family}</em><p>{copy}</p></article>)}</div></div></section>
+      <section className="wg-positioning"><div className="container wg-positioning-grid"><div><span className="eyebrow">Qué es Wondergreen</span><h2>El resultado agrícola de una cadena que empieza mucho antes del empaque.</h2></div><div><p>Greenatics transforma corrientes orgánicas mediante procesos biológicos y desarrolla rutas de aprovechamiento material. Wondergreen es la marca que lleva parte de ese conocimiento al mercado agrícola mediante acondicionadores, fertilizantes y bioinsumos. No todos los productos provienen de la misma corriente ni cumplen la misma función; por eso la web los organiza por categoría, etapa y objetivo.</p><Link href="/tecnologia/">Ver cómo se conecta con la tecnología Greenatics →</Link></div></div></section>
 
-      <section className="wg-tools">
-        <div className="container wg-tools-grid">
-          <article className="wg-tool-card"><span className="eyebrow">Ruta agronómica</span><h3>¿Tienes café, cacao, aguacate, limón o pastos?</h3><p>Explora una guía por momento fisiológico y entiende qué línea tiene sentido antes de hablar de formato o cantidad.</p><Link href="/wondergreen/cultivos/">Explorar por cultivo →</Link></article>
-          <article className="wg-tool-card wg-tool-card--dark"><span className="eyebrow eyebrow--light">Ruta comercial</span><h3>¿Ya sabes qué necesitas?</h3><p>Combina presentaciones y cantidades para calcular un valor de catálogo estimado antes de confirmar disponibilidad y logística.</p><Link href="/wondergreen/cotizador/">Abrir cotizador →</Link></article>
-        </div>
-      </section>
+      <section className="stage-section"><div className="container"><div className="section-heading"><span className="eyebrow">El sistema Wondergreen</span><h2>Empieza por la necesidad; no por el nombre del producto.</h2><p>La etapa ayuda a formular mejores preguntas. La recomendación final se ajusta al cultivo, lote, análisis, agua, manejo y documentación vigente.</p></div><div className="stage-track stage-track--six">{stages.map(([title,family,copy],index)=><article key={family}><span>{String(index+1).padStart(2,"0")}</span><strong>{title}</strong><em>{family}</em><p>{copy}</p></article>)}</div></div></section>
 
-      <section className="knowledge-section knowledge-section--soft">
-        <div className="container"><div className="section-heading"><span className="eyebrow">Wondergreen también enseña</span><h2>Del catálogo a una decisión mejor informada.</h2><p>Las guías y manuales que acompañan el portafolio viven como una biblioteca web: diagnóstico, cultivos, suelo, huertas y criterio de selección.</p></div><div className="knowledge-card-grid"><article><span className="knowledge-card-kicker">Diagnosticar</span><h3>Deficiencias nutricionales</h3><p>Qué mirar en aguacate, cacao, café, pastos y limón Tahití antes de asumir que un síntoma es falta de fertilizante.</p><Link className="knowledge-inline-link" href="/biblioteca/guia-deficiencias/">Abrir guía →</Link></article><article><span className="knowledge-card-kicker">Entender</span><h3>Catálogo como sistema</h3><p>Objetivo, etapa, familia, formato y validación: la lógica completa detrás de la selección Wondergreen.</p><Link className="knowledge-inline-link" href="/biblioteca/catalogo-wondergreen/">Ver catálogo web →</Link></article><article><span className="knowledge-card-kicker">Casa y huerta</span><h3>Wondergreen Nutrients Hogar</h3><p>Una línea separada para materas, casa y huerta urbana, actualmente en validación de producto antes de entrar a tienda.</p><Link className="knowledge-inline-link" href="/wondergreen/hogar/">Conocer Hogar →</Link></article></div><div className="knowledge-actions"><Link className="button button--ghost" href="/biblioteca/">Ver toda la biblioteca</Link></div></div>
-      </section>
+      <section className="portfolio-map"><div className="container"><div className="section-heading"><span className="eyebrow">Mapa de portafolio</span><h2>Familias, formatos y presentaciones en una sola vista.</h2><p>La existencia en Product Master no equivale a inventario. Las referencias con precio reconciliado se distinguen de las que todavía requieren confirmación comercial o regulatoria.</p></div><div className="portfolio-table-wrap"><table className="portfolio-table"><thead><tr><th>Familia</th><th>Referencias</th><th>Formato</th><th>Presentaciones documentadas</th><th>Función dentro del sistema</th></tr></thead><tbody>{portfolioMap.map(([family,reference,format,presentation,role])=><tr key={family}><td><strong>{family}</strong></td><td>{reference}</td><td>{format}</td><td>{presentation}</td><td>{role}</td></tr>)}</tbody></table></div></div></section>
 
-      <section className="catalog-section" id="productos"><div className="container"><div className="section-heading split-heading"><div><span className="eyebrow">Portafolio inicial</span><h2>Productos listos para explorar.</h2></div><p>Precios de catálogo de referencia. Disponibilidad, dosis y recomendación técnica se confirman antes de cerrar la compra.</p></div><div className="product-grid product-grid--catalog">{products.map((product) => <ProductCard key={product.slug} product={product} />)}</div></div></section>
+      <section className="wg-commercial-truth"><div className="container commercial-truth-grid"><div><span className="eyebrow eyebrow--light">Dos estados visibles</span><h2>Portafolio técnico ≠ disponibilidad inmediata.</h2></div><div className="truth-counts"><article><strong>{pricedProducts.length}</strong><span>referencias con precio base reconciliado en la web</span></article><article><strong>{technicalPortfolio.length}</strong><span>referencias técnicas que requieren confirmación antes de venta pública</span></article></div></div></section>
 
-      <section className="advisor-section"><div className="container advisor-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento técnico</span><h2>La guía orienta. El lote decide.</h2><p>Wondergreen ayuda a ordenar la decisión por cultivo y etapa, pero la recomendación final debe considerar condición del lote, análisis disponibles, agua, manejo y objetivo productivo.</p></div><Link className="button button--light" href="/contacto/">Solicitar recomendación técnica</Link></div></section>
+      <section className="catalog-section catalog-section--depth" id="fertilizantes"><div className="container"><div className="section-heading split-heading"><div><span className="eyebrow">Fertilizantes y acondicionadores</span><h2>Del suelo a la producción.</h2></div><p>La familia sólida utiliza la lógica organomineral de Wondergreen; las líneas líquidas permiten trabajar los mismos objetivos en otros formatos y escalas. Dosis y recomendaciones específicas se mantienen gobernadas por Product Truth.</p></div><div className="product-grid product-grid--catalog">{fertilizerProducts.map((product)=><ProductCard key={product.slug} product={product} />)}</div></div></section>
+
+      <section className="bioinput-section" id="bioinsumos"><div className="container"><div className="section-heading"><span className="eyebrow eyebrow--light">Bioinsumos Wondergreen</span><h2>Botánicos y microorganismos dentro de una estrategia de manejo integrado.</h2><p>El portafolio técnico incluye extractos de Ajo + Ají y Neem, además de referencias basadas en Beauveria, Metarhizium, Bacillus subtilis y Trichoderma. La web no asigna plagas, enfermedades, dosis o eficacias específicas hasta reconciliar especie/cepa, concentración, etiqueta, registro y ficha vigente.</p></div><div className="bioinput-grid">{bioinputs.map((product)=><ProductCard key={product.slug} product={product} />)}</div></div></section>
+
+      <section className="wg-tools"><div className="container wg-tools-grid"><article className="wg-tool-card"><span className="eyebrow">Ruta agronómica</span><h3>¿Tienes café, cacao, aguacate, limón, pastos u otro cultivo?</h3><p>Las guías organizan la lectura por momento fisiológico, objetivos, señales de alerta y seguimiento, para no reducir la decisión a “qué fertilizante compro”.</p><Link href="/wondergreen/cultivos/">Explorar por cultivo →</Link></article><article className="wg-tool-card wg-tool-card--dark"><span className="eyebrow eyebrow--light">Ruta comercial</span><h3>¿Ya conoces la referencia?</h3><p>El cotizador trabaja únicamente con referencias y precios reconciliados. Las familias técnicas pendientes se consultan directamente con el equipo.</p><Link href="/wondergreen/cotizador/">Abrir cotizador →</Link></article></div></section>
+
+      <section className="knowledge-section knowledge-section--soft"><div className="container"><div className="section-heading"><span className="eyebrow">MKTG Studio convertido en conocimiento útil</span><h2>Catálogo, guías y manuales deben acompañar el producto.</h2><p>La biblioteca pública transforma los documentos técnicos de Greenatics/Wondergreen en recorridos web: diagnóstico de deficiencias, guías por cultivo, manual de uso, huertas y lógica del portafolio.</p></div><div className="knowledge-card-grid"><article><span className="knowledge-card-kicker">Diagnosticar</span><h3>Deficiencias nutricionales</h3><p>Qué mirar antes de asumir que un síntoma se resuelve agregando fertilizante.</p><Link className="knowledge-inline-link" href="/biblioteca/guia-deficiencias/">Abrir guía →</Link></article><article><span className="knowledge-card-kicker">Aplicar mejor</span><h3>Manual de uso</h3><p>Preparación, equipo, vía, errores frecuentes y seguimiento después de la aplicación.</p><Link className="knowledge-inline-link" href="/biblioteca/manual-uso-wondergreen/">Abrir manual →</Link></article><article><span className="knowledge-card-kicker">Entender</span><h3>Catálogo como sistema</h3><p>Objetivo, etapa, familia, formato y validación detrás de la selección Wondergreen.</p><Link className="knowledge-inline-link" href="/biblioteca/catalogo-wondergreen/">Ver catálogo web →</Link></article></div><div className="knowledge-actions"><Link className="button button--ghost" href="/biblioteca/">Ver toda la biblioteca</Link></div></div></section>
+
+      <section className="product-photo-rule"><div className="container product-photo-rule-grid"><div><span className="eyebrow eyebrow--light">Imágenes de producto</span><h2>Preferimos mostrar “imagen pendiente” antes que vender con un empaque viejo.</h2></div><p>Los mockups históricos pueden servir como referencia de formatos, pero la web solo mostrará como packshot vigente una imagen asociada inequívocamente a la etiqueta, presentación y SKU actuales. Mientras eso se reconcilia, usamos representaciones gráficas del sistema y fotografías reales de uso/proceso, siguiendo los manuales de marca.</p></div></section>
+
+      <section className="advisor-section"><div className="container advisor-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento técnico</span><h2>La guía orienta. El lote decide.</h2><p>Wondergreen ayuda a ordenar la decisión por cultivo y etapa, pero la recomendación final considera condición del lote, análisis disponibles, agua, manejo, objetivo productivo y documentación vigente del producto.</p></div><Link className="button button--light" href="/contacto/">Solicitar recomendación técnica</Link></div></section>
     </>
   );
 }
