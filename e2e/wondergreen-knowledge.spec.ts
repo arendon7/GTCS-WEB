@@ -24,7 +24,8 @@ test("deficiency guide can continue into the cacao Wondergreen program", async (
 
   const cacaoBlock = page.locator("#cacao");
   const cacaoLink = cacaoBlock.getByRole("link", { name: /Ver programa Wondergreen para Cacao/i });
-  await cacaoBlock.scrollIntoViewIfNeeded();
+  await cacaoLink.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" }));
+  await expect(cacaoLink).toBeInViewport();
   await expect(cacaoLink).toBeVisible();
   await cacaoLink.click();
 
