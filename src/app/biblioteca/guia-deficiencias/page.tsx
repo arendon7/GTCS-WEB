@@ -78,10 +78,10 @@ export default function DeficiencyGuidePage() {
                       <tbody>
                         {crop.rows.map((row) => (
                           <tr key={`${crop.slug}-${row.nutrient}`}>
-                            <td><strong>{row.nutrient}</strong></td>
-                            <td>{row.starts}</td>
-                            <td>{row.symptom}</td>
-                            <td>{row.interpretation}</td>
+                            <td data-label="Nutriente"><strong>{row.nutrient}</strong></td>
+                            <td data-label="Dónde empieza">{row.starts}</td>
+                            <td data-label="Señal orientativa">{row.symptom}</td>
+                            <td data-label="Qué revisar">{row.interpretation}</td>
                           </tr>
                         ))}
                       </tbody>
