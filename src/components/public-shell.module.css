@@ -87,6 +87,10 @@
   text-underline-offset: 4px;
 }
 
+.mobileContact {
+  display: none;
+}
+
 .actions {
   display: flex;
   align-items: center;
@@ -223,6 +227,10 @@
 
   .contact {
     display: none;
+  }
+
+  .mobileContact {
+    display: inline;
   }
 
   .ops {
