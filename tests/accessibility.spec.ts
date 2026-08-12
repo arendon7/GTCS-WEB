@@ -5,6 +5,7 @@ const routes = [
   ["home", "/"],
   ["servicios", "/servicios/"],
   ["servicio-pgirs", "/servicios/pgirs/"],
+  ["parque-ambiental", "/parque-ambiental/"],
   ["wondergreen", "/wondergreen/"],
   ["producto-bioinsumo", "/wondergreen/productos/bioinsumo-trichoderma/"],
   ["cotizador", "/wondergreen/cotizador/"],
