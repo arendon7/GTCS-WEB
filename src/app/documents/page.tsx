@@ -1,11 +1,17 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { getOpsServerAccess } from "@/lib/ops-server-access";
-import { parseSharePointGraphRuntimeConfig } from "@/lib/sharepoint/graph-readonly";
+import {
+  normalizeSharePointRelativeFolder,
+  parseSharePointGraphRuntimeConfig,
+  type SharePointDirectoryListing,
+} from "@/lib/sharepoint/graph-readonly";
 import { getSharePointGraphRuntimeClient } from "@/lib/sharepoint/runtime-client";
 import type { SharePointDocumentReference } from "@/lib/document-source-contract";
 
 export const dynamic = "force-dynamic";
+
+type DocumentsSearchParams = Promise<{ folder?: string | string[] }>;
 
 function formattedDate(value?: string) {
   if (!value) return "Sin fecha de modificación";
@@ -13,6 +19,19 @@ function formattedDate(value?: string) {
     return new Intl.DateTimeFormat("es-CO", { dateStyle: "medium" }).format(new Date(value));
   } catch {
     return "Fecha no disponible";
+  }
+}
+
+function folderHref(relativePath: string) {
+  return relativePath ? `/documents?folder=${encodeURIComponent(relativePath)}` : "/documents";
+}
+
+function parseRequestedFolder(value: string | string[] | undefined) {
+  if (Array.isArray(value)) return { ok: false as const };
+  try {
+    return { ok: true as const, value: normalizeSharePointRelativeFolder(value || "") };
+  } catch {
+    return { ok: false as const };
   }
 }
 
@@ -50,6 +69,17 @@ function AccessProblem({ reason }: { reason: "membership" | "backend" }) {
   );
 }
 
+function InvalidFolder() {
+  return (
+    <section className="panel mx-auto max-w-4xl" role="alert">
+      <p className="eyebrow">Documentos · SharePoint</p>
+      <h1 className="text-3xl">Ruta documental no válida</h1>
+      <p className="lede mt-3">La carpeta solicitada no pertenece a una ruta relativa navegable dentro de la raíz documental autorizada. SharePoint no fue consultado.</p>
+      <a className="button secondary mt-5 inline-flex" href="/documents">Volver a la raíz documental</a>
+    </section>
+  );
+}
+
 function RemoteProblem() {
   return (
     <section className="panel mx-auto max-w-4xl" role="alert">
@@ -61,39 +91,84 @@ function RemoteProblem() {
   );
 }
 
-function DocumentList({ documents }: { documents: readonly SharePointDocumentReference[] }) {
+function Breadcrumbs({ relativeFolder }: { relativeFolder: string }) {
+  const segments = relativeFolder ? relativeFolder.split("/") : [];
+  let currentPath = "";
+  return (
+    <nav aria-label="Ruta documental" className="mt-5 flex flex-wrap items-center gap-2 text-sm">
+      <a className="font-semibold text-[var(--green-dark)] underline-offset-4 hover:underline" href="/documents">Raíz</a>
+      {segments.map((segment, index) => {
+        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+        const isCurrent = index === segments.length - 1;
+        return (
+          <span className="flex items-center gap-2" key={currentPath}>
+            <span aria-hidden="true" className="text-[var(--muted)]">/</span>
+            {isCurrent ? <span aria-current="page" className="font-semibold">{segment}</span> : <a className="text-[var(--green-dark)] underline-offset-4 hover:underline" href={folderHref(currentPath)}>{segment}</a>}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
+
+function DocumentCards({ documents }: { documents: readonly SharePointDocumentReference[] }) {
+  if (!documents.length) return null;
+  return (
+    <section className="grid gap-3" aria-labelledby="document-files-heading">
+      <h2 className="text-xl font-bold" id="document-files-heading">Archivos</h2>
+      {documents.map((document) => (
+        <article className="panel flex flex-col gap-4 md:flex-row md:items-center md:justify-between" key={`${document.driveId}:${document.itemId}`}>
+          <div className="min-w-0">
+            <h3 className="break-words text-lg font-bold">{document.title}</h3>
+            <p className="mt-1 text-sm text-[var(--muted)]">{document.mimeType || "Tipo de archivo no informado"} · {formattedDate(document.modifiedAt)}</p>
+          </div>
+          <a className="button secondary shrink-0" href={document.webUrl} target="_blank" rel="noopener noreferrer">Abrir en SharePoint</a>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+function DirectoryView({ listing }: { listing: SharePointDirectoryListing }) {
+  const total = listing.folders.length + listing.documents.length;
   return (
     <section className="mx-auto grid max-w-5xl gap-5">
       <header className="panel">
         <p className="eyebrow">Documentos · SharePoint</p>
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-          <div><h1 className="text-3xl">Centro documental</h1><p className="lede mt-2">Referencias de solo lectura al repositorio documental autorizado.</p></div>
-          <span className="rounded-full bg-[var(--green-soft)] px-4 py-2 text-sm font-bold text-[var(--green-dark)]">{documents.length} documento{documents.length === 1 ? "" : "s"}</span>
+          <div><h1 className="text-3xl">Centro documental</h1><p className="lede mt-2">Navegación de solo lectura dentro de la raíz documental autorizada.</p></div>
+          <span className="rounded-full bg-[var(--green-soft)] px-4 py-2 text-sm font-bold text-[var(--green-dark)]">{listing.folders.length} carpeta{listing.folders.length === 1 ? "" : "s"} · {listing.documents.length} archivo{listing.documents.length === 1 ? "" : "s"}</span>
         </div>
+        <Breadcrumbs relativeFolder={listing.relativeFolder} />
       </header>
 
-      {documents.length === 0 ? (
-        <section className="panel"><h2 className="text-xl">No hay archivos en esta carpeta</h2><p className="mt-2 text-sm text-[var(--muted)]">La conexión respondió correctamente, pero la raíz documental configurada no contiene archivos directos.</p></section>
-      ) : (
-        <div className="grid gap-3">
-          {documents.map((document) => (
-            <article className="panel flex flex-col gap-4 md:flex-row md:items-center md:justify-between" key={`${document.driveId}:${document.itemId}`}>
-              <div className="min-w-0">
-                <h2 className="break-words text-lg font-bold">{document.title}</h2>
-                <p className="mt-1 text-sm text-[var(--muted)]">{document.mimeType || "Tipo de archivo no informado"} · {formattedDate(document.modifiedAt)}</p>
-              </div>
-              <a className="button secondary shrink-0" href={document.webUrl} target="_blank" rel="noopener noreferrer">Abrir en SharePoint</a>
-            </article>
-          ))}
-        </div>
-      )}
+      {listing.folders.length > 0 ? (
+        <section className="grid gap-3" aria-labelledby="document-folders-heading">
+          <h2 className="text-xl font-bold" id="document-folders-heading">Carpetas</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            {listing.folders.map((folder) => (
+              <a className="panel block transition-transform hover:-translate-y-0.5" href={folderHref(folder.relativePath)} key={folder.relativePath}>
+                <span className="eyebrow">Carpeta</span>
+                <h3 className="mt-1 break-words text-lg font-bold">{folder.title}</h3>
+                <p className="mt-2 text-sm text-[var(--muted)]">{folder.childCount === undefined ? "Contenido no informado por SharePoint" : `${folder.childCount} elemento${folder.childCount === 1 ? "" : "s"}`}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-      <p className="text-xs text-[var(--muted)]">GREENATICS OPS conserva únicamente referencias documentales. Los archivos permanecen en SharePoint y esta vista no descarga ni modifica binarios.</p>
+      <DocumentCards documents={listing.documents} />
+
+      {total === 0 ? (
+        <section className="panel"><h2 className="text-xl">Carpeta vacía</h2><p className="mt-2 text-sm text-[var(--muted)]">La conexión respondió correctamente y esta carpeta no contiene archivos ni subcarpetas directas.</p></section>
+      ) : null}
+
+      <p className="text-xs text-[var(--muted)]">GREENATICS OPS conserva únicamente referencias y metadata documental. Los archivos permanecen en SharePoint; esta vista no descarga, modifica, mueve ni elimina binarios.</p>
     </section>
   );
 }
 
-export default async function DocumentsPage() {
+export default async function DocumentsPage({ searchParams }: { searchParams: DocumentsSearchParams }) {
   const access = await getOpsServerAccess();
   if (!access.ok) {
     switch (access.reason) {
@@ -107,15 +182,19 @@ export default async function DocumentsPage() {
     }
   }
 
+  const params = await searchParams;
+  const requestedFolder = parseRequestedFolder(params.folder);
+  if (!requestedFolder.ok) return <AppShell><InvalidFolder /></AppShell>;
+
   const config = parseSharePointGraphRuntimeConfig(process.env);
   if (!config.ok) return <AppShell><PendingIntegration /></AppShell>;
 
-  let documents: readonly SharePointDocumentReference[];
+  let listing: SharePointDirectoryListing;
   try {
-    documents = await getSharePointGraphRuntimeClient().listDocuments();
+    listing = await getSharePointGraphRuntimeClient().listDirectory(requestedFolder.value);
   } catch {
     return <AppShell><RemoteProblem /></AppShell>;
   }
 
-  return <AppShell><DocumentList documents={documents} /></AppShell>;
+  return <AppShell><DirectoryView listing={listing} /></AppShell>;
 }
