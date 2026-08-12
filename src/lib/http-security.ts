@@ -1,4 +1,4 @@
-import { protectedOpsRoutePrefixes } from "@/lib/ops-access-policy";
+import { protectedOpsRoutePrefixes } from "./ops-access-policy";
 
 export type SecurityHeader = { key: string; value: string };
 
