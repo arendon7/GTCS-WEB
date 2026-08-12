@@ -13,7 +13,7 @@ import { useSupplyStore } from "@/components/supply-store";
 import { usePurchaseRequestStore } from "@/components/purchase-request-store";
 import { useSettlementStore } from "@/components/settlement-store";
 
-const nav = [["Hoy", "/"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Insumos", "/supplies"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Registrar actividad", "/activities/new"], ["Alertas", "/#alertas"]] as const;
+const nav = [["Hoy", "/app"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Insumos", "/supplies"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Registrar actividad", "/activities/new"], ["Alertas", "/app#alertas"]] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
