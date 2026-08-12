@@ -39,7 +39,7 @@ type OpsStore = {
   identity?: OpsIdentity;
   backend: OpsBackendState;
   ready: boolean;
-  startActivity: (id: string, workerIds: string[]) => Promise<Result>;
+  startActivity: (id: string, workerIds: string[]) => Promise<CreateResult>;
   finishActivity: (id: string, payload: FinishPayload) => Promise<Result>;
   createActivity: (payload: NewActivityPayload) => Promise<CreateResult>;
   createReception: (payload: NewReceptionPayload) => Promise<CreateReceptionResult>;
@@ -122,8 +122,8 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (remoteMode) {
-      void refresh().catch(() => undefined);
-      return;
+      const timer = window.setTimeout(() => { void refresh().catch(() => undefined); }, 0);
+      return () => window.clearTimeout(timer);
     }
 
     const timer = window.setTimeout(() => {
@@ -176,9 +176,9 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
 
       if (remoteMode) {
         try {
-          await startRemoteScheduledActivity(id, workerIds);
+          const actualId = await startRemoteScheduledActivity(id, workerIds);
           await reloadAfterRemoteMutation();
-          return { ok: true };
+          return { ok: true, id: actualId };
         } catch (error) {
           return failure(error, "No fue posible iniciar la actividad.");
         }
@@ -191,7 +191,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       }
       const actualStart = new Date().toISOString();
       setActivities((current) => current.map((item) => item.id === id ? { ...item, workerIds, actualStart, actualEnd: undefined, status: "running" } : item));
-      return { ok: true };
+      return { ok: true, id };
     },
     async finishActivity(id, payload) {
       const activity = activities.find((item) => item.id === id);
