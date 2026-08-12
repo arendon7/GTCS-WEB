@@ -94,7 +94,7 @@ begin
   if exists(select 1 from unnest(temperature_points) as value where value is null) then
     raise exception 'Todas las temperaturas deben ser numéricas.';
   end if;
-  if humidity is not null and (humidity < 0 or humidity > 100) then raise exception 'La humedad debe estar entre 0 y 100 %.'; end if;
+  if humidity is not null and (humidity < 0 or humidity > 100) then raise exception 'La humedad debe estar entre 0 y 100 %%.'; end if;
 
   insert into public.compost_measurements(pile_id,temperature_points_c,humidity_pct,notes,created_by)
   values(pile.id,temperature_points,humidity,nullif(btrim(measurement_notes),''),auth.uid())
