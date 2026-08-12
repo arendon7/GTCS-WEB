@@ -2,7 +2,7 @@
 -- The browser never receives privileged credentials; authorization remains enforced by RLS/role checks.
 
 insert into public.plants (code,name)
-values ('tamesis','Támesis'),('yarumal','Yarumal')
+values ('TAM','Támesis'),('YAR','Yarumal')
 on conflict (code) do nothing;
 
 alter table public.scheduled_activities
@@ -244,8 +244,8 @@ create or replace function public.ops_record_material_receipt(
   net_weight numeric,
   rejection_weight numeric,
   acceptance_kind text,
-  started_at timestamptz,
-  ended_at timestamptz,
+  receipt_started_at timestamptz,
+  receipt_ended_at timestamptz,
   observation_text text default null
 )
 returns table(id uuid,lot_code text)
@@ -269,9 +269,11 @@ begin
   if net_weight <= 0 then raise exception 'El peso neto debe ser mayor que cero.'; end if;
   if rejection_weight < 0 or rejection_weight > net_weight then raise exception 'El rechazo registrado es inválido.'; end if;
   if acceptance_kind not in ('accepted','conditioned','rejected') then raise exception 'Estado de aceptación inválido.'; end if;
-  if ended_at < started_at then raise exception 'La hora final no puede ser anterior al inicio.'; end if;
+  if receipt_ended_at < receipt_started_at then raise exception 'La hora final no puede ser anterior al inicio.'; end if;
 
-  select code into plant_code from public.plants where public.plants.id=target_plant and active;
+  select p.code into plant_code
+  from public.plants p
+  where p.id=target_plant and p.active;
   if plant_code is null then raise exception 'Planta no encontrada o inactiva.'; end if;
 
   prefix := case
@@ -279,7 +281,7 @@ begin
     when lower(plant_code) like 'tam%' then 'TAM'
     else upper(left(regexp_replace(plant_code,'[^a-zA-Z0-9]','','g'),3))
   end;
-  receipt_date := (ended_at at time zone 'America/Bogota')::date;
+  receipt_date := (receipt_ended_at at time zone 'America/Bogota')::date;
 
   perform pg_advisory_xact_lock(hashtextextended('greenatics-receipt:' || target_plant::text || ':' || receipt_date::text,0));
 
@@ -291,12 +293,12 @@ begin
   generated_lot := prefix || '-' || waste_kind || '-' || to_char(receipt_date,'YYYYMMDD') || '-' || lpad(sequence_no::text,3,'0');
 
   return query
-  insert into public.material_receipts (
+  insert into public.material_receipts as r (
     plant_id,generator,route,waste_type,net_weight_kg,rejection_kg,acceptance_status,observation,started_at,ended_at,lot_code,source_kind,created_by
   ) values (
-    target_plant,btrim(generator_name),btrim(route_name),waste_kind,net_weight,rejection_weight,acceptance_kind,nullif(btrim(observation_text),''),started_at,ended_at,generated_lot,'app',auth.uid()
+    target_plant,btrim(generator_name),btrim(route_name),waste_kind,net_weight,rejection_weight,acceptance_kind,nullif(btrim(observation_text),''),receipt_started_at,receipt_ended_at,generated_lot,'app',auth.uid()
   )
-  returning material_receipts.id,material_receipts.lot_code;
+  returning r.id,r.lot_code;
 end;
 $$;
 
