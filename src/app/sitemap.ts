@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { crops } from "@/data/crops";
 import { products } from "@/data/products";
+import { services } from "@/data/services";
 
 export const dynamic = "force-static";
 
@@ -34,6 +35,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}${route}/`,
       changeFrequency: "weekly" as const,
       priority: route === "" ? 1 : route === "/wondergreen" || route === "/servicios" ? 0.9 : route.startsWith("/biblioteca") ? 0.85 : 0.8,
+    })),
+    ...services.map((service) => ({
+      url: `${base}/servicios/${service.slug}/`,
+      changeFrequency: "monthly" as const,
+      priority: 0.82,
     })),
     ...products.map((product) => ({
       url: `${base}/wondergreen/productos/${product.slug}/`,
