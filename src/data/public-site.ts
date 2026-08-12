@@ -69,6 +69,7 @@ export const internalRoutePrefixes = [
   "/cash",
   "/compost",
   "/dashboard",
+  "/documents",
   "/equipment",
   "/expenses",
   "/finance",

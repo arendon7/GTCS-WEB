@@ -12,7 +12,7 @@ const base = {
 
 describe("OPS access policy", () => {
   it("recognizes every protected route family without swallowing public routes", () => {
-    for (const path of ["/account/setup", "/admin/users", "/app", "/activities/new", "/compost/abc", "/dashboard", "/receptions/new", "/sales", "/supplies/consume"]) {
+    for (const path of ["/account/setup", "/admin/users", "/app", "/activities/new", "/compost/abc", "/dashboard", "/documents", "/receptions/new", "/sales", "/supplies/consume"]) {
       expect(isProtectedOpsPath(path)).toBe(true);
     }
     for (const path of ["/", "/wondergreen", "/soluciones", "/proyectos/yarumal", "/contacto", "/login", "/auth/confirm"]) {
