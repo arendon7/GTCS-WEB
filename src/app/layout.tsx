@@ -14,6 +14,7 @@ import "./depth.css";
 import "./home-depth.css";
 import "./catalog-depth.css";
 import "./service-detail.css";
+import "./park.css";
 import { JsonLd } from "@/components/json-ld";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
