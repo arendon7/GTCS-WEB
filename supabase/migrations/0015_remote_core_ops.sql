@@ -112,7 +112,7 @@ begin
   if not private.has_plant_role(scheduled.plant_id,array['operator','supervisor','technical','admin','director']) then
     raise exception 'No tienes permiso para iniciar actividades en esta planta.';
   end if;
-  if scheduled.status not in ('planned','delayed') then
+  if scheduled.status not in ('planned','delayed','missed') then
     raise exception 'La actividad programada no está disponible para iniciar.';
   end if;
 
