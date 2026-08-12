@@ -7,6 +7,7 @@ export const protectedOpsRoutePrefixes = [
   "/cash",
   "/compost",
   "/dashboard",
+  "/documents",
   "/equipment",
   "/expenses",
   "/finance",
