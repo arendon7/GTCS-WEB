@@ -26,7 +26,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main id="public-main" className={styles.main}>{children}</main>
+      <div id="public-main" className={styles.main}>{children}</div>
 
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
