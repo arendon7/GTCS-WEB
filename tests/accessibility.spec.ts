@@ -3,9 +3,13 @@ import { expect, test } from "@playwright/test";
 
 const routes = [
   ["home", "/"],
+  ["servicios", "/servicios/"],
   ["wondergreen", "/wondergreen/"],
+  ["producto-bioinsumo", "/wondergreen/productos/bioinsumo-trichoderma/"],
   ["cotizador", "/wondergreen/cotizador/"],
   ["municipios", "/municipios/"],
+  ["empresas", "/empresas/"],
+  ["tecnologia", "/tecnologia/"],
   ["proyectos", "/proyectos/"],
   ["biblioteca", "/biblioteca/"],
   ["diagnostico", "/diagnostico/"],
