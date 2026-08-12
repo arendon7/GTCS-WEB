@@ -5,6 +5,8 @@ import { expect, test } from "@playwright/test";
 const routes = [
   ["home", "/"],
   ["servicios", "/servicios/"],
+  ["servicio-pgirs", "/servicios/pgirs/"],
+  ["servicio-motocarguero", "/servicios/motocarguero/"],
   ["wondergreen", "/wondergreen/"],
   ["wondergreen-hogar", "/wondergreen/hogar/"],
   ["cultivos", "/wondergreen/cultivos/"],
@@ -33,6 +35,8 @@ const routes = [
 const screenshotRoutes = new Set([
   "home",
   "servicios",
+  "servicio-pgirs",
+  "servicio-motocarguero",
   "wondergreen",
   "producto-bioinsumo",
   "municipios",
@@ -42,6 +46,7 @@ const screenshotRoutes = new Set([
   "cafe",
   "yarumal",
   "biblioteca",
+  "catalogo-wondergreen",
   "guia-deficiencias",
   "manual-uso-wondergreen",
   "contacto",
