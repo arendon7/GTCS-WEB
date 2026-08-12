@@ -17,6 +17,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             {publicNav.map((item) => (
               <Link key={item.href} href={item.href}>{item.label}</Link>
             ))}
+            <Link className={styles.mobileContact} href="/contacto">Contacto</Link>
           </nav>
 
           <div className={styles.actions}>
