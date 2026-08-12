@@ -88,7 +88,12 @@ export default function DeficiencyGuidePage() {
                     </table>
                   </div>
                   <div className={styles.notes}>{crop.fieldNotes.map((note) => <div className={styles.note} key={note}>{note}</div>)}</div>
-                  <Link className={styles.inlineLink} href={`/wondergreen/cultivos/${crop.cropSlug}`}>Ver programa Wondergreen para {crop.name} →</Link>
+                  <div className={styles.cropActions}>
+                    <Link className={styles.cropCta} href={`/wondergreen/cultivos/${crop.cropSlug}`}>
+                      <span>Ver programa Wondergreen para {crop.name}</span>
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
                 </article>
               ))}
             </div>
