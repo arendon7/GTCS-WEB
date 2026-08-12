@@ -80,8 +80,20 @@
 }
 @media (max-width: 680px) {
   .container { width: min(100% - 28px,1180px); }
+  .headerInner { flex-wrap: wrap; gap: 8px 12px; padding-top: 8px; }
   .logo { width: 142px; }
-  .nav { display: none; }
+  .nav {
+    order: 3;
+    width: 100%;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 0 8px;
+    font-size: .82rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { flex: 0 0 auto; min-height: 40px; display: inline-flex; align-items: center; }
   .audienceGrid, .serviceDetail, .parkGrid { grid-template-columns: 1fr; }
   .categoryHead, .closingInner, .footerInner { flex-direction: column; align-items: flex-start; }
   .serviceCard { padding: 22px 18px; }
