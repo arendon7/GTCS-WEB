@@ -47,9 +47,11 @@ select is(
 );
 
 select is(
-  (select display_name from public.profiles where id='aaaaaaaa-0000-4000-8000-000000000003'::uuid),
+  (select display_name from public.admin_memberships_for_managed_plants()
+   where user_id='aaaaaaaa-0000-4000-8000-000000000003'::uuid
+     and plant_id='bbbbbbbb-0000-4000-8000-000000000001'::uuid),
   'Target Updated'::text,
-  'profile display name is persisted atomically with membership'
+  'profile display name is persisted atomically and exposed through the authorized admin RPC'
 );
 
 select lives_ok(
