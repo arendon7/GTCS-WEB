@@ -7,12 +7,15 @@ import { buildCanonicalPromotion } from "@/lib/import-promotion";
 import { employees, seedActivities, seedIncidents, seedReceptions } from "@/lib/mock-data";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
 import type { OpsBackendState, PlantAccess } from "@/lib/ops-data-contract";
+import type { OpsIdentity } from "@/lib/ops-session";
 import {
   createRemoteReception,
   createRemoteUnplannedActivity,
   finishRemoteActivity,
   loadPlantAccess,
+  loadRemoteIdentity,
   loadRemoteOpsSnapshot,
+  signOutRemote,
   startRemoteScheduledActivity,
 } from "@/lib/supabase/ops-repository";
 import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
@@ -33,6 +36,7 @@ type OpsStore = {
   receptions: ReceptionRecord[];
   workers: Worker[];
   access: PlantAccess[];
+  identity?: OpsIdentity;
   backend: OpsBackendState;
   ready: boolean;
   startActivity: (id: string, workerIds: string[]) => Promise<Result>;
@@ -41,6 +45,7 @@ type OpsStore = {
   createReception: (payload: NewReceptionPayload) => Promise<CreateReceptionResult>;
   promoteHistoricalImport: (run: ImportRun) => PromotionResult;
   refresh: () => Promise<void>;
+  signOut: () => Promise<Result>;
   resetDemo: () => void;
 };
 
@@ -75,14 +80,16 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
   const [receptions, setReceptions] = useState<ReceptionRecord[]>(() => remoteMode ? [] : seedReceptions);
   const [workers, setWorkers] = useState<Worker[]>(() => remoteMode ? [] : employees);
   const [access, setAccess] = useState<PlantAccess[]>([]);
+  const [identity, setIdentity] = useState<OpsIdentity>();
   const [backend, setBackend] = useState<OpsBackendState>({ mode, status: "booting" });
   const [ready, setReady] = useState(false);
 
   const hydrateRemote = useCallback(async () => {
     if (!remoteConfigured) throw new Error("Supabase está seleccionado pero faltan URL y publishable key.");
-    const nextAccess = await loadPlantAccess();
+    const [nextIdentity, nextAccess] = await Promise.all([loadRemoteIdentity(), loadPlantAccess()]);
     if (nextAccess.length === 0) throw new Error("La sesión no tiene ninguna planta activa asignada.");
     const snapshot = await loadRemoteOpsSnapshot(nextAccess);
+    setIdentity(nextIdentity);
     setAccess(nextAccess);
     setWorkers(snapshot.workers);
     setActivities(snapshot.activities);
@@ -91,17 +98,27 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
     setReady(true);
   }, [remoteConfigured]);
 
+  const clearRemoteState = useCallback(() => {
+    setIdentity(undefined);
+    setAccess([]);
+    setWorkers([]);
+    setActivities([]);
+    setIncidents([]);
+    setReceptions([]);
+  }, []);
+
   const refresh = useCallback(async () => {
     if (!remoteMode) return;
     setBackend({ mode: "supabase", status: "booting" });
     try {
       await hydrateRemote();
     } catch (error) {
+      clearRemoteState();
       setBackend({ mode: "supabase", status: "error", error: error instanceof Error ? error.message : "No fue posible cargar la operación remota." });
       setReady(true);
       throw error;
     }
-  }, [hydrateRemote, remoteMode]);
+  }, [clearRemoteState, hydrateRemote, remoteMode]);
 
   useEffect(() => {
     if (remoteMode) {
@@ -148,6 +165,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
     receptions,
     workers,
     access,
+    identity,
     backend,
     ready,
     async startActivity(id, workerIds) {
@@ -267,6 +285,18 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       return { ok: true, activities: promotion.activities.length, receptions: promotion.receptions.length };
     },
     refresh,
+    async signOut() {
+      if (!remoteMode) return { ok: false, error: "El modo local no tiene una sesión remota que cerrar." };
+      try {
+        await signOutRemote();
+        clearRemoteState();
+        setBackend({ mode: "supabase", status: "error", error: "Sesión cerrada. Inicia sesión para cargar la operación." });
+        setReady(true);
+        return { ok: true };
+      } catch (error) {
+        return failure(error, "No fue posible cerrar la sesión.");
+      }
+    },
     resetDemo() {
       if (remoteMode) {
         void refresh().catch(() => undefined);
@@ -278,7 +308,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
       setWorkers(employees);
       window.localStorage.removeItem(STORAGE_KEY);
     },
-  }), [activities, incidents, receptions, workers, access, backend, ready, refresh, reloadAfterRemoteMutation, remoteMode]);
+  }), [activities, incidents, receptions, workers, access, identity, backend, ready, clearRemoteState, refresh, reloadAfterRemoteMutation, remoteMode]);
 
   return <OpsStoreContext.Provider value={value}>{children}</OpsStoreContext.Provider>;
 }
