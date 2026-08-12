@@ -13,7 +13,7 @@ test("deficiency guide prevents symptom-only diagnosis and links to crop program
   await page.goto("/biblioteca/guia-deficiencias");
 
   await expect(page.getByRole("heading", { name: "Una hoja amarilla no es un diagnóstico." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Cuatro preguntas antes del producto" })).toBeVisible();
+  await expect(page.getByText("Cuatro preguntas antes del producto", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cacao", exact: true })).toBeVisible();
   await expect(page.getByText("Hojas viejas", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver programa Wondergreen para Cacao/i })).toHaveAttribute("href", "/wondergreen/cultivos/cacao");
