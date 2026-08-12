@@ -30,3 +30,10 @@ test("login is also private and excluded from indexing", async ({ request }) => 
   expect(headers["x-robots-tag"]).toBe("noindex, nofollow, noarchive");
   expect(headers["cache-control"]).toContain("no-store");
 });
+
+test("HOME content CTA crosses the public-to-OPS document boundary", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Entrar a GREENATICS OPS" }).click();
+  await expect(page).toHaveURL(/\/app$/);
+  await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
+});
