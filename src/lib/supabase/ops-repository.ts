@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ActivityUnit, NoveltyType } from "@/lib/domain";
+import type { OpsIdentity } from "@/lib/ops-session";
 import { createClient } from "@/lib/supabase/client";
 import {
   canonicalPlantId,
@@ -22,6 +23,8 @@ type MembershipRow = {
   active: boolean;
   plants: { id: string; code: string; name: string; active: boolean } | { id: string; code: string; name: string; active: boolean }[] | null;
 };
+
+type ProfileRow = { display_name: string; active: boolean };
 
 export type RemoteCreateActivityPayload = {
   plantId: string;
@@ -63,6 +66,28 @@ function remotePlantId(access: PlantAccess[], plantId: string) {
   const plant = access.find((item) => item.plantId === plantId);
   if (!plant) throw new Error(`No tienes acceso a la planta ${plantId}.`);
   return plant.dbId;
+}
+
+export async function loadRemoteIdentity(client: SupabaseClient = createClient()): Promise<OpsIdentity> {
+  const { data: authData, error: authError } = await client.auth.getUser();
+  if (authError) throw new Error(errorMessage("No fue posible validar la sesión", authError));
+  if (!authData.user) throw new Error("No hay una sesión autenticada para GREENATICS OPS.");
+
+  const { data, error } = await client
+    .from("profiles")
+    .select("display_name,active")
+    .eq("id", authData.user.id)
+    .maybeSingle();
+  if (error) throw new Error(errorMessage("No fue posible cargar el perfil", error));
+  const profile = data as ProfileRow | null;
+  if (!profile) throw new Error("La cuenta autenticada todavía no tiene un perfil operativo creado.");
+  if (!profile.active) throw new Error("El perfil de esta cuenta está inactivo.");
+
+  return {
+    userId: authData.user.id,
+    displayName: profile.display_name,
+    email: authData.user.email || undefined,
+  };
 }
 
 export async function loadPlantAccess(client: SupabaseClient = createClient()): Promise<PlantAccess[]> {
@@ -217,4 +242,9 @@ export async function createRemoteReception(
     throw new Error("La recepción fue registrada pero el servidor no devolvió lote e identificador válidos.");
   }
   return { id: row.id as string, lotCode: row.lot_code as string };
+}
+
+export async function signOutRemote(client: SupabaseClient = createClient()) {
+  const { error } = await client.auth.signOut();
+  if (error) throw new Error(errorMessage("No fue posible cerrar la sesión", error));
 }
