@@ -2,11 +2,18 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { shouldUseSupabase } from "@/lib/data-mode";
 
-function redirectWithSession(request: NextRequest, response: NextResponse, pathname: string) {
+function redirectWithSession(
+  request: NextRequest,
+  response: NextResponse,
+  pathname: string,
+  searchParams?: Record<string, string>,
+) {
   const url = request.nextUrl.clone();
   url.pathname = pathname;
-  const redirect = NextResponse.redirect(url);
+  url.search = "";
+  Object.entries(searchParams ?? {}).forEach(([key, value]) => url.searchParams.set(key, value));
 
+  const redirect = NextResponse.redirect(url);
   response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
   for (const header of ["cache-control", "expires", "pragma"]) {
     const value = response.headers.get(header);
@@ -44,9 +51,9 @@ export async function updateSession(request: NextRequest) {
   const isLogin = request.nextUrl.pathname === "/login";
 
   if (!isAuthenticated && !isLogin) {
-    const redirect = redirectWithSession(request, response, "/login");
-    redirect.nextUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
-    return redirect;
+    return redirectWithSession(request, response, "/login", {
+      next: `${request.nextUrl.pathname}${request.nextUrl.search}`,
+    });
   }
 
   if (isAuthenticated && isLogin) {
