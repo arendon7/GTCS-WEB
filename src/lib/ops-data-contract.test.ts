@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { canonicalPlantId, mapRemoteEmployee, mapRemoteReceipt, type PlantAccess } from "@/lib/ops-data-contract";
+import {
+  canonicalPlantId,
+  mapRemoteActivities,
+  mapRemoteEmployee,
+  mapRemoteReceipt,
+  type PlantAccess,
+} from "@/lib/ops-data-contract";
 
 const access: PlantAccess[] = [
   { dbId: "db-tam", plantId: "tamesis", code: "TAM", name: "Támesis", role: "operator" },
@@ -18,6 +24,107 @@ describe("ops remote data contract", () => {
       name: "Nelson",
       plantId: "tamesis",
     });
+  });
+
+  it("joins scheduled execution and workers without duplicating the planned row", () => {
+    const rows = mapRemoteActivities(
+      [{
+        id: "sched-1",
+        plant_id: "db-tam",
+        title: "Volteo programado",
+        process: "Compostaje",
+        planned_start: "2026-08-12T13:00:00.000Z",
+        planned_end: "2026-08-12T14:00:00.000Z",
+        status: "running",
+        equipment_ref: "Volteadora",
+      }],
+      [{
+        id: "act-1",
+        plant_id: "db-tam",
+        scheduled_activity_id: "sched-1",
+        title: "Volteo programado",
+        process: "Compostaje",
+        started_at: "2026-08-12T13:08:00.000Z",
+        source_kind: "app",
+      }],
+      [
+        { activity_id: "act-1", employee_id: "emp-1" },
+        { activity_id: "act-1", employee_id: "emp-2" },
+      ],
+      access,
+    );
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      id: "act-1",
+      plantId: "tamesis",
+      plannedStart: "2026-08-12T13:00:00.000Z",
+      actualStart: "2026-08-12T13:08:00.000Z",
+      workerIds: ["emp-1", "emp-2"],
+      equipment: "Volteadora",
+      status: "running",
+      source: "scheduled",
+    });
+  });
+
+  it("keeps a not-yet-executed scheduled activity as planned", () => {
+    const rows = mapRemoteActivities(
+      [{
+        id: "sched-2",
+        plant_id: "db-yar",
+        title: "Preparar digestor",
+        process: "Biodigestión",
+        planned_start: "2026-08-13T12:00:00.000Z",
+        status: "planned",
+      }],
+      [],
+      [],
+      access,
+    );
+
+    expect(rows[0]).toMatchObject({ id: "sched-2", plantId: "yarumal", status: "planned", source: "scheduled", workerIds: [] });
+  });
+
+  it("preserves finished unplanned activity result and novelty", () => {
+    const rows = mapRemoteActivities(
+      [],
+      [{
+        id: "act-2",
+        plant_id: "db-yar",
+        title: "Limpieza extraordinaria",
+        process: "Aseo",
+        started_at: "2026-08-12T14:00:00.000Z",
+        ended_at: "2026-08-12T15:00:00.000Z",
+        quantity: "120",
+        unit: "kg",
+        novelty_type: "delay",
+        notes: "Lluvia intensa",
+        source_kind: "app",
+      }],
+      [{ activity_id: "act-2", employee_id: "emp-3" }],
+      access,
+    );
+
+    expect(rows[0]).toMatchObject({
+      status: "done",
+      source: "unplanned",
+      quantity: 120,
+      unit: "kg",
+      noveltyType: "delay",
+      novelty: "Lluvia intensa",
+      workerIds: ["emp-3"],
+    });
+  });
+
+  it("rejects an impossible running schedule without a linked execution", () => {
+    expect(() => mapRemoteActivities([{
+      id: "sched-bad",
+      plant_id: "db-tam",
+      title: "Inconsistente",
+      process: "QA",
+      planned_start: "2026-08-12T13:00:00.000Z",
+      status: "running",
+    }], [], [], access)).toThrow(/no tiene ejecución enlazada/);
   });
 
   it("preserves reception uncertainty and historical provenance", () => {
