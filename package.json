@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "bootstrap:director": "node scripts/bootstrap-director.mjs"
+    "bootstrap:director": "node scripts/bootstrap-director.mjs",
+    "pilot:preflight": "node scripts/hosted-pilot-preflight.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "latest",

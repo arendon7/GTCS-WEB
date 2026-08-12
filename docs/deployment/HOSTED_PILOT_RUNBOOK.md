@@ -68,14 +68,33 @@ El script se niega a operar si ya existe cualquier membresía activa con rol `di
 6. Al completar la activación se entra a `/app`.
 7. RLS limita lectura y escritura a plantas/membresías autorizadas.
 
-## 7. Readiness
+## 7. Readiness ejecutable
 `GET /api/health` es público y no devuelve credenciales.
 
 Estados:
 - `200 ready`: modo local, o backend + Auth Admin + origen canónico operativos.
 - `503 degraded`: falta configuración o falla el backend remoto.
 
-Antes de habilitar el acceso real a OPS, exigir `200 ready` en el dominio final.
+Antes de habilitar el acceso real a OPS, exigir `200 ready` en el dominio final y ejecutar el gate anónimo del deployment:
+
+```bash
+npm run pilot:preflight -- \
+  --base-url https://<deployment> \
+  --expected-branch develop \
+  --expected-commit <sha-desplegado>
+```
+
+El preflight falla si:
+- `/api/health` no reporta `ready`, `supabase`, `supabase-auth` y checks remotos `ok`;
+- el runtime no reporta Vercel `preview` o `production`;
+- rama o commit no coinciden con lo esperado;
+- faltan headers de seguridad o privacidad;
+- `/app` anónimo no redirige al login canónico conservando `next=/app`;
+- el deployment sigue en `configuration-block`;
+- el sitemap expone rutas internas;
+- `robots.txt` deja de bloquear `/app`, `/login` o `/api/`.
+
+Este gate no usa correos, contraseñas ni tokens de usuarios y no sustituye el smoke multiusuario.
 
 ## 8. Smoke multiusuario obligatorio
 Con dos perfiles de navegador distintos:
@@ -93,7 +112,7 @@ Con dos perfiles de navegador distintos:
 ## 9. Gate de promoción
 Antes de promover el piloto:
 - CI de PR verde (`quality` + `database`);
-- `/api/health` en `ready`;
+- `npm run pilot:preflight` en PASS contra el SHA exacto desplegado;
 - smoke multiusuario aprobado;
 - redirects Auth configurados;
 - ningún secreto presente en GitHub, bundle cliente o logs;
