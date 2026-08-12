@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test("home exposes the daily operational surface", async ({ page }) => {
-  await page.goto("/");
+test("OPS home exposes the daily operational surface", async ({ page }) => {
+  await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Calendario", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Recepciones", exact: true })).toBeVisible();
@@ -35,7 +35,7 @@ test("operator can create and finish an unplanned activity", async ({ page }) =>
   await expect(page.getByText("En curso", { exact: true })).toBeVisible();
   await page.getByLabel(/Cantidad procesada/).fill("250");
   await page.getByRole("button", { name: "Finalizar actividad" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });
 
