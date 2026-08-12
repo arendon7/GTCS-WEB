@@ -29,5 +29,5 @@ export async function promoteRemoteHistoricalImport(access:PlantAccess[],run:Imp
   if(error)throw new Error(errorMessage("No fue posible promover el histórico",error));
   const row=Array.isArray(data)?data[0]:data;
   if(!row||typeof row.activities_count!=="number"||typeof row.receptions_count!=="number")throw new Error("La promoción terminó sin devolver conteos válidos.");
-  return {activities:row.activities_count as number,receptions:row.receptions_count as number};
+  return {ok:true as const,activities:row.activities_count as number,receptions:row.receptions_count as number};
 }
