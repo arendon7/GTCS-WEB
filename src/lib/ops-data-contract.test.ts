@@ -85,6 +85,31 @@ describe("ops remote data contract", () => {
     expect(rows[0]).toMatchObject({ id: "sched-2", plantId: "yarumal", status: "planned", source: "scheduled", workerIds: [] });
   });
 
+  it("does not surface a superseded rescheduled row as an executable activity", () => {
+    const rows = mapRemoteActivities(
+      [{
+        id: "sched-old",
+        plant_id: "db-yar",
+        title: "Volteo movido",
+        process: "Compostaje",
+        planned_start: "2026-08-11T12:00:00.000Z",
+        status: "rescheduled",
+      }, {
+        id: "sched-new",
+        plant_id: "db-yar",
+        title: "Volteo movido",
+        process: "Compostaje",
+        planned_start: "2026-08-13T12:00:00.000Z",
+        status: "planned",
+      }],
+      [],
+      [],
+      access,
+    );
+
+    expect(rows.map((row) => row.id)).toEqual(["sched-new"]);
+  });
+
   it("preserves finished unplanned activity result and novelty", () => {
     const rows = mapRemoteActivities(
       [],
