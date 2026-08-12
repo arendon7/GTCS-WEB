@@ -16,12 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = getProduct(slug);
   if (!product) return {};
   const canonical = `/wondergreen/productos/${product.slug}/`;
-  return {
-    title: product.name,
-    description: product.objective,
-    alternates: { canonical },
-    openGraph: { title: product.name, description: product.objective, url: canonical },
-  };
+  return { title: product.name, description: product.objective, alternates: { canonical }, openGraph: { title: product.name, description: product.objective, url: canonical } };
 }
 
 function cop(value: number) {
@@ -34,6 +29,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) notFound();
 
   const productUrl = `${site.url}/wondergreen/productos/${product.slug}/`;
+  const hasPublicPrice = typeof product.priceCop === "number";
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -42,43 +38,44 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description: product.objective,
     url: productUrl,
     brand: { "@type": "Brand", name: "Wondergreen Nutrients" },
-    category: `Fertilizantes > ${product.family}`,
+    category: product.category,
     sku: product.slug,
     additionalProperty: [
       { "@type": "PropertyValue", name: "Formato", value: product.format },
-      { "@type": "PropertyValue", name: "Presentación", value: product.presentation },
+      { "@type": "PropertyValue", name: "Presentaciones", value: product.presentations.join(", ") },
+      { "@type": "PropertyValue", name: "Estado comercial", value: hasPublicPrice ? "Precio público validado" : "Portafolio técnico; confirmar disponibilidad" },
       ...(product.formula ? [{ "@type": "PropertyValue", name: "Referencia", value: product.formula }] : []),
     ],
-    offers: {
-      "@type": "Offer",
-      url: productUrl,
-      priceCurrency: "COP",
-      price: product.priceCop,
-      seller: { "@id": `${site.url}/#organization` },
-    },
+    ...(hasPublicPrice ? { offers: { "@type": "Offer", url: productUrl, priceCurrency: "COP", price: product.priceCop, seller: { "@id": `${site.url}/#organization` } } } : {}),
   };
 
   return (
-    <section className="product-detail">
+    <>
       <JsonLd data={productSchema} />
-      <BreadcrumbJsonLd items={[
-        { name: "Greenatics", url: `${site.url}/` },
-        { name: "Wondergreen", url: `${site.url}/wondergreen/` },
-        { name: product.name, url: productUrl },
-      ]} />
-      <div className="container product-detail-grid">
-        <ProductVisual product={product} context="detail" />
-        <div className="product-info">
-          <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
-          <span className="eyebrow">{product.family} · {product.stage}</span>
-          <h1>{product.name}</h1>
-          <p className="lead">{product.objective}</p>
-          <dl className="product-facts"><div><dt>Formato</dt><dd>{product.format}</dd></div><div><dt>Presentación</dt><dd>{product.presentation}</dd></div>{product.formula ? <div><dt>Referencia</dt><dd>{product.formula}</dd></div> : null}</dl>
-          <div className="price-panel"><div><small>Precio de catálogo</small><strong>{cop(product.priceCop)}</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Consultar / comprar</a></div>
-          <div className="technical-lock"><strong>Información técnica protegida</strong><p>Dosis, compatibilidades, registro, composición declarada y recomendaciones específicas solo se publicarán desde fichas técnicas y documentos regulatorios validados.</p></div>
-          <ul className="notes-list">{product.notes.map((note) => <li key={note}>{note}</li>)}</ul>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` },{ name: "Wondergreen", url: `${site.url}/wondergreen/` },{ name: product.name, url: productUrl }]} />
+
+      <section className="product-detail product-detail--depth">
+        <div className="container product-detail-grid">
+          <ProductVisual product={product} context="detail" />
+          <div className="product-info">
+            <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
+            <span className="eyebrow">{product.category} · {product.family}</span>
+            <h1>{product.name}</h1>
+            <p className="lead">{product.objective}</p>
+            <div className={`commercial-status ${hasPublicPrice ? "commercial-status--priced" : "commercial-status--technical"}`}><strong>{hasPublicPrice ? "Referencia comercial reconciliada" : "Portafolio técnico"}</strong><span>{hasPublicPrice ? "Tiene precio público de referencia. Inventario y logística se confirman antes de venta." : "La familia está documentada, pero precio, disponibilidad, etiqueta y/o condición regulatoria deben reconciliarse antes de venta pública."}</span></div>
+            <dl className="product-facts"><div><dt>Categoría</dt><dd>{product.category}</dd></div><div><dt>Formato</dt><dd>{product.format}</dd></div><div><dt>Etapa / objetivo</dt><dd>{product.stage}</dd></div>{product.formula ? <div><dt>Referencia</dt><dd>{product.formula}</dd></div> : null}</dl>
+            {hasPublicPrice ? <div className="price-panel"><div><small>Precio público de referencia · {product.presentation}</small><strong>{cop(product.priceCop!)}</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Consultar / comprar</a></div> : <div className="price-panel price-panel--technical"><div><small>Estado comercial</small><strong>Consultar</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Validar disponibilidad</a></div>}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="product-story"><div className="container product-story-grid"><div><span className="eyebrow">Qué papel cumple</span><h2>{product.technicalRole}</h2><p>Wondergreen se organiza por función y etapa para ayudar a entender la decisión antes de entrar en dosis o frecuencia. La recomendación final debe leer cultivo, momento fisiológico, suelo, agua, manejo previo y análisis disponibles.</p></div><div><span className="eyebrow">Puede tener sentido en</span><ul>{product.idealFor.map((item)=><li key={item}>{item}</li>)}</ul></div></div></section>
+
+      <section className="presentation-section"><div className="container presentation-grid"><div><span className="eyebrow">Presentaciones documentadas</span><h2>El formato cambia según escala y canal.</h2><p>Estas son las presentaciones incluidas en el Product Master. Que una presentación aparezca aquí no implica inventario inmediato ni habilitación automática de compra.</p></div><div className="presentation-pills">{product.presentations.map((item)=><span key={item}>{item}</span>)}</div></div></section>
+
+      <section className="product-truth-section"><div className="container product-truth-grid"><div><span className="eyebrow eyebrow--light">Product Truth</span><h2>Información técnica protegida para no vender con datos equivocados.</h2></div><div><p>Dosis, frecuencia, compatibilidades, concentración ampliada, cepas, blancos biológicos, registro ICA, claims de eficacia y recomendaciones específicas solo se publican cuando están reconciliados con ficha técnica, etiqueta y documentación regulatoria vigente.</p><ul>{product.notes.map((note)=><li key={note}>{note}</li>)}</ul></div></div></section>
+
+      <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Siguiente paso</span><h2>¿Quieres saber si esta familia tiene sentido para tu cultivo?</h2></div><div className="button-row"><Link className="button button--dark" href="/wondergreen/cultivos/">Buscar por cultivo</Link><a className="button button--ghost" href={site.bookingUrl} target="_blank" rel="noreferrer">Hablar con el equipo</a></div></div></section>
+    </>
   );
 }
