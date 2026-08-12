@@ -50,7 +50,7 @@
 .ruleCard > span { color: var(--green700); font-size: .72rem; font-weight: 900; }
 .ruleCard p { color: var(--muted); font-size: .9rem; }
 .deficiencyStack { display: grid; gap: 22px; }
-.cropBlock { padding: 28px; border-radius: 26px; background: white; border: 1px solid var(--line); }
+.cropBlock { position: relative; isolation: isolate; scroll-margin-top: 88px; padding: 28px; border-radius: 26px; background: white; border: 1px solid var(--line); }
 .cropHead { display: grid; grid-template-columns: .6fr 1.4fr; gap: 30px; align-items: start; margin-bottom: 22px; }
 .cropHead p { margin: 0; color: var(--muted); }
 .tableWrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); }
@@ -61,7 +61,7 @@
 .table tr:last-child td { border-bottom: 0; }
 .notes { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 16px; }
 .note { padding: 13px 14px; border-radius: 14px; background: #f4f7f1; color: #5b6760; font-size: .84rem; }
-.inlineLink { display: inline-flex; margin-top: 18px; color: var(--green700) !important; font-weight: 900; }
+.inlineLink { position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; padding: 6px 0; color: var(--green700) !important; font-weight: 900; touch-action: manipulation; }
 .sourceGrid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 50px; align-items: start; }
 .sourceGrid p { color: #c0cec7; }
 .sourceGrid a { color: #d8ffbe; font-weight: 900; }
@@ -80,5 +80,7 @@
   .logo { width: 142px; }
   .headerLink { display: none; }
   .libraryGrid, .ruleGrid { grid-template-columns: 1fr; }
+  .cropBlock { scroll-margin-top: 78px; padding: 22px 18px; }
+  .inlineLink { width: 100%; padding: 10px 0; }
   .closingInner, .footerInner { flex-direction: column; align-items: flex-start; }
 }
