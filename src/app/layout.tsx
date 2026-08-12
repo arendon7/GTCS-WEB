@@ -10,6 +10,7 @@ import "./library.css";
 import "./knowledge.css";
 import "./crop-guide.css";
 import "./polish.css";
+import "./depth.css";
 import { JsonLd } from "@/components/json-ld";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
