@@ -42,6 +42,12 @@ Un PR funcional no se considera verde únicamente porque compile. El workflow de
 - build de producción;
 - browser E2E en Chromium desktop y móvil.
 
+Si el PR toca Supabase, migraciones, RLS, RPCs o persistencia remota, además debe completar:
+- arranque de una instancia Supabase local limpia;
+- aplicación desde cero de todas las migraciones versionadas;
+- pgTAP sobre permisos e invariantes críticas;
+- lint de PostgreSQL sin errores.
+
 Cualquier excepción debe quedar explícitamente justificada en el PR; nunca se elimina un gate solo para obtener PASS.
 
 ## Nunca
