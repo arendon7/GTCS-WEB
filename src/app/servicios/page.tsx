@@ -54,7 +54,7 @@ export default function ServicesPage() {
                     <div className="service-problem"><strong>Qué resuelve</strong><p>{service.solves}</p></div>
                     <details><summary>Qué puede incluir</summary><ul>{service.includes.map((item)=><li key={item}>{item}</li>)}</ul></details>
                     <details><summary>Entregables típicos</summary><ul>{service.deliverables.map((item)=><li key={item}>{item}</li>)}</ul></details>
-                    <Link href={`/contacto/?servicio=${service.slug}`}>{service.cta} →</Link>
+                    <Link href={`/servicios/${service.slug}/`}>Ver servicio en profundidad →</Link>
                   </article>
                 ))}
               </div>
