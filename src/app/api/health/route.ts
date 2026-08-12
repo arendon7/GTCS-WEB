@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
+import { getDeploymentProvenance } from "@/lib/deployment-provenance";
 import { createAdminClient, getAppBaseUrl, isSupabaseAdminConfigured } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,12 @@ export async function GET() {
 
   const ready = mode === "local" || (checks.backend === "ok" && checks.admin === "ok" && checks.appOrigin === "ok");
   const response = NextResponse.json(
-    { status: ready ? "ready" : "degraded", mode, checks, runtime: process.env.VERCEL_ENV || process.env.NODE_ENV || "unknown" },
+    {
+      status: ready ? "ready" : "degraded",
+      mode,
+      checks,
+      deployment: getDeploymentProvenance(),
+    },
     { status: ready ? 200 : 503 },
   );
   response.headers.set("Cache-Control", "no-store");
