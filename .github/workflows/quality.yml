@@ -35,6 +35,37 @@ jobs:
           npm run lint
           npm test
           npm run build
+      - name: Production private-header gate
+        run: |
+          set -euo pipefail
+          PORT=3101 npm run start > /tmp/greenatics-next-start.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3101/ >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/greenatics-next-start.log
+            exit 1
+          fi
+
+          check_private_headers() {
+            path="$1"
+            headers="$(curl -sS -D - -o /dev/null "http://127.0.0.1:3101${path}" | tr -d '\r')"
+            printf '%s\n' "$headers" | grep -Eiq '^x-robots-tag: noindex, nofollow, noarchive$'
+            printf '%s\n' "$headers" | grep -Eiq '^cache-control: .*no-store'
+            printf '%s\n' "$headers" | grep -Eiq '^pragma: no-cache$'
+          }
+
+          check_private_headers /login
+          check_private_headers /app
       - name: Cache Playwright Chromium
         uses: actions/cache@v4
         with:
