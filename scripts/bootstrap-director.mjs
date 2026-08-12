@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { DEFAULT_PILOT_PLANT_CODES, normalizePilotPlantCodes } from "./pilot-plant-codes.mjs";
 
 function arg(name) {
   const index = process.argv.indexOf(`--${name}`);
@@ -14,7 +15,12 @@ const secret = process.env.SUPABASE_SECRET_KEY;
 const rawBaseUrl = process.env.APP_BASE_URL?.trim();
 const email = (arg("email") || "").trim().toLowerCase();
 const displayName = (arg("name") || "").trim().replace(/\s+/g, " ");
-const plantCodes = (arg("plants") || "tamesis,yarumal").split(",").map((value) => value.trim()).filter(Boolean);
+let plantCodes;
+try {
+  plantCodes = normalizePilotPlantCodes(arg("plants") || DEFAULT_PILOT_PLANT_CODES);
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
 
 if (!url || !secret) fail("Define NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SECRET_KEY.");
 let baseUrl;
@@ -27,7 +33,6 @@ try {
 }
 if (!email || !email.includes("@")) fail("Usa --email usuario@dominio.");
 if (displayName.length < 2) fail("Usa --name 'Nombre Apellido'.");
-if (!plantCodes.length) fail("Selecciona al menos una planta con --plants.");
 
 const admin = createClient(url, secret, { auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false } });
 

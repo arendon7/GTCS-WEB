@@ -10,6 +10,8 @@ Publicar un piloto multiusuario de la plataforma dual GREENATICS sin exponer sec
 4. Verificar las plantas canónicas que se usarán en el piloto.
 5. No crear tablas, políticas ni RPC manualmente por fuera de migraciones.
 
+Para el piloto actual, los códigos canónicos son `TAM` (Támesis) y `YAR` (Yarumal). Los scripts aceptan los alias humanos `Támesis`/`Tamesis` y `Yarumal`, pero el runbook y la base deben usar los códigos canónicos.
+
 ## 2. Frontera pública / interna
 La misma base de producto contiene dos superficies:
 - públicas: `/`, `/wondergreen`, `/soluciones`, `/proyectos`, `/impacto`, `/biblioteca`, `/nosotros`, `/contacto` y sus descendientes;
@@ -47,17 +49,27 @@ APP_BASE_URL=https://<origen-canonico>
 
 `APP_BASE_URL` debe ser un origen HTTP/HTTPS confiable. La API de invitaciones no usa el header `Host` como sustituto.
 
-## 5. Primer director · bootstrap único
-Con variables cargadas en un entorno administrativo:
+## 5. Backend preflight + primer director
+Antes de enviar una invitación real, validar que Supabase, Auth Admin, las plantas canónicas y el estado de bootstrap sean coherentes:
+
+```bash
+npm run pilot:backend-preflight -- \
+  --plants TAM,YAR \
+  --require-no-director
+```
+
+Este gate es de solo lectura: no crea usuarios, no cambia membresías y no imprime secretos. Debe pasar antes del primer bootstrap.
+
+Con variables cargadas en un entorno administrativo y `APP_BASE_URL` ya fijado al deployment real:
 
 ```bash
 npm run bootstrap:director -- \
   --email director@greenatics.com.co \
   --name "Director GREENATICS" \
-  --plants tamesis,yarumal
+  --plants TAM,YAR
 ```
 
-El script se niega a operar si ya existe cualquier membresía activa con rol `director`. Después de ese punto, las invitaciones y cambios de rol se hacen desde `/admin/users`.
+El bootstrap usa una RPC atómica y se niega a operar si ya existe cualquier membresía activa con rol `director`. Después de ese punto, las invitaciones y cambios de rol se hacen desde `/admin/users`.
 
 ## 6. Activación del usuario invitado
 1. Dirección invita desde `/admin/users`.
@@ -112,6 +124,7 @@ Con dos perfiles de navegador distintos:
 ## 9. Gate de promoción
 Antes de promover el piloto:
 - CI de PR verde (`quality` + `database`);
+- `npm run pilot:backend-preflight -- --plants TAM,YAR` en PASS;
 - `npm run pilot:preflight` en PASS contra el SHA exacto desplegado;
 - smoke multiusuario aprobado;
 - redirects Auth configurados;
