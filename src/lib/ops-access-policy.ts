@@ -17,15 +17,14 @@ export const protectedOpsRoutePrefixes = [
   "/supplies",
 ] as const;
 
-type AccessEnv = Pick<
-  NodeJS.ProcessEnv,
-  | "NODE_ENV"
-  | "VERCEL_ENV"
-  | "NEXT_PUBLIC_DATA_MODE"
-  | "NEXT_PUBLIC_SUPABASE_URL"
-  | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
-  | "GREENATICS_OPS_LOCAL_BYPASS"
->;
+type AccessEnv = {
+  NODE_ENV?: "development" | "production" | "test" | string;
+  VERCEL_ENV?: string;
+  NEXT_PUBLIC_DATA_MODE?: string;
+  NEXT_PUBLIC_SUPABASE_URL?: string;
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?: string;
+  GREENATICS_OPS_LOCAL_BYPASS?: string;
+};
 
 export type OpsAccessMode = "local-bypass" | "supabase-auth" | "configuration-block";
 
