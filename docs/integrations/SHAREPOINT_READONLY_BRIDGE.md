@@ -12,7 +12,7 @@ Este repositorio es público. Por tanto, no se versionan:
 - rutas internas reales;
 - client IDs, secrets, tokens o credenciales.
 
-La estructura documental real se inventaría/auditaría fuera de Git y sus identificadores se inyectan únicamente como configuración server-side.
+La estructura documental real se inventariará y auditará fuera de Git, y sus identificadores se inyectan únicamente como configuración server-side.
 
 ## Configuración
 El contrato inicial usa:
