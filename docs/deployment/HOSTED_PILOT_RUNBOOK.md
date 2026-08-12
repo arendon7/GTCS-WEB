@@ -108,7 +108,27 @@ El preflight falla si:
 
 Este gate no usa correos, contraseñas ni tokens de usuarios y no sustituye el smoke multiusuario.
 
-## 8. Smoke multiusuario obligatorio
+## 8. Smoke RLS multiusuario de solo lectura
+Una vez existan el director y un operario de prueba de Támesis, cargar sus credenciales como variables efímeras del shell o secretos de CI; nunca guardarlas en archivos versionados, historial de comandos ni argumentos CLI:
+
+```text
+PILOT_DIRECTOR_EMAIL=...
+PILOT_DIRECTOR_PASSWORD=...
+PILOT_OPERATOR_EMAIL=...
+PILOT_OPERATOR_PASSWORD=...
+```
+
+Con `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` disponibles:
+
+```bash
+npm run pilot:rls-smoke
+```
+
+El gate usa dos sesiones independientes y únicamente la clave publicable/anon. Falla si recibe una `sb_secret_` o un JWT `service_role`. Por defecto exige que Dirección vea exactamente `TAM,YAR`, que el operario vea exactamente `TAM`, y que una lectura explícita de `YAR` como operario devuelva cero filas por RLS. Puede ajustarse el alcance esperado con `PILOT_DIRECTOR_PLANTS` y `PILOT_OPERATOR_PLANTS`.
+
+Este smoke no crea usuarios ni escribe datos. Certifica autenticación + aislamiento de lectura, pero no sustituye las transacciones funcionales siguientes.
+
+## 9. Smoke funcional multiusuario obligatorio
 Con dos perfiles de navegador distintos:
 1. La web pública abre sin sesión.
 2. `/app` redirige a `/login` sin sesión.
@@ -121,15 +141,16 @@ Con dos perfiles de navegador distintos:
 9. Consumo superior al lote es rechazado.
 10. Cerrar sesión invalida la navegación protegida y redirige a `/login`.
 
-## 9. Gate de promoción
+## 10. Gate de promoción
 Antes de promover el piloto:
 - CI de PR verde (`quality` + `database`);
 - `npm run pilot:backend-preflight -- --plants TAM,YAR` en PASS;
 - `npm run pilot:preflight` en PASS contra el SHA exacto desplegado;
-- smoke multiusuario aprobado;
+- `npm run pilot:rls-smoke` en PASS con los dos usuarios de prueba;
+- smoke funcional multiusuario aprobado;
 - redirects Auth configurados;
 - ningún secreto presente en GitHub, bundle cliente o logs;
 - web pública validada sin autenticación.
 
-## 10. Siguiente integración
+## 11. Siguiente integración
 SharePoint permanece como fuente documental e histórica. GREENATICS OPS es el sistema transaccional. La integración documental debe añadir referencias/lectura sin devolver las transacciones diarias a SharePoint.
