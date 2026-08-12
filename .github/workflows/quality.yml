@@ -73,7 +73,17 @@ jobs:
             supabase init
           fi
       - name: Apply migrations on fresh local Supabase
-        run: supabase start
+        run: |
+          set -o pipefail
+          supabase start --debug 2>&1 | tee supabase-bootstrap.log
+      - name: Upload Supabase bootstrap diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-bootstrap-diagnostics
+          path: supabase-bootstrap.log
+          if-no-files-found: error
+          retention-days: 7
       - name: Database RLS and transactional gates
         run: supabase test db
       - name: Postgres lint
