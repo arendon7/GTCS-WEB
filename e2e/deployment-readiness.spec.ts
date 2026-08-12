@@ -36,6 +36,25 @@ test("login is private and excluded from indexing in the development E2E server"
   expectDevelopmentNonCacheable(headers["cache-control"]);
 });
 
+test("health exposes only safe deployment provenance", async ({ request }) => {
+  const response = await request.get("/api/health");
+  expect(response.ok()).toBe(true);
+  const body = await response.json() as {
+    status: string;
+    mode: string;
+    opsAccess: string;
+    deployment: { platform: string; environment: string; branch: string | null; commit: string | null };
+  };
+
+  expect(body.status).toBe("ready");
+  expect(body.mode).toBe("local");
+  expect(body.opsAccess).toBe("local-bypass");
+  expect(body.deployment.platform).toBe("generic");
+  expect(Object.keys(body.deployment).sort()).toEqual(["branch", "commit", "environment", "platform"]);
+  expect(body.deployment.branch).toBeNull();
+  expect(body.deployment.commit).toBeNull();
+});
+
 test("HOME content CTA crosses the public-to-OPS document boundary", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Entrar a GREENATICS OPS" }).click();

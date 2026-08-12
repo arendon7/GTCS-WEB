@@ -1,21 +1,14 @@
 import "server-only";
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { resolveTrustedAppBaseUrl } from "@/lib/deployment-origin";
 
 export function isSupabaseAdminConfigured() {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SECRET_KEY);
 }
 
 export function getAppBaseUrl() {
-  const raw = process.env.APP_BASE_URL?.trim();
-  if (!raw) return null;
-  try {
-    const url = new URL(raw);
-    if (url.protocol !== "https:" && url.protocol !== "http:") return null;
-    return url.origin;
-  } catch {
-    return null;
-  }
+  return resolveTrustedAppBaseUrl();
 }
 
 export function createAdminClient() {
