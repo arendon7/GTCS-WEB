@@ -93,12 +93,11 @@ function RemoteProblem() {
 
 function Breadcrumbs({ relativeFolder }: { relativeFolder: string }) {
   const segments = relativeFolder ? relativeFolder.split("/") : [];
-  let currentPath = "";
   return (
     <nav aria-label="Ruta documental" className="mt-5 flex flex-wrap items-center gap-2 text-sm">
       <a className="font-semibold text-[var(--green-dark)] underline-offset-4 hover:underline" href="/documents">Raíz</a>
       {segments.map((segment, index) => {
-        currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+        const currentPath = segments.slice(0, index + 1).join("/");
         const isCurrent = index === segments.length - 1;
         return (
           <span className="flex items-center gap-2" key={currentPath}>
