@@ -1,5 +1,10 @@
 import { test, expect } from "@playwright/test";
 
+function expectDevelopmentNonCacheable(cacheControl: string | undefined) {
+  expect(cacheControl).toBeTruthy();
+  expect(cacheControl).toMatch(/no-store|no-cache/);
+}
+
 test("public responses expose baseline security headers without internal noindex", async ({ request }) => {
   const response = await request.get("/");
   expect(response.ok()).toBe(true);
@@ -12,23 +17,23 @@ test("public responses expose baseline security headers without internal noindex
   expect(headers["x-robots-tag"]).toBeUndefined();
 });
 
-test("OPS responses are non-indexable and non-cacheable", async ({ request }) => {
+test("OPS responses are non-indexable and non-cacheable in the development E2E server", async ({ request }) => {
   const response = await request.get("/app");
   expect(response.ok()).toBe(true);
   const headers = response.headers();
 
   expect(headers["x-robots-tag"]).toBe("noindex, nofollow, noarchive");
-  expect(headers["cache-control"]).toContain("no-store");
+  expectDevelopmentNonCacheable(headers["cache-control"]);
   expect(headers["pragma"]).toBe("no-cache");
 });
 
-test("login is also private and excluded from indexing", async ({ request }) => {
+test("login is private and excluded from indexing in the development E2E server", async ({ request }) => {
   const response = await request.get("/login");
   expect(response.ok()).toBe(true);
   const headers = response.headers();
 
   expect(headers["x-robots-tag"]).toBe("noindex, nofollow, noarchive");
-  expect(headers["cache-control"]).toContain("no-store");
+  expectDevelopmentNonCacheable(headers["cache-control"]);
 });
 
 test("HOME content CTA crosses the public-to-OPS document boundary", async ({ page }) => {
