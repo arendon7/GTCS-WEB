@@ -22,7 +22,7 @@ test("solution detail preserves problem, scope and deliverables", async ({ page 
 
 test("public solutions route keeps the bridge to OPS", async ({ page }) => {
   await page.goto("/soluciones");
-  await page.getByRole("link", { name: "Acceder a Greenatics" }).click();
+  await page.getByRole("banner").getByRole("link", { name: "Acceder a Greenatics" }).click();
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByText("GREENATICS OPS", { exact: true }).first()).toBeVisible();
 });

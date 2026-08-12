@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PublicShell } from "@/components/public-shell";
 import styles from "./public-home.module.css";
 
 export const metadata: Metadata = {
   title: "Greenatics | Transformamos residuos en vida",
   description:
     "Greenatics integra aprovechamiento de residuos orgánicos, tecnología, operación, Wondergreen y conocimiento para devolver valor al territorio y al suelo.",
+  alternates: { canonical: "/" },
 };
 
 const doors = [
@@ -13,28 +15,28 @@ const doors = [
     kicker: "Producto agrícola",
     title: "Wondergreen",
     copy: "Fertilizantes organominerales sólidos y líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico.",
-    href: "#wondergreen",
+    href: "/wondergreen",
     cta: "Conocer Wondergreen",
   },
   {
     kicker: "Territorios",
     title: "Municipios y ESP",
     copy: "Diagnóstico, rutas selectivas, plantas, rehabilitación, operación y trazabilidad para convertir planeación en capacidad real.",
-    href: "#soluciones",
+    href: "/soluciones",
     cta: "Explorar soluciones",
   },
   {
     kicker: "Generadores",
     title: "Empresas",
     copy: "Caracterización, separación, recolección, tratamiento, infraestructura y evidencia para corrientes orgánicas empresariales.",
-    href: "#soluciones",
+    href: "/soluciones",
     cta: "Explorar soluciones",
   },
   {
     kicker: "Ingeniería + biología",
     title: "Plantas y tecnología",
     copy: "Compostaje, digestión anaerobia, biogás, biol, fertilizantes y operación basada en parámetros, mantenimiento y datos.",
-    href: "#tecnologia",
+    href: "/#tecnologia",
     cta: "Entender la tecnología",
   },
 ];
@@ -72,27 +74,8 @@ const knowledge = [
 
 export default function Home() {
   return (
-    <div className={styles.publicSite}>
-      <header className={styles.header}>
-        <div className={`${styles.container} ${styles.headerInner}`}>
-          <Link className={styles.brandLink} href="/" aria-label="Greenatics, inicio">
-            <img className={styles.brandLogo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-          </Link>
-          <nav className={styles.nav} aria-label="Navegación pública">
-            <a href="#soluciones">Soluciones</a>
-            <a href="#wondergreen">Wondergreen</a>
-            <a href="#tecnologia">Tecnología</a>
-            <a href="#conocimiento">Conocimiento</a>
-            <a href="#impacto">Impacto</a>
-          </nav>
-          <div className={styles.headerActions}>
-            <a className={`${styles.button} ${styles.buttonGhost}`} href="#contacto">Contacto</a>
-            <Link className={`${styles.button} ${styles.buttonDark}`} href="/app">Acceder a Greenatics</Link>
-          </div>
-        </div>
-      </header>
-
-      <main>
+    <PublicShell>
+      <div className={styles.publicSite}>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
@@ -107,8 +90,8 @@ export default function Home() {
                 Greenatics conecta planeación, aprovechamiento, plantas, biotecnología, operación, Wondergreen y datos. No trabajamos una etapa aislada: diseñamos cómo el residuo entra, se transforma, se controla y vuelve al ciclo productivo.
               </p>
               <div className={styles.buttonRow}>
-                <a className={`${styles.button} ${styles.buttonPrimary}`} href="#wondergreen">Descubrir Wondergreen</a>
-                <a className={`${styles.button} ${styles.buttonGhost}`} href="#soluciones">Conocer nuestras soluciones</a>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen">Descubrir Wondergreen</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/soluciones">Conocer nuestras soluciones</Link>
               </div>
             </div>
 
@@ -135,7 +118,7 @@ export default function Home() {
               <p>
                 No somos únicamente una empresa de fertilizantes y tampoco únicamente una empresa de residuos. Greenatics une ambas puntas: gestionar biomasa residual de manera técnicamente controlada y convertir parte de ese proceso en recursos que puedan retornar a sistemas productivos, con información suficiente para operar, medir y aprender.
               </p>
-              <a className={styles.inlineLink} href="#soluciones">Ver cómo cerramos el ciclo →</a>
+              <Link className={styles.inlineLink} href="/soluciones">Ver cómo cerramos el ciclo →</Link>
             </div>
           </div>
         </section>
@@ -152,16 +135,16 @@ export default function Home() {
                   <span className={styles.eyebrow}>{item.kicker}</span>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
-                  <a href={item.href}>{item.cta} →</a>
+                  <Link href={item.href}>{item.cta} →</Link>
                 </article>
               ))}
             </div>
             <div className={styles.router}>
               <div>
                 <strong>¿Tienes un residuo, un cultivo o un proyecto por resolver?</strong>
-                <span>La web irá enrutando cada caso antes de recomendar producto, planta o servicio.</span>
+                <span>La web enruta cada caso antes de recomendar producto, planta o servicio.</span>
               </div>
-              <a className={`${styles.button} ${styles.buttonDark}`} href="#contacto">Hablar con Greenatics</a>
+              <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con Greenatics</Link>
             </div>
           </div>
         </section>
@@ -212,7 +195,7 @@ export default function Home() {
             </div>
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen">Explorar Wondergreen</Link>
-              <a className={`${styles.button} ${styles.buttonOutlineLight}`} href="#conocimiento">Ver conocimiento por cultivo</a>
+              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Ver conocimiento por cultivo</Link>
             </div>
           </div>
         </section>
@@ -241,12 +224,12 @@ export default function Home() {
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Conocimiento que se usa</span>
               <h2>Las guías dejan de vivir escondidas en un PDF.</h2>
-              <p>El conocimiento ya construido en Greenatics Marketing Studio se convertirá progresivamente en rutas web conectadas a cultivos, productos, síntomas y acompañamiento.</p>
+              <p>El conocimiento ya construido en Greenatics Marketing Studio se está convirtiendo en rutas web conectadas a cultivos, productos, síntomas y acompañamiento.</p>
             </div>
             <div className={styles.knowledgeGrid}>
               {knowledge.map(([title, copy]) => (
                 <article className={styles.knowledgeCard} key={title}>
-                  <span className={styles.eyebrow}>Biblioteca Wondergreen</span><h3>{title}</h3><p>{copy}</p><a href="#contacto">Quiero conocer más →</a>
+                  <span className={styles.eyebrow}>Biblioteca Wondergreen</span><h3>{title}</h3><p>{copy}</p><Link href="/biblioteca">Explorar biblioteca →</Link>
                 </article>
               ))}
             </div>
@@ -259,9 +242,12 @@ export default function Home() {
               <span className={styles.eyebrow}>Impacto conectado a la operación</span>
               <h2>Preferimos un dato pendiente a una cifra espectacular sin trazabilidad.</h2>
               <p>
-                GREENATICS OPS conecta recepción, proceso, producción, inventario, comercial y otros dominios internos. La capa pública solo mostrará indicadores conciliados, aprobados, fechados y con metodología cuando corresponda.
+                GREENATICS OPS conecta recepción, proceso, producción, inventario, comercial y otros dominios internos. La capa pública solo muestra indicadores conciliados, aprobados, fechados y con metodología cuando corresponda.
               </p>
-              <Link className={`${styles.button} ${styles.buttonGhost}`} href="/app">Entrar a GREENATICS OPS</Link>
+              <div className={styles.buttonRow}>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/impacto">Ver impacto público</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/app">Entrar a GREENATICS OPS</Link>
+              </div>
             </div>
             <div className={styles.console}>
               <div className={styles.consoleTop}><span>GREENATICS · IMPACTO</span><span className={styles.live}>publicación gobernada</span></div>
@@ -276,30 +262,12 @@ export default function Home() {
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Greenatics</span><h2>¿Tienes un residuo, un cultivo, una planta o un territorio por transformar?</h2></div>
             <div className={styles.buttonRow}>
-              <a className={`${styles.button} ${styles.buttonDark}`} href="#contacto">Contactar a Greenatics</a>
+              <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Contactar a Greenatics</Link>
               <Link className={`${styles.button} ${styles.buttonGhost}`} href="/app">Acceder a la app interna</Link>
             </div>
           </div>
         </section>
-      </main>
-
-      <footer className={styles.footer}>
-        <div className={`${styles.container} ${styles.footerGrid}`}>
-          <div>
-            <img className={styles.footerLogo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-            <p>Transformamos residuos en vida mediante tecnología, operación, conocimiento y soluciones que vuelven al suelo.</p>
-          </div>
-          <div className={styles.footerLinks}>
-            <strong>Explorar</strong>
-            <a href="#soluciones">Soluciones</a><a href="#wondergreen">Wondergreen</a><a href="#tecnologia">Tecnología</a><a href="#conocimiento">Conocimiento</a>
-          </div>
-          <div className={styles.footerLinks}>
-            <strong>Plataforma</strong>
-            <Link href="/app">GREENATICS OPS</Link><a href="#contacto">Contacto</a>
-          </div>
-        </div>
-        <div className={`${styles.container} ${styles.footerBottom}`}>© Greenatics S.A.S. · Plataforma pública + GREENATICS OPS</div>
-      </footer>
-    </div>
+      </div>
+    </PublicShell>
   );
 }
