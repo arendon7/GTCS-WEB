@@ -102,7 +102,7 @@ export default function ServicesPage() {
                           <div className={styles.detailBlock}><strong>Qué ayuda a resolver</strong><p>{service.solves}</p></div>
                           <div className={styles.detailBlock}><strong>Puede incluir</strong><ul>{service.includes.slice(0, 4).map((item) => <li key={item}>{item}</li>)}</ul></div>
                         </div>
-                        <a className={styles.serviceCta} href="/#contacto">{service.cta} →</a>
+                        <Link className={styles.serviceCta} href="/#contacto">{service.cta} →</Link>
                       </article>
                     ))}
                   </div>
@@ -142,7 +142,7 @@ export default function ServicesPage() {
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Siguiente paso</span><h2>¿Tienes un residuo, una planta o un proyecto por estructurar?</h2></div>
-            <a className={`${styles.button} ${styles.primary}`} href="/#contacto">Hablar con Greenatics</a>
+            <Link className={`${styles.button} ${styles.primary}`} href="/#contacto">Hablar con Greenatics</Link>
           </div>
         </section>
       </main>
