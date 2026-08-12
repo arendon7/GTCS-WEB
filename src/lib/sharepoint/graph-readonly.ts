@@ -16,6 +16,18 @@ export type SharePointGraphRuntimeConfig = Readonly<{
   auth: SharePointGraphAuthConfig;
 }>;
 
+export type SharePointFolderReference = Readonly<{
+  title: string;
+  relativePath: string;
+  childCount?: number;
+}>;
+
+export type SharePointDirectoryListing = Readonly<{
+  relativeFolder: string;
+  folders: readonly SharePointFolderReference[];
+  documents: readonly SharePointDocumentReference[];
+}>;
+
 type FetchLike = typeof fetch;
 type Clock = () => number;
 
@@ -24,9 +36,9 @@ type TokenCache = {
   refreshAfter: number;
 };
 
-type DocumentCacheEntry = {
+type DirectoryCacheEntry = {
   expiresAt: number;
-  documents: readonly SharePointDocumentReference[];
+  listing: SharePointDirectoryListing;
 };
 
 type GraphDriveItem = {
@@ -43,6 +55,11 @@ type GraphChildrenPage = {
   "@odata.nextLink"?: unknown;
 };
 
+type MappedDriveItem =
+  | { kind: "document"; value: SharePointDocumentReference }
+  | { kind: "folder"; value: SharePointFolderReference }
+  | null;
+
 export type SharePointListOptions = Readonly<{
   forceRefresh?: boolean;
 }>;
@@ -54,7 +71,10 @@ const TOKEN_SCOPE = "https://graph.microsoft.com/.default";
 const TOKEN_REFRESH_SAFETY_MS = 60_000;
 const DEFAULT_DOCUMENT_CACHE_TTL_MS = 60_000;
 const MAX_GRAPH_PAGES = 5;
-const MAX_DOCUMENTS = 200;
+const MAX_DIRECTORY_ITEMS = 200;
+const MAX_RELATIVE_PATH_LENGTH = 2048;
+const MAX_RELATIVE_SEGMENTS = 32;
+const MAX_FOLDER_NAME_LENGTH = 255;
 const GRAPH_PAGE_SIZE = 100;
 
 function clean(value: unknown) {
@@ -94,15 +114,22 @@ export function parseSharePointGraphRuntimeConfig(
 
 function relativeSegments(value: string) {
   if (!value) return [];
-  if (value.startsWith("/") || value.endsWith("/") || value.includes("\\")) {
+  if (value.length > MAX_RELATIVE_PATH_LENGTH || value.startsWith("/") || value.endsWith("/") || value.includes("\\")) {
     throw new Error("La ruta documental relativa no es válida.");
   }
 
   const segments = value.split("/").map((segment) => segment.trim());
-  if (segments.some((segment) => !segment || segment === "." || segment === "..")) {
+  if (
+    segments.length > MAX_RELATIVE_SEGMENTS ||
+    segments.some((segment) => !segment || segment === "." || segment === ".." || segment.length > MAX_FOLDER_NAME_LENGTH)
+  ) {
     throw new Error("La ruta documental relativa no puede contener segmentos vacíos ni navegación relativa.");
   }
   return segments;
+}
+
+export function normalizeSharePointRelativeFolder(value = "") {
+  return relativeSegments(value).join("/");
 }
 
 function sourceRootSegments(documentRoot: string) {
@@ -119,11 +146,29 @@ export function encodeSharePointGraphPath(documentRoot: string, relativeFolder =
 }
 
 function cacheKey(relativeFolder: string) {
-  return relativeSegments(relativeFolder).join("/");
+  return normalizeSharePointRelativeFolder(relativeFolder);
 }
 
 function asObject(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function safeFolderName(value: unknown) {
+  if (typeof value !== "string") throw new Error("Microsoft Graph devolvió una carpeta sin nombre válido.");
+  const name = value;
+  if (
+    !name ||
+    name !== name.trim() ||
+    name === "." ||
+    name === ".." ||
+    name.length > MAX_FOLDER_NAME_LENGTH ||
+    name.includes("/") ||
+    name.includes("\\") ||
+    /[\u0000-\u001f]/.test(name)
+  ) {
+    throw new Error("Microsoft Graph devolvió una carpeta con nombre no navegable.");
+  }
+  return name;
 }
 
 function safeGraphNextLink(value: unknown, driveId: string) {
@@ -151,10 +196,27 @@ function safeGraphNextLink(value: unknown, driveId: string) {
   return url.toString();
 }
 
-function mapDriveItem(item: unknown, driveId: string): SharePointDocumentReference | null {
+function mapDriveItem(item: unknown, driveId: string, relativeFolder: string): MappedDriveItem {
   const row = asObject(item) as GraphDriveItem | null;
   if (!row) throw new Error("Microsoft Graph devolvió un driveItem inválido.");
-  if (row.folder) return null;
+
+  if (row.folder !== undefined && row.folder !== null) {
+    const folderMetadata = asObject(row.folder);
+    if (!folderMetadata) throw new Error("Microsoft Graph devolvió metadata de carpeta inválida.");
+    const title = safeFolderName(row.name);
+    const relativePath = normalizeSharePointRelativeFolder(relativeFolder ? `${relativeFolder}/${title}` : title);
+    const rawChildCount = folderMetadata.childCount;
+    let childCount: number | undefined;
+    if (rawChildCount !== undefined) {
+      const parsed = Number(rawChildCount);
+      if (!Number.isSafeInteger(parsed) || parsed < 0) {
+        throw new Error("Microsoft Graph devolvió un childCount de carpeta inválido.");
+      }
+      childCount = parsed;
+    }
+    return { kind: "folder", value: Object.freeze({ title, relativePath, ...(childCount === undefined ? {} : { childCount }) }) };
+  }
+
   if (!row.file || typeof row.file !== "object") return null;
 
   const reference = validateSharePointDocumentReference({
@@ -168,7 +230,7 @@ function mapDriveItem(item: unknown, driveId: string): SharePointDocumentReferen
   });
 
   if (!reference.ok) throw new Error(`Microsoft Graph devolvió una referencia documental inválida: ${reference.error}`);
-  return reference.value;
+  return { kind: "document", value: reference.value };
 }
 
 function graphChildrenUrl(source: SharePointSourceConfig, relativeFolder: string) {
@@ -181,7 +243,7 @@ function graphChildrenUrl(source: SharePointSourceConfig, relativeFolder: string
 
 export class SharePointGraphReadonlyClient {
   private tokenCache: TokenCache | null = null;
-  private readonly documentCache = new Map<string, DocumentCacheEntry>();
+  private readonly directoryCache = new Map<string, DirectoryCacheEntry>();
 
   constructor(
     private readonly config: SharePointGraphRuntimeConfig,
@@ -257,15 +319,16 @@ export class SharePointGraphReadonlyClient {
     return row as GraphChildrenPage;
   }
 
-  async listDocuments(relativeFolder = "", options: SharePointListOptions = {}) {
+  async listDirectory(relativeFolder = "", options: SharePointListOptions = {}): Promise<SharePointDirectoryListing> {
     const key = cacheKey(relativeFolder);
     const now = this.now();
-    const cached = this.documentCache.get(key);
-    if (!options.forceRefresh && cached && now < cached.expiresAt) return cached.documents;
+    const cached = this.directoryCache.get(key);
+    if (!options.forceRefresh && cached && now < cached.expiresAt) return cached.listing;
 
     const token = await this.accessToken();
     const documents: SharePointDocumentReference[] = [];
-    let pageUrl: string | null = graphChildrenUrl(this.config.source, relativeFolder);
+    const folders: SharePointFolderReference[] = [];
+    let pageUrl: string | null = graphChildrenUrl(this.config.source, key);
     let pageCount = 0;
 
     while (pageUrl) {
@@ -274,25 +337,34 @@ export class SharePointGraphReadonlyClient {
 
       const page = await this.graphPage(pageUrl, token);
       for (const item of page.value as unknown[]) {
-        const document = mapDriveItem(item, this.config.source.driveId);
-        if (!document) continue;
-        documents.push(document);
-        if (documents.length > MAX_DOCUMENTS) throw new Error("Microsoft Graph excedió el límite de documentos permitido.");
+        const mapped = mapDriveItem(item, this.config.source.driveId, key);
+        if (!mapped) continue;
+        if (mapped.kind === "folder") folders.push(mapped.value);
+        else documents.push(mapped.value);
+        if (folders.length + documents.length > MAX_DIRECTORY_ITEMS) {
+          throw new Error("Microsoft Graph excedió el límite de elementos documentales permitido.");
+        }
       }
 
       pageUrl = safeGraphNextLink(page["@odata.nextLink"], this.config.source.driveId);
     }
 
+    const immutableFolders = Object.freeze(folders.map((folder) => Object.freeze({ ...folder })));
     const immutableDocuments = Object.freeze(documents.map((document) => Object.freeze({ ...document })));
-    this.documentCache.set(key, {
-      documents: immutableDocuments,
+    const listing = Object.freeze({ relativeFolder: key, folders: immutableFolders, documents: immutableDocuments });
+    this.directoryCache.set(key, {
+      listing,
       expiresAt: now + Math.max(0, this.documentCacheTtlMs),
     });
-    return immutableDocuments;
+    return listing;
+  }
+
+  async listDocuments(relativeFolder = "", options: SharePointListOptions = {}) {
+    return (await this.listDirectory(relativeFolder, options)).documents;
   }
 
   clearDocumentCache() {
-    this.documentCache.clear();
+    this.directoryCache.clear();
   }
 }
 
