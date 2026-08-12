@@ -1,4 +1,6 @@
 export const protectedOpsRoutePrefixes = [
+  "/account",
+  "/admin",
   "/app",
   "/activities",
   "/calendar",

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { proxy } from "./proxy";
+import { config, proxy } from "./proxy";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -38,6 +38,16 @@ describe("OPS request boundary", () => {
     expect(response.status).toBeLessThan(400);
     expect(response.headers.get("location")).toContain("/login?reason=configuration");
     expect(response.headers.get("location")).toContain("next=%2Fapp");
+  });
+
+  it("protects account and administration through the same boundary", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_DATA_MODE", "local");
+
+    const response = await proxy(request("/admin/users"));
+    expect(response.headers.get("location")).toContain("/login?reason=configuration");
+    expect(config.matcher).toContain("/admin/:path*");
+    expect(config.matcher).toContain("/account/:path*");
   });
 
   it("blocks deployed previews even if a local bypass flag is present", async () => {
