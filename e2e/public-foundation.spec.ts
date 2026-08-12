@@ -31,8 +31,8 @@ test("Yarumal exposes exact recovered evidence assets with historical truth lock
   await page.goto("/proyectos/yarumal");
 
   await expect(page.getByRole("heading", { name: "Un registro real del caso Yarumal." })).toBeVisible();
-  await expect(page.getByAltText("Vista aérea documentada del caso Greenatics en Yarumal")).toBeVisible();
-  await expect(page.getByAltText("Segunda vista aérea documentada del caso Greenatics en Yarumal")).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByText(/el registro visual documenta experiencia histórica/i)).toBeVisible();
 
   const breadcrumb = await jsonLdByType(page, "BreadcrumbList");
