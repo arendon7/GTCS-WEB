@@ -10,33 +10,11 @@ import { expenseCategories,expenseCategoryLabel,type ExpenseCategory } from "@/l
 const cop=new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0});
 
 export function PurchaseRequestForm(){
-  const router=useRouter();
-  const {submitRequest}=usePurchaseRequestStore();
-  const {equipment}=useMaintenanceStore();
-  const [plantId,setPlantId]=useState("tamesis");
-  const [requestedBy,setRequestedBy]=useState("");
-  const [category,setCategory]=useState<ExpenseCategory>("maintenance");
-  const [concept,setConcept]=useState("");
-  const [justification,setJustification]=useState("");
-  const [estimatedAmount,setEstimatedAmount]=useState("");
-  const [neededBy,setNeededBy]=useState("");
-  const [suggestedSupplier,setSuggestedSupplier]=useState("");
-  const [equipmentId,setEquipmentId]=useState("");
-  const [processRef,setProcessRef]=useState("");
-  const [evidenceRef,setEvidenceRef]=useState("");
-  const [feedback,setFeedback]=useState("");
-  const [submitting,setSubmitting]=useState(false);
-  const availableEquipment=useMemo(()=>equipment.filter((item)=>item.plantId===plantId),[equipment,plantId]);
-  const selectedEquipment=availableEquipment.find((item)=>item.id===equipmentId);
-  const estimate=Number(estimatedAmount);
+  const router=useRouter();const {submitRequest}=usePurchaseRequestStore();const {equipment}=useMaintenanceStore();
+  const [plantId,setPlantId]=useState("tamesis");const [requestedBy,setRequestedBy]=useState("");const [category,setCategory]=useState<ExpenseCategory>("maintenance");const [concept,setConcept]=useState("");const [justification,setJustification]=useState("");const [estimatedAmount,setEstimatedAmount]=useState("");const [neededBy,setNeededBy]=useState("");const [suggestedSupplier,setSuggestedSupplier]=useState("");const [equipmentId,setEquipmentId]=useState("");const [processRef,setProcessRef]=useState("");const [evidenceRef,setEvidenceRef]=useState("");const [feedback,setFeedback]=useState("");const [submitting,setSubmitting]=useState(false);
+  const availableEquipment=useMemo(()=>equipment.filter((item)=>item.plantId===plantId),[equipment,plantId]);const selectedEquipment=availableEquipment.find((item)=>item.id===equipmentId);const estimate=Number(estimatedAmount);
 
-  function save(){
-    if(submitting)return;
-    setSubmitting(true);
-    const result=submitRequest({plantId,requestedBy,category,concept,justification,estimatedAmountCop:estimate,neededBy,suggestedSupplier,equipmentId:equipmentId||undefined,equipmentName:selectedEquipment?.name,processRef,evidenceRef});
-    if(!result.ok){setFeedback(result.error);setSubmitting(false);return;}
-    router.push("/purchases");
-  }
+  async function save(){if(submitting)return;setSubmitting(true);setFeedback("");const result=await submitRequest({plantId,requestedBy,category,concept,justification,estimatedAmountCop:estimate,neededBy,suggestedSupplier,equipmentId:equipmentId||undefined,equipmentName:selectedEquipment?.name,processRef,evidenceRef});if(!result.ok){setFeedback(result.error);setSubmitting(false);return;}router.push("/purchases");}
 
   return <section className="panel mx-auto max-w-4xl">
     <div className="section-head"><div><p className="eyebrow">Necesidad operacional</p><h1 className="text-3xl">Nueva solicitud de compra</h1><p className="lede">Solicita aprobación antes de registrar la compra real. El valor aquí es una estimación, no un gasto ejecutado.</p></div><Link className="button secondary" href="/purchases">Cancelar</Link></div>
@@ -56,6 +34,6 @@ export function PurchaseRequestForm(){
     </div>
     <div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]"><strong className="text-[var(--ink)]">Al enviar:</strong> nace una solicitud pendiente. No se crea compra, gasto, pago ni movimiento de inventario.</div>
     {feedback&&<p role="alert" className="mt-4 rounded-lg bg-[var(--red-soft)] p-3 text-sm font-semibold text-[var(--red)]">{feedback}</p>}
-    <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={save} disabled={submitting}>{submitting?"Enviando solicitud…":"Enviar solicitud"}</button></div>
+    <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={()=>void save()} disabled={submitting}>{submitting?"Enviando solicitud…":"Enviar solicitud"}</button></div>
   </section>;
 }

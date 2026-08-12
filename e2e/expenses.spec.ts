@@ -21,9 +21,10 @@ test("records operational purchase without implying payment",async({page})=>{
   await expect(card).toBeVisible();
   await expect(card).toContainText("Ferretería Industrial S.A.S.");
   await expect(card).toContainText(/185[.]000/);
-  await expect(card).toContainText("pago no modelado");
+  await expect(card).toContainText("Liquidación: ver Caja");
   await expect(card).toContainText("FV-1024");
   await expect(card).toContainText("Compra");
+  await expect(card).not.toContainText("Pagado");
 });
 
 test("filters append-only expense ledger by plant and category",async({page})=>{

@@ -1,7 +1,15 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCompostStore } from "@/components/compost-store";
+import { useOpsStore } from "@/components/ops-store";
 import { aggregateProductStocks, lotStocks, stockForLot, type InventoryMovement, type InventoryUnit, type ProductMaster, type ProductionRecord } from "@/lib/inventory-domain";
+import {
+  createRemoteInventoryProduct,
+  dispatchRemoteInventory,
+  loadRemoteInventory,
+  recordRemoteProduction,
+} from "@/lib/supabase/inventory-repository";
 import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
 
 const STORAGE_KEY = "greenatics-ops-inventory-mvp-006";
@@ -23,11 +31,14 @@ type InventoryStore = {
   productions: ProductionRecord[];
   movements: InventoryMovement[];
   ready:boolean;
+  error?:string;
   stocks: ReturnType<typeof aggregateProductStocks>;
   lots: ReturnType<typeof lotStocks>;
-  createProduct:(name:string,unit:InventoryUnit)=>CreateProductResult;
-  recordProduction:(payload:NewProduction)=>ProductionResult;
-  dispatch:(payload:NewDispatch)=>DispatchResult;
+  createProduct:(name:string,unit:InventoryUnit)=>Promise<CreateProductResult>;
+  recordProduction:(payload:NewProduction)=>Promise<ProductionResult>;
+  dispatch:(payload:NewDispatch)=>Promise<DispatchResult>;
+  refreshInventory:()=>Promise<void>;
+  resetInventoryDemo:()=>void;
 };
 
 const InventoryContext=createContext<InventoryStore|null>(null);
@@ -45,13 +56,56 @@ function productionLotCode(productions:ProductionRecord[], plantId:string, compl
   return `${prefix}-PROD-${compactBogotaDate(completedAt)}-${String(sequence).padStart(3,"0")}`;
 }
 
+function failure(error:unknown,fallback:string):{ok:false;error:string}{
+  return {ok:false,error:error instanceof Error ? error.message : fallback};
+}
+
 export function InventoryStoreProvider({children}:{children:ReactNode}) {
-  const [products,setProducts]=useState<ProductMaster[]>(seedProducts);
+  const {backend,access}=useOpsStore();
+  const {piles}=useCompostStore();
+  const remoteMode=backend.mode==="supabase";
+  const [products,setProducts]=useState<ProductMaster[]>(()=>remoteMode?[]:seedProducts);
   const [productions,setProductions]=useState<ProductionRecord[]>([]);
   const [movements,setMovements]=useState<InventoryMovement[]>([]);
   const [ready,setReady]=useState(false);
+  const [error,setError]=useState<string>();
+
+  const hydrateRemote=useCallback(async()=>{
+    if(backend.status!=="ready") return;
+    const snapshot=await loadRemoteInventory(access);
+    setProducts(snapshot.products);
+    setProductions(snapshot.productions);
+    setMovements(snapshot.movements);
+    setError(undefined);
+    setReady(true);
+  },[access,backend.status]);
+
+  const refreshInventory=useCallback(async()=>{
+    if(!remoteMode) return;
+    setReady(false);
+    try { await hydrateRemote(); }
+    catch(caught){
+      setProducts([]);setProductions([]);setMovements([]);
+      setError(caught instanceof Error ? caught.message : "No fue posible cargar producción e inventario remoto.");
+      setReady(true);
+      throw caught;
+    }
+  },[hydrateRemote,remoteMode]);
 
   useEffect(()=>{
+    if(remoteMode){
+      if(backend.status!=="ready"){
+        const timer=window.setTimeout(()=>{
+          setProducts([]);setProductions([]);setMovements([]);
+          setError(backend.status==="error"?backend.error:undefined);
+          setReady(backend.status==="error");
+        },0);
+        return ()=>window.clearTimeout(timer);
+      }
+      const timer=window.setTimeout(()=>{void refreshInventory().catch(()=>undefined);},0);
+      return ()=>window.clearTimeout(timer);
+    }
+
     const timer=window.setTimeout(()=>{
       try {
         const raw=window.localStorage.getItem(STORAGE_KEY);
@@ -62,36 +116,65 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
           if(parsed.movements) setMovements(parsed.movements);
         }
       } catch { window.localStorage.removeItem(STORAGE_KEY); }
-      finally { setReady(true); }
+      finally { setError(undefined);setReady(true); }
     },0);
     return ()=>window.clearTimeout(timer);
-  },[]);
+  },[backend.error,backend.status,refreshInventory,remoteMode]);
 
   useEffect(()=>{
-    if(!ready) return;
+    if(!ready||remoteMode) return;
     window.localStorage.setItem(STORAGE_KEY,JSON.stringify({products,productions,movements}));
-  },[products,productions,movements,ready]);
+  },[products,productions,movements,ready,remoteMode]);
 
   const stocks=useMemo(()=>aggregateProductStocks(movements),[movements]);
   const lots=useMemo(()=>lotStocks(movements),[movements]);
 
+  const reloadRemote=useCallback(async()=>{
+    try { await hydrateRemote(); }
+    catch(caught){
+      setError(caught instanceof Error ? `El cambio se guardó, pero no fue posible refrescar producción/inventario: ${caught.message}` : "El cambio se guardó, pero no fue posible refrescar producción/inventario.");
+    }
+  },[hydrateRemote]);
+
   const value=useMemo<InventoryStore>(()=>({
-    products,productions,movements,ready,stocks,lots,
-    createProduct(name,unit){
+    products,productions,movements,ready,error,stocks,lots,
+    async createProduct(name,unit){
       const clean=name.trim();
       if(!clean) return {ok:false,error:"Escribe el nombre del producto."};
       if(products.some((item)=>item.name.toLocaleLowerCase("es-CO")===clean.toLocaleLowerCase("es-CO") && item.unit===unit)) return {ok:false,error:"Ya existe un producto con ese nombre y unidad."};
-      const base=slug(clean) || "producto";
-      let id=base; let suffix=2;
-      while(products.some((item)=>item.id===id)){ id=`${base}-${suffix}`; suffix+=1; }
+
+      if(remoteMode){
+        try {
+          const id=await createRemoteInventoryProduct(clean,unit);
+          await reloadRemote();
+          return {ok:true,id};
+        } catch(caught){ return failure(caught,"No fue posible crear el producto."); }
+      }
+
+      const base=slug(clean)||"producto";
+      let id=base;let suffix=2;
+      while(products.some((item)=>item.id===id)){id=`${base}-${suffix}`;suffix+=1;}
       setProducts((current)=>[...current,{id,name:clean,unit,active:true,createdAt:new Date().toISOString()}]);
       return {ok:true,id};
     },
-    recordProduction(payload){
-      const product=products.find((item)=>item.id===payload.productId && item.active);
+    async recordProduction(payload){
+      const product=products.find((item)=>item.id===payload.productId&&item.active);
       if(!product) return {ok:false,error:"Selecciona un producto activo."};
-      if(!Number.isFinite(payload.quantity) || payload.quantity<=0) return {ok:false,error:"La cantidad producida debe ser mayor que cero."};
+      if(!Number.isFinite(payload.quantity)||payload.quantity<=0) return {ok:false,error:"La cantidad producida debe ser mayor que cero."};
       if(!payload.sourceProcess.trim()) return {ok:false,error:"Indica el proceso que originó esta producción."};
+      if(payload.sourcePileId){
+        const sourcePile=piles.find((pile)=>pile.id===payload.sourcePileId);
+        if(!sourcePile||sourcePile.plantId!==payload.plantId||sourcePile.status!=="closed") return {ok:false,error:"La pila relacionada debe estar cerrada y pertenecer a la misma planta."};
+      }
+
+      if(remoteMode){
+        try {
+          const result=await recordRemoteProduction(access,payload);
+          await reloadRemote();
+          return {ok:true,...result};
+        } catch(caught){ return failure(caught,"No fue posible registrar la producción."); }
+      }
+
       const completedAt=new Date().toISOString();
       const lotCode=productionLotCode(productions,payload.plantId,completedAt);
       const id=crypto.randomUUID();
@@ -102,19 +185,34 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
       setMovements((current)=>[movement,...current]);
       return {ok:true,id,lotCode};
     },
-    dispatch(payload){
-      const product=products.find((item)=>item.id===payload.productId && item.active);
+    async dispatch(payload){
+      const product=products.find((item)=>item.id===payload.productId&&item.active);
       if(!product) return {ok:false,error:"Producto no encontrado."};
-      if(!Number.isFinite(payload.quantity) || payload.quantity<=0) return {ok:false,error:"La cantidad de salida debe ser mayor que cero."};
+      if(!Number.isFinite(payload.quantity)||payload.quantity<=0) return {ok:false,error:"La cantidad de salida debe ser mayor que cero."};
       if(!payload.destination.trim()) return {ok:false,error:"Indica el destino de la salida."};
       const available=stockForLot(movements,payload.plantId,payload.productId,payload.lotCode);
       if(payload.quantity>available+1e-9) return {ok:false,error:`Stock insuficiente en ${payload.lotCode}. Disponible: ${available.toLocaleString("es-CO")} ${product.unit}.`};
+
+      if(remoteMode){
+        try {
+          const movementId=await dispatchRemoteInventory(access,payload);
+          await reloadRemote();
+          return {ok:true,movementId};
+        } catch(caught){ return failure(caught,"No fue posible registrar la salida."); }
+      }
+
       const movementId=crypto.randomUUID();
       const movement:InventoryMovement={id:movementId,plantId:payload.plantId,plant:plantName(payload.plantId),productId:product.id,productName:product.name,unit:product.unit,lotCode:payload.lotCode,kind:"dispatch",quantity:payload.quantity,occurredAt:new Date().toISOString(),referenceId:payload.referenceId,destination:payload.destination.trim(),note:payload.note?.trim()||undefined};
       setMovements((current)=>[movement,...current]);
       return {ok:true,movementId};
     },
-  }),[products,productions,movements,ready,stocks,lots]);
+    refreshInventory,
+    resetInventoryDemo(){
+      if(remoteMode){void refreshInventory().catch(()=>undefined);return;}
+      setProducts(seedProducts);setProductions([]);setMovements([]);setError(undefined);
+      window.localStorage.removeItem(STORAGE_KEY);
+    },
+  }),[access,error,lots,movements,piles,products,productions,ready,refreshInventory,reloadRemote,remoteMode,stocks]);
 
   return <InventoryContext.Provider value={value}>{children}</InventoryContext.Provider>;
 }

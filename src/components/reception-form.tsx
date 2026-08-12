@@ -10,7 +10,7 @@ type ManualAcceptanceStatus = Exclude<AcceptanceStatus, "unknown">;
 
 export function ReceptionForm() {
   const router = useRouter();
-  const { createReception } = useOpsStore();
+  const { createReception, access, backend } = useOpsStore();
   const [startedAt] = useState(() => new Date().toISOString());
   const [plantId, setPlantId] = useState("tamesis");
   const [generator, setGenerator] = useState("");
@@ -21,6 +21,12 @@ export function ReceptionForm() {
   const [acceptance, setAcceptance] = useState<ManualAcceptanceStatus>("accepted");
   const [observation, setObservation] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const plantOptions = useMemo(() => backend.mode === "supabase"
+    ? access.map((plant) => ({ id: plant.plantId, name: plant.name }))
+    : [{ id: "tamesis", name: "Támesis" }, { id: "yarumal", name: "Yarumal" }], [access, backend.mode]);
+  const effectivePlantId = plantOptions.some((plant) => plant.id === plantId) ? plantId : plantOptions[0]?.id ?? plantId;
 
   const rejectionPct = useMemo(() => {
     const net = Number(netWeightKg);
@@ -29,16 +35,23 @@ export function ReceptionForm() {
     return (rejection / net) * 100;
   }, [netWeightKg, rejectionKg]);
 
-  const save = () => {
-    const result = createReception({ plantId, generator, route, wasteType, netWeightKg: Number(netWeightKg), rejectionKg: Number(rejectionKg), acceptance, observation, startedAt });
-    if (!result.ok) return setFeedback(result.error);
-    router.push("/receptions");
+  const save = async () => {
+    if (busy) return;
+    setBusy(true);
+    setFeedback("");
+    try {
+      const result = await createReception({ plantId: effectivePlantId, generator, route, wasteType, netWeightKg: Number(netWeightKg), rejectionKg: Number(rejectionKg), acceptance, observation, startedAt });
+      if (!result.ok) return setFeedback(result.error);
+      router.push("/receptions");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return <section className="panel mx-auto max-w-3xl">
     <div className="section-head"><div><p className="eyebrow">Recepción en curso</p><h1 className="text-3xl">Registrar ingreso</h1><p className="lede">El tiempo de recepción se inició al abrir esta pantalla. Peso, rechazo y lote se controlan en una sola operación.</p></div><Link className="button secondary" href="/receptions">Cancelar</Link></div>
     <div className="grid gap-5 md:grid-cols-2">
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={plantId} onChange={(e)=>setPlantId(e.target.value)}><option value="tamesis">Támesis</option><option value="yarumal">Yarumal</option></select></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={effectivePlantId} disabled={plantOptions.length === 0} onChange={(e)=>setPlantId(e.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Tipo de residuo<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={wasteType} onChange={(e)=>setWasteType(e.target.value as WasteType)}><option value="FORSU">FORSU</option><option value="PODA">Poda</option><option value="GALLINAZA">Gallinaza</option><option value="MATERIA_PRIMA">Materia prima</option><option value="OTRO">Otro</option></select></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Generador / proveedor<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={generator} onChange={(e)=>setGenerator(e.target.value)} placeholder="Ej. Aguas del Norte"/></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Ruta / origen<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={route} onChange={(e)=>setRoute(e.target.value)} placeholder="Ej. Ruta selectiva martes"/></label>
@@ -50,6 +63,6 @@ export function ReceptionForm() {
     </div>
     <div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]"><strong className="text-[var(--ink)]">Evidencia:</strong> el adapter de fotografía/tiquete se conectará a SharePoint o Storage en la siguiente capa de persistencia; este MVP no simula una carga de archivos.</div>
     {feedback && <p className="mt-4 rounded-lg bg-[var(--red-soft)] p-3 text-sm font-semibold text-[var(--red)]" role="alert">{feedback}</p>}
-    <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={save}>Guardar recepción y crear lote</button></div>
+    <div className="mt-6 flex justify-end"><button className="button primary" type="button" disabled={busy || plantOptions.length === 0} onClick={save}>{busy ? "Guardando recepción…" : "Guardar recepción y crear lote"}</button></div>
   </section>;
 }
