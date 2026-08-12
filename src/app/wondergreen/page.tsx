@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
+import { wondergreenCrops } from "@/data/wondergreen-crops";
 import styles from "./wondergreen.module.css";
 
 export const metadata: Metadata = {
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const entryPaths = [
-  ["Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "#cultivos"],
+  ["Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "/wondergreen/cultivos"],
   ["Tengo una necesidad", "Nutrición, suelo, floración, producción, raíz, plagas o enfermedades.", "#finder"],
   ["Sé qué producto busco", "Entra al mapa del portafolio por familia y formato.", "#portafolio"],
 ];
@@ -22,23 +24,12 @@ const system = [
   ["05", "Acompañamiento", "La recomendación final considera lote, análisis, agua y manejo."],
 ];
 
-const solids = ["2Grow 15-3-3", "2Balance 7-7-7", "2Bloom 3-8-3", "2Fruit 3-3-8"];
-const bioinputs = ["Trichoderma", "Metarhizium", "Beauveria", "Bacillus subtilis", "Micorrizas", "Extracto de Neem", "Extracto Ajo–Ají"];
-
 const tech = [
   ["01", "Matriz orgánica", "Base orgánica estabilizada."],
   ["02", "Formulación", "Integración de los componentes según la referencia."],
   ["03", "Oclusión", "Incorporación de nutrientes dentro de la matriz organomineral cuando corresponde."],
   ["04", "Peletizado", "Formato físico homogéneo para manejo y aplicación al suelo."],
   ["05", "Interacción con el suelo", "Humedad, raíz y biología forman parte del contexto de disponibilidad."],
-];
-
-const crops = [
-  ["Café", "Etapas, señales nutricionales y programas orientativos."],
-  ["Cacao", "Establecimiento, formación, floración y producción."],
-  ["Aguacate", "Lectura por etapa y condición del cultivo."],
-  ["Limón Tahití", "Nutrición, síntomas y manejo por ciclo."],
-  ["Pastos", "Establecimiento, recuperación y manejo productivo."],
 ];
 
 const audiences = [
@@ -59,7 +50,7 @@ export default function WondergreenPage() {
             <a href="#portafolio">Portafolio</a>
             <a href="#tecnologia">Tecnología</a>
             <a href="#bioinsumos">Bioinsumos</a>
-            <a href="#cultivos">Cultivos</a>
+            <Link href="/wondergreen/cultivos">Cultivos</Link>
           </nav>
           <Link className={`${styles.button} ${styles.dark}`} href="/app">Acceder a Greenatics</Link>
         </div>
@@ -102,7 +93,8 @@ export default function WondergreenPage() {
             <div className={styles.entryGrid}>
               {entryPaths.map(([title, copy, href]) => (
                 <article className={styles.entryCard} key={title}>
-                  <h3>{title}</h3><p>{copy}</p><a href={href}>Continuar →</a>
+                  <h3>{title}</h3><p>{copy}</p>
+                  {href.startsWith("/") ? <Link href={href}>Continuar →</Link> : <a href={href}>Continuar →</a>}
                 </article>
               ))}
             </div>
@@ -134,16 +126,16 @@ export default function WondergreenPage() {
               <article className={styles.familyPanel}>
                 <span className={styles.badge}>Línea 01 · Fertilizantes</span>
                 <h2>Nutrición y suelo</h2>
-                <p>5 referencias líquidas + 4 referencias sólidas + compost.</p>
+                <p>5 referencias líquidas + 4 referencias sólidas + compost. El estado de cada referencia se muestra explícitamente.</p>
                 <div className={styles.counts}>
-                  <div className={styles.count}><strong>5</strong><span>líquidas</span></div>
-                  <div className={styles.count}><strong>4</strong><span>sólidas</span></div>
-                  <div className={styles.count}><strong>1</strong><span>compost</span></div>
+                  <div className={styles.count}><strong>{liquidFertilizers.length}</strong><span>líquidas</span></div>
+                  <div className={styles.count}><strong>{solidFertilizers.length}</strong><span>sólidas</span></div>
+                  <div className={styles.count}><strong>{compostReferences.length}</strong><span>compost</span></div>
                 </div>
                 <div className={styles.productList}>
-                  <div className={styles.productRow}><strong>Compost</strong><small>Suelo y materia orgánica</small></div>
-                  {solids.map((item) => <div className={styles.productRow} key={item}><strong>{item}</strong><small>Organomineral sólido</small></div>)}
-                  <div className={styles.productRow}><strong>5 referencias líquidas</strong><small>Portafolio por etapa y objetivo</small></div>
+                  {compostReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
+                  {solidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
+                  {liquidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
                 </div>
               </article>
 
@@ -152,7 +144,7 @@ export default function WondergreenPage() {
                 <h2>Biología y manejo</h2>
                 <p>Microorganismos, inoculantes y extractos botánicos que se seleccionan según cultivo, problema, contexto técnico y estado regulatorio/comercial.</p>
                 <div className={styles.productList}>
-                  {bioinputs.map((item) => <div className={styles.productRow} key={item}><strong>{item}</strong><small>Ficha / estado por reconciliar antes de claims específicos</small></div>)}
+                  {bioinputReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
                 </div>
               </article>
             </div>
@@ -212,12 +204,13 @@ export default function WondergreenPage() {
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Biblioteca por cultivo</span>
-              <h2>El conocimiento técnico ya existe; ahora lo volvemos navegable.</h2>
-              <p>Las guías construidas en Marketing Studio serán la base de páginas específicas, sin reducir todos los cultivos a una misma receta.</p>
+              <h2>El conocimiento técnico ya existe; ahora es navegable.</h2>
+              <p>Las guías construidas en Marketing Studio ya se convierten en páginas específicas, sin reducir todos los cultivos a una misma receta.</p>
             </div>
             <div className={styles.cropGrid}>
-              {crops.map(([title, copy]) => <article className={styles.cropCard} key={title}><span>Guía de cultivo</span><h3>{title}</h3><p>{copy}</p><a href="#acompanamiento">Próximamente en web →</a></article>)}
+              {wondergreenCrops.map((crop) => <article className={styles.cropCard} key={crop.slug}><span>Guía de cultivo</span><h3>{crop.name}</h3><p>{crop.headline}</p><Link href={`/wondergreen/cultivos/${crop.slug}`}>Abrir programa →</Link></article>)}
             </div>
+            <div className={styles.buttonRow}><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/cultivos">Ver biblioteca por cultivo</Link></div>
           </div>
         </section>
 
@@ -244,7 +237,7 @@ export default function WondergreenPage() {
       <footer className={styles.footer}>
         <div className={`${styles.container} ${styles.footerGrid}`}>
           <div><img className={styles.footerLogo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /><p>Wondergreen es la línea agrícola de Greenatics.</p></div>
-          <div className={styles.footerLinks}><strong>Wondergreen</strong><a href="#portafolio">Portafolio</a><a href="#tecnologia">Tecnología</a><a href="#bioinsumos">Bioinsumos</a><a href="#cultivos">Cultivos</a></div>
+          <div className={styles.footerLinks}><strong>Wondergreen</strong><a href="#portafolio">Portafolio</a><a href="#tecnologia">Tecnología</a><a href="#bioinsumos">Bioinsumos</a><Link href="/wondergreen/cultivos">Cultivos</Link></div>
           <div className={styles.footerLinks}><strong>Plataforma</strong><Link href="/">Greenatics</Link><Link href="/app">GREENATICS OPS</Link></div>
         </div>
         <div className={`${styles.container} ${styles.footerBottom}`}>© Greenatics S.A.S. · Wondergreen</div>
