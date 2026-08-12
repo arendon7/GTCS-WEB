@@ -5,7 +5,7 @@ import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useOpsStore } from "@/components/ops-store";
 
-const nav = [["Hoy", "/"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Registrar actividad", "/activities/new"], ["Alertas", "/#alertas"]] as const;
+const nav = [["Hoy", "/"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Insumos", "/supplies"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Registrar actividad", "/activities/new"], ["Alertas", "/#alertas"]] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
