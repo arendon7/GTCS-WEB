@@ -61,7 +61,7 @@
 .table tr:last-child td { border-bottom: 0; }
 .notes { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 16px; }
 .note { padding: 13px 14px; border-radius: 14px; background: #f4f7f1; color: #5b6760; font-size: .84rem; }
-.inlineLink { position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: 44px; margin-top: 14px; padding: 6px 0; color: var(--green700) !important; font-weight: 900; touch-action: manipulation; }
+.inlineLink { position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: 44px; scroll-margin-top: 92px; margin-top: 14px; padding: 6px 0; color: var(--green700) !important; font-weight: 900; touch-action: manipulation; }
 .sourceGrid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 50px; align-items: start; }
 .sourceGrid p { color: #c0cec7; }
 .sourceGrid a { color: #d8ffbe; font-weight: 900; }
@@ -81,6 +81,6 @@
   .headerLink { display: none; }
   .libraryGrid, .ruleGrid { grid-template-columns: 1fr; }
   .cropBlock { scroll-margin-top: 78px; padding: 22px 18px; }
-  .inlineLink { width: 100%; padding: 10px 0; }
+  .inlineLink { width: 100%; min-height: 48px; scroll-margin-top: 82px; padding: 10px 0; }
   .closingInner, .footerInner { flex-direction: column; align-items: flex-start; }
 }
