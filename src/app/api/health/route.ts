@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
 import { getDeploymentProvenance } from "@/lib/deployment-provenance";
+import { getOpsAccessMode } from "@/lib/ops-access-policy";
 import { createAdminClient, getAppBaseUrl, isSupabaseAdminConfigured } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ export async function GET() {
     {
       status: ready ? "ready" : "degraded",
       mode,
+      opsAccess: getOpsAccessMode(),
       checks,
       deployment: getDeploymentProvenance(),
     },
