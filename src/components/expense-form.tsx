@@ -32,10 +32,10 @@ export function ExpenseForm(){
   const selectedEquipment=availableEquipment.find((item)=>item.id===equipmentId);
   const amount=Number(amountCop);
 
-  function save(){
+  async function save(){
     if(submitting)return;
-    setSubmitting(true);
-    const result=recordExpense({plantId,recordType,supplierName,category,concept,amountCop:amount,documentDate,documentRef,equipmentId:equipmentId||undefined,equipmentName:selectedEquipment?.name,processRef,evidenceRef,note});
+    setSubmitting(true);setFeedback("");
+    const result=await recordExpense({plantId,recordType,supplierName,category,concept,amountCop:amount,documentDate,documentRef,equipmentId:equipmentId||undefined,equipmentName:selectedEquipment?.name,processRef,evidenceRef,note});
     if(!result.ok){setFeedback(result.error);setSubmitting(false);return;}
     router.push("/expenses");
   }
@@ -59,6 +59,6 @@ export function ExpenseForm(){
     </div>
     <div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]"><strong className="text-[var(--ink)]">Semántica:</strong> este registro documenta una compra o gasto. No marca una obligación como pagada, no mueve inventario y no asigna costo a un lote o producto.</div>
     {feedback&&<p role="alert" className="mt-4 rounded-lg bg-[var(--red-soft)] p-3 text-sm font-semibold text-[var(--red)]">{feedback}</p>}
-    <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={save} disabled={submitting}>{submitting?"Guardando registro…":"Guardar compra o gasto"}</button></div>
+    <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={()=>void save()} disabled={submitting}>{submitting?"Guardando registro…":"Guardar compra o gasto"}</button></div>
   </section>;
 }
