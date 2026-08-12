@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useOpsStore } from "@/components/ops-store";
 import type { AcceptanceStatus, WasteType } from "@/lib/domain";
@@ -26,11 +26,7 @@ export function ReceptionForm() {
   const plantOptions = useMemo(() => backend.mode === "supabase"
     ? access.map((plant) => ({ id: plant.plantId, name: plant.name }))
     : [{ id: "tamesis", name: "Támesis" }, { id: "yarumal", name: "Yarumal" }], [access, backend.mode]);
-
-  useEffect(() => {
-    if (backend.mode !== "supabase" || plantOptions.length === 0) return;
-    if (!plantOptions.some((plant) => plant.id === plantId)) setPlantId(plantOptions[0].id);
-  }, [backend.mode, plantId, plantOptions]);
+  const effectivePlantId = plantOptions.some((plant) => plant.id === plantId) ? plantId : plantOptions[0]?.id ?? plantId;
 
   const rejectionPct = useMemo(() => {
     const net = Number(netWeightKg);
@@ -44,7 +40,7 @@ export function ReceptionForm() {
     setBusy(true);
     setFeedback("");
     try {
-      const result = await createReception({ plantId, generator, route, wasteType, netWeightKg: Number(netWeightKg), rejectionKg: Number(rejectionKg), acceptance, observation, startedAt });
+      const result = await createReception({ plantId: effectivePlantId, generator, route, wasteType, netWeightKg: Number(netWeightKg), rejectionKg: Number(rejectionKg), acceptance, observation, startedAt });
       if (!result.ok) return setFeedback(result.error);
       router.push("/receptions");
     } finally {
@@ -55,7 +51,7 @@ export function ReceptionForm() {
   return <section className="panel mx-auto max-w-3xl">
     <div className="section-head"><div><p className="eyebrow">Recepción en curso</p><h1 className="text-3xl">Registrar ingreso</h1><p className="lede">El tiempo de recepción se inició al abrir esta pantalla. Peso, rechazo y lote se controlan en una sola operación.</p></div><Link className="button secondary" href="/receptions">Cancelar</Link></div>
     <div className="grid gap-5 md:grid-cols-2">
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={plantId} disabled={plantOptions.length === 0} onChange={(e)=>setPlantId(e.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={effectivePlantId} disabled={plantOptions.length === 0} onChange={(e)=>setPlantId(e.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Tipo de residuo<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={wasteType} onChange={(e)=>setWasteType(e.target.value as WasteType)}><option value="FORSU">FORSU</option><option value="PODA">Poda</option><option value="GALLINAZA">Gallinaza</option><option value="MATERIA_PRIMA">Materia prima</option><option value="OTRO">Otro</option></select></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Generador / proveedor<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={generator} onChange={(e)=>setGenerator(e.target.value)} placeholder="Ej. Aguas del Norte"/></label>
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Ruta / origen<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={route} onChange={(e)=>setRoute(e.target.value)} placeholder="Ej. Ruta selectiva martes"/></label>
