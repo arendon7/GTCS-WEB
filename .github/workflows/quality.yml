@@ -56,3 +56,28 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: 2.84.2
+          github-token: ${{ github.token }}
+      - name: Initialize local Supabase project
+        run: |
+          if [ ! -f supabase/config.toml ]; then
+            supabase init
+          fi
+      - name: Apply migrations on fresh local Supabase
+        run: supabase start
+      - name: Database RLS and transactional gates
+        run: supabase test db
+      - name: Postgres lint
+        run: supabase db lint --local --level error
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop --no-backup || true
