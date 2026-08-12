@@ -1,16 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { shouldUseSupabase } from "@/lib/data-mode";
+import { safeOpsNext } from "@/lib/ops-routes";
 
 function redirectWithSession(
   request: NextRequest,
   response: NextResponse,
-  pathname: string,
+  target: string,
   searchParams?: Record<string, string>,
 ) {
   const url = request.nextUrl.clone();
+  const [pathname, query = ""] = target.split("?", 2);
   url.pathname = pathname;
-  url.search = "";
+  url.search = query ? `?${query}` : "";
   Object.entries(searchParams ?? {}).forEach(([key, value]) => url.searchParams.set(key, value));
 
   const redirect = NextResponse.redirect(url);
@@ -57,7 +59,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (isAuthenticated && isLogin) {
-    return redirectWithSession(request, response, "/app");
+    return redirectWithSession(request, response, safeOpsNext(request.nextUrl.searchParams.get("next")));
   }
 
   return response;
