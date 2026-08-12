@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
 import { createClient } from "@/lib/supabase/client";
+
+function safeNext(value:string|null){return value&&value.startsWith("/")&&!value.startsWith("//")?value:"/";}
 
 export function LoginForm() {
   const router = useRouter();
@@ -15,6 +17,12 @@ export function LoginForm() {
   const supabaseMode = getDataMode() === "supabase";
   const configured = isSupabaseConfigured();
 
+  useEffect(()=>{
+    const error=new URLSearchParams(window.location.search).get("auth_error");
+    if(error==="invalid-or-expired-link")setFeedback("El enlace de invitación es inválido o venció. Solicita una nueva invitación.");
+    if(error==="inactive-profile")setFeedback("Tu perfil está inactivo. Contacta a dirección.");
+  },[]);
+
   const submit = async () => {
     if (!supabaseMode || !configured) return setFeedback("Este entorno está en modo local; no requiere autenticación remota.");
     if (!email.trim() || !password) return setFeedback("Ingresa correo y contraseña.");
@@ -24,7 +32,8 @@ export function LoginForm() {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) return setFeedback("No fue posible iniciar sesión. Verifica las credenciales.");
-      router.replace("/");
+      const next=safeNext(new URLSearchParams(window.location.search).get("next"));
+      router.replace(next);
       router.refresh();
     } finally {
       setBusy(false);
