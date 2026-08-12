@@ -11,18 +11,20 @@ function cop(value: number) {
 }
 
 export function ProductCard({ product }: { product: Product }) {
+  const hasPrice = typeof product.priceCop === "number";
   return (
     <article className={`product-card family-${product.family.toLowerCase()}`}>
       <div className="product-card-top">
-        <span className="eyebrow">{product.family} · {product.format}</span>
-        <span className="product-pill">{product.presentation}</span>
+        <span className="eyebrow">{product.category}</span>
+        <span className={`product-pill ${hasPrice ? "" : "product-pill--technical"}`}>{hasPrice ? "Precio validado" : "Portafolio técnico"}</span>
       </div>
       <ProductVisual product={product} context="card" />
       <h3>{product.name}</h3>
-      <p>{product.stage}</p>
-      {product.formula ? <span className="formula">{product.formula}</span> : null}
+      <p>{product.objective}</p>
+      {product.formula ? <span className="formula">Referencia {product.formula}</span> : null}
+      <span className="product-presentations">{product.presentations.join(" · ")}</span>
       <div className="product-card-footer">
-        <strong>{cop(product.priceCop)}</strong>
+        <strong>{hasPrice ? cop(product.priceCop!) : "Consultar"}</strong>
         <Link href={`/wondergreen/productos/${product.slug}/`}>Ver producto →</Link>
       </div>
     </article>

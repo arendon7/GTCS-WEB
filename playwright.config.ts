@@ -5,7 +5,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: process.env.CI ? 1 : undefined,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [["line"], ["html", { open: "never" }]] : "line",
+  maxFailures: process.env.CI ? 1 : 0,
+  reporter: process.env.CI
+    ? [["github"], ["line"], ["html", { open: "never" }]]
+    : "line",
   use: {
     baseURL: "http://127.0.0.1:4173",
     browserName: "chromium",

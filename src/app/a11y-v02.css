@@ -1,0 +1,124 @@
+/* V0.2 interface contrast layer.
+   Official logos, packshots and brand artwork are intentionally untouched. */
+
+/* Small green interface accents on light/white surfaces need the darker brand green. */
+.home-definition-grid a,
+.home-door-grid a,
+.home-public-stack span,
+.service-path-grid span,
+.service-category-head > strong,
+.service-depth-meta,
+.service-depth-card > a,
+.question-grid span,
+.moment-stack > article > span,
+.municipal-service-grid a,
+.motocarguero-flow span,
+.pmirs-stack span,
+.evidence-grid > article > span,
+.segment-card > span,
+.solution-flow-list > li > span,
+.tech-delivery-list > li > span,
+.tech-principle-cards > article > span,
+.cycle-loop strong,
+.wg-positioning a,
+.portfolio-table a,
+.catalog-summary-grid strong,
+.product-presentations,
+.presentation-pills + span,
+.deliverable-list span,
+.service-related-grid span,
+.service-related-grid em,
+.park-page-module-grid span,
+.park-phase-grid > article > span,
+.park-data-stack span,
+.park-config-list a,
+.catalog-status--priced {
+  color: var(--green-800);
+}
+
+/* Some V0.2 components declare green-700 in their own stylesheet; override the exact
+   numbered/metadata elements Axe checks at normal text sizes. */
+.service-depth-card .service-depth-meta span,
+.service-depth-card .service-depth-meta em,
+.service-problem strong,
+.municipal-service-grid .service-depth-meta span,
+.municipal-service-grid .service-depth-meta em,
+.company-service-grid .service-depth-meta span,
+.company-service-grid .service-depth-meta em,
+.service-detail-scope .eyebrow:not(.eyebrow--light),
+.service-detail-deliverables .eyebrow:not(.eyebrow--light),
+.service-related .eyebrow:not(.eyebrow--light),
+.park-page-modules .eyebrow:not(.eyebrow--light),
+.park-page-phases .eyebrow:not(.eyebrow--light),
+.park-page-configurations .eyebrow:not(.eyebrow--light),
+.park-page-data .eyebrow:not(.eyebrow--light),
+.portfolio-map .eyebrow:not(.eyebrow--light),
+.catalog-section--depth .eyebrow:not(.eyebrow--light),
+.presentation-section .eyebrow:not(.eyebrow--light),
+.product-story .eyebrow:not(.eyebrow--light),
+.technology-principles .eyebrow:not(.eyebrow--light),
+.tech-output-section .eyebrow:not(.eyebrow--light) {
+  color: var(--green-800);
+}
+
+/* Readable secondary copy on light green/gray bands. */
+.park-page-boundary p,
+.service-detail-boundary p,
+.science-boundary p,
+.home-definition-grid p,
+.home-public-grid p,
+.wg-positioning p,
+.company-pmirs-grid p,
+.complementary-grid p,
+.presentation-grid p,
+.product-story p {
+  color: #4b5951;
+}
+
+/* Readable light accents and secondary copy on dark surfaces. */
+.service-hub-hero .eyebrow,
+.service-detail-hero .eyebrow,
+.park-page-hero .eyebrow,
+.park-page-questions .eyebrow,
+.park-page-biorefinery .eyebrow,
+.anaerobic-deep .eyebrow,
+.science-section .eyebrow,
+.collection-service .eyebrow,
+.collection-service .knowledge-inline-link,
+.wg-commercial-truth .eyebrow,
+.bioinput-section .section-heading > .eyebrow,
+.product-photo-rule .eyebrow,
+.product-truth-section .eyebrow,
+.home-chain .eyebrow,
+.home-science .eyebrow,
+.public-readiness .eyebrow,
+.service-guardrail .eyebrow {
+  color: #d8ffbe;
+}
+
+.service-hub-proof p,
+.service-detail-hero .lead,
+.park-page-hero .lead,
+.park-page-definition p,
+.home-chain-grid p,
+.home-science p,
+.park-question-grid p,
+.park-page-biorefinery p,
+.anaerobic-stage-list p,
+.science-grid > div:first-child p,
+.science-facts p,
+.collection-service p,
+.product-photo-rule p,
+.product-truth-section p,
+.product-truth-section li,
+.public-readiness p,
+.service-guardrail p {
+  color: #dbe8e1;
+}
+
+/* Technical-status amber needs stronger text contrast on pale amber backgrounds. */
+.product-pill--technical,
+.catalog-status--technical,
+.commercial-status--technical {
+  color: #604916;
+}
