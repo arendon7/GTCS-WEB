@@ -26,7 +26,7 @@ begin
     raise exception 'No tienes permiso para crear pilas en esta planta.';
   end if;
   if nullif(btrim(pile_location),'') is null then raise exception 'Indica la ubicación de la pila.'; end if;
-  if initial_weight <= 0 then raise exception 'El peso inicial medido debe ser mayor que cero.'; end if;
+  if initial_weight is null or initial_weight <= 0 then raise exception 'El peso inicial medido debe ser mayor que cero.'; end if;
 
   supplied_count := coalesce(cardinality(source_receipt_ids),0);
   if supplied_count = 0 then raise exception 'Selecciona al menos un lote de origen.'; end if;
@@ -90,7 +90,7 @@ begin
     raise exception 'No tienes permiso para registrar controles en esta planta.';
   end if;
   if pile.status='closed' then raise exception 'No se pueden registrar controles en una pila cerrada.'; end if;
-  if cardinality(temperature_points) not between 3 and 5 then raise exception 'Registra entre 3 y 5 puntos de temperatura.'; end if;
+  if temperature_points is null or cardinality(temperature_points) not between 3 and 5 then raise exception 'Registra entre 3 y 5 puntos de temperatura.'; end if;
   if exists(select 1 from unnest(temperature_points) as value where value is null) then
     raise exception 'Todas las temperaturas deben ser numéricas.';
   end if;
@@ -119,7 +119,8 @@ begin
     raise exception 'No tienes permiso para cambiar esta pila.';
   end if;
   if pile.status <> 'active' then
-    raise exception case when pile.status='closed' then 'La pila ya está cerrada.' else 'La pila ya está en maduración.' end;
+    if pile.status='closed' then raise exception 'La pila ya está cerrada.'; end if;
+    raise exception 'La pila ya está en maduración.';
   end if;
 
   update public.compost_piles
@@ -147,7 +148,7 @@ begin
   if pile.status <> 'maturing' or pile.maturation_started_at is null then
     raise exception 'La pila debe estar en maduración antes de cerrarse.';
   end if;
-  if final_weight <= 0 then raise exception 'El peso final debe ser mayor que cero.'; end if;
+  if final_weight is null or final_weight <= 0 then raise exception 'El peso final debe ser mayor que cero.'; end if;
 
   update public.compost_piles
   set status='closed',final_weight_kg=final_weight,closed_at=finished_at
