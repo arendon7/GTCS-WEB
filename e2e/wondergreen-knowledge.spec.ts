@@ -21,7 +21,12 @@ test("deficiency guide prevents symptom-only diagnosis and links to crop program
 
 test("deficiency guide can continue into the cacao Wondergreen program", async ({ page }) => {
   await page.goto("/biblioteca/guia-deficiencias");
-  await page.getByRole("link", { name: /Ver programa Wondergreen para Cacao/i }).click();
+
+  const cacaoBlock = page.locator("#cacao");
+  const cacaoLink = cacaoBlock.getByRole("link", { name: /Ver programa Wondergreen para Cacao/i });
+  await cacaoBlock.scrollIntoViewIfNeeded();
+  await expect(cacaoLink).toBeVisible();
+  await cacaoLink.click();
 
   await expect(page).toHaveURL(/\/wondergreen\/cultivos\/cacao$/);
   await expect(page.getByText(/01 · Establecimiento/)).toBeVisible();
