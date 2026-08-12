@@ -246,7 +246,7 @@ export default function Home() {
               </p>
               <div className={styles.buttonRow}>
                 <Link className={`${styles.button} ${styles.buttonGhost}`} href="/impacto">Ver impacto público</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/app">Entrar a GREENATICS OPS</Link>
+                <a className={`${styles.button} ${styles.buttonGhost}`} href="/app">Entrar a GREENATICS OPS</a>
               </div>
             </div>
             <div className={styles.console}>
@@ -263,7 +263,7 @@ export default function Home() {
             <div><span className={styles.eyebrow}>Greenatics</span><h2>¿Tienes un residuo, un cultivo, una planta o un territorio por transformar?</h2></div>
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Contactar a Greenatics</Link>
-              <Link className={`${styles.button} ${styles.buttonGhost}`} href="/app">Acceder a la app interna</Link>
+              <a className={`${styles.button} ${styles.buttonGhost}`} href="/app">Acceder a la app interna</a>
             </div>
           </div>
         </section>
