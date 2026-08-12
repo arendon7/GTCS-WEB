@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { ProjectEvidenceGallery } from "@/components/project-evidence-gallery";
 import { getPublicProject, publicProjects } from "@/data/projects-public";
 import styles from "../projects.module.css";
 
@@ -39,10 +41,13 @@ export default async function ProjectCasePage({ params }: Props) {
 
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", path: "/" }, { name: "Proyectos", path: "/proyectos" }, { name: project.name, path: `/proyectos/${project.slug}` as `/${string}` }]} />
       <header className={styles.header}><div className={`${styles.container} ${styles.headerInner}`}><Link href="/" aria-label="Greenatics, inicio"><img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /></Link><nav className={styles.nav} aria-label="Navegación pública"><Link href="/soluciones">Soluciones</Link><Link href="/proyectos">Proyectos</Link><Link href="/wondergreen">Wondergreen</Link><Link href="/biblioteca">Conocimiento</Link></nav><Link className={`${styles.button} ${styles.primary}`} href="/app">Acceder a Greenatics</Link></div></header>
 
       <main>
         <section className={styles.detailHero}><div className={styles.container}><Link className={styles.back} href="/proyectos">← Proyectos</Link><div className={styles.detailGrid}><div><span className={styles.status}>{project.statusLabel}</span><span className={styles.eyebrow}>{project.region}</span><h1>{project.name}</h1><p className={styles.lead}>{project.summary}</p></div><aside className={styles.detailFact}><strong>Contexto de publicación</strong><p>{project.publicationContext}</p></aside></div></div></section>
+
+        <ProjectEvidenceGallery slug={project.slug} />
 
         <section className={`${styles.section} ${styles.white}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Qué demuestra este caso</span><h2>Capacidades y problemas observados dentro de un sistema completo.</h2></div><div className={styles.capGrid}>{project.capabilities.map(([title,copy],index)=><article className={styles.capCard} key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
 
