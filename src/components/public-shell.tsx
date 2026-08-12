@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { OrganizationJsonLd } from "@/components/organization-json-ld";
 import { publicFooterNav, publicNav, publicSite } from "@/data/public-site";
 import styles from "./public-shell.module.css";
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className={styles.site}>
+      <OrganizationJsonLd />
       <a className={styles.skipLink} href="#public-main">Saltar al contenido</a>
 
       <header className={styles.header}>
