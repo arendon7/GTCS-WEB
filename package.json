@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "bootstrap:director": "node scripts/bootstrap-director.mjs",
+    "pilot:backend-preflight": "node scripts/hosted-backend-preflight.mjs",
     "pilot:preflight": "node scripts/hosted-pilot-preflight.mjs"
   },
   "dependencies": {
