@@ -94,7 +94,7 @@ export function parseSharePointGraphRuntimeConfig(
 
 function relativeSegments(value: string) {
   if (!value) return [];
-  if (value.startsWith("/") || value.endsWith("/") || value.includes("\\") || value.includes("?") || value.includes("#")) {
+  if (value.startsWith("/") || value.endsWith("/") || value.includes("\\")) {
     throw new Error("La ruta documental relativa no es válida.");
   }
 
