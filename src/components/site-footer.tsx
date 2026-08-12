@@ -10,17 +10,20 @@ export function SiteFooter() {
           <Link href="/nosotros/">Conoce Greenatics →</Link>
         </div>
         <div>
-          <strong>Explora</strong>
-          <Link href="/wondergreen/">Wondergreen</Link>
+          <strong>Soluciones</strong>
+          <Link href="/servicios/">Todos los servicios</Link>
           <Link href="/municipios/">Municipios y ESP</Link>
-          <Link href="/empresas/">Empresas</Link>
-          <Link href="/tecnologia/">Tecnología</Link>
+          <Link href="/empresas/">Empresas y generadores</Link>
+          <Link href="/tecnologia/">Tecnología y plantas</Link>
           <Link href="/proyectos/">Proyectos</Link>
-          <Link href="/impacto/">Impacto</Link>
-          <Link href="/biblioteca/">Biblioteca técnica</Link>
+          <Link href="/impacto/">Impacto y datos</Link>
         </div>
         <div>
-          <strong>Plataforma</strong>
+          <strong>Producto y conocimiento</strong>
+          <Link href="/wondergreen/">Wondergreen</Link>
+          <Link href="/wondergreen/cultivos/">Guías por cultivo</Link>
+          <Link href="/wondergreen/cotizador/">Cotizador</Link>
+          <Link href="/biblioteca/">Biblioteca técnica</Link>
           <Link href="/diagnostico/">Diagnóstico Greenatics</Link>
           <Link href="/contacto/">Contacto</Link>
           <Link href="/acceso/">Acceso Greenatics</Link>
