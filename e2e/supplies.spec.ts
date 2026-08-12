@@ -52,6 +52,7 @@ test("consumption reduces an exact supply lot and blocks over-consumption",async
   await page.getByLabel(/Cantidad consumida/).fill("40");
   await page.getByLabel("Destino / uso").fill("Sobreconsumo QA");
   await page.getByRole("button",{name:"Registrar consumo"}).click();
-  await expect(page.getByRole("alert")).toContainText("Stock insuficiente");
-  await expect(page.getByRole("alert")).toContainText("Disponible: 30 kg");
+  const validationAlert=page.locator('p[role="alert"]');
+  await expect(validationAlert).toContainText("Stock insuficiente");
+  await expect(validationAlert).toContainText("Disponible: 30 kg");
 });
