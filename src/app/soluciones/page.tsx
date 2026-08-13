@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "./solutions.module.css";
 
+const title = "Soluciones | Greenatics";
+const description = "Diagnóstico, planeación, rutas selectivas, plantas, operación y trazabilidad para municipios, ESP, empresas y grandes generadores.";
+
 export const metadata: Metadata = {
-  title: "Soluciones | Greenatics",
-  description: "Diagnóstico, planeación, rutas selectivas, plantas, operación y trazabilidad para municipios, ESP, empresas y grandes generadores.",
+  title,
+  description,
   alternates: { canonical: "/soluciones" },
+  ...publicSocialMetadata({ title, description, path: "/soluciones" }),
 };
 
 const categoryIntro: Record<ServiceCategory, string> = {
