@@ -10,7 +10,7 @@ Cada URL legado queda en una de tres categorías:
 
 - `redirect`: intención útil y compatible con una superficie gobernada nueva;
 - `quarantine`: contenido contaminado, inseguro o que no debe heredar autoridad mediante redirect;
-- `manual-review`: contenido que requiere revisión jurídica/editorial antes de volver a publicarse.
+- `manual-review`: contenido que requiere revisión jurídica/editorial o una decisión de producto antes de volver a publicarse.
 
 El registro ejecutable vive en `src/data/legacy-public-migration.ts`.
 
@@ -18,11 +18,13 @@ El registro ejecutable vive en `src/data/legacy-public-migration.ts`.
 | Legacy path | Destino | Motivo |
 | --- | --- | --- |
 | `/blog` | `/biblioteca` | Conserva la puerta de entrada al conocimiento sin clonar el archivo WordPress. |
+| `/store` | `/wondergreen` | Conserva descubrimiento de producto sin fingir que el nuevo sitio ya tiene checkout transaccional. |
 | `/el-potencial-de-la-ruta-selectiva-de-recoleccion-de-residuos` | `/soluciones/rutas-selectivas` | Conserva intención sobre rutas selectivas en la ficha de servicio gobernada. |
 | `/fertilizantes-que-nutren` | `/wondergreen` | Conserva intención sobre organominerales sin transportar claims históricos verbatim. |
 | `/impacto-y-resultados` | `/impacto` | Sustituye cifras históricas por el contrato de impacto conciliado/aprobado. |
 | `/winds-of-change-in-the-turbines-service-industries` | `/wondergreen` | El contenido indexado es agronómico/Wondergreen aunque el slug sea de una plantilla ajena. |
 | `/from-niche-to-100-gw-mainstream-and-beyond-world` | `/biblioteca` | Conserva tráfico de conocimiento sin mantener el slug de plantilla. |
+| `/a-decline-in-solar-growth-root-cause-of-analysis-records` | `/wondergreen` | El contenido indexado trata de validación agronómica, pero conserva un slug de plantilla y claims históricos no reconciliados; solo se preserva la intención de producto. |
 
 Next.js emite estos cambios como redirects permanentes. Se activan realmente cuando el dominio legado sea servido por el nuevo deployment o su capa de edge/proxy apunte a él.
 
@@ -34,17 +36,24 @@ Una URL en cuarentena permanece en 404 en `GTCS-WEB` hasta una decisión explíc
 ## Revisión manual obligatoria
 Por ahora no se redirigen automáticamente:
 
+### Legal
 - `/terminos-y-condiciones`
 - `/privacidad`
 - `/politicas`
 
 El nuevo sistema combina sitio público, agenda externa y GREENATICS OPS. Los textos legales deben corresponder a la operación y tratamiento de datos actuales; copiar textos históricos sin revisión generaría una representación jurídica potencialmente incorrecta.
 
-Cuando cada texto sea aprobado:
-1. crear su ruta pública gobernada;
-2. agregar metadata/canonical;
+### Comercio legado
+- `/my-account`
+- `/cart`
+
+El WordPress legado expone superficies WooCommerce, pero la nueva plataforma todavía no declara un storefront transaccional. No debemos convertir una cuenta WooCommerce antigua en login de GREENATICS OPS ni simular continuidad de carrito/checkout que no existe.
+
+Cuando una superficie `manual-review` sea aprobada:
+1. crear su ruta pública gobernada o definir explícitamente su retiro;
+2. agregar metadata/canonical cuando corresponda;
 3. añadirla a footer/sitemap si corresponde;
-4. cambiar su disposición en el registro a `redirect`;
+4. cambiar su disposición en el registro solo si existe un destino semánticamente correcto;
 5. actualizar los tests de migración.
 
 ## Claims históricos
@@ -55,6 +64,7 @@ No migrar directamente cifras o superlativos del WordPress legado. En especial:
 - equivalencias climáticas;
 - "única solución" u otros superlativos;
 - promesas agronómicas o de captura de carbono;
+- porcentajes de productividad o reducción de insumos;
 - afirmaciones de certificación/ensayos sin fuente vigente vinculada.
 
 La ruta `/impacto` es la autoridad para cifras publicables y el Product Master/Truth de Wondergreen es la autoridad para claims de producto.
