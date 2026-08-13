@@ -70,6 +70,24 @@ jobs:
 
           check_private_headers /login
           check_private_headers /app
+
+  browser:
+    name: browser (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-chromium, mobile-chromium]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Build production app
+        run: npm run build
       - name: Cache Playwright Chromium
         uses: actions/cache@v4
         with:
@@ -79,13 +97,13 @@ jobs:
         timeout-minutes: 8
         run: npx playwright install --with-deps chromium
       - name: Browser gates
-        timeout-minutes: 10
-        run: npm run test:e2e
+        timeout-minutes: 8
+        run: npx playwright test --project=${{ matrix.project }}
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: |
             playwright-report/
             test-results/
