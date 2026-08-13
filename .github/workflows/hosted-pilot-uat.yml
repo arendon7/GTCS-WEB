@@ -26,10 +26,11 @@ jobs:
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
       PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
       PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
-      PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_EMAIL }}
-      PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
       PILOT_DIRECTOR_PLANTS: TAM,YAR
-      PILOT_OPERATOR_PLANTS: TAM
 
     steps:
       - name: Checkout canonical develop
@@ -65,8 +66,10 @@ jobs:
             SUPABASE_SECRET_KEY \
             PILOT_DIRECTOR_EMAIL \
             PILOT_DIRECTOR_PASSWORD \
-            PILOT_OPERATOR_EMAIL \
-            PILOT_OPERATOR_PASSWORD
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
           do
             if [ -z "${!name:-}" ]; then
               echo "::error::$name is not configured for hosted pilot UAT."
@@ -81,7 +84,18 @@ jobs:
       - name: Certify hosted backend state
         run: npm run pilot:backend-preflight -- --plants TAM,YAR
 
-      - name: Certify Director and Operario RLS isolation
+      - name: Certify Director vs Operario Támesis RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
         run: npm run pilot:rls-smoke
 
       - name: Deploy exact full OPS Preview
@@ -99,5 +113,6 @@ jobs:
         run: |
           echo "Hosted multiuser UAT gate: PASS." >> "$GITHUB_STEP_SUMMARY"
           echo "Director expected scope: TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
-          echo "Operario expected scope: TAM; explicit YAR read must be denied by RLS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Operario Támesis expected scope: TAM; explicit YAR read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Operario Yarumal expected scope: YAR; explicit TAM read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
           echo "No user credentials are accepted as workflow inputs or printed in logs." >> "$GITHUB_STEP_SUMMARY"
