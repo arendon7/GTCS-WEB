@@ -104,15 +104,8 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ inputs.mode == 'full-ops' && secrets.PILOT_SUPABASE_SECRET_KEY || '' }}
         run: npm run pilot:vercel-preview
 
-      - name: Certify deployed Preview
+      - name: Certify protected deployed Preview
         env:
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "$DEPLOYMENT_URL"
-          npm run pilot:preflight -- \
-            --base-url "$DEPLOYMENT_URL" \
-            --mode "$PILOT_PREVIEW_MODE" \
-            --expected-branch "$DEPLOY_GIT_REF" \
-            --expected-commit "$DEPLOY_GIT_SHA"
+          VERCEL_PROJECT_ID: ${{ steps.deploy.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
