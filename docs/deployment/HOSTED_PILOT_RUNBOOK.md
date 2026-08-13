@@ -50,7 +50,7 @@ APP_BASE_URL=https://<origen-canonico>
 `APP_BASE_URL` debe ser un origen HTTP/HTTPS confiable. La API de invitaciones no usa el header `Host` como sustituto.
 
 ## 5. Backend preflight + primer director
-Antes de enviar una invitación real, validar que Supabase, Auth Admin, las plantas canónicas y el estado de bootstrap sean coherentes:
+Antes de enviar una invitación real, validar que el esquema hospedado, RLS, Supabase Auth Admin, las plantas canónicas y el estado de bootstrap sean coherentes:
 
 ```bash
 npm run pilot:backend-preflight -- \
@@ -59,6 +59,8 @@ npm run pilot:backend-preflight -- \
 ```
 
 Este gate es de solo lectura: no crea usuarios, no cambia membresías y no imprime secretos. Debe pasar antes del primer bootstrap.
+
+El preflight consume `admin_hosted_schema_contract()` con `SUPABASE_SECRET_KEY` y falla cerrado si la base no reporta el contrato canónico esperado por el código, si alguna tabla pública queda sin RLS, si faltan plantas piloto o si el estado de Director cambia durante la comprobación. La RPC es server-only: `anon` y `authenticated` no tienen permiso de ejecución. Esto evita depender de timestamps o entradas históricas duplicadas del registro de migraciones para decidir si una base está lista.
 
 Con variables cargadas en un entorno administrativo y `APP_BASE_URL` ya fijado al deployment real:
 
@@ -144,7 +146,7 @@ Con dos perfiles de navegador distintos:
 ## 10. Gate de promoción
 Antes de promover el piloto:
 - CI de PR verde (`quality` + `database`);
-- `npm run pilot:backend-preflight -- --plants TAM,YAR` en PASS;
+- `npm run pilot:backend-preflight -- --plants TAM,YAR` en PASS, incluyendo schema contract + RLS completo;
 - `npm run pilot:preflight` en PASS contra el SHA exacto desplegado;
 - `npm run pilot:rls-smoke` en PASS con los dos usuarios de prueba;
 - smoke funcional multiusuario aprobado;
