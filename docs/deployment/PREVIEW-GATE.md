@@ -11,16 +11,25 @@ Definir el mínimo verificable antes de asociar `greenatics.com.co` a un deploym
 - `robots.txt` y `X-Robots-Tag` complementan la seguridad; no sustituyen autenticación.
 - `/api/health` expone provenance mínima para comprobar que el preview corresponde al branch/SHA esperado.
 
-## Variables de entorno
-### Preview público sin OPS remoto
-No activar un bypass local. En Vercel, el gate de v0.11 bloquea OPS si no existe configuración Supabase completa.
+## Dos previews, dos fronteras
+El workflow manual `hosted-pilot-preview` ofrece dos modos explícitos y no comparte el mismo proyecto Vercel entre ellos:
 
-### Preview con OPS remoto
-Configurar:
-- `NEXT_PUBLIC_DATA_MODE=supabase`
-- `NEXT_PUBLIC_SUPABASE_URL=<project-url>`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>`
-- `SUPABASE_SECRET_KEY=<server-only-secret>` cuando se prueben administración, invitaciones o health completo.
+### `public-only` · predeterminado
+- proyecto canónico: `greenatics-public-preview`;
+- única variable funcional creada por el deployer: `NEXT_PUBLIC_DATA_MODE=local` con target `preview`;
+- no requiere ni inyecta credenciales Supabase;
+- no ejecuta backend preflight;
+- `/api/health` debe reportar `mode=local`, `opsAccess=configuration-block`, `checks.backend=missing` y `checks.admin=missing`;
+- `/app` debe redirigir a `/login?reason=configuration&next=/app`.
+
+El gate falla si detecta backend/admin configurados: un preview público contaminado con credenciales no es aceptable aunque `NEXT_PUBLIC_DATA_MODE=local` pudiera impedir su uso.
+
+### `full-ops`
+- proyecto canónico: `greenatics-ops`;
+- requiere `NEXT_PUBLIC_DATA_MODE=supabase`, URL Supabase, publishable key y secret key server-side;
+- ejecuta backend preflight antes del deployment;
+- `/api/health` debe reportar `mode=supabase`, `opsAccess=supabase-auth` y los checks remotos en `ok`;
+- `/app` anónimo debe redirigir al login sin `reason=configuration`.
 
 Para redirects de autenticación:
 - `APP_BASE_URL` es la autoridad explícita cuando está definido.
@@ -38,10 +47,25 @@ Nunca exponer `SUPABASE_SECRET_KEY` ni ninguna credencial administrativa mediant
 5. `/robots.txt` bloquea rutas internas y `/api/`.
 6. Respuestas públicas incluyen `nosniff`, `DENY` para framing, política de referrer y permisos restringidos.
 7. `/app` y demás familias OPS incluyen `private, no-store` y `X-Robots-Tag: noindex, nofollow, noarchive`.
-8. Preview sin Supabase: `/app` redirige a `/login?reason=configuration` y no muestra datos OPS; `/api/health` reporta `opsAccess=configuration-block`.
-9. Preview con Supabase: usuario sin sesión va a login; usuario válido necesita perfil activo y membresía activa de planta; `/api/health` reporta `opsAccess=supabase-auth`.
+8. `public-only`: `/app` queda bloqueado por configuración y el health demuestra ausencia de credenciales backend.
+9. `full-ops`: usuario sin sesión va a login; usuario válido necesita perfil activo y membresía activa de planta.
 10. Un usuario autorizado entra a `/app`; RLS conserva aislamiento por planta/rol.
 11. Salir de OPS hacia la web pública y entrar desde la web pública a OPS cruza una frontera documental, no depende de preservar el árbol de providers del cliente.
+
+## Ejecución reproducible
+Desde GitHub Actions, ejecutar `hosted-pilot-preview` y elegir el modo. `public-only` es la opción segura inicial para QA visual y editorial. `full-ops` se usa únicamente cuando el backend piloto esté listo y sus secretos existan en GitHub Actions.
+
+El preflight desplegado recibe el mismo modo:
+
+```bash
+npm run pilot:preflight -- \
+  --base-url https://<deployment> \
+  --mode public-only \
+  --expected-branch develop \
+  --expected-commit <sha>
+```
+
+Cambiar a `--mode full-ops` únicamente para el proyecto OPS completo.
 
 ## Gate de observabilidad
 - Revisar build logs sin errores.

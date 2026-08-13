@@ -18,6 +18,7 @@ Uso:
 
 Opciones:
   --base-url <origin>        Origen HTTPS del deployment. APP_BASE_URL es fallback.
+  --mode <mode>              public-only o full-ops. Default: full-ops.
   --expected-branch <name>   Exige que /api/health reporte esta rama.
   --expected-commit <sha>    Exige que /api/health reporte este commit (12 primeros caracteres).
   --help                     Muestra esta ayuda.
@@ -32,12 +33,14 @@ async function main() {
 
   const result = await runHostedPilotPreflight({
     baseUrl: readArg("--base-url") ?? process.env.APP_BASE_URL,
+    expectedMode: readArg("--mode") ?? process.env.PILOT_PREVIEW_MODE,
     expectedBranch: readArg("--expected-branch"),
     expectedCommit: readArg("--expected-commit"),
   });
 
   console.log("GREENATICS hosted pilot preflight: PASS");
   console.log(`origin: ${result.origin}`);
+  console.log(`mode: ${result.mode}`);
   console.log(`deployment: ${result.deployment.platform}/${result.deployment.environment}`);
   console.log(`branch: ${result.deployment.branch ?? "n/a"}`);
   console.log(`commit: ${result.deployment.commit ?? "n/a"}`);

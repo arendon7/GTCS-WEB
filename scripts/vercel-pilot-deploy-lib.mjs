@@ -1,5 +1,9 @@
 const VERCEL_API_ORIGIN = "https://api.vercel.com";
-const DEFAULT_PROJECT_NAME = "greenatics-ops";
+const PILOT_MODES = new Set(["public-only", "full-ops"]);
+const PROJECT_BY_MODE = Object.freeze({
+  "public-only": "greenatics-public-preview",
+  "full-ops": "greenatics-ops",
+});
 const TERMINAL_FAILURE_STATES = new Set(["BLOCKED", "CANCELED", "ERROR"]);
 
 export class VercelPilotError extends Error {
@@ -44,19 +48,48 @@ function parseGitRef(value) {
   return ref;
 }
 
-export function parseVercelPilotConfig(env = process.env) {
-  const projectName = clean(env.VERCEL_PROJECT_NAME) || DEFAULT_PROJECT_NAME;
-  if (!/^[a-z0-9][a-z0-9-]{0,99}$/.test(projectName)) {
-    throw new VercelPilotError("VERCEL_PROJECT_NAME debe ser un slug seguro en minúsculas.");
+function parsePilotMode(value) {
+  const mode = clean(value) || "public-only";
+  if (!PILOT_MODES.has(mode)) {
+    throw new VercelPilotError("PILOT_PREVIEW_MODE debe ser public-only o full-ops.");
   }
+  return mode;
+}
 
-  return Object.freeze({
+function canonicalProjectName(mode, override) {
+  const expected = PROJECT_BY_MODE[mode];
+  const requested = clean(override) || expected;
+  if (requested !== expected) {
+    throw new VercelPilotError(`VERCEL_PROJECT_NAME para ${mode} debe ser ${expected}.`);
+  }
+  return expected;
+}
+
+export function parseVercelPilotConfig(env = process.env) {
+  const mode = parsePilotMode(env.PILOT_PREVIEW_MODE);
+  const projectName = canonicalProjectName(mode, env.VERCEL_PROJECT_NAME);
+
+  const base = {
+    mode,
     token: requireValue(env, "VERCEL_TOKEN"),
     teamId: requireValue(env, "VERCEL_ORG_ID", { max: 256 }),
     projectName,
     repository: parseRepository(requireValue(env, "GITHUB_REPOSITORY", { max: 256 })),
     gitRef: parseGitRef(requireValue(env, "DEPLOY_GIT_REF", { max: 255 })),
     gitSha: parseCommitSha(requireValue(env, "DEPLOY_GIT_SHA", { max: 40 })),
+  };
+
+  if (mode === "public-only") {
+    return Object.freeze({
+      ...base,
+      supabaseUrl: null,
+      supabasePublishableKey: null,
+      supabaseSecretKey: null,
+    });
+  }
+
+  return Object.freeze({
+    ...base,
     supabaseUrl: requireValue(env, "NEXT_PUBLIC_SUPABASE_URL", { max: 2048 }),
     supabasePublishableKey: requireValue(env, "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", { max: 4096 }),
     supabaseSecretKey: requireValue(env, "SUPABASE_SECRET_KEY", { max: 4096 }),
@@ -145,45 +178,62 @@ export async function ensureVercelPilotProject(config, { fetchImpl = fetch } = {
 }
 
 function previewEnvironmentVariables(config) {
+  if (config.mode === "public-only") {
+    return [
+      {
+        key: "NEXT_PUBLIC_DATA_MODE",
+        value: "local",
+        type: "plain",
+        target: ["preview"],
+        comment: "GREENATICS public-only preview data mode",
+      },
+    ];
+  }
+
   return [
     {
       key: "NEXT_PUBLIC_DATA_MODE",
       value: "supabase",
       type: "plain",
       target: ["preview"],
-      comment: "GREENATICS hosted pilot preview data mode",
+      comment: "GREENATICS full OPS preview data mode",
     },
     {
       key: "NEXT_PUBLIC_SUPABASE_URL",
       value: config.supabaseUrl,
       type: "plain",
       target: ["preview"],
-      comment: "GREENATICS hosted pilot preview backend origin",
+      comment: "GREENATICS full OPS preview backend origin",
     },
     {
       key: "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
       value: config.supabasePublishableKey,
       type: "plain",
       target: ["preview"],
-      comment: "GREENATICS hosted pilot preview publishable key",
+      comment: "GREENATICS full OPS preview publishable key",
     },
     {
       key: "SUPABASE_SECRET_KEY",
       value: config.supabaseSecretKey,
       type: "sensitive",
       target: ["preview"],
-      comment: "GREENATICS hosted pilot preview server-only key",
+      comment: "GREENATICS full OPS preview server-only key",
     },
   ];
 }
 
 export async function upsertVercelPilotPreviewEnvironment(config, project, { fetchImpl = fetch } = {}) {
+  const variables = previewEnvironmentVariables(config);
   await vercelRequest(config, fetchImpl, `/v10/projects/${encodeURIComponent(project.id)}/env`, {
     method: "POST",
     query: { upsert: "true" },
-    body: previewEnvironmentVariables(config),
+    body: variables,
   });
-  return Object.freeze({ target: "preview", keys: Object.freeze(previewEnvironmentVariables(config).map((item) => item.key)) });
+  return Object.freeze({
+    target: "preview",
+    mode: config.mode,
+    keys: Object.freeze(variables.map((item) => item.key)),
+  });
 }
 
 function deploymentState(deployment) {
@@ -223,6 +273,7 @@ export async function createVercelPilotPreviewDeployment(config, project, { fetc
       },
       meta: {
         greenaticsHostedPilot: "true",
+        greenaticsPilotMode: config.mode,
         greenaticsGitSha: config.gitSha,
       },
     },
@@ -277,6 +328,7 @@ export async function runVercelPilotPreviewDeployment({
   });
 
   return Object.freeze({
+    mode: config.mode,
     project,
     environment,
     deployment,
