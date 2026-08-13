@@ -30,7 +30,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div id="public-main" className={styles.main} tabIndex={-1}>{children}</div>
+      <main id="public-main" className={styles.main} tabIndex={-1}>{children}</main>
 
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
