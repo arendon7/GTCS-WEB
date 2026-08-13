@@ -15,6 +15,24 @@ test("public HOME emits governed Organization structured data", async ({ page })
   expect(JSON.stringify(organization)).not.toContain("VERCEL_URL");
 });
 
+test("public skip-link moves keyboard focus into main content", async ({ page }) => {
+  await page.goto("/");
+
+  const skipLink = page.getByRole("link", { name: "Saltar al contenido" });
+  const main = page.locator("#public-main");
+
+  await page.keyboard.press("Tab");
+  await expect(skipLink).toBeFocused();
+  await expect(skipLink).toBeVisible();
+
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#public-main$/);
+  await expect(main).toBeFocused();
+
+  await page.keyboard.press("Tab");
+  expect(await main.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+});
+
 test("manifest uses governed site content without inherited color claims", async ({ request }) => {
   const response = await request.get("/manifest.webmanifest");
   expect(response.ok()).toBe(true);
