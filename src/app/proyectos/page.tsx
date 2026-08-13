@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { publicProjects } from "@/data/projects-public";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "./projects.module.css";
 
+const title = "Proyectos | Greenatics";
+const description = "Casos documentados y aprendizajes Greenatics en operación, rehabilitación, tratamiento biológico, rutas selectivas y trazabilidad.";
+
 export const metadata: Metadata = {
-  title: "Proyectos | Greenatics",
-  description: "Casos documentados y aprendizajes Greenatics en operación, rehabilitación, tratamiento biológico, rutas selectivas y trazabilidad.",
+  title,
+  description,
   alternates: { canonical: "/proyectos" },
+  ...publicSocialMetadata({ title, description, path: "/proyectos" }),
 };
 
 const transferable = [
