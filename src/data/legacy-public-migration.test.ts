@@ -49,6 +49,25 @@ describe("legacy public migration registry", () => {
     expect(publicStaticRoutes).toContain("/impacto");
   });
 
+  it("preserves legacy store discovery without recreating WooCommerce checkout semantics", () => {
+    expect(legacyPublicRedirects).toContainEqual({
+      source: "/store",
+      destination: "/wondergreen",
+      permanent: true,
+    });
+    for (const source of ["/my-account", "/cart"]) {
+      expect(legacyPublicRoutes.find((route) => route.source === source)?.disposition).toBe("manual-review");
+    }
+  });
+
+  it("routes the stale field-validation template slug to Wondergreen without carrying claims forward", () => {
+    expect(legacyPublicRedirects).toContainEqual({
+      source: "/a-decline-in-solar-growth-root-cause-of-analysis-records",
+      destination: "/wondergreen",
+      permanent: true,
+    });
+  });
+
   it("requires legal legacy surfaces to stay under manual review", () => {
     for (const source of ["/terminos-y-condiciones", "/privacidad", "/politicas"]) {
       expect(legacyPublicRoutes.find((route) => route.source === source)?.disposition).toBe("manual-review");
