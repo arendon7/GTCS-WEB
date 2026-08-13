@@ -41,6 +41,9 @@ async function main() {
 
   console.log("GREENATICS hosted backend preflight: PASS");
   console.log(`project: ${new URL(result.projectOrigin).hostname}`);
+  console.log(
+    `schema: ${result.schemaContract.version} · RLS ${result.schemaContract.rlsEnabledTableCount}/${result.schemaContract.publicTableCount}`,
+  );
   console.log(`plants: ${result.plants.map((plant) => `${plant.code}=${plant.name}`).join(", ")}`);
   console.log(`director-state: ${result.directorState} (${result.activeDirectors})`);
   console.log(`checks: ${result.checks.join(", ")}`);

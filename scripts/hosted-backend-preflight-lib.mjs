@@ -1,6 +1,8 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { DEFAULT_PILOT_PLANT_CODES, normalizePilotPlantCodes } from "./pilot-plant-codes.mjs";
 
+export const HOSTED_SCHEMA_CONTRACT_VERSION = "0026";
+
 export class BackendPreflightError extends Error {
   constructor(message) {
     super(message);
@@ -42,6 +44,60 @@ function requireRows(data, error, label) {
   return data;
 }
 
+function parseNonNegativeInteger(value, label) {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number < 0) {
+    throw new BackendPreflightError(`${label}: conteo inválido.`);
+  }
+  return number;
+}
+
+function validateSchemaContract(data, error, requestedCodes) {
+  const rows = requireRows(data, error, "No fue posible validar el contrato de esquema hospedado");
+  if (rows.length !== 1 || !rows[0] || typeof rows[0] !== "object") {
+    throw new BackendPreflightError("Contrato de esquema hospedado: se esperaba exactamente una fila.");
+  }
+
+  const row = rows[0];
+  const version = clean(row.schema_contract);
+  if (version !== HOSTED_SCHEMA_CONTRACT_VERSION) {
+    throw new BackendPreflightError(
+      `Contrato de esquema hospedado desactualizado: esperado ${HOSTED_SCHEMA_CONTRACT_VERSION}, recibido ${version || "vacío"}.`,
+    );
+  }
+
+  const publicTableCount = parseNonNegativeInteger(row.public_table_count, "Contrato de esquema hospedado");
+  const rlsEnabledTableCount = parseNonNegativeInteger(row.rls_enabled_table_count, "Contrato de esquema hospedado");
+  if (publicTableCount === 0 || rlsEnabledTableCount !== publicTableCount) {
+    throw new BackendPreflightError(
+      `Contrato de esquema hospedado: RLS incompleto (${rlsEnabledTableCount}/${publicTableCount} tablas públicas).`,
+    );
+  }
+
+  let pilotPlantCodes;
+  try {
+    pilotPlantCodes = normalizePilotPlantCodes(Array.isArray(row.pilot_plant_codes) ? row.pilot_plant_codes : []);
+  } catch (error_) {
+    throw new BackendPreflightError(
+      `Contrato de esquema hospedado: plantas inválidas (${error_ instanceof Error ? error_.message : String(error_)}).`,
+    );
+  }
+  const missingContractPlants = requestedCodes.filter((code) => !pilotPlantCodes.includes(code));
+  if (missingContractPlants.length) {
+    throw new BackendPreflightError(
+      `Contrato de esquema hospedado no contiene las plantas solicitadas: ${missingContractPlants.join(", ")}.`,
+    );
+  }
+
+  return Object.freeze({
+    version,
+    publicTableCount,
+    rlsEnabledTableCount,
+    pilotPlantCodes,
+    activeDirectors: parseNonNegativeInteger(row.active_directors, "Contrato de esquema hospedado"),
+  });
+}
+
 export async function runHostedBackendPreflight({
   env = process.env,
   plants = DEFAULT_PILOT_PLANT_CODES,
@@ -53,6 +109,13 @@ export async function runHostedBackendPreflight({
   const admin = createClientImpl(config.url, config.secret, {
     auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
   });
+
+  const schemaContractResponse = await admin.rpc("admin_hosted_schema_contract");
+  const schemaContract = validateSchemaContract(
+    schemaContractResponse.data,
+    schemaContractResponse.error,
+    requestedCodes,
+  );
 
   const plantResponse = await admin
     .from("plants")
@@ -84,9 +147,11 @@ export async function runHostedBackendPreflight({
   if (directorResponse.error) {
     throw new BackendPreflightError(`No fue posible validar el estado del director: ${directorResponse.error.message || "error remoto"}.`);
   }
-  const activeDirectors = Number(directorResponse.count ?? 0);
-  if (!Number.isInteger(activeDirectors) || activeDirectors < 0) {
-    throw new BackendPreflightError("Supabase devolvió un conteo de directores inválido.");
+  const activeDirectors = parseNonNegativeInteger(directorResponse.count ?? 0, "Estado del director");
+  if (schemaContract.activeDirectors !== activeDirectors) {
+    throw new BackendPreflightError(
+      `Estado del director cambió durante el preflight (${schemaContract.activeDirectors} → ${activeDirectors}); vuelve a ejecutar el gate.`,
+    );
   }
   if (requireNoDirector && activeDirectors > 0) {
     throw new BackendPreflightError(`Ya existe ${activeDirectors} director activo; el bootstrap inicial debe permanecer bloqueado.`);
@@ -94,6 +159,7 @@ export async function runHostedBackendPreflight({
 
   return Object.freeze({
     projectOrigin: config.url,
+    schemaContract,
     plants: Object.freeze(requestedCodes.map((code) => Object.freeze({
       code,
       name: String(byCode.get(code)?.name || code),
@@ -101,6 +167,6 @@ export async function runHostedBackendPreflight({
     }))),
     activeDirectors,
     directorState: activeDirectors === 0 ? "empty" : "present",
-    checks: Object.freeze(["database", "auth-admin", "plants", "director-state"]),
+    checks: Object.freeze(["schema-contract", "database", "auth-admin", "plants", "director-state"]),
   });
 }
