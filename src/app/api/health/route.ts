@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { publicSite } from "@/data/public-site";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
 import { getDeploymentProvenance } from "@/lib/deployment-provenance";
 import { getOpsAccessMode } from "@/lib/ops-access-policy";
@@ -36,6 +37,7 @@ export async function GET() {
       mode,
       opsAccess: getOpsAccessMode(),
       checks,
+      publicOrigin: publicSite.publicDomainTarget.replace(/\/$/, ""),
       deployment: getDeploymentProvenance(),
     },
     { status: ready ? 200 : 503 },
