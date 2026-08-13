@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function KnowledgeLayout({ children }: { children: React.ReactNode }) {
-  return <PublicShell>{children}</PublicShell>;
+  return <PublicShell ownsMain={false}>{children}</PublicShell>;
 }
