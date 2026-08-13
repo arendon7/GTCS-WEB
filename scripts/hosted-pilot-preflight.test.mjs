@@ -4,8 +4,11 @@ import {
   assertHostedHealth,
   normalizeHostedBaseUrl,
   normalizePilotMode,
+  normalizePublicOrigin,
   runHostedPilotPreflight,
 } from "./hosted-pilot-preflight-lib.mjs";
+
+const canonicalPublicOrigin = "https://greenatics.com.co";
 
 const baselineHeaders = {
   "x-content-type-options": "nosniff",
@@ -33,6 +36,7 @@ const fullOpsHealth = {
   mode: "supabase",
   opsAccess: "supabase-auth",
   checks: { backend: "ok", admin: "ok", appOrigin: "ok" },
+  publicOrigin: canonicalPublicOrigin,
   deployment,
 };
 
@@ -41,6 +45,7 @@ const publicHealth = {
   mode: "local",
   opsAccess: "configuration-block",
   checks: { backend: "missing", admin: "missing", appOrigin: "ok" },
+  publicOrigin: canonicalPublicOrigin,
   deployment,
 };
 
@@ -69,7 +74,7 @@ function hostedFixture({ mode = "full-ops", overrides = {} } = {}) {
       },
     }),
     [`${origin}/sitemap.xml`]: new Response(
-      `<?xml version="1.0"?><urlset><url><loc>${origin}/</loc></url><url><loc>${origin}/wondergreen</loc></url></urlset>`,
+      `<?xml version="1.0"?><urlset><url><loc>${canonicalPublicOrigin}/</loc></url><url><loc>${canonicalPublicOrigin}/wondergreen</loc></url></urlset>`,
       { status: 200 },
     ),
     [`${origin}/robots.txt`]: new Response("User-agent: *\nDisallow: /app\nDisallow: /login\nDisallow: /api/\n", { status: 200 }),
@@ -87,17 +92,20 @@ function hostedFixture({ mode = "full-ops", overrides = {} } = {}) {
 }
 
 describe("hosted pilot preflight", () => {
-  it("normalizes only HTTPS origins and accepted pilot modes", () => {
+  it("normalizes only clean HTTPS deployment and public origins plus accepted pilot modes", () => {
     expect(normalizeHostedBaseUrl("https://pilot.example.com")).toBe("https://pilot.example.com");
+    expect(normalizePublicOrigin(canonicalPublicOrigin)).toBe(canonicalPublicOrigin);
     expect(() => normalizeHostedBaseUrl("http://pilot.example.com")).toThrow(PreflightError);
     expect(() => normalizeHostedBaseUrl("https://user:pass@pilot.example.com")).toThrow(PreflightError);
     expect(() => normalizeHostedBaseUrl("https://pilot.example.com/app")).toThrow(PreflightError);
+    expect(() => normalizePublicOrigin("http://greenatics.com.co")).toThrow(/HTTPS/);
+    expect(() => normalizePublicOrigin("https://greenatics.com.co/path")).toThrow(/únicamente un origen/);
     expect(normalizePilotMode(undefined)).toBe("full-ops");
     expect(normalizePilotMode("public-only")).toBe("public-only");
     expect(() => normalizePilotMode("unknown")).toThrow(/public-only o full-ops/);
   });
 
-  it("accepts a ready full-ops deployment with matching branch and commit", async () => {
+  it("accepts a ready full-ops deployment with matching branch, commit and canonical public origin", async () => {
     const fixture = hostedFixture();
     const result = await runHostedPilotPreflight({
       baseUrl: fixture.origin,
@@ -108,9 +116,15 @@ describe("hosted pilot preflight", () => {
     });
 
     expect(result.origin).toBe(fixture.origin);
+    expect(result.publicOrigin).toBe(canonicalPublicOrigin);
     expect(result.mode).toBe("full-ops");
     expect(result.deployment.environment).toBe("preview");
     expect(result.checks).toContain("ops-anonymous");
+  });
+
+  it("rejects hosted health without a valid canonical public origin", () => {
+    expect(() => assertHostedHealth({ ...fullOpsHealth, publicOrigin: undefined }, { expectedMode: "full-ops" })).toThrow(/publicOrigin/);
+    expect(() => assertHostedHealth({ ...fullOpsHealth, publicOrigin: "https://greenatics.com.co/path" }, { expectedMode: "full-ops" })).toThrow(/publicOrigin/);
   });
 
   it("accepts Vercel's platform noindex on a Preview public home", async () => {
@@ -128,7 +142,7 @@ describe("hosted pilot preflight", () => {
       baseUrl: fixture.origin,
       expectedMode: "full-ops",
       fetchImpl: fixture.fetchImpl,
-    })).resolves.toMatchObject({ mode: "full-ops" });
+    })).resolves.toMatchObject({ mode: "full-ops", publicOrigin: canonicalPublicOrigin });
   });
 
   it("rejects the private OPS robots policy on a Preview public home", async () => {
@@ -213,7 +227,7 @@ describe("hosted pilot preflight", () => {
     })).rejects.toThrow(/reason=configuration/);
   });
 
-  it("rejects anonymous OPS redirects that leave the canonical origin", async () => {
+  it("rejects anonymous OPS redirects that leave the deployment origin", async () => {
     const origin = "https://greenatics-pilot.vercel.app";
     const fixture = hostedFixture({
       overrides: {
@@ -227,17 +241,31 @@ describe("hosted pilot preflight", () => {
     await expect(runHostedPilotPreflight({ baseUrl: fixture.origin, fetchImpl: fixture.fetchImpl })).rejects.toThrow(/login canónico/);
   });
 
-  it("rejects internal routes leaked into the public sitemap", async () => {
+  it("rejects internal routes leaked into the canonical public sitemap", async () => {
     const origin = "https://greenatics-pilot.vercel.app";
     const fixture = hostedFixture({
       overrides: {
         [`${origin}/sitemap.xml`]: new Response(
-          `<?xml version="1.0"?><urlset><url><loc>${origin}/app</loc></url></urlset>`,
+          `<?xml version="1.0"?><urlset><url><loc>${canonicalPublicOrigin}/app</loc></url></urlset>`,
           { status: 200 },
         ),
       },
     });
 
     await expect(runHostedPilotPreflight({ baseUrl: fixture.origin, fetchImpl: fixture.fetchImpl })).rejects.toThrow(/ruta interna/);
+  });
+
+  it("rejects sitemap URLs outside health's canonical public origin", async () => {
+    const origin = "https://greenatics-pilot.vercel.app";
+    const fixture = hostedFixture({
+      overrides: {
+        [`${origin}/sitemap.xml`]: new Response(
+          `<?xml version="1.0"?><urlset><url><loc>https://evil.example/wondergreen</loc></url></urlset>`,
+          { status: 200 },
+        ),
+      },
+    });
+
+    await expect(runHostedPilotPreflight({ baseUrl: fixture.origin, fetchImpl: fixture.fetchImpl })).rejects.toThrow(/origen público canónico/);
   });
 });

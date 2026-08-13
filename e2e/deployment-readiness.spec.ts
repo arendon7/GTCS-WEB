@@ -36,19 +36,21 @@ test("login is private and excluded from indexing in the development E2E server"
   expectDevelopmentNonCacheable(headers["cache-control"]);
 });
 
-test("health exposes only safe deployment provenance", async ({ request }) => {
+test("health exposes only safe deployment provenance and the canonical public origin", async ({ request }) => {
   const response = await request.get("/api/health");
   expect(response.ok()).toBe(true);
   const body = await response.json() as {
     status: string;
     mode: string;
     opsAccess: string;
+    publicOrigin: string;
     deployment: { platform: string; environment: string; branch: string | null; commit: string | null };
   };
 
   expect(body.status).toBe("ready");
   expect(body.mode).toBe("local");
   expect(body.opsAccess).toBe("local-bypass");
+  expect(body.publicOrigin).toBe("https://greenatics.com.co");
   expect(body.deployment.platform).toBe("generic");
   expect(Object.keys(body.deployment).sort()).toEqual(["branch", "commit", "environment", "platform"]);
   expect(body.deployment.branch).toBeNull();

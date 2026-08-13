@@ -22,21 +22,31 @@ function fail(message) {
   throw new PreflightError(message);
 }
 
-export function normalizeHostedBaseUrl(value) {
-  if (!value) fail("Falta --base-url o APP_BASE_URL.");
+function normalizeHttpsOrigin(value, label) {
+  if (!value || typeof value !== "string") fail(`${label}: falta el origen HTTPS.`);
 
   let url;
   try {
     url = new URL(value);
   } catch {
-    fail("El origen del piloto no es una URL válida.");
+    fail(`${label}: origen inválido.`);
   }
 
-  if (url.protocol !== "https:") fail("El piloto hospedado debe usar HTTPS.");
-  if (url.username || url.password) fail("El origen del piloto no puede incluir credenciales.");
-  if (url.pathname !== "/" || url.search || url.hash) fail("Usa únicamente el origen del deployment, sin ruta, query ni fragmento.");
-
+  if (url.protocol !== "https:") fail(`${label}: el origen debe usar HTTPS.`);
+  if (url.username || url.password) fail(`${label}: el origen no puede incluir credenciales.`);
+  if (url.pathname !== "/" || url.search || url.hash) {
+    fail(`${label}: se esperaba únicamente un origen, sin ruta, query ni fragmento.`);
+  }
   return url.origin;
+}
+
+export function normalizeHostedBaseUrl(value) {
+  if (!value) fail("Falta --base-url o APP_BASE_URL.");
+  return normalizeHttpsOrigin(value, "origen del piloto");
+}
+
+export function normalizePublicOrigin(value) {
+  return normalizeHttpsOrigin(value, "health publicOrigin");
 }
 
 export function normalizePilotMode(value) {
@@ -62,7 +72,7 @@ function requireHeaderIncludes(response, name, expected, label) {
 function assertBaselineHeaders(response, label) {
   for (const [name, value] of Object.entries(BASELINE_HEADERS)) requireHeader(response, name, value, label);
   const permissions = response.headers.get("permissions-policy") ?? "";
-  for (const token of ["camera=()", "microphone=()", "geolocation=()"] ) {
+  for (const token of ["camera=()", "microphone=()", "geolocation=()"]) {
     if (!permissions.includes(token)) fail(`${label}: Permissions-Policy no contiene ${token}.`);
   }
 }
@@ -99,6 +109,8 @@ export function assertHostedHealth(payload, {
   const pilotMode = normalizePilotMode(expectedMode);
   if (!payload || typeof payload !== "object") fail("health: respuesta JSON inválida.");
   if (payload.status !== "ready") fail(`health: status=${String(payload.status)}; se esperaba ready.`);
+
+  normalizePublicOrigin(payload.publicOrigin);
 
   const checks = payload.checks ?? {};
   if (pilotMode === "public-only") {
@@ -148,7 +160,7 @@ function sitemapLocations(xml) {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((match) => match[1].trim());
 }
 
-function assertPublicSitemap(xml, origin) {
+function assertPublicSitemap(xml, publicOrigin) {
   const locations = sitemapLocations(xml);
   if (locations.length === 0) fail("sitemap: no contiene URLs públicas.");
 
@@ -160,7 +172,7 @@ function assertPublicSitemap(xml, origin) {
     } catch {
       fail(`sitemap: URL inválida: ${location}`);
     }
-    if (url.origin !== origin) fail(`sitemap: URL fuera del origen del piloto: ${location}`);
+    if (url.origin !== publicOrigin) fail(`sitemap: URL fuera del origen público canónico: ${location}`);
     if (forbiddenPrefixes.some((prefix) => url.pathname === prefix || url.pathname.startsWith(`${prefix}/`))) {
       fail(`sitemap: expone una ruta interna: ${url.pathname}`);
     }
@@ -202,6 +214,7 @@ export async function runHostedPilotPreflight({
     fail("health: el endpoint no devolvió JSON válido.");
   }
   const deployment = assertHostedHealth(health, { expectedBranch, expectedCommit, expectedMode: pilotMode });
+  const publicOrigin = normalizePublicOrigin(health.publicOrigin);
 
   const publicResponse = await get(fetchImpl, `${origin}/`);
   requireStatus(publicResponse, 200, "home pública");
@@ -234,7 +247,7 @@ export async function runHostedPilotPreflight({
 
   const sitemapResponse = await get(fetchImpl, `${origin}/sitemap.xml`);
   requireStatus(sitemapResponse, 200, "sitemap");
-  assertPublicSitemap(await sitemapResponse.text(), origin);
+  assertPublicSitemap(await sitemapResponse.text(), publicOrigin);
 
   const robotsResponse = await get(fetchImpl, `${origin}/robots.txt`);
   requireStatus(robotsResponse, 200, "robots");
@@ -242,6 +255,7 @@ export async function runHostedPilotPreflight({
 
   return {
     origin,
+    publicOrigin,
     mode: pilotMode,
     deployment,
     checks: [
