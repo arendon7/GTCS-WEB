@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { OpsAccessRole } from "@/lib/ops-data-contract";
 import { validateInviteUserInput, validateUpdateUserInput, type UserMembershipAssignment } from "@/lib/admin-users";
+import { INVITE_ACCEPTANCE_PATH } from "@/lib/invite-acceptance";
 import { createAdminClient, getAppBaseUrl, isSupabaseAdminConfigured } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
   const admin = createAdminClient();
   const { data, error } = await admin.auth.admin.inviteUserByEmail(parsed.value.email, {
     data: { display_name: parsed.value.displayName },
-    redirectTo: `${baseUrl}/account/setup`,
+    redirectTo: `${baseUrl}${INVITE_ACCEPTANCE_PATH}`,
   });
   if (error) {
     const alreadyExists = error.message.toLowerCase().includes("already");
