@@ -1,0 +1,113 @@
+# Default-branch dispatcher for first-Director onboarding.
+# Runtime source is always the canonical develop branch checked out below.
+name: hosted-pilot-onboarding
+
+on:
+  workflow_dispatch:
+    inputs:
+      director_email:
+        description: Email for the first Director invitation
+        required: true
+        type: string
+      director_name:
+        description: Display name for the first Director
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-onboarding
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-director:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      DIRECTOR_EMAIL: ${{ inputs.director_email }}
+      DIRECTOR_NAME: ${{ inputs.director_name }}
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "Onboarding Preview from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate onboarding inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          test "${#DIRECTOR_NAME}" -ge 2
+          test "${#DIRECTOR_NAME}" -le 120
+
+      - name: Require hosted pilot secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in VERCEL_TOKEN VERCEL_ORG_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted pilot onboarding."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Certify pristine hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
+
+      - name: Deploy full OPS Preview
+        id: deploy
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.deploy.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Bootstrap first Director atomically
+        env:
+          APP_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/bootstrap-director.mjs --email "$DIRECTOR_EMAIL" --name "$DIRECTOR_NAME" --plants TAM,YAR
+
+      - name: Verify Director state after bootstrap
+        run: node scripts/hosted-director-postcheck.mjs
+
+      - name: Onboarding summary
+        shell: bash
+        run: |
+          echo "First Director invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "The invited user must complete the email flow before interactive UAT." >> "$GITHUB_STEP_SUMMARY"
