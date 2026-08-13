@@ -3,7 +3,7 @@ import { runHostedPilotPreflight } from "./hosted-pilot-preflight-lib.mjs";
 
 const VERCEL_API_ORIGIN = "https://api.vercel.com";
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
-const DEFAULT_BYPASS_RETRY_DELAYS_MS = Object.freeze([250, 500, 1000, 2000]);
+const DEFAULT_BYPASS_RETRY_DELAYS_MS = Object.freeze([500, 1000, 2000, 4000, 8000]);
 
 export class VercelProtectedPreflightError extends Error {
   constructor(message) {
@@ -40,6 +40,17 @@ function apiUrl(path, teamId) {
 
 function defaultSleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function validateRetryDelays(retryDelays) {
+  if (!Array.isArray(retryDelays) || retryDelays.length > 8) {
+    throw new VercelProtectedPreflightError("La política de retry del bypass es inválida.");
+  }
+  const delays = retryDelays.map((value) => Number(value));
+  if (delays.some((value) => !Number.isFinite(value) || value < 0 || value > 10_000)) {
+    throw new VercelProtectedPreflightError("La política de retry del bypass contiene una espera inválida.");
+  }
+  return delays;
 }
 
 function safeRedirectTarget(response, baseUrl) {
@@ -126,6 +137,68 @@ export function createProtectionBypassFetch(secret, fetchImpl = globalThis.fetch
   };
 }
 
+export function createProtectionPropagationFetch(config, secret, {
+  fetchImpl = globalThis.fetch,
+  sleepImpl = defaultSleep,
+  retryDelays = DEFAULT_BYPASS_RETRY_DELAYS_MS,
+} = {}) {
+  if (typeof sleepImpl !== "function") {
+    throw new VercelProtectedPreflightError("No existe una implementación de espera para propagación.");
+  }
+  const delays = validateRetryDelays(retryDelays);
+  let deploymentOrigin;
+  try {
+    deploymentOrigin = new URL(config.deploymentUrl).origin;
+  } catch {
+    throw new VercelProtectedPreflightError("DEPLOYMENT_URL no es una URL válida para propagación.");
+  }
+  const protectedFetch = createProtectionBypassFetch(secret, fetchImpl);
+
+  return async (url, init = {}) => {
+    let requestUrl;
+    try {
+      requestUrl = new URL(url, deploymentOrigin);
+    } catch {
+      throw new VercelProtectedPreflightError("La URL del preflight protegido es inválida.");
+    }
+
+    for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+      let response;
+      try {
+        response = await protectedFetch(requestUrl, { ...init, redirect: "manual" });
+      } catch {
+        throw new VercelProtectedPreflightError(`Protection propagation: error de red en ${requestUrl.pathname}.`);
+      }
+
+      if (!REDIRECT_STATUSES.has(response.status)) return response;
+
+      const location = response.headers.get("location");
+      if (!location) return response;
+
+      let target;
+      try {
+        target = new URL(location, requestUrl);
+      } catch {
+        return response;
+      }
+
+      // Same-origin redirects belong to GREENATICS (for example /app -> /login)
+      // and must be evaluated by the functional preflight instead of retried here.
+      if (target.origin === deploymentOrigin) return response;
+
+      if (attempt === delays.length) {
+        throw new VercelProtectedPreflightError(
+          `Protection propagation: ${requestUrl.pathname} siguió redirigiendo fuera del deployment tras ${attempt + 1} intentos (HTTP ${response.status}); redirect=${target.origin}${target.pathname}.`,
+        );
+      }
+
+      await sleepImpl(delays[attempt]);
+    }
+
+    throw new VercelProtectedPreflightError("Protection propagation terminó en un estado imposible.");
+  };
+}
+
 export async function generateVercelProtectionBypass(config, secret, { fetchImpl = globalThis.fetch } = {}) {
   if (!/^[A-Za-z0-9]{32}$/.test(secret)) {
     throw new VercelProtectedPreflightError("Protection bypass secret inválido.");
@@ -164,14 +237,7 @@ export async function waitForVercelProtectionBypassReadiness(config, secret, {
   if (typeof sleepImpl !== "function") {
     throw new VercelProtectedPreflightError("No existe una implementación de espera para readiness.");
   }
-  if (!Array.isArray(retryDelays) || retryDelays.length > 8) {
-    throw new VercelProtectedPreflightError("La política de retry del bypass es inválida.");
-  }
-
-  const delays = retryDelays.map((value) => Number(value));
-  if (delays.some((value) => !Number.isFinite(value) || value < 0 || value > 10_000)) {
-    throw new VercelProtectedPreflightError("La política de retry del bypass contiene una espera inválida.");
-  }
+  const delays = validateRetryDelays(retryDelays);
 
   const url = deploymentHealthUrl(config.deploymentUrl);
   const protectedFetch = createProtectionBypassFetch(secret, fetchImpl);
@@ -232,12 +298,18 @@ export async function runVercelProtectedPilotPreflight({
       retryDelays: readinessRetryDelays,
     });
 
+    const propagationFetch = createProtectionPropagationFetch(config, secret, {
+      fetchImpl,
+      sleepImpl,
+      retryDelays: readinessRetryDelays,
+    });
+
     return await preflightRunner({
       baseUrl: config.deploymentUrl,
       expectedMode: config.expectedMode,
       expectedBranch: config.expectedBranch,
       expectedCommit: config.expectedCommit,
-      fetchImpl: createProtectionBypassFetch(secret, fetchImpl),
+      fetchImpl: propagationFetch,
     });
   } catch (error) {
     primaryError = error;
