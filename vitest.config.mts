@@ -8,7 +8,7 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(rootDir, "src") } },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "scripts/**/*.test.mjs"],
     coverage: { enabled: false },
   },
 });
