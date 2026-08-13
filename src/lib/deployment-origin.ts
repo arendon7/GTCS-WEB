@@ -13,13 +13,12 @@ function explicitOrigin(raw: string | undefined) {
   }
 }
 
-function vercelPreviewOrigin(env: OriginEnv) {
-  if (env.VERCEL_ENV !== "preview") return null;
-  const branchUrl = env.VERCEL_BRANCH_URL?.trim();
-  if (!branchUrl) return null;
+function vercelSystemOrigin(raw: string | undefined) {
+  const value = raw?.trim();
+  if (!value) return null;
 
   try {
-    const url = new URL(`https://${branchUrl}`);
+    const url = new URL(`https://${value}`);
     if (url.protocol !== "https:" || url.username || url.password) return null;
     if (url.pathname !== "/" || url.search || url.hash) return null;
     return url.origin;
@@ -28,6 +27,16 @@ function vercelPreviewOrigin(env: OriginEnv) {
   }
 }
 
+function vercelPreviewOrigin(env: OriginEnv) {
+  if (env.VERCEL_ENV !== "preview") return null;
+  return vercelSystemOrigin(env.VERCEL_BRANCH_URL);
+}
+
+function vercelProductionOrigin(env: OriginEnv) {
+  if (env.VERCEL_ENV !== "production") return null;
+  return vercelSystemOrigin(env.VERCEL_PROJECT_PRODUCTION_URL);
+}
+
 export function resolveTrustedAppBaseUrl(env: OriginEnv = process.env) {
-  return explicitOrigin(env.APP_BASE_URL) ?? vercelPreviewOrigin(env);
+  return explicitOrigin(env.APP_BASE_URL) ?? vercelPreviewOrigin(env) ?? vercelProductionOrigin(env);
 }
