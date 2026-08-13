@@ -62,28 +62,3 @@ export const publicStaticRoutes = [
   "/nosotros",
   "/contacto",
 ] as const;
-
-export const internalRoutePrefixes = [
-  "/app",
-  "/activities",
-  "/calendar",
-  "/cash",
-  "/compost",
-  "/dashboard",
-  "/documents",
-  "/equipment",
-  "/expenses",
-  "/finance",
-  "/imports",
-  "/inventory",
-  "/login",
-  "/maintenance",
-  "/production",
-  "/purchase-requests",
-  "/purchases",
-  "/receptions",
-  "/sales",
-  "/settlements",
-  "/suppliers",
-  "/supplies",
-] as const;
