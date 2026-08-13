@@ -141,14 +141,6 @@
   min-height: 60vh;
 }
 
-/* Transitional shell migration: legacy public pages still contain their own
-   direct header/footer. The shared shell is canonical, so only those outer
-   legacy chrome nodes are suppressed while page content/main is preserved. */
-.main > div > header:first-child,
-.main > div > footer:last-child {
-  display: none;
-}
-
 .footer {
   margin-top: 0;
   border-top: 8px solid #b8d65f;

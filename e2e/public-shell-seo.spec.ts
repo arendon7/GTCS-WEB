@@ -1,5 +1,21 @@
 import { test, expect } from "@playwright/test";
 
+const shellRoutes = [
+  "/",
+  "/wondergreen",
+  "/wondergreen/cultivos",
+  "/wondergreen/cultivos/cafe",
+  "/soluciones",
+  "/soluciones/diagnostico-caracterizacion",
+  "/proyectos",
+  "/proyectos/yarumal",
+  "/impacto",
+  "/biblioteca",
+  "/biblioteca/guia-deficiencias",
+  "/nosotros",
+  "/contacto",
+];
+
 test("public home uses the shared navigation and real routes", async ({ page }) => {
   await page.goto("/");
 
@@ -23,6 +39,16 @@ test("nested public routes inherit the same shell", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Diagnóstico y caracterización/i })).toBeVisible();
   await expect(footer.getByText(/Centro Empresarial Alcalá/)).toBeVisible();
   await expect(footer.getByRole("link", { name: "GREENATICS OPS" })).toHaveAttribute("href", "/app");
+});
+
+test("every governed public route renders exactly one shared shell", async ({ page }) => {
+  for (const route of shellRoutes) {
+    await page.goto(route);
+    await expect(page.locator("header"), `${route} should have one header`).toHaveCount(1);
+    await expect(page.locator("footer"), `${route} should have one footer`).toHaveCount(1);
+    await expect(page.getByRole("navigation", { name: "Navegación pública" }), `${route} should expose the shared navigation`).toBeVisible();
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: "GREENATICS OPS" }), `${route} should expose the OPS bridge`).toHaveAttribute("href", "/app");
+  }
 });
 
 test("sitemap exposes public routes and robots blocks OPS", async ({ request }) => {

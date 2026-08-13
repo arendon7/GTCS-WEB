@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { OrganizationJsonLd } from "@/components/organization-json-ld";
 import { publicFooterNav, publicNav, publicSite } from "@/data/public-site";
@@ -12,7 +13,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link className={styles.brand} href="/" aria-label="Greenatics, inicio">
-            <img src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
+            <Image src="/brand/greenatics-horizontal.webp" alt="Greenatics" width={360} height={66} priority sizes="(max-width: 720px) 180px, 205px" />
           </Link>
 
           <nav className={styles.nav} aria-label="Navegación pública">
@@ -35,7 +36,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
             <Link href="/" aria-label="Greenatics, inicio">
-              <img src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
+              <Image src="/brand/greenatics-horizontal.webp" alt="Greenatics" width={360} height={66} sizes="180px" />
             </Link>
             <p>{publicSite.description}</p>
             <address>

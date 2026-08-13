@@ -11,16 +11,6 @@ export const metadata: Metadata = {
 export default function WondergreenCropsPage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={`${styles.container} ${styles.headerInner}`}>
-          <Link href="/wondergreen" aria-label="Volver a Wondergreen">
-            <img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-          </Link>
-          <Link className={styles.headerLink} href="/wondergreen">Wondergreen</Link>
-          <Link className={`${styles.button} ${styles.primary}`} href="/app">Acceder a Greenatics</Link>
-        </div>
-      </header>
-
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
@@ -74,10 +64,6 @@ export default function WondergreenCropsPage() {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={`${styles.container} ${styles.footerInner}`}><span>© Greenatics S.A.S. · Wondergreen</span><Link href="/">Volver a Greenatics</Link></div>
-      </footer>
     </div>
   );
 }

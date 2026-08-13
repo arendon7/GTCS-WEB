@@ -11,17 +11,6 @@ export const metadata: Metadata = {
 export default function DeficiencyGuidePage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={`${styles.container} ${styles.headerInner}`}>
-          <Link href="/" aria-label="Greenatics">
-            <img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-          </Link>
-          <Link className={styles.headerLink} href="/biblioteca">Biblioteca</Link>
-          <Link className={styles.headerLink} href="/wondergreen/cultivos">Cultivos</Link>
-          <Link className={`${styles.button} ${styles.primary}`} href="/app">Acceder a Greenatics</Link>
-        </div>
-      </header>
-
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
@@ -120,10 +109,6 @@ export default function DeficiencyGuidePage() {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        <div className={`${styles.container} ${styles.footerInner}`}><span>© Greenatics S.A.S. · Wondergreen · Guía de deficiencias</span><Link href="/biblioteca">Volver a Biblioteca</Link></div>
-      </footer>
     </div>
   );
 }
