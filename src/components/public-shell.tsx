@@ -4,7 +4,18 @@ import { OrganizationJsonLd } from "@/components/organization-json-ld";
 import { publicFooterNav, publicNav, publicSite } from "@/data/public-site";
 import styles from "./public-shell.module.css";
 
-export function PublicShell({ children }: { children: React.ReactNode }) {
+type PublicShellProps = {
+  children: React.ReactNode;
+  ownsMain?: boolean;
+};
+
+export function PublicShell({ children, ownsMain = true }: PublicShellProps) {
+  const content = ownsMain ? (
+    <main id="public-main" className={styles.main} tabIndex={-1}>{children}</main>
+  ) : (
+    <div id="public-main" className={styles.main} tabIndex={-1}>{children}</div>
+  );
+
   return (
     <div className={styles.site}>
       <OrganizationJsonLd />
@@ -30,7 +41,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main id="public-main" className={styles.main} tabIndex={-1}>{children}</main>
+      {content}
 
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
