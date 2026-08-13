@@ -1,3 +1,5 @@
+import { protectedOpsRoutePrefixes } from "@/lib/ops-access-policy";
+
 export const publicSite = {
   name: "Greenatics",
   publicDomainTarget: "https://greenatics.com.co",
@@ -61,4 +63,11 @@ export const publicStaticRoutes = [
   "/biblioteca/guia-deficiencias",
   "/nosotros",
   "/contacto",
+] as const;
+
+export const internalRoutePrefixes = [
+  ...protectedOpsRoutePrefixes,
+  "/login",
+  "/auth",
+  "/api",
 ] as const;
