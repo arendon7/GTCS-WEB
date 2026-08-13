@@ -1,16 +1,24 @@
 import type { MetadataRoute } from "next";
-import { internalRoutePrefixes, publicSite } from "@/data/public-site";
+import { publicSite } from "@/data/public-site";
+import { protectedOpsRoutePrefixes } from "@/lib/ops-access-policy";
+
+const nonIndexableRoutePrefixes = [
+  ...protectedOpsRoutePrefixes,
+  "/login",
+  "/auth/",
+  "/api/",
+] as const;
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = publicSite.publicDomainTarget.replace(/\/$/, "");
-
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: [...internalRoutePrefixes, "/api/"],
-    },
-    sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [...nonIndexableRoutePrefixes],
+      },
+    ],
+    sitemap: `${publicSite.publicDomainTarget}/sitemap.xml`,
+    host: publicSite.publicDomainTarget,
   };
 }
