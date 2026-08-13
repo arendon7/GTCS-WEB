@@ -96,7 +96,7 @@ describe("Vercel hosted pilot preview deployment", () => {
     expect(config.supabaseSecretKey).toBe(fullOpsEnv.SUPABASE_SECRET_KEY);
   });
 
-  it("creates an isolated public project, injects only local mode and deploys the exact SHA", async () => {
+  it("creates an isolated public project without coupling provisioning to Git integration", async () => {
     const { calls, fetchImpl } = successfulFetch({
       projectName: "greenatics-public-preview",
       deploymentUrl: "greenatics-public-preview.vercel.app",
@@ -121,11 +121,11 @@ describe("Vercel hosted pilot preview deployment", () => {
     }
 
     const createProject = calls.find((call) => call.method === "POST" && call.parsed.pathname === "/v11/projects");
-    expect(createProject.body).toMatchObject({
+    expect(createProject.body).toEqual({
       name: "greenatics-public-preview",
       framework: "nextjs",
-      gitRepository: { type: "github", repo: "arendon7/GTCS-WEB" },
     });
+    expect(createProject.body).not.toHaveProperty("gitRepository");
 
     const envCall = calls.find((call) => call.parsed.pathname.endsWith("/env"));
     expect(envCall.parsed.searchParams.get("upsert")).toBe("true");
