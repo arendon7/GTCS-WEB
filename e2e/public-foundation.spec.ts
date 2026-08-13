@@ -1,5 +1,21 @@
 import { test, expect } from "@playwright/test";
 
+const publicRoutes = [
+  "/",
+  "/soluciones",
+  "/soluciones/diagnostico-caracterizacion",
+  "/wondergreen",
+  "/wondergreen/cultivos",
+  "/wondergreen/cultivos/cafe",
+  "/proyectos",
+  "/proyectos/yarumal",
+  "/impacto",
+  "/biblioteca",
+  "/biblioteca/guia-deficiencias",
+  "/nosotros",
+  "/contacto",
+] as const;
+
 async function jsonLdByType(page: import("@playwright/test").Page, type: string) {
   const payloads = await page.locator('script[type="application/ld+json"]').allTextContents();
   return payloads.map((payload) => JSON.parse(payload) as Record<string, unknown>).find((payload) => payload["@type"] === type);
@@ -15,30 +31,51 @@ test("public HOME emits governed Organization structured data", async ({ page })
   expect(JSON.stringify(organization)).not.toContain("VERCEL_URL");
 });
 
-test("public shell exposes one canonical main landmark", async ({ page }) => {
-  await page.goto("/");
+for (const route of publicRoutes) {
+  test(`public main landmark contract: ${route}`, async ({ page }) => {
+    await page.goto(route);
+    await expect(page.getByRole("main")).toHaveCount(1);
+    await expect(page.locator("#public-main")).toHaveCount(1);
+  });
+}
 
-  const main = page.getByRole("main");
-  await expect(main).toHaveCount(1);
-  await expect(main).toHaveAttribute("id", "public-main");
-});
-
-test("public skip-link moves keyboard focus into main content", async ({ page }) => {
+test("public HOME skip-link moves keyboard focus into the shell-owned main", async ({ page }) => {
   await page.goto("/");
 
   const skipLink = page.getByRole("link", { name: "Saltar al contenido" });
-  const main = page.getByRole("main");
+  const target = page.locator("#public-main");
 
+  await expect(target).toHaveRole("main");
   await page.keyboard.press("Tab");
   await expect(skipLink).toBeFocused();
   await expect(skipLink).toBeVisible();
 
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/#public-main$/);
-  await expect(main).toBeFocused();
+  await expect(target).toBeFocused();
 
   await page.keyboard.press("Tab");
-  expect(await main.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  expect(await target.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+});
+
+test("public nested route skip-link focuses shell target and continues into page main", async ({ page }) => {
+  await page.goto("/soluciones");
+
+  const skipLink = page.getByRole("link", { name: "Saltar al contenido" });
+  const target = page.locator("#public-main");
+  const main = page.getByRole("main");
+
+  await expect(target).not.toHaveRole("main");
+  await expect(main).toHaveCount(1);
+
+  await page.keyboard.press("Tab");
+  await expect(skipLink).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#public-main$/);
+  await expect(target).toBeFocused();
+
+  await page.keyboard.press("Tab");
+  expect(await target.evaluate((element) => element.contains(document.activeElement))).toBe(true);
 });
 
 test("manifest uses governed site content without inherited color claims", async ({ request }) => {
