@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import styles from "../company-public.module.css";
 
@@ -43,10 +44,8 @@ const ecosystem = [
 export default function AboutPage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}><div className={`${styles.container} ${styles.headerInner}`}><Link href="/" aria-label="Greenatics, inicio"><img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /></Link><nav className={styles.nav} aria-label="Navegación pública"><Link href="/soluciones">Soluciones</Link><Link href="/proyectos">Proyectos</Link><Link href="/impacto">Impacto</Link><Link href="/wondergreen">Wondergreen</Link><Link href="/biblioteca">Conocimiento</Link></nav><Link className={`${styles.button} ${styles.primary}`} href="/contacto">Contacto</Link></div></header>
-
       <main>
-        <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}><div><span className={styles.eyebrow}>Greenatics</span><h1>No somos solo una planta, una consultora ni una marca de fertilizantes.</h1><p className={styles.lead}>Greenatics construye sistemas de economía circular para residuos orgánicos. Conectamos gestión en la fuente, logística, tratamiento biológico, ingeniería, operación, productos agrícolas y datos para que el ciclo pueda funcionar de extremo a extremo.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Ver lo que hacemos</Link><Link className={`${styles.button} ${styles.ghost}`} href="/proyectos">Ver experiencia</Link></div></div><div className={styles.mark}><img src="/brand/greenatics-symbol.svg" alt="Símbolo Greenatics" /></div></div></section>
+        <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}><div><span className={styles.eyebrow}>Greenatics</span><h1>No somos solo una planta, una consultora ni una marca de fertilizantes.</h1><p className={styles.lead}>Greenatics construye sistemas de economía circular para residuos orgánicos. Conectamos gestión en la fuente, logística, tratamiento biológico, ingeniería, operación, productos agrícolas y datos para que el ciclo pueda funcionar de extremo a extremo.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Ver lo que hacemos</Link><Link className={`${styles.button} ${styles.ghost}`} href="/proyectos">Ver experiencia</Link></div></div><div className={styles.mark}><Image src="/brand/greenatics-symbol.svg" alt="Símbolo Greenatics" width={180} height={180} /></div></div></section>
 
         <section className={`${styles.section} ${styles.white}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Cinco capacidades conectadas</span><h2>La ventaja está en trabajar la cadena completa.</h2><p>Podemos intervenir una fase puntual o articular varias cuando el proyecto requiere un sistema integral.</p></div><div className={styles.grid5}>{capabilities.map(([title,copy],index)=><article className={styles.card} key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
 
@@ -58,8 +57,6 @@ export default function AboutPage() {
 
         <section className={`${styles.section} ${styles.soft}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Ecosistema Greenatics</span><h2>Una empresa, varias capas que se alimentan entre sí.</h2><p>La operación genera conocimiento; el conocimiento mejora la ingeniería; los proyectos producen nuevos aprendizajes; y Wondergreen conecta parte de ese valor con el agro.</p></div><div className={styles.ecosystem}>{ecosystem.map(([title,href,copy])=><Link href={href} key={title}><strong>{title}</strong><span>{copy}</span></Link>)}</div></div></section>
       </main>
-
-      <footer className={styles.footer}><div className={`${styles.container} ${styles.footerInner}`}><span>Greenatics · transformar residuos en vida</span><div><Link href="/contacto">Contacto</Link> · <Link href="/app">GREENATICS OPS</Link></div></div></footer>
     </div>
   );
 }
