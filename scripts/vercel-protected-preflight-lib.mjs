@@ -2,6 +2,8 @@ import { randomBytes } from "node:crypto";
 import { runHostedPilotPreflight } from "./hosted-pilot-preflight-lib.mjs";
 
 const VERCEL_API_ORIGIN = "https://api.vercel.com";
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+const DEFAULT_BYPASS_RETRY_DELAYS_MS = Object.freeze([250, 500, 1000, 2000]);
 
 export class VercelProtectedPreflightError extends Error {
   constructor(message) {
@@ -34,6 +36,29 @@ function apiUrl(path, teamId) {
   const url = new URL(path, VERCEL_API_ORIGIN);
   url.searchParams.set("teamId", teamId);
   return url;
+}
+
+function defaultSleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function safeRedirectTarget(response, baseUrl) {
+  const location = response.headers.get("location");
+  if (!location) return null;
+  try {
+    const target = new URL(location, baseUrl);
+    return `${target.origin}${target.pathname}`;
+  } catch {
+    return "<invalid>";
+  }
+}
+
+function deploymentHealthUrl(value) {
+  try {
+    return new URL("/api/health", value).toString();
+  } catch {
+    throw new VercelProtectedPreflightError("DEPLOYMENT_URL no es una URL válida para readiness.");
+  }
 }
 
 async function parseResponseBody(response) {
@@ -131,11 +156,65 @@ export async function revokeVercelProtectionBypass(config, secret, { fetchImpl =
   });
 }
 
+export async function waitForVercelProtectionBypassReadiness(config, secret, {
+  fetchImpl = globalThis.fetch,
+  sleepImpl = defaultSleep,
+  retryDelays = DEFAULT_BYPASS_RETRY_DELAYS_MS,
+} = {}) {
+  if (typeof sleepImpl !== "function") {
+    throw new VercelProtectedPreflightError("No existe una implementación de espera para readiness.");
+  }
+  if (!Array.isArray(retryDelays) || retryDelays.length > 8) {
+    throw new VercelProtectedPreflightError("La política de retry del bypass es inválida.");
+  }
+
+  const delays = retryDelays.map((value) => Number(value));
+  if (delays.some((value) => !Number.isFinite(value) || value < 0 || value > 10_000)) {
+    throw new VercelProtectedPreflightError("La política de retry del bypass contiene una espera inválida.");
+  }
+
+  const url = deploymentHealthUrl(config.deploymentUrl);
+  const protectedFetch = createProtectionBypassFetch(secret, fetchImpl);
+
+  for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+    let response;
+    try {
+      response = await protectedFetch(url, {
+        redirect: "manual",
+        headers: { "user-agent": "GREENATICS-VERCEL-BYPASS-READINESS/1.0" },
+      });
+    } catch {
+      throw new VercelProtectedPreflightError("Bypass readiness: error de red al consultar /api/health.");
+    }
+
+    if (response.status === 200) {
+      return { attempts: attempt + 1, status: response.status };
+    }
+
+    if (!REDIRECT_STATUSES.has(response.status)) {
+      return { attempts: attempt + 1, status: response.status };
+    }
+
+    if (attempt === delays.length) {
+      const target = safeRedirectTarget(response, config.deploymentUrl);
+      throw new VercelProtectedPreflightError(
+        `Bypass readiness: /api/health siguió redirigiendo tras ${attempt + 1} intentos (HTTP ${response.status})${target ? `; redirect=${target}` : ""}.`,
+      );
+    }
+
+    await sleepImpl(delays[attempt]);
+  }
+
+  throw new VercelProtectedPreflightError("Bypass readiness terminó en un estado imposible.");
+}
+
 export async function runVercelProtectedPilotPreflight({
   env = process.env,
   fetchImpl = globalThis.fetch,
   preflightRunner = runHostedPilotPreflight,
   secretFactory = createProtectionBypassSecret,
+  sleepImpl = defaultSleep,
+  readinessRetryDelays = DEFAULT_BYPASS_RETRY_DELAYS_MS,
   onCleanupError = () => {},
 } = {}) {
   const config = parseVercelProtectedPreflightConfig(env);
@@ -147,6 +226,12 @@ export async function runVercelProtectedPilotPreflight({
   let primaryError = null;
   await generateVercelProtectionBypass(config, secret, { fetchImpl });
   try {
+    await waitForVercelProtectionBypassReadiness(config, secret, {
+      fetchImpl,
+      sleepImpl,
+      retryDelays: readinessRetryDelays,
+    });
+
     return await preflightRunner({
       baseUrl: config.deploymentUrl,
       expectedMode: config.expectedMode,

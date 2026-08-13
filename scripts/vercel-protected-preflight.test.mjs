@@ -84,6 +84,88 @@ describe("Vercel protected preview preflight", () => {
     expect(deploymentRequest.url.toString()).not.toContain(secret);
   });
 
+  it("retries bounded redirects while a new bypass propagates", async () => {
+    const secret = "e".repeat(32);
+    let readinessReads = 0;
+    const sleepImpl = vi.fn(async () => {});
+    const fetchImpl = vi.fn(async (url, init = {}) => {
+      if ((init.method || "GET") === "PATCH") return jsonResponse({ protectionBypass: {} });
+      if (new URL(url).pathname === "/api/health") {
+        readinessReads += 1;
+        if (readinessReads < 3) {
+          return new Response(null, {
+            status: 302,
+            headers: { location: "https://vercel.com/login?next=protected" },
+          });
+        }
+        return new Response("ok", { status: 200 });
+      }
+      throw new Error(`Unexpected URL ${String(url)}`);
+    });
+    const preflightRunner = vi.fn(async () => ({
+      origin: env.DEPLOYMENT_URL,
+      mode: "full-ops",
+      deployment: { platform: "vercel", environment: "preview", branch: "develop", commit: env.DEPLOY_GIT_SHA },
+      checks: ["health"],
+    }));
+
+    const result = await runVercelProtectedPilotPreflight({
+      env,
+      fetchImpl,
+      preflightRunner,
+      secretFactory: () => secret,
+      sleepImpl,
+      readinessRetryDelays: [10, 20, 40],
+    });
+
+    expect(result.mode).toBe("full-ops");
+    expect(readinessReads).toBe(3);
+    expect(sleepImpl.mock.calls.map(([ms]) => ms)).toEqual([10, 20]);
+    expect(preflightRunner).toHaveBeenCalledTimes(1);
+  });
+
+  it("bounds persistent redirects, sanitizes Location and still revokes the bypass", async () => {
+    const secret = "f".repeat(32);
+    const bodies = [];
+    const sleepImpl = vi.fn(async () => {});
+    const fetchImpl = vi.fn(async (url, init = {}) => {
+      if ((init.method || "GET") === "PATCH") {
+        bodies.push(bodyOf(init));
+        return jsonResponse({ protectionBypass: {} });
+      }
+      if (new URL(url).pathname === "/api/health") {
+        return new Response(null, {
+          status: 302,
+          headers: { location: `https://vercel.com/login?token=${env.VERCEL_TOKEN}` },
+        });
+      }
+      throw new Error(`Unexpected URL ${String(url)}`);
+    });
+
+    let thrown;
+    try {
+      await runVercelProtectedPilotPreflight({
+        env,
+        fetchImpl,
+        preflightRunner: vi.fn(async () => ({ ok: true })),
+        secretFactory: () => secret,
+        sleepImpl,
+        readinessRetryDelays: [1, 2],
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(VercelProtectedPreflightError);
+    expect(thrown.message).toContain("redirect=https://vercel.com/login");
+    expect(thrown.message).not.toContain(env.VERCEL_TOKEN);
+    expect(sleepImpl.mock.calls.map(([ms]) => ms)).toEqual([1, 2]);
+    expect(bodies).toEqual([
+      { generate: { secret, note: "GREENATICS hosted pilot CI" } },
+      { revoke: { secret, regenerate: false } },
+    ]);
+  });
+
   it("revokes the bypass even when the hosted preflight fails", async () => {
     const secret = "c".repeat(32);
     const bodies = [];
