@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { config, proxy } from "./proxy";
@@ -11,6 +12,10 @@ function request(pathname: string) {
 }
 
 describe("OPS request boundary", () => {
+  it("keeps only src/proxy.ts as the canonical Next.js proxy entrypoint", () => {
+    expect(existsSync("proxy.ts")).toBe(false);
+  });
+
   it("keeps public routes outside the auth boundary", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("NEXT_PUBLIC_DATA_MODE", "local");
@@ -18,6 +23,20 @@ describe("OPS request boundary", () => {
     const response = await proxy(request("/wondergreen"));
     expect(response.status).toBe(200);
     expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("keeps public readiness and SEO routes outside auth in hosted Supabase mode", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("NEXT_PUBLIC_DATA_MODE", "supabase");
+
+    for (const pathname of ["/", "/api/health", "/sitemap.xml", "/robots.txt"]) {
+      const response = await proxy(request(pathname));
+      expect(response.status).toBe(200);
+      expect(response.headers.get("location")).toBeNull();
+    }
+
+    expect(config.matcher).not.toContain("/api/:path*");
   });
 
   it("keeps local OPS available during development", async () => {
