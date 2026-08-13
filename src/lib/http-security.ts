@@ -18,6 +18,7 @@ export const internalResponseHeaders: SecurityHeader[] = [
 export const internalHeaderRoutePrefixes = [
   ...protectedOpsRoutePrefixes,
   "/login",
+  "/auth",
   "/api",
 ] as const;
 
