@@ -1,5 +1,5 @@
-# Default-branch dispatcher for first-Director onboarding.
-# Runtime source is always the canonical develop branch checked out below.
+# Default-branch dispatcher for initial GREENATICS OPS owners onboarding.
+# Runtime application source is always the canonical develop branch checked out below.
 name: hosted-pilot-onboarding
 
 on:
@@ -13,6 +13,14 @@ on:
         description: Display name for the first Director
         required: true
         type: string
+      admin_email:
+        description: Email for the initial Administrator invitation
+        required: true
+        type: string
+      admin_name:
+        description: Display name for the initial Administrator
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -22,9 +30,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  bootstrap-director:
+  bootstrap-owners:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       PILOT_PREVIEW_MODE: full-ops
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -35,6 +43,8 @@ jobs:
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
       DIRECTOR_EMAIL: ${{ inputs.director_email }}
       DIRECTOR_NAME: ${{ inputs.director_name }}
+      ADMIN_EMAIL: ${{ inputs.admin_email }}
+      ADMIN_NAME: ${{ inputs.admin_name }}
 
     steps:
       - name: Checkout canonical develop
@@ -55,15 +65,19 @@ jobs:
           sha="$(git rev-parse HEAD)"
           test "${#sha}" -eq 40
           echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
-          echo "Onboarding Preview from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Initial OPS owners onboarding from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Validate onboarding inputs
         shell: bash
         run: |
           set -euo pipefail
           [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          [[ "$ADMIN_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
           test "${#DIRECTOR_NAME}" -ge 2
           test "${#DIRECTOR_NAME}" -le 120
+          test "${#ADMIN_NAME}" -ge 2
+          test "${#ADMIN_NAME}" -le 120
+          test "${DIRECTOR_EMAIL,,}" != "${ADMIN_EMAIL,,}"
 
       - name: Require hosted pilot secrets
         shell: bash
@@ -82,62 +96,29 @@ jobs:
       - name: Install dependencies
         run: npm install --ignore-scripts
 
+      - name: Unit gate stable OPS production deployer
+        run: npx vitest run scripts/vercel-ops-production-deploy.test.mjs
+
       - name: Certify pristine hosted backend
         run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
 
       - name: Deploy full OPS Preview
-        id: deploy
+        id: preview
         run: npm run pilot:vercel-preview
 
       - name: Certify protected deployed Preview
         env:
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
-          VERCEL_PROJECT_ID: ${{ steps.deploy.outputs.project_id }}
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
         run: npm run pilot:vercel-preflight
 
-      - name: Enable human access on exact onboarding deployment
-        env:
-          DEPLOYMENT_ID: ${{ steps.deploy.outputs.deployment_id }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --input-type=module <<'NODE'
-          const token = process.env.VERCEL_TOKEN?.trim();
-          const teamId = process.env.VERCEL_ORG_ID?.trim();
-          const deploymentId = process.env.DEPLOYMENT_ID?.trim();
-          if (!token || !teamId || !/^dpl_[A-Za-z0-9_-]+$/.test(deploymentId ?? "")) {
-            throw new Error("Human access gate: missing or invalid Vercel deployment identity.");
-          }
-          const url = new URL(`https://api.vercel.com/aliases/${encodeURIComponent(deploymentId)}/protection-bypass`);
-          url.searchParams.set("teamId", teamId);
-          const response = await fetch(url, {
-            method: "PATCH",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              override: {
-                scope: "alias-protection-override",
-                action: "create",
-              },
-            }),
-          });
-          if (!response.ok) {
-            let code = `http_${response.status}`;
-            try {
-              const payload = await response.json();
-              if (typeof payload?.error?.code === "string" && payload.error.code.trim()) code = payload.error.code.trim();
-            } catch {}
-            throw new Error(`Human access gate: Vercel protection override failed (${code}).`);
-          }
-          console.log("Human onboarding access enabled for the exact deployment URL.");
-          NODE
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
 
-      - name: Certify human-accessible onboarding origin
+      - name: Certify stable human-accessible OPS origin
         env:
-          APP_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
         shell: bash
         run: |
           set -euo pipefail
@@ -149,7 +130,7 @@ jobs:
 
       - name: Bootstrap first Director atomically
         env:
-          APP_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
         shell: bash
         run: |
           set -euo pipefail
@@ -158,9 +139,21 @@ jobs:
       - name: Verify Director state after bootstrap
         run: node scripts/hosted-director-postcheck.mjs
 
-      - name: Onboarding summary
+      - name: Bootstrap initial Administrator with rollback
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
         shell: bash
         run: |
-          echo "First Director invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
-          echo "The exact onboarding deployment passed both protected CI preflight and human-access preflight." >> "$GITHUB_STEP_SUMMARY"
-          echo "The invited user must complete the email flow before interactive UAT." >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          node scripts/bootstrap-admin.mjs --email "$ADMIN_EMAIL" --name "$ADMIN_NAME" --plants TAM,YAR
+
+      - name: Onboarding summary
+        shell: bash
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+        run: |
+          echo "Initial Director invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Initial Administrator invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Stable OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Preview passed protected CI preflight and Production passed human-access preflight before invitations were created." >> "$GITHUB_STEP_SUMMARY"
+          echo "Both invited users must complete their email activation flows before interactive UAT." >> "$GITHUB_STEP_SUMMARY"
