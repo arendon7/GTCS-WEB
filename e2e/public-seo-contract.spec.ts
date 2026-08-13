@@ -31,7 +31,8 @@ for (const route of publicRoutes) {
 
     const canonical = page.locator('link[rel="canonical"]');
     await expect(canonical).toHaveCount(1);
-    await expect(canonical).toHaveAttribute("href", `${canonicalOrigin}${route === "/" ? "/" : route}`);
+    const expectedCanonical = route === "/" ? canonicalOrigin : `${canonicalOrigin}${route}`;
+    await expect(canonical).toHaveAttribute("href", expectedCanonical);
   });
 }
 
