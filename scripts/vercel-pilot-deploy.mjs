@@ -15,6 +15,7 @@ async function writeSummary(result) {
   const summary = [
     "## GREENATICS hosted pilot preview",
     "",
+    `- Mode: \`${result.mode}\``,
     `- Project: \`${result.project.name}\``,
     `- Project created in this run: \`${result.project.created ? "yes" : "no"}\``,
     `- Git ref: \`${result.gitRef}\``,
@@ -30,12 +31,14 @@ async function writeSummary(result) {
 async function main() {
   const result = await runVercelPilotPreviewDeployment();
 
+  await writeOutput("pilot_mode", result.mode);
   await writeOutput("project_id", result.project.id);
   await writeOutput("deployment_id", result.deployment.id);
   await writeOutput("deployment_url", result.deployment.origin);
   await writeSummary(result);
 
   console.log("GREENATICS Vercel hosted pilot: READY");
+  console.log(`mode: ${result.mode}`);
   console.log(`project: ${result.project.name}`);
   console.log(`project-created: ${result.project.created ? "yes" : "no"}`);
   console.log(`deployment: ${result.deployment.origin}`);
