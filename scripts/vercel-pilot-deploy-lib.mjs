@@ -163,15 +163,14 @@ export async function ensureVercelPilotProject(config, { fetchImpl = fetch } = {
   });
   if (existing) return Object.freeze({ ...validateProject(existing, config.projectName), created: false });
 
+  // Keep project provisioning independent from Git-provider installation state.
+  // The project API only requires a name; Git provenance is supplied explicitly
+  // on the deployment request below using the exact branch + SHA.
   const created = await vercelRequest(config, fetchImpl, "/v11/projects", {
     method: "POST",
     body: {
       name: config.projectName,
       framework: "nextjs",
-      gitRepository: {
-        type: "github",
-        repo: config.repository.fullName,
-      },
     },
   });
   return Object.freeze({ ...validateProject(created, config.projectName), created: true });
