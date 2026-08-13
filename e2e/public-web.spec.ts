@@ -3,10 +3,10 @@ import { test, expect } from "@playwright/test";
 test("public home presents Greenatics and links to OPS", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /Convertimos residuos orgánicos/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Greenatics" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Acceder a Greenatics" })).toHaveAttribute("href", "/app");
-  await expect(page.getByRole("heading", { name: /Suelo, nutrición y biología trabajando como un sistema/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Más que NPK." })).toBeVisible();
   await expect(page.getByText("5", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("referencias líquidas", { exact: true })).toBeVisible();
 });
