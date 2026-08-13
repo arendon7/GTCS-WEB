@@ -70,7 +70,7 @@ export default function WondergreenPage() {
           </div>
         </nav>
 
-        <main>
+        <div>
           <section className={styles.hero}>
             <div className={styles.heroAccent} aria-hidden="true" />
             <div className={`${styles.container} ${styles.heroGrid}`}>
@@ -263,7 +263,7 @@ export default function WondergreenPage() {
               <div className={styles.buttonRow}><Link className={`${styles.button} ${styles.dark}`} href="/contacto">Hablar con equipo técnico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/">Volver a Greenatics</Link></div>
             </div>
           </section>
-        </main>
+        </div>
       </div>
     </PublicShell>
   );
