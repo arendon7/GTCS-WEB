@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
@@ -74,7 +75,15 @@ export default function WondergreenPage() {
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
               <span className={styles.eyebrow}>Una marca Greenatics · Producto agrícola</span>
-              <img className={styles.wgLogo} src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
+              <Image
+                className={styles.wgLogo}
+                src="/brand/wondergreen-nutrients.webp"
+                alt="Wondergreen Nutrients"
+                width={420}
+                height={221}
+                sizes="(max-width: 720px) 78vw, 420px"
+                priority
+              />
               <h1>Nutrición que vuelve a la tierra.</h1>
               <p className={styles.lead}>
                 Wondergreen reúne suelo, nutrición, biología y conocimiento para acompañar cada cultivo según su etapa, condición y objetivo. La ruta empieza por entender el caso, no por empujar una referencia.
