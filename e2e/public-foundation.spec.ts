@@ -15,11 +15,19 @@ test("public HOME emits governed Organization structured data", async ({ page })
   expect(JSON.stringify(organization)).not.toContain("VERCEL_URL");
 });
 
+test("public shell exposes one canonical main landmark", async ({ page }) => {
+  await page.goto("/");
+
+  const main = page.getByRole("main");
+  await expect(main).toHaveCount(1);
+  await expect(main).toHaveAttribute("id", "public-main");
+});
+
 test("public skip-link moves keyboard focus into main content", async ({ page }) => {
   await page.goto("/");
 
   const skipLink = page.getByRole("link", { name: "Saltar al contenido" });
-  const main = page.locator("#public-main");
+  const main = page.getByRole("main");
 
   await page.keyboard.press("Tab");
   await expect(skipLink).toBeFocused();
