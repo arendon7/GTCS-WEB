@@ -7,6 +7,7 @@ import {
 
 const VERCEL_API_ORIGIN = "https://api.vercel.com";
 const PRODUCTION_TARGET = "production";
+const FULL_OPS_ENV_TARGETS = Object.freeze(["production", "preview"]);
 
 function clean(value) {
   return typeof value === "string" ? value.trim() : "";
@@ -61,29 +62,29 @@ function productionEnvironmentVariables(config) {
       key: "NEXT_PUBLIC_DATA_MODE",
       value: "supabase",
       type: "plain",
-      target: [PRODUCTION_TARGET],
-      comment: "GREENATICS stable OPS production data mode",
+      target: [...FULL_OPS_ENV_TARGETS],
+      comment: "GREENATICS stable OPS full-ops data mode",
     },
     {
       key: "NEXT_PUBLIC_SUPABASE_URL",
       value: config.supabaseUrl,
       type: "plain",
-      target: [PRODUCTION_TARGET],
-      comment: "GREENATICS stable OPS production backend origin",
+      target: [...FULL_OPS_ENV_TARGETS],
+      comment: "GREENATICS stable OPS backend origin",
     },
     {
       key: "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
       value: config.supabasePublishableKey,
       type: "plain",
-      target: [PRODUCTION_TARGET],
-      comment: "GREENATICS stable OPS production publishable key",
+      target: [...FULL_OPS_ENV_TARGETS],
+      comment: "GREENATICS stable OPS publishable key",
     },
     {
       key: "SUPABASE_SECRET_KEY",
       value: config.supabaseSecretKey,
       type: "sensitive",
-      target: [PRODUCTION_TARGET],
-      comment: "GREENATICS stable OPS production server-only key",
+      target: [...FULL_OPS_ENV_TARGETS],
+      comment: "GREENATICS stable OPS server-only key",
     },
   ];
 }
@@ -96,7 +97,7 @@ export async function upsertVercelOpsProductionEnvironment(config, project, { fe
     body: variables,
   });
   return Object.freeze({
-    target: PRODUCTION_TARGET,
+    targets: FULL_OPS_ENV_TARGETS,
     mode: config.mode,
     keys: Object.freeze(variables.map((item) => item.key)),
   });
