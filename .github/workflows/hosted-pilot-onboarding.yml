@@ -95,6 +95,58 @@ jobs:
           VERCEL_PROJECT_ID: ${{ steps.deploy.outputs.project_id }}
         run: npm run pilot:vercel-preflight
 
+      - name: Enable human access on exact onboarding deployment
+        env:
+          DEPLOYMENT_ID: ${{ steps.deploy.outputs.deployment_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const token = process.env.VERCEL_TOKEN?.trim();
+          const teamId = process.env.VERCEL_ORG_ID?.trim();
+          const deploymentId = process.env.DEPLOYMENT_ID?.trim();
+          if (!token || !teamId || !/^dpl_[A-Za-z0-9_-]+$/.test(deploymentId ?? "")) {
+            throw new Error("Human access gate: missing or invalid Vercel deployment identity.");
+          }
+          const url = new URL(`https://api.vercel.com/aliases/${encodeURIComponent(deploymentId)}/protection-bypass`);
+          url.searchParams.set("teamId", teamId);
+          const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              override: {
+                scope: "alias-protection-override",
+                action: "create",
+              },
+            }),
+          });
+          if (!response.ok) {
+            let code = `http_${response.status}`;
+            try {
+              const payload = await response.json();
+              if (typeof payload?.error?.code === "string" && payload.error.code.trim()) code = payload.error.code.trim();
+            } catch {}
+            throw new Error(`Human access gate: Vercel protection override failed (${code}).`);
+          }
+          console.log("Human onboarding access enabled for the exact deployment URL.");
+          NODE
+
+      - name: Certify human-accessible onboarding origin
+        env:
+          APP_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
       - name: Bootstrap first Director atomically
         env:
           APP_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
@@ -110,4 +162,5 @@ jobs:
         shell: bash
         run: |
           echo "First Director invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "The exact onboarding deployment passed both protected CI preflight and human-access preflight." >> "$GITHUB_STEP_SUMMARY"
           echo "The invited user must complete the email flow before interactive UAT." >> "$GITHUB_STEP_SUMMARY"
