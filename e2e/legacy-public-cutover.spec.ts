@@ -25,7 +25,7 @@ test("legacy product discovery lands on Wondergreen without preserving old claim
   ]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/wondergreen$/);
-    await expect(page.getByRole("heading", { name: /Más que NPK/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Nutrición que vuelve a la tierra/i })).toBeVisible();
   }
 });
 
