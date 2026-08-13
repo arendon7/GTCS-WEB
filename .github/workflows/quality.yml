@@ -86,8 +86,6 @@ jobs:
           node-version: 24
       - name: Install dependencies
         run: npm install --ignore-scripts
-      - name: Build production app
-        run: npm run build
       - name: Cache Playwright Chromium
         uses: actions/cache@v4
         with:
