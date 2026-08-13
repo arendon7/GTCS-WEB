@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { getWondergreenCrop } from "@/data/wondergreen-crops";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
 type Props = {
   children: React.ReactNode;
@@ -11,8 +12,12 @@ export async function generateMetadata({ params }: Pick<Props, "params">): Promi
   const { slug } = await params;
   const crop = getWondergreenCrop(slug);
   if (!crop) return {};
+  const title = `${crop.name} | Programa Wondergreen`;
+  const description = `${crop.headline} Programa orientativo por etapa, contexto del lote y seguimiento.`;
+  const path = `/wondergreen/cultivos/${crop.slug}` as `/${string}`;
   return {
-    alternates: { canonical: `/wondergreen/cultivos/${crop.slug}` },
+    alternates: { canonical: path },
+    ...publicSocialMetadata({ title, description, path }),
   };
 }
 
