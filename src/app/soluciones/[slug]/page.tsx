@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { getService, services } from "@/data/services";
 import styles from "../solutions.module.css";
 
@@ -28,6 +29,11 @@ export default async function SolutionDetailPage({ params }: Props) {
 
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Soluciones", path: "/soluciones" },
+        { name: service.name, path: `/soluciones/${service.slug}` as `/${string}` },
+      ]} />
       <main>
         <section className={styles.detailHero}>
           <div className={styles.heroAccent} aria-hidden="true" />
