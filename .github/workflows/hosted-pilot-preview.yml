@@ -1,0 +1,86 @@
+name: hosted-pilot-preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-preview
+  cancel-in-progress: false
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_PROJECT_NAME: greenatics-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      DEPLOY_GIT_REF: develop
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "Deploying develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require hosted pilot secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for the hosted pilot workflow."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Certify hosted Supabase before deployment
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
+
+      - name: Create or reuse Vercel project and deploy Preview
+        id: deploy
+        run: npm run pilot:vercel-preview
+
+      - name: Certify deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOYMENT_URL"
+          npm run pilot:preflight -- \
+            --base-url "$DEPLOYMENT_URL" \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
