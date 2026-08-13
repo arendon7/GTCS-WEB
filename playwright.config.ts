@@ -19,7 +19,7 @@ export default defineConfig({
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: isCI ? "npm run start" : "npm run dev",
+    command: "npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
     timeout: 120_000,
