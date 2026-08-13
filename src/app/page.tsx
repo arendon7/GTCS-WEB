@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public-shell";
 import styles from "./public-home.module.css";
@@ -115,7 +116,7 @@ export default function Home() {
             <aside className={styles.cycleLedger} aria-label="Ciclo Greenatics: residuo, bioproceso, recurso, suelo y datos">
               <div className={styles.cycleLedgerTop}>
                 <div className={styles.cycleSymbol}>
-                  <img src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" />
+                  <Image src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" width={68} height={68} />
                 </div>
                 <div>
                   <span>El ciclo Greenatics</span>
@@ -157,7 +158,7 @@ export default function Home() {
             <div className={styles.wgHeader}>
               <div>
                 <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Wondergreen · Producto agrícola</span>
-                <img className={styles.wgLogo} src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
+                <Image className={styles.wgLogo} src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width={420} height={221} sizes="(max-width: 720px) 78vw, 420px" />
                 <h2>Más que NPK.</h2>
               </div>
               <div className={styles.wgLead}>
@@ -224,11 +225,12 @@ export default function Home() {
         <section className={styles.evidence}>
           <div className={`${styles.container} ${styles.evidenceGrid}`}>
             <figure className={styles.evidenceMedia}>
-              <img
+              <Image
                 src="/projects/yarumal/aerial-01.webp"
                 alt="Vista aérea documentada de la planta de Yarumal"
-                width="1200"
-                height="900"
+                width={1200}
+                height={900}
+                sizes="(max-width: 900px) 100vw, 56vw"
               />
               <figcaption>Archivo de proyecto · Yarumal · experiencia documentada</figcaption>
             </figure>
