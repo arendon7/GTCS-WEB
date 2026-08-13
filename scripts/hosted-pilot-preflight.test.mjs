@@ -113,6 +113,62 @@ describe("hosted pilot preflight", () => {
     expect(result.checks).toContain("ops-anonymous");
   });
 
+  it("accepts Vercel's platform noindex on a Preview public home", async () => {
+    const origin = "https://greenatics-pilot.vercel.app";
+    const fixture = hostedFixture({
+      overrides: {
+        [`${origin}/`]: new Response("home", {
+          status: 200,
+          headers: { ...baselineHeaders, "x-robots-tag": "noindex" },
+        }),
+      },
+    });
+
+    await expect(runHostedPilotPreflight({
+      baseUrl: fixture.origin,
+      expectedMode: "full-ops",
+      fetchImpl: fixture.fetchImpl,
+    })).resolves.toMatchObject({ mode: "full-ops" });
+  });
+
+  it("rejects the private OPS robots policy on a Preview public home", async () => {
+    const origin = "https://greenatics-pilot.vercel.app";
+    const fixture = hostedFixture({
+      overrides: {
+        [`${origin}/`]: new Response("home", { status: 200, headers: privateHeaders }),
+      },
+    });
+
+    await expect(runHostedPilotPreflight({
+      baseUrl: fixture.origin,
+      expectedMode: "full-ops",
+      fetchImpl: fixture.fetchImpl,
+    })).rejects.toThrow(/X-Robots-Tag privado o inesperado/);
+  });
+
+  it("keeps a production public home free of X-Robots-Tag", async () => {
+    const origin = "https://greenatics-pilot.vercel.app";
+    const productionHealth = {
+      ...fullOpsHealth,
+      deployment: { ...deployment, environment: "production" },
+    };
+    const fixture = hostedFixture({
+      overrides: {
+        [`${origin}/api/health`]: jsonResponse(productionHealth, { headers: privateHeaders }),
+        [`${origin}/`]: new Response("home", {
+          status: 200,
+          headers: { ...baselineHeaders, "x-robots-tag": "noindex" },
+        }),
+      },
+    });
+
+    await expect(runHostedPilotPreflight({
+      baseUrl: fixture.origin,
+      expectedMode: "full-ops",
+      fetchImpl: fixture.fetchImpl,
+    })).rejects.toThrow(/X-Robots-Tag privado o inesperado/);
+  });
+
   it("accepts a public-only deployment only when OPS is configuration-blocked and Supabase is absent", async () => {
     const fixture = hostedFixture({ mode: "public-only" });
     const result = await runHostedPilotPreflight({

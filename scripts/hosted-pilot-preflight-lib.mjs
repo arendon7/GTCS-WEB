@@ -72,6 +72,20 @@ function assertPrivateHeaders(response, label) {
   for (const [name, value] of Object.entries(PRIVATE_HEADERS)) requireHeader(response, name, value, label);
 }
 
+function assertPublicIndexingHeaders(response, deployment, label) {
+  const actual = response.headers.get("x-robots-tag");
+  if (!actual) return;
+
+  const normalized = actual.trim().toLowerCase();
+  const vercelPreviewNoindex =
+    deployment?.platform === "vercel" &&
+    deployment?.environment === "preview" &&
+    normalized === "noindex";
+
+  if (vercelPreviewNoindex) return;
+  fail(`${label}: X-Robots-Tag privado o inesperado en superficie pública.`);
+}
+
 function normalizeCommit(value) {
   if (!value || !/^[0-9a-f]{7,64}$/i.test(value)) return null;
   return value.toLowerCase();
@@ -192,7 +206,7 @@ export async function runHostedPilotPreflight({
   const publicResponse = await get(fetchImpl, `${origin}/`);
   requireStatus(publicResponse, 200, "home pública");
   assertBaselineHeaders(publicResponse, "home pública");
-  if (publicResponse.headers.has("x-robots-tag")) fail("home pública: no debe llevar X-Robots-Tag interno.");
+  assertPublicIndexingHeaders(publicResponse, deployment, "home pública");
 
   const loginResponse = await get(fetchImpl, `${origin}/login`);
   requireStatus(loginResponse, 200, "login");
