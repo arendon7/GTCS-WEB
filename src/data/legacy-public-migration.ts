@@ -23,6 +23,12 @@ export const legacyPublicRoutes: readonly LegacyPublicRoute[] = [
     reason: "Preserve the knowledge entry point without cloning the legacy WordPress archive.",
   },
   {
+    source: "/store",
+    disposition: "redirect",
+    destination: "/wondergreen",
+    reason: "Preserve product-discovery intent while the new platform has no transactional storefront enabled.",
+  },
+  {
     source: "/el-potencial-de-la-ruta-selectiva-de-recoleccion-de-residuos",
     disposition: "redirect",
     destination: "/soluciones/rutas-selectivas",
@@ -53,6 +59,12 @@ export const legacyPublicRoutes: readonly LegacyPublicRoute[] = [
     reason: "Retain generic environmental-knowledge traffic without preserving the stale template slug.",
   },
   {
+    source: "/a-decline-in-solar-growth-root-cause-of-analysis-records",
+    disposition: "redirect",
+    destination: "/wondergreen",
+    reason: "The legacy slug is unrelated template text, while the indexed article concerns Wondergreen field validation; preserve only product-discovery intent, not its historical agronomic claims.",
+  },
+  {
     source: "/cities-must-show-the-way-forward-on-renewable-energy",
     disposition: "quarantine",
     reason: "Indexed legacy page contains unrelated spam text and must not inherit authority through a redirect.",
@@ -71,6 +83,16 @@ export const legacyPublicRoutes: readonly LegacyPublicRoute[] = [
     source: "/politicas",
     disposition: "manual-review",
     reason: "Legacy policy content must be reviewed rather than copied automatically.",
+  },
+  {
+    source: "/my-account",
+    disposition: "manual-review",
+    reason: "Legacy WooCommerce account traffic must not be confused with GREENATICS OPS authentication or recreated without a commerce decision.",
+  },
+  {
+    source: "/cart",
+    disposition: "manual-review",
+    reason: "The new public platform has no transactional cart enabled; preserve no checkout semantics until commerce is intentionally reintroduced.",
   },
 ] as const;
 
