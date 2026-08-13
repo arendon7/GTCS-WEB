@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { DEFAULT_PILOT_PLANT_CODES, normalizePilotPlantCodes } from "./pilot-plant-codes.mjs";
 
+const INVITE_ACCEPTANCE_PATH = "/auth/accept-invite";
+
 function arg(name) {
   const index = process.argv.indexOf(`--${name}`);
   return index >= 0 ? process.argv[index + 1] : undefined;
@@ -42,7 +44,7 @@ let user = userPage.users.find((candidate) => (candidate.email || "").toLowerCas
 let invited = false;
 
 if (!user) {
-  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { data: { display_name: displayName }, redirectTo: `${baseUrl}/account/setup` });
+  const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { data: { display_name: displayName }, redirectTo: `${baseUrl}${INVITE_ACCEPTANCE_PATH}` });
   if (error) fail(`No fue posible invitar al primer director: ${error.message}`);
   user = data.user;
   invited = true;
