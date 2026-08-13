@@ -47,7 +47,32 @@ APP_BASE_URL=https://<origen-canonico>
 
 `SUPABASE_SECRET_KEY` es exclusivamente server-side. Nunca usar prefijo `NEXT_PUBLIC_`, imprimirla, retornarla por API ni versionarla.
 
-`APP_BASE_URL` debe ser un origen HTTP/HTTPS confiable. La API de invitaciones no usa el header `Host` como sustituto.
+`APP_BASE_URL` debe ser un origen HTTP/HTTPS confiable. La API de invitaciones no usa el header `Host` como sustituto. En Preview de Vercel puede permanecer ausente: el runtime usa únicamente la URL de rama confiable expuesta por Vercel.
+
+### 4.1 Preview reproducible desde GitHub Actions
+El workflow manual `.github/workflows/hosted-pilot-preview.yml` es la ruta canónica para crear/reutilizar el proyecto Vercel y desplegar **solo Preview** desde el SHA exacto de `develop`.
+
+Configurar una sola vez estos GitHub Actions secrets, sin escribir sus valores en archivos, issues, logs ni commits:
+
+```text
+VERCEL_TOKEN
+VERCEL_ORG_ID
+PILOT_SUPABASE_URL
+PILOT_SUPABASE_PUBLISHABLE_KEY
+PILOT_SUPABASE_SECRET_KEY
+```
+
+Al ejecutarse manualmente, el workflow:
+1. hace checkout explícito de `develop` y captura su SHA completo;
+2. exige todos los secretos antes de cualquier provisión;
+3. corre `pilot:backend-preflight -- --plants TAM,YAR --require-no-director`;
+4. crea o reutiliza `greenatics-ops` mediante la API oficial de Vercel;
+5. hace upsert únicamente de variables con target `preview`;
+6. crea un deployment Git del SHA exacto, sin `target=production`;
+7. espera estado `READY` y falla cerrado ante `BLOCKED`, `CANCELED` o `ERROR`;
+8. ejecuta `pilot:preflight` contra la URL resultante verificando rama y commit.
+
+El cliente `scripts/vercel-pilot-deploy.mjs` nunca imprime `VERCEL_TOKEN`, `VERCEL_ORG_ID` ni claves Supabase. Los errores remotos se reducen a códigos seguros para evitar que un mensaje del proveedor pueda reflejar credenciales. Producción no se despliega ni se promueve con este workflow.
 
 ## 5. Backend preflight + primer director
 Antes de enviar una invitación real, validar que el esquema hospedado, RLS, Supabase Auth Admin, las plantas canónicas y el estado de bootstrap sean coherentes:
@@ -146,13 +171,15 @@ Con dos perfiles de navegador distintos:
 ## 10. Gate de promoción
 Antes de promover el piloto:
 - CI de PR verde (`quality` + `database`);
+- Preview creado por el workflow manual y `pilot:preflight` en PASS para el SHA exacto de `develop`;
 - `npm run pilot:backend-preflight -- --plants TAM,YAR` en PASS, incluyendo schema contract + RLS completo;
-- `npm run pilot:preflight` en PASS contra el SHA exacto desplegado;
 - `npm run pilot:rls-smoke` en PASS con los dos usuarios de prueba;
 - smoke funcional multiusuario aprobado;
 - redirects Auth configurados;
 - ningún secreto presente en GitHub, bundle cliente o logs;
 - web pública validada sin autenticación.
+
+Solo después de esos gates se permite configurar `APP_BASE_URL` canónico y promover/desplegar a producción.
 
 ## 11. Siguiente integración
 SharePoint permanece como fuente documental e histórica. GREENATICS OPS es el sistema transaccional. La integración documental debe añadir referencias/lectura sin devolver las transacciones diarias a SharePoint.
