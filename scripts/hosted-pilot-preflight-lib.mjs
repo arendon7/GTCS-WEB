@@ -9,6 +9,8 @@ const PRIVATE_HEADERS = {
   "x-robots-tag": "noindex, nofollow, noarchive",
 };
 
+const PILOT_MODES = new Set(["public-only", "full-ops"]);
+
 export class PreflightError extends Error {
   constructor(message) {
     super(message);
@@ -35,6 +37,12 @@ export function normalizeHostedBaseUrl(value) {
   if (url.pathname !== "/" || url.search || url.hash) fail("Usa únicamente el origen del deployment, sin ruta, query ni fragmento.");
 
   return url.origin;
+}
+
+export function normalizePilotMode(value) {
+  const mode = typeof value === "string" && value.trim() ? value.trim() : "full-ops";
+  if (!PILOT_MODES.has(mode)) fail("El modo esperado debe ser public-only o full-ops.");
+  return mode;
 }
 
 function requireStatus(response, expected, label) {
@@ -69,15 +77,35 @@ function normalizeCommit(value) {
   return value.toLowerCase();
 }
 
-export function assertHostedHealth(payload, { expectedBranch, expectedCommit } = {}) {
+export function assertHostedHealth(payload, {
+  expectedBranch,
+  expectedCommit,
+  expectedMode = "full-ops",
+} = {}) {
+  const pilotMode = normalizePilotMode(expectedMode);
   if (!payload || typeof payload !== "object") fail("health: respuesta JSON inválida.");
   if (payload.status !== "ready") fail(`health: status=${String(payload.status)}; se esperaba ready.`);
-  if (payload.mode !== "supabase") fail(`health: mode=${String(payload.mode)}; se esperaba supabase.`);
-  if (payload.opsAccess !== "supabase-auth") fail(`health: opsAccess=${String(payload.opsAccess)}; se esperaba supabase-auth.`);
 
   const checks = payload.checks ?? {};
-  for (const key of ["backend", "admin", "appOrigin"]) {
-    if (checks[key] !== "ok") fail(`health: check ${key}=${String(checks[key])}; se esperaba ok.`);
+  if (pilotMode === "public-only") {
+    if (payload.mode !== "local") fail(`health: mode=${String(payload.mode)}; se esperaba local para public-only.`);
+    if (payload.opsAccess !== "configuration-block") {
+      fail(`health: opsAccess=${String(payload.opsAccess)}; se esperaba configuration-block para public-only.`);
+    }
+    for (const key of ["backend", "admin"]) {
+      if (checks[key] !== "missing") {
+        fail(`health: check ${key}=${String(checks[key])}; public-only no debe recibir credenciales Supabase.`);
+      }
+    }
+    if (!["ok", "missing"].includes(checks.appOrigin)) {
+      fail(`health: check appOrigin=${String(checks.appOrigin)}; se esperaba ok o missing.`);
+    }
+  } else {
+    if (payload.mode !== "supabase") fail(`health: mode=${String(payload.mode)}; se esperaba supabase.`);
+    if (payload.opsAccess !== "supabase-auth") fail(`health: opsAccess=${String(payload.opsAccess)}; se esperaba supabase-auth.`);
+    for (const key of ["backend", "admin", "appOrigin"]) {
+      if (checks[key] !== "ok") fail(`health: check ${key}=${String(checks[key])}; se esperaba ok.`);
+    }
   }
 
   const deployment = payload.deployment ?? {};
@@ -142,10 +170,12 @@ export async function runHostedPilotPreflight({
   baseUrl,
   expectedBranch,
   expectedCommit,
+  expectedMode = "full-ops",
   fetchImpl = globalThis.fetch,
 }) {
   if (typeof fetchImpl !== "function") fail("No existe una implementación fetch disponible.");
   const origin = normalizeHostedBaseUrl(baseUrl);
+  const pilotMode = normalizePilotMode(expectedMode);
 
   const healthResponse = await get(fetchImpl, `${origin}/api/health`);
   requireStatus(healthResponse, 200, "health");
@@ -157,7 +187,7 @@ export async function runHostedPilotPreflight({
   } catch {
     fail("health: el endpoint no devolvió JSON válido.");
   }
-  const deployment = assertHostedHealth(health, { expectedBranch, expectedCommit });
+  const deployment = assertHostedHealth(health, { expectedBranch, expectedCommit, expectedMode: pilotMode });
 
   const publicResponse = await get(fetchImpl, `${origin}/`);
   requireStatus(publicResponse, 200, "home pública");
@@ -180,7 +210,13 @@ export async function runHostedPilotPreflight({
   const loginTarget = new URL(location, origin);
   if (loginTarget.origin !== origin || loginTarget.pathname !== "/login") fail("OPS anónimo: redirect fuera del login canónico.");
   if (loginTarget.searchParams.get("next") !== "/app") fail("OPS anónimo: redirect no conserva next=/app.");
-  if (loginTarget.searchParams.has("reason")) fail("OPS anónimo: el deployment sigue en bloqueo de configuración.");
+  if (pilotMode === "public-only") {
+    if (loginTarget.searchParams.get("reason") !== "configuration") {
+      fail("OPS public-only: falta reason=configuration en el bloqueo esperado.");
+    }
+  } else if (loginTarget.searchParams.has("reason")) {
+    fail("OPS full-ops: el deployment sigue en bloqueo de configuración.");
+  }
 
   const sitemapResponse = await get(fetchImpl, `${origin}/sitemap.xml`);
   requireStatus(sitemapResponse, 200, "sitemap");
@@ -192,7 +228,15 @@ export async function runHostedPilotPreflight({
 
   return {
     origin,
+    mode: pilotMode,
     deployment,
-    checks: ["health", "public-boundary", "login-private", "ops-anonymous", "sitemap", "robots"],
+    checks: [
+      "health",
+      "public-boundary",
+      "login-private",
+      pilotMode === "public-only" ? "ops-configuration-block" : "ops-anonymous",
+      "sitemap",
+      "robots",
+    ],
   };
 }
