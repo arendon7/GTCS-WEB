@@ -28,7 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = getPublicProject(slug);
   if (!project) return {};
-  return { title: `${project.name} | Proyectos Greenatics`, description: project.summary };
+  return {
+    title: `${project.name} | Proyectos Greenatics`,
+    description: project.summary,
+    alternates: { canonical: `/proyectos/${project.slug}` },
+  };
 }
 
 export default async function ProjectCasePage({ params }: Props) {
@@ -42,23 +46,48 @@ export default async function ProjectCasePage({ params }: Props) {
   return (
     <div className={styles.page}>
       <BreadcrumbJsonLd items={[{ name: "Greenatics", path: "/" }, { name: "Proyectos", path: "/proyectos" }, { name: project.name, path: `/proyectos/${project.slug}` as `/${string}` }]} />
-      <header className={styles.header}><div className={`${styles.container} ${styles.headerInner}`}><Link href="/" aria-label="Greenatics, inicio"><img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /></Link><nav className={styles.nav} aria-label="Navegación pública"><Link href="/soluciones">Soluciones</Link><Link href="/proyectos">Proyectos</Link><Link href="/wondergreen">Wondergreen</Link><Link href="/biblioteca">Conocimiento</Link></nav><Link className={`${styles.button} ${styles.primary}`} href="/app">Acceder a Greenatics</Link></div></header>
-
       <main>
-        <section className={styles.detailHero}><div className={styles.container}><Link className={styles.back} href="/proyectos">← Proyectos</Link><div className={styles.detailGrid}><div><span className={styles.status}>{project.statusLabel}</span><span className={styles.eyebrow}>{project.region}</span><h1>{project.name}</h1><p className={styles.lead}>{project.summary}</p></div><aside className={styles.detailFact}><strong>Contexto de publicación</strong><p>{project.publicationContext}</p></aside></div></div></section>
+        <section className={styles.detailHero}>
+          <div className={styles.heroAccent} aria-hidden="true" />
+          <div className={styles.container}>
+            <Link className={styles.back} href="/proyectos">← Proyectos</Link>
+            <div className={styles.detailGrid}>
+              <div><span className={styles.status}>{project.statusLabel}</span><span className={styles.eyebrow}>{project.region}</span><h1>{project.name}</h1><p className={styles.lead}>{project.summary}</p></div>
+              <aside className={styles.detailFact}><span>Publicación gobernada</span><strong>Contexto de publicación</strong><p>{project.publicationContext}</p></aside>
+            </div>
+          </div>
+        </section>
 
         <ProjectEvidenceGallery slug={project.slug} />
 
-        <section className={`${styles.section} ${styles.white}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Qué demuestra este caso</span><h2>Capacidades y problemas observados dentro de un sistema completo.</h2></div><div className={styles.capGrid}>{project.capabilities.map(([title,copy],index)=><article className={styles.capCard} key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+        <section className={`${styles.section} ${styles.white}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHead}><span className={styles.eyebrow}>Qué demuestra este caso</span><h2>Capacidades y problemas observados dentro de un sistema completo.</h2></div>
+            <div className={styles.capGrid}>{project.capabilities.map(([title, copy], index) => <article className={styles.capCard} key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+          </div>
+        </section>
 
-        <section className={`${styles.section} ${styles.soft}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>{project.slug === "tamesis" ? "Modelo de intervención" : "De operación a conocimiento"}</span><h2>{project.slug === "tamesis" ? "Puesta en marcha → Estabilización → Escalabilidad." : "Registrar → Conectar → Aprender."}</h2></div><div className={styles.phaseGrid}>{phases.map(([number,title,copy])=><article className={styles.phase} key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+        <section className={`${styles.section} ${styles.soft}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHead}><span className={styles.eyebrow}>{project.slug === "tamesis" ? "Modelo de intervención" : "De operación a conocimiento"}</span><h2>{project.slug === "tamesis" ? "Puesta en marcha → Estabilización → Escalabilidad." : "Registrar → Conectar → Aprender."}</h2></div>
+            <div className={styles.phaseGrid}>{phases.map(([number, title, copy]) => <article className={styles.phase} key={number}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+          </div>
+        </section>
 
-        <section className={styles.section}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Aprendizajes transferibles</span><h2>Lo que este caso puede enseñar al siguiente proyecto.</h2></div><div className={styles.capGrid}>{project.learnings.map(([title,copy],index)=><article className={styles.capCard} key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.sectionHead}><span className={styles.eyebrow}>Aprendizajes transferibles</span><h2>Lo que este caso puede enseñar al siguiente proyecto.</h2></div>
+            <div className={styles.capGrid}>{project.learnings.map(([title, copy], index) => <article className={styles.capCard} key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+          </div>
+        </section>
 
-        <section className={styles.dark}><div className={`${styles.container} ${styles.darkGrid}`}><div><span className={styles.eyebrow}>Truth lock</span><h2>Experiencia documentada no significa estado actual certificado.</h2></div><div><p>Cuando necesitemos publicar producción, toneladas tratadas, rendimiento, capacidad, inversión o impacto, cada valor deberá tener fuente, periodo, unidad, responsable y fecha de corte. Esta página preserva el aprendizaje sin convertir información histórica en una afirmación vigente.</p><Link className={styles.button} style={{marginTop:20,background:"#fff",color:"#14352c"}} href={solutionHref}>{solutionLabel}</Link></div></div></section>
+        <section className={styles.dark}>
+          <div className={`${styles.container} ${styles.darkGrid}`}>
+            <div><span className={styles.eyebrow}>Truth lock</span><h2>Experiencia documentada no significa estado actual certificado.</h2></div>
+            <div><p>Cuando necesitemos publicar producción, toneladas tratadas, rendimiento, capacidad, inversión o impacto, cada valor deberá tener fuente, periodo, unidad, responsable y fecha de corte. Esta página preserva el aprendizaje sin convertir información histórica en una afirmación vigente.</p><Link className={`${styles.button} ${styles.light}`} href={solutionHref}>{solutionLabel}</Link></div>
+          </div>
+        </section>
       </main>
-
-      <footer className={styles.footer}><div className={`${styles.container} ${styles.footerInner}`}><span>Greenatics · caso {project.name}</span><div><Link href="/proyectos">Todos los proyectos</Link> · <Link href="/soluciones">Soluciones</Link></div></div></footer>
     </div>
   );
 }
