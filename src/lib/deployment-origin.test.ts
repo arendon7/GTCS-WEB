@@ -17,6 +17,13 @@ describe("trusted deployment origin", () => {
     })).toBe("https://gtcs-web-git-feature-team.vercel.app");
   });
 
+  it("uses Vercel's canonical production URL only for production deployments", () => {
+    expect(resolveTrustedAppBaseUrl({
+      VERCEL_ENV: "production",
+      VERCEL_PROJECT_PRODUCTION_URL: "greenatics-ops.vercel.app",
+    })).toBe("https://greenatics-ops.vercel.app");
+  });
+
   it("does not use a Vercel branch URL as the production canonical origin", () => {
     expect(resolveTrustedAppBaseUrl({
       VERCEL_ENV: "production",
@@ -24,8 +31,17 @@ describe("trusted deployment origin", () => {
     })).toBeNull();
   });
 
-  it("rejects malformed branch URLs with path or credentials", () => {
+  it("does not use a production URL during preview", () => {
+    expect(resolveTrustedAppBaseUrl({
+      VERCEL_ENV: "preview",
+      VERCEL_PROJECT_PRODUCTION_URL: "greenatics-ops.vercel.app",
+    })).toBeNull();
+  });
+
+  it("rejects malformed Vercel system URLs with path or credentials", () => {
     expect(resolveTrustedAppBaseUrl({ VERCEL_ENV: "preview", VERCEL_BRANCH_URL: "example.vercel.app/path" })).toBeNull();
     expect(resolveTrustedAppBaseUrl({ VERCEL_ENV: "preview", VERCEL_BRANCH_URL: "user:pass@example.vercel.app" })).toBeNull();
+    expect(resolveTrustedAppBaseUrl({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "example.vercel.app/path" })).toBeNull();
+    expect(resolveTrustedAppBaseUrl({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "user:pass@example.vercel.app" })).toBeNull();
   });
 });
