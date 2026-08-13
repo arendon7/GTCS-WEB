@@ -6,33 +6,57 @@ Vincular `arendon7/GTCS-WEB` a Vercel mediante Git Integration para obtener prev
 ## Estado de release
 A 2026-08-12 `main` y `develop` están divergidas. `develop` contiene la plataforma pública + GREENATICS OPS vigente, mientras `main` conserva commits propios no reconciliados.
 
-**Regla:** no definir todavía una rama productiva ni asociar `greenatics.com.co`. La primera integración se usa exclusivamente para Preview Deployments de branches/PRs hasta que exista una decisión explícita de release y convergencia.
+**Regla:** no definir todavía una rama productiva ni asociar `greenatics.com.co`. La primera integración se usa exclusivamente para Preview Deployments hasta que exista una decisión explícita de release y convergencia.
 
-## Configuración única en Vercel
-1. Importar el repositorio GitHub `arendon7/GTCS-WEB` en el team autorizado.
-2. Mantener Framework Preset `Next.js` y Root Directory en la raíz del repositorio.
-3. No sobrescribir Build Command, Output Directory ni Install Command salvo que un gate posterior demuestre que es necesario.
-4. Mantener Git Integration activa para que cada branch/PR genere su Preview Deployment.
-5. No asociar dominio productivo durante esta fase.
-6. No configurar `GREENATICS_OPS_LOCAL_BYPASS` en Vercel.
+## Ruta canónica automatizada
+El workflow manual `.github/workflows/hosted-pilot-preview.yml` despliega siempre el SHA exacto de `develop` y ofrece dos modos explícitos:
 
-No se requiere `vercel.json` para este contrato inicial.
+| Modo | Proyecto Vercel canónico | Backend | Uso |
+| --- | --- | --- | --- |
+| `public-only` | `greenatics-public-preview` | ninguno | QA público, visual, editorial, SEO, headers y frontera OPS |
+| `full-ops` | `greenatics-ops` | Supabase piloto | autenticación, perfiles, membresías y operación multiusuario |
 
-## Preview público sin OPS remoto
-Puede desplegarse sin credenciales Supabase para validar la superficie pública.
+`public-only` es el modo predeterminado. Los nombres de proyecto están fijados por código para impedir que un preview público reutilice accidentalmente el proyecto que contiene secretos de OPS.
 
-Estado esperado en `/api/health`:
+## Secretos de GitHub Actions
+Ambos modos requieren únicamente:
+
+```text
+VERCEL_TOKEN
+VERCEL_ORG_ID
+```
+
+`full-ops` requiere además:
+
+```text
+PILOT_SUPABASE_URL
+PILOT_SUPABASE_PUBLISHABLE_KEY
+PILOT_SUPABASE_SECRET_KEY
+```
+
+El workflow público no ejecuta backend preflight y no entrega las credenciales Supabase al proyecto `greenatics-public-preview`.
+
+## Preview `public-only`
+El deployer crea o reutiliza exclusivamente `greenatics-public-preview` y configura en target `preview`:
+
+```text
+NEXT_PUBLIC_DATA_MODE=local
+```
+
+Estado exigido por `/api/health`:
+- `status = "ready"`
 - `deployment.platform = "vercel"`
 - `deployment.environment = "preview"`
-- `deployment.branch` = branch desplegada
-- `deployment.commit` = SHA abreviado del commit desplegado
+- branch y commit coinciden con el SHA desplegado
 - `mode = "local"`
 - `opsAccess = "configuration-block"`
+- `checks.backend = "missing"`
+- `checks.admin = "missing"`
 
-Esto significa: la web pública puede validarse, pero las rutas OPS permanecen cerradas por el gate de producción. `mode=local` no implica bypass en Vercel.
+El preflight falla si detecta credenciales backend en este proyecto. `/app` debe redirigir a `/login?reason=configuration&next=/app`.
 
-## Preview con OPS remoto
-Configurar en el entorno Preview únicamente lo necesario:
+## Preview `full-ops`
+El deployer crea o reutiliza exclusivamente `greenatics-ops` y configura en target `preview`:
 
 ```text
 NEXT_PUBLIC_DATA_MODE=supabase
@@ -41,6 +65,14 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 SUPABASE_SECRET_KEY=<server-only-secret>
 ```
 
+Antes del deployment, el workflow ejecuta `pilot:backend-preflight`. Estado exigido por `/api/health`:
+- `status = "ready"`
+- `mode = "supabase"`
+- `opsAccess = "supabase-auth"`
+- `checks.backend = "ok"`
+- `checks.admin = "ok"`
+- `checks.appOrigin = "ok"`
+
 `SUPABASE_SECRET_KEY` nunca debe usar prefijo `NEXT_PUBLIC_`.
 
 ### Origen de autenticación
@@ -48,13 +80,6 @@ SUPABASE_SECRET_KEY=<server-only-secret>
 - Si `APP_BASE_URL` no está definido y `VERCEL_ENV=preview`, el servidor puede usar la variable de sistema `VERCEL_BRANCH_URL` como origen HTTPS estable de la rama.
 - En producción **no existe ese fallback**: `APP_BASE_URL` debe configurarse explícitamente con el origen canónico aprobado.
 - El origen de preview utilizado por Auth debe estar permitido también en la configuración de redirects del proyecto Supabase antes de probar invitaciones/confirmaciones.
-
-Estado esperado en `/api/health` con backend completo:
-- `status = "ready"`
-- `opsAccess = "supabase-auth"`
-- `checks.backend = "ok"`
-- `checks.admin = "ok"`
-- `checks.appOrigin = "ok"`
 
 ## Provenance segura
 `/api/health` publica únicamente:
@@ -66,15 +91,17 @@ Estado esperado en `/api/health` con backend completo:
 No publica `VERCEL_URL`, IDs de proyecto/team, mensajes de commit, secretos ni valores de configuración.
 
 ## Preview Gate
+El mismo modo seleccionado para desplegar se entrega a `pilot:preflight`.
+
 Antes de aprobar un preview:
-1. Confirmar que branch y SHA de `/api/health` coinciden con el commit GitHub esperado.
-2. Validar `/`, `/wondergreen`, `/soluciones`, `/proyectos`, `/impacto`, `/biblioteca`, `/nosotros` y `/contacto`.
-3. Verificar `sitemap.xml` y `robots.txt`.
-4. Verificar headers públicos e internos.
-5. Confirmar que `/app` está bloqueado sin Supabase o exige sesión válida con Supabase.
-6. Ejecutar login, perfil y membresía si el preview usa OPS remoto.
-7. Revisar logs de build/runtime y ausencia de 5xx/bucles de redirect.
-8. Probar desktop y móvil.
+1. confirmar branch y SHA de `/api/health`;
+2. validar `/`, `/wondergreen`, `/soluciones`, `/proyectos`, `/impacto`, `/biblioteca`, `/nosotros` y `/contacto`;
+3. verificar `sitemap.xml`, `robots.txt` y headers;
+4. confirmar el comportamiento OPS correspondiente al modo;
+5. en `public-only`, confirmar además ausencia de configuración backend;
+6. en `full-ops`, ejecutar login, perfil, membresía y los smokes RLS/funcionales;
+7. revisar logs de build/runtime y ausencia de 5xx/bucles de redirect;
+8. probar desktop y móvil.
 
 El gate completo continúa definido en `docs/deployment/PREVIEW-GATE.md`.
 
