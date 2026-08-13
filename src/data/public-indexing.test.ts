@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import sitemap from "../app/sitemap";
 import robots from "../app/robots";
+import { protectedOpsRoutePrefixes } from "../lib/ops-access-policy";
 import { publicNav, publicSite, publicStaticRoutes } from "./public-site";
 import { services } from "./services";
 import { publicProjects } from "./projects-public";
@@ -26,14 +27,19 @@ describe("public navigation and indexing contract", () => {
     expect(urls.some((url) => url.includes("/dashboard"))).toBe(false);
   });
 
-  it("keeps internal operation prefixes out of crawlable paths", () => {
+  it("derives robots exclusions from live OPS routes and auth utilities", () => {
     const config = robots();
     const rules = Array.isArray(config.rules) ? config.rules : [config.rules];
     const disallow = rules.flatMap((rule) => Array.isArray(rule.disallow) ? rule.disallow : rule.disallow ? [rule.disallow] : []);
 
-    for (const path of ["/app", "/dashboard", "/login", "/receptions", "/sales", "/supplies", "/api/"]) {
+    for (const path of [...protectedOpsRoutePrefixes, "/login", "/auth/", "/api/"]) {
       expect(disallow).toContain(path);
     }
+    for (const path of publicStaticRoutes) expect(disallow).not.toContain(path);
+    for (const stalePath of ["/maintenance", "/purchase-requests", "/settlements", "/suppliers"]) {
+      expect(disallow).not.toContain(stalePath);
+    }
+    expect(disallow).toHaveLength(new Set(disallow).size);
     expect(config.sitemap).toBe(`${publicSite.publicDomainTarget}/sitemap.xml`);
   });
 });
