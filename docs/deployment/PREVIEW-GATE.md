@@ -10,6 +10,7 @@ Definir el mínimo verificable antes de asociar `greenatics.com.co` a un deploym
 - Un deployment sin Supabase puede servir la web pública, pero debe bloquear las rutas OPS y llevarlas a `/login?reason=configuration`.
 - `robots.txt` y `X-Robots-Tag` complementan la seguridad; no sustituyen autenticación.
 - `/api/health` expone provenance mínima para comprobar que el preview corresponde al branch/SHA esperado.
+- `greenatics.org` conserva contenido legado indexado; su migración se gobierna mediante `src/data/legacy-public-migration.ts` y `docs/deployment/LEGACY-PUBLIC-CUTOVER.md`.
 
 ## Dos previews, dos fronteras
 El workflow manual `hosted-pilot-preview` ofrece dos modos explícitos y no comparte el mismo proyecto Vercel entre ellos:
@@ -51,6 +52,9 @@ Nunca exponer `SUPABASE_SECRET_KEY` ni ninguna credencial administrativa mediant
 9. `full-ops`: usuario sin sesión va a login; usuario válido necesita perfil activo y membresía activa de planta.
 10. Un usuario autorizado entra a `/app`; RLS conserva aislamiento por planta/rol.
 11. Salir de OPS hacia la web pública y entrar desde la web pública a OPS cruza una frontera documental, no depende de preservar el árbol de providers del cliente.
+12. Las URLs legado marcadas `redirect` aterrizan únicamente en superficies públicas gobernadas.
+13. Las URLs `quarantine` no redirigen y devuelven 404 hasta una decisión explícita.
+14. Las rutas legales `manual-review` no se publican ni redirigen automáticamente.
 
 ## Ejecución reproducible
 Desde GitHub Actions, ejecutar `hosted-pilot-preview` y elegir el modo. `public-only` es la opción segura inicial para QA visual y editorial. `full-ops` se usa únicamente cuando el backend piloto esté listo y sus secretos existan en GitHub Actions.
@@ -71,12 +75,16 @@ Cambiar a `--mode full-ops` únicamente para el proyecto OPS completo.
 - Revisar build logs sin errores.
 - Revisar runtime errors del preview.
 - Probar desktop y móvil.
-- No asociar el dominio si existen 5xx inesperados, bucles de redirect, datos OPS visibles sin sesión, provenance incorrecta o headers internos ausentes.
+- Probar redirects legado representativos y una URL en cuarentena.
+- No asociar el dominio si existen 5xx inesperados, bucles de redirect, datos OPS visibles sin sesión, provenance incorrecta, headers internos ausentes o redirects legado hacia destinos no gobernados.
 
 ## Dominio
 `greenatics.com.co` se asocia únicamente después de aprobar el preview. El cambio de DNS/dominio no debe utilizarse como mecanismo de prueba.
 
+`greenatics.org` no debe apagarse ni apuntarse al nuevo deployment hasta que el inventario legado, la limpieza del WordPress y los redirects hayan aprobado el gate de `LEGACY-PUBLIC-CUTOVER.md`.
+
 ## Después del dominio
 - Verificar canonical, sitemap y robots en el hostname definitivo.
 - Verificar login/redirects desde el dominio definitivo.
+- Verificar que `greenatics.org` entregue redirects coherentes hacia `greenatics.com.co` sin cadenas ni bucles.
 - Revisar Search Console/analítica solo cuando la capa pública esté estable.
