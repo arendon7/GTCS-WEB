@@ -1,11 +1,19 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(9);
 
 select ok(
   to_regprocedure('public.admin_hosted_schema_contract()') is not null,
   'hosted schema contract RPC exists'
+);
+select ok(
+  not (
+    select p.prosecdef
+    from pg_catalog.pg_proc p
+    where p.oid = to_regprocedure('public.admin_hosted_schema_contract()')
+  ),
+  'hosted schema contract remains SECURITY INVOKER'
 );
 select ok(
   not has_function_privilege('anon','public.admin_hosted_schema_contract()','EXECUTE'),
