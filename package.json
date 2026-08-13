@@ -16,7 +16,8 @@
     "pilot:backend-preflight": "node scripts/hosted-backend-preflight.mjs",
     "pilot:rls-smoke": "node scripts/hosted-rls-smoke.mjs",
     "pilot:preflight": "node scripts/hosted-pilot-preflight.mjs",
-    "pilot:vercel-preview": "node scripts/vercel-pilot-deploy.mjs"
+    "pilot:vercel-preview": "node scripts/vercel-pilot-deploy.mjs",
+    "pilot:vercel-preflight": "node scripts/vercel-protected-preflight.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "latest",
