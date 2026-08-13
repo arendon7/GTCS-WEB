@@ -22,6 +22,15 @@ Operacional, clara, sobria, moderna y confiable. Debe sentirse más cerca de sof
 - La tecnología de sólidos organominerales puede visualizar matriz orgánica → formulación/oclusión → peletizado → suelo → disponibilidad gradual cuando la afirmación esté soportada.
 - Los estados regulatorios/comerciales de bioinsumos deben ser visibles cuando condicionen compra, cotización o uso.
 
+### Lenguaje editorial público V0.15
+- La referencia de tono es **editorial premium / heritage contemporáneo**, nunca la copia literal de otra marca o de sus activos.
+- Combinar serif editorial de gran escala para titulares con sans neutral y muy legible para navegación, cuerpo y datos.
+- Preferir composiciones asimétricas, bandas de color plano, reglas finas, numeración editorial y espacios amplios sobre grids de tarjetas repetitivas.
+- Los elementos gráficos de color plano —logos, isotipos, tipografía, bandas, iconos y fondos definidos como planos— permanecen uniformes: sin grano, dithering, textura, claroscuro, degradado o sombreado interno.
+- La fotografía documental debe incluir contexto/procedencia cuando sea necesario. Una imagen histórica acredita experiencia documentada, no capacidad, producción o estado actual.
+- El HOME prioriza la narrativa **Greenatics → Wondergreen → rutas de solución → evidencia real → tecnología → conocimiento → impacto**, evitando que el acceso a OPS domine la experiencia pública.
+- El color amarillo/lima funciona como acento estructural; el verde bosque, crema y blanco construyen la mayor parte de la superficie. El color no sustituye jerarquía ni significado.
+
 ## Dirección visual GREENATICS OPS
 - Operación móvil: velocidad, botones grandes, lectura inmediata.
 - Dirección desktop/tablet: densidad media-alta, jerarquía clara, comparación rápida.

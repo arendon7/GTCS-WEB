@@ -10,8 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const doors = [
+const entryPoints = [
   {
+    number: "01",
     kicker: "Producto agrícola",
     title: "Wondergreen",
     copy: "Fertilizantes organominerales sólidos y líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico.",
@@ -19,6 +20,7 @@ const doors = [
     cta: "Conocer Wondergreen",
   },
   {
+    number: "02",
     kicker: "Territorios",
     title: "Municipios y ESP",
     copy: "Diagnóstico, rutas selectivas, plantas, rehabilitación, operación y trazabilidad para convertir planeación en capacidad real.",
@@ -26,6 +28,7 @@ const doors = [
     cta: "Explorar soluciones",
   },
   {
+    number: "03",
     kicker: "Generadores",
     title: "Empresas",
     copy: "Caracterización, separación, recolección, tratamiento, infraestructura y evidencia para corrientes orgánicas empresariales.",
@@ -33,12 +36,21 @@ const doors = [
     cta: "Explorar soluciones",
   },
   {
+    number: "04",
     kicker: "Ingeniería + biología",
     title: "Plantas y tecnología",
     copy: "Compostaje, digestión anaerobia, biogás, biol, fertilizantes y operación basada en parámetros, mantenimiento y datos.",
     href: "/#tecnologia",
     cta: "Entender la tecnología",
   },
+];
+
+const cycleMarks = [
+  ["01", "Residuo", "Caracterizar"],
+  ["02", "Bioproceso", "Transformar"],
+  ["03", "Recurso", "Valorizar"],
+  ["04", "Suelo", "Retornar"],
+  ["05", "Datos", "Medir"],
 ];
 
 const chain = [
@@ -77,62 +89,122 @@ export default function Home() {
     <PublicShell>
       <div className={styles.publicSite}>
         <section className={styles.hero}>
+          <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
-            <div>
-              <div className={styles.heroBrand}>
-                <img src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" />
-              </div>
-              <span className={styles.eyebrow}>Economía circular aplicada · Colombia</span>
+            <div className={styles.heroCopy}>
+              <span className={styles.eyebrow}>Greenatics · Economía circular aplicada · Colombia</span>
               <h1>
-                Convertimos residuos orgánicos en <em>sistemas que devuelven valor al territorio y al suelo.</em>
+                Transformar residuos <em>en vida.</em>
               </h1>
               <p className={styles.lead}>
-                Greenatics conecta planeación, aprovechamiento, plantas, biotecnología, operación, Wondergreen y datos. No trabajamos una etapa aislada: diseñamos cómo el residuo entra, se transforma, se controla y vuelve al ciclo productivo.
+                Diseñamos y operamos sistemas que conectan residuos orgánicos, tecnología, territorio, suelo, Wondergreen y datos. El objetivo no es mover el residuo de lugar: es devolverle una función dentro del ciclo productivo.
               </p>
               <div className={styles.buttonRow}>
                 <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen">Descubrir Wondergreen</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/soluciones">Conocer nuestras soluciones</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/soluciones">Explorar soluciones</Link>
+              </div>
+              <div className={styles.heroMeta} aria-label="Capacidades Greenatics">
+                <span>Planeación</span>
+                <span>Infraestructura</span>
+                <span>Operación</span>
+                <span>Producto</span>
+                <span>Trazabilidad</span>
               </div>
             </div>
 
-            <div className={styles.cycleVisual} aria-label="Ciclo Greenatics: residuo, bioproceso, recurso, suelo y datos">
-              <div className={styles.cycleCenter}>
-                <img src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" />
+            <aside className={styles.cycleLedger} aria-label="Ciclo Greenatics: residuo, bioproceso, recurso, suelo y datos">
+              <div className={styles.cycleLedgerTop}>
+                <div className={styles.cycleSymbol}>
+                  <img src="/brand/greenatics-symbol.svg" alt="" aria-hidden="true" />
+                </div>
+                <div>
+                  <span>El ciclo Greenatics</span>
+                  <strong>Una cadena, no piezas sueltas.</strong>
+                </div>
               </div>
-              <div className={`${styles.cycleNode} ${styles.node1}`}><strong>01</strong><span>Residuo</span></div>
-              <div className={`${styles.cycleNode} ${styles.node2}`}><strong>02</strong><span>Bioproceso</span></div>
-              <div className={`${styles.cycleNode} ${styles.node3}`}><strong>03</strong><span>Recurso</span></div>
-              <div className={`${styles.cycleNode} ${styles.node4}`}><strong>04</strong><span>Suelo</span></div>
-              <div className={`${styles.cycleNode} ${styles.node5}`}><strong>05</strong><span>Datos</span></div>
-            </div>
+              <div className={styles.cycleLedgerBody}>
+                {cycleMarks.map(([number, title, action]) => (
+                  <div className={styles.cycleLedgerRow} key={number}>
+                    <span>{number}</span>
+                    <strong>{title}</strong>
+                    <small>{action}</small>
+                  </div>
+                ))}
+              </div>
+              <p className={styles.cycleLedgerFoot}>Residuo → recurso → suelo → evidencia.</p>
+            </aside>
           </div>
         </section>
 
         <section className={styles.definition}>
-          <div className={`${styles.container} ${styles.definitionGrid}`}>
+          <div className={`${styles.container} ${styles.editorialSplit}`}>
+            <div className={styles.sectionIndex}>01</div>
             <div>
               <span className={styles.eyebrow}>Qué es Greenatics</span>
-              <h2>Una plataforma de aprovechamiento orgánico con una cadena completa de servicios, tecnología y producto.</h2>
+              <h2>No tratamos una etapa. Diseñamos el ciclo completo.</h2>
             </div>
-            <div>
+            <div className={styles.editorialCopy}>
               <p>
-                No somos únicamente una empresa de fertilizantes y tampoco únicamente una empresa de residuos. Greenatics une ambas puntas: gestionar biomasa residual de manera técnicamente controlada y convertir parte de ese proceso en recursos que puedan retornar a sistemas productivos, con información suficiente para operar, medir y aprender.
+                Greenatics une dos puntas que suelen operar separadas: gestionar biomasa residual de manera técnicamente controlada y convertir parte de ese proceso en recursos que puedan retornar a sistemas productivos. Planeación, recolección, plantas, bioprocesos, operación, producto y datos se conectan en una misma lógica.
               </p>
-              <Link className={styles.inlineLink} href="/soluciones">Ver cómo cerramos el ciclo →</Link>
+              <Link className={styles.inlineLink} href="/soluciones">Ver la arquitectura de soluciones →</Link>
             </div>
           </div>
         </section>
 
-        <section className={styles.doors} id="soluciones">
+        <section className={styles.wondergreen} id="wondergreen">
+          <div className={styles.container}>
+            <div className={styles.wgHeader}>
+              <div>
+                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Wondergreen · Producto agrícola</span>
+                <img className={styles.wgLogo} src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
+                <h2>Más que NPK.</h2>
+              </div>
+              <div className={styles.wgLead}>
+                <p>
+                  Wondergreen integra suelo, nutrición, biología, conocimiento y acompañamiento. El portafolio se entiende como un sistema alrededor del cultivo y de su etapa, no como una colección de fórmulas aisladas.
+                </p>
+                <div className={styles.buttonRow}>
+                  <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen">Explorar Wondergreen</Link>
+                  <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Ver cultivos</Link>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.wgSystem}>
+              {wgSystem.map(([kicker, title, copy], index) => (
+                <article key={title}>
+                  <span className={styles.wgNumber}>0{index + 1}</span>
+                  <small>{kicker}</small>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className={styles.wgStats} aria-label="Arquitectura vigente del portafolio Wondergreen">
+              <div><strong>5</strong><span>referencias líquidas</span></div>
+              <div><strong>4</strong><span>referencias sólidas</span></div>
+              <div><strong>+ compost</strong><span>y familia de bioinsumos</span></div>
+              <p>Disponibilidad, composición, dosis y condición comercial se publican únicamente desde Product Truth vigente.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.paths} id="soluciones">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Cuatro puertas de entrada</span>
-              <h2>Empieza por lo que necesitas resolver hoy.</h2>
+              <h2>Empieza por el problema que necesitas resolver.</h2>
+              <p>La ruta cambia según el residuo, el cultivo, el territorio y la infraestructura existente.</p>
             </div>
-            <div className={styles.doorGrid}>
-              {doors.map((item) => (
-                <article className={styles.doorCard} key={item.title}>
-                  <span className={styles.eyebrow}>{item.kicker}</span>
+            <div className={styles.pathGrid}>
+              {entryPoints.map((item) => (
+                <article className={styles.pathItem} key={item.title}>
+                  <div className={styles.pathTop}>
+                    <span>{item.number}</span>
+                    <small>{item.kicker}</small>
+                  </div>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
                   <Link href={item.href}>{item.cta} →</Link>
@@ -142,60 +214,53 @@ export default function Home() {
             <div className={styles.router}>
               <div>
                 <strong>¿Tienes un residuo, un cultivo o un proyecto por resolver?</strong>
-                <span>La web enruta cada caso antes de recomendar producto, planta o servicio.</span>
+                <span>Primero entendemos el caso; luego definimos producto, servicio o infraestructura.</span>
               </div>
               <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con Greenatics</Link>
             </div>
           </div>
         </section>
 
-        <section className={styles.chain}>
-          <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Cómo cerramos el ciclo</span>
-              <h2>Del generador al dato y del dato a la mejora.</h2>
-              <p>La propuesta se vuelve concreta cuando cada eslabón tiene una función y una salida verificable.</p>
-            </div>
-            <div className={styles.chainGrid}>
-              {chain.map(([number, title, copy]) => (
-                <article className={styles.chainCard} key={number}>
-                  <span>{number}</span><strong>{title}</strong><p>{copy}</p>
-                </article>
-              ))}
+        <section className={styles.evidence}>
+          <div className={`${styles.container} ${styles.evidenceGrid}`}>
+            <figure className={styles.evidenceMedia}>
+              <img
+                src="/projects/yarumal/aerial-01.webp"
+                alt="Vista aérea documentada de la planta de Yarumal"
+                width="1200"
+                height="900"
+              />
+              <figcaption>Archivo de proyecto · Yarumal · experiencia documentada</figcaption>
+            </figure>
+            <div className={styles.evidenceCopy}>
+              <span className={styles.eyebrow}>Experiencia que deja evidencia</span>
+              <h2>Proyecto, operación y aprendizaje en territorio.</h2>
+              <p>
+                La web empieza a incorporar material real de los proyectos para explicar lo que Greenatics ha construido y aprendido. Las fotografías históricas documentan experiencia; no se usan para afirmar capacidad, producción o estado actual sin una fuente vigente y aprobada.
+              </p>
+              <div className={styles.evidenceFacts}>
+                <div><span>Caso</span><strong>Yarumal</strong></div>
+                <div><span>Estado de publicación</span><strong>Experiencia documentada</strong></div>
+              </div>
+              <Link className={styles.inlineLink} href="/proyectos/yarumal">Ver caso Yarumal →</Link>
             </div>
           </div>
         </section>
 
-        <section className={styles.wondergreen} id="wondergreen">
+        <section className={styles.chain}>
           <div className={styles.container}>
-            <div className={styles.wgIntro}>
-              <div>
-                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Wondergreen · producto agrícola</span>
-                <img className={styles.wgLogo} src="/brand/wondergreen-nutrients.webp" alt="Wondergreen Nutrients" width="420" height="221" />
-                <h2>Suelo, nutrición y biología trabajando como un sistema.</h2>
-              </div>
-              <div>
-                <p>
-                  Wondergreen integra materia orgánica, fertilizantes organominerales sólidos y líquidos, compost y bioinsumos dentro de programas pensados alrededor del cultivo, su etapa, condición y objetivo.
-                </p>
-                <div className={styles.wgStats}>
-                  <div className={styles.wgStat}><strong>5</strong><span>referencias líquidas</span></div>
-                  <div className={styles.wgStat}><strong>4</strong><span>referencias sólidas</span></div>
-                  <div className={styles.wgStat}><strong>+ compost</strong><span>y familia de bioinsumos</span></div>
-                </div>
-              </div>
+            <div className={styles.chainHeading}>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Cómo cerramos el ciclo</span>
+              <h2>Del generador al dato. Del dato a la mejora.</h2>
+              <p>La propuesta se vuelve concreta cuando cada eslabón tiene una función y una salida verificable.</p>
             </div>
-
-            <div className={styles.wgSystem}>
-              {wgSystem.map(([kicker, title, copy]) => (
-                <article key={title}>
-                  <span>{kicker}</span><h3>{title}</h3><p>{copy}</p>
+            <div className={styles.chainGrid}>
+              {chain.map(([number, title, copy]) => (
+                <article className={styles.chainItem} key={number}>
+                  <span>{number}</span>
+                  <div><strong>{title}</strong><p>{copy}</p></div>
                 </article>
               ))}
-            </div>
-            <div className={styles.buttonRow}>
-              <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen">Explorar Wondergreen</Link>
-              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Ver conocimiento por cultivo</Link>
             </div>
           </div>
         </section>
@@ -203,16 +268,18 @@ export default function Home() {
         <section className={styles.technology} id="tecnologia">
           <div className={`${styles.container} ${styles.techGrid}`}>
             <div className={styles.techCopy}>
-              <span className={styles.eyebrow}>Wondergreen · Más que NPK</span>
-              <h2>Una forma diferente de integrar nutrientes y materia orgánica en el suelo.</h2>
+              <span className={styles.eyebrow}>Wondergreen · Tecnología de sólidos</span>
+              <h2>La formulación importa tanto como el número de la etiqueta.</h2>
               <p>
-                En las referencias sólidas que correspondan, la tecnología Wondergreen se explica desde la matriz organomineral, la oclusión y el peletizado. La web diferenciará siempre entre una característica documentada del producto y un efecto agronómico que todavía requiera evidencia específica.
+                En las referencias sólidas que correspondan, Wondergreen se explica desde la matriz organomineral, la oclusión y el peletizado. La web diferencia siempre una característica documentada del producto de cualquier efecto agronómico que todavía requiera evidencia específica.
               </p>
+              <Link className={styles.inlineLink} href="/wondergreen">Ir al Product Master público →</Link>
             </div>
             <div className={styles.techFlow}>
               {techSteps.map(([number, title, copy]) => (
                 <div className={styles.techStep} key={number}>
-                  <span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div>
+                  <span>{number}</span>
+                  <div><strong>{title}</strong><small>{copy}</small></div>
                 </div>
               ))}
             </div>
@@ -223,13 +290,16 @@ export default function Home() {
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Conocimiento que se usa</span>
-              <h2>Las guías dejan de vivir escondidas en un PDF.</h2>
-              <p>El conocimiento ya construido en Greenatics Marketing Studio se está convirtiendo en rutas web conectadas a cultivos, productos, síntomas y acompañamiento.</p>
+              <h2>De documentos aislados a rutas técnicas navegables.</h2>
+              <p>La biblioteca conecta cultivos, síntomas, criterios de diagnóstico y familias de producto sin convertir una lectura visual en una prescripción automática.</p>
             </div>
             <div className={styles.knowledgeGrid}>
-              {knowledge.map(([title, copy]) => (
-                <article className={styles.knowledgeCard} key={title}>
-                  <span className={styles.eyebrow}>Biblioteca Wondergreen</span><h3>{title}</h3><p>{copy}</p><Link href="/biblioteca">Explorar biblioteca →</Link>
+              {knowledge.map(([title, copy], index) => (
+                <article className={styles.knowledgeItem} key={title}>
+                  <span>0{index + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                  <Link href="/biblioteca">Explorar biblioteca →</Link>
                 </article>
               ))}
             </div>
@@ -240,7 +310,7 @@ export default function Home() {
           <div className={`${styles.container} ${styles.impactGrid}`}>
             <div>
               <span className={styles.eyebrow}>Impacto conectado a la operación</span>
-              <h2>Preferimos un dato pendiente a una cifra espectacular sin trazabilidad.</h2>
+              <h2>Un dato verificable vale más que una cifra espectacular.</h2>
               <p>
                 GREENATICS OPS conecta recepción, proceso, producción, inventario, comercial y otros dominios internos. La capa pública solo muestra indicadores conciliados, aprobados, fechados y con metodología cuando corresponda.
               </p>
@@ -260,7 +330,11 @@ export default function Home() {
 
         <section className={styles.closing} id="contacto">
           <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Greenatics</span><h2>¿Tienes un residuo, un cultivo, una planta o un territorio por transformar?</h2></div>
+            <div>
+              <span className={styles.eyebrow}>Greenatics</span>
+              <h2>¿Qué quieres devolver al ciclo?</h2>
+              <p>Un residuo, un cultivo, una planta o un territorio pueden ser el punto de entrada.</p>
+            </div>
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Contactar a Greenatics</Link>
               <a className={`${styles.button} ${styles.buttonGhost}`} href="/app">Acceder a la app interna</a>
