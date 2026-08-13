@@ -16,10 +16,12 @@ test("legacy selective collection article preserves intent through the service r
   await expect(page.getByRole("heading", { name: /Diseño e implementación de rutas selectivas/i })).toBeVisible();
 });
 
-test("legacy organomineral articles land on Wondergreen without preserving old claims", async ({ page }) => {
+test("legacy product discovery lands on Wondergreen without preserving old claims", async ({ page }) => {
   for (const path of [
+    "/store",
     "/fertilizantes-que-nutren",
     "/winds-of-change-in-the-turbines-service-industries",
+    "/a-decline-in-solar-growth-root-cause-of-analysis-records",
   ]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/wondergreen$/);
