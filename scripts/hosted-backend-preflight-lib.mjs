@@ -102,8 +102,13 @@ export async function runHostedBackendPreflight({
   env = process.env,
   plants = DEFAULT_PILOT_PLANT_CODES,
   requireNoDirector = false,
+  requireDirector = false,
   createClientImpl = createSupabaseClient,
 } = {}) {
+  if (requireNoDirector && requireDirector) {
+    throw new BackendPreflightError("El preflight no puede exigir simultáneamente ausencia y presencia de director.");
+  }
+
   const config = parseHostedBackendConfig(env);
   const requestedCodes = normalizePilotPlantCodes(plants);
   const admin = createClientImpl(config.url, config.secret, {
@@ -155,6 +160,9 @@ export async function runHostedBackendPreflight({
   }
   if (requireNoDirector && activeDirectors > 0) {
     throw new BackendPreflightError(`Ya existe ${activeDirectors} director activo; el bootstrap inicial debe permanecer bloqueado.`);
+  }
+  if (requireDirector && activeDirectors === 0) {
+    throw new BackendPreflightError("No existe ningún director activo; el bootstrap inicial todavía no quedó confirmado.");
   }
 
   return Object.freeze({
