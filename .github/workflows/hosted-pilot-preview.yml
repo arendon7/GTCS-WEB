@@ -4,6 +4,15 @@ name: hosted-pilot-preview
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Preview surface to certify
+        required: true
+        type: choice
+        default: public-only
+        options:
+          - public-only
+          - full-ops
 
 permissions:
   contents: read
@@ -17,12 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      VERCEL_PROJECT_NAME: greenatics-ops
+      PILOT_PREVIEW_MODE: ${{ inputs.mode }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
-      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
       DEPLOY_GIT_REF: develop
 
     steps:
@@ -44,19 +50,14 @@ jobs:
           sha="$(git rev-parse HEAD)"
           test "${#sha}" -eq 40
           echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
-          echo "Deploying develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deploying ${PILOT_PREVIEW_MODE} preview from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Require hosted pilot secrets
+      - name: Require Vercel preview secrets
         shell: bash
         run: |
           set -euo pipefail
           missing=0
-          for name in \
-            VERCEL_TOKEN \
-            VERCEL_ORG_ID \
-            NEXT_PUBLIC_SUPABASE_URL \
-            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
-            SUPABASE_SECRET_KEY
+          for name in VERCEL_TOKEN VERCEL_ORG_ID
           do
             if [ -z "${!name:-}" ]; then
               echo "::error::$name is not configured for the hosted pilot workflow."
@@ -65,14 +66,42 @@ jobs:
           done
           test "$missing" -eq 0
 
+      - name: Require full OPS backend secrets
+        if: ${{ inputs.mode == 'full-ops' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for full-ops preview."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
       - name: Install dependencies
         run: npm install --ignore-scripts
 
-      - name: Certify hosted Supabase before deployment
+      - name: Certify hosted Supabase before full OPS deployment
+        if: ${{ inputs.mode == 'full-ops' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
         run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
 
-      - name: Create or reuse Vercel project and deploy Preview
+      - name: Create or reuse isolated Vercel project and deploy Preview
         id: deploy
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ inputs.mode == 'full-ops' && secrets.PILOT_SUPABASE_URL || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ inputs.mode == 'full-ops' && secrets.PILOT_SUPABASE_PUBLISHABLE_KEY || '' }}
+          SUPABASE_SECRET_KEY: ${{ inputs.mode == 'full-ops' && secrets.PILOT_SUPABASE_SECRET_KEY || '' }}
         run: npm run pilot:vercel-preview
 
       - name: Certify deployed Preview
@@ -84,5 +113,6 @@ jobs:
           test -n "$DEPLOYMENT_URL"
           npm run pilot:preflight -- \
             --base-url "$DEPLOYMENT_URL" \
+            --mode "$PILOT_PREVIEW_MODE" \
             --expected-branch "$DEPLOY_GIT_REF" \
             --expected-commit "$DEPLOY_GIT_SHA"
