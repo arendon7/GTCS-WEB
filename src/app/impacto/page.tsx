@@ -18,8 +18,6 @@ const steps = [
 export default function ImpactPage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}><div className={`${styles.container} ${styles.headerInner}`}><Link href="/" aria-label="Greenatics, inicio"><img className={styles.logo} src="/brand/greenatics-horizontal.webp" alt="Greenatics" width="360" height="66" /></Link><nav className={styles.nav} aria-label="Navegación pública"><Link href="/soluciones">Soluciones</Link><Link href="/proyectos">Proyectos</Link><Link href="/impacto">Impacto</Link><Link href="/wondergreen">Wondergreen</Link><Link href="/biblioteca">Conocimiento</Link></nav><Link className={`${styles.button} ${styles.primary}`} href="/app">Acceder a Greenatics</Link></div></header>
-
       <main>
         <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}><div><span className={styles.eyebrow}>Impacto verificable</span><h1>No basta con decir que aprovechamos residuos. Hay que demostrarlo.</h1><p className={styles.lead}>La capa pública de impacto se alimenta desde GREENATICS OPS bajo un contrato de publicación: cada cifra debe tener fuente, periodo, estado de validación y metodología cuando aplique.</p></div><aside className={styles.rule}><strong>Medido → revisado → aprobado → publicado.</strong><p>Nunca mostramos un KPI operativo en vivo sin control de calidad ni reutilizamos una cifra histórica como si describiera el estado actual.</p></aside></div></section>
 
@@ -31,8 +29,6 @@ export default function ImpactPage() {
 
         <section className={styles.guard}><div className={`${styles.container} ${styles.guardGrid}`}><div><span className={styles.eyebrow}>Impacto climático</span><h2>CO₂-eq no es una cifra decorativa.</h2></div><p>Un indicador climático solo podrá publicarse cuando estén definidos el escenario de referencia, los límites del sistema, los factores de emisión, el periodo, las fuentes de actividad y los supuestos. Hasta entonces permanece explícitamente en validación.</p></div></section>
       </main>
-
-      <footer className={styles.footer}><div className={`${styles.container} ${styles.footerInner}`}><span>Greenatics · impacto con evidencia</span><div><Link href="/proyectos">Proyectos</Link> · <Link href="/soluciones">Soluciones</Link> · <Link href="/app">GREENATICS OPS</Link></div></div></footer>
     </div>
   );
 }
