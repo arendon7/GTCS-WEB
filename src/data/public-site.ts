@@ -58,6 +58,7 @@ export const publicStaticRoutes = [
   "/proyectos",
   "/impacto",
   "/biblioteca",
+  "/biblioteca/guia-deficiencias",
   "/nosotros",
   "/contacto",
 ] as const;
