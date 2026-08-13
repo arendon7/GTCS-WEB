@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { getWondergreenCrop } from "@/data/wondergreen-crops";
 
 type Props = {
@@ -15,6 +16,20 @@ export async function generateMetadata({ params }: Pick<Props, "params">): Promi
   };
 }
 
-export default function WondergreenCropLayout({ children }: Props) {
-  return children;
+export default async function WondergreenCropLayout({ children, params }: Props) {
+  const { slug } = await params;
+  const crop = getWondergreenCrop(slug);
+  if (!crop) return children;
+
+  return (
+    <>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Wondergreen", path: "/wondergreen" },
+        { name: "Cultivos", path: "/wondergreen/cultivos" },
+        { name: crop.name, path: `/wondergreen/cultivos/${crop.slug}` as `/${string}` },
+      ]} />
+      {children}
+    </>
+  );
 }
