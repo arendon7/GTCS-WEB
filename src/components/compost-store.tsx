@@ -105,6 +105,13 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string>();
 
+  const effectiveIntakeLots = useMemo(() => {
+    if (remoteMode) return intakeLots;
+    const currentIds = new Set(intakeLots.map((lot) => lot.id));
+    const missing = intakeLotsFromReceptions(receptions).filter((lot) => !currentIds.has(lot.id));
+    return missing.length ? [...missing, ...intakeLots] : intakeLots;
+  }, [intakeLots, receptions, remoteMode]);
+
   const hydrateRemote = useCallback(async () => {
     if (backend.status !== "ready") return;
     const snapshot = await loadRemoteCompost(access);
@@ -166,19 +173,9 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
   }, [backend.error, backend.status, refreshCompost, remoteMode]);
 
   useEffect(() => {
-    if (remoteMode || !ready) return;
-    const candidates = intakeLotsFromReceptions(receptions);
-    setIntakeLots((current) => {
-      const existing = new Set(current.map((lot) => lot.id));
-      const missing = candidates.filter((lot) => !existing.has(lot.id));
-      return missing.length ? [...missing, ...current] : current;
-    });
-  }, [receptions, ready, remoteMode]);
-
-  useEffect(() => {
     if (!ready || remoteMode) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ piles, measurements, intakeLots, sourceAllocations, events, controlRanges }));
-  }, [controlRanges, events, intakeLots, measurements, piles, ready, remoteMode, sourceAllocations]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ piles, measurements, intakeLots: effectiveIntakeLots, sourceAllocations, events, controlRanges }));
+  }, [controlRanges, effectiveIntakeLots, events, measurements, piles, ready, remoteMode, sourceAllocations]);
 
   const reloadRemote = useCallback(async () => {
     try { await hydrateRemote(); }
@@ -186,7 +183,7 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
   }, [hydrateRemote]);
 
   const value = useMemo<CompostStore>(() => ({
-    piles, measurements, intakeLots, sourceAllocations, events, controlRanges, ready, error,
+    piles, measurements, intakeLots: effectiveIntakeLots, sourceAllocations, events, controlRanges, ready, error,
     async createPile(payload) {
       if (!payload.location.trim()) return { ok: false, error: "Indica la ubicación de la pila." };
       if (!payload.sourceAllocations.length) return { ok: false, error: "Selecciona al menos un lote físico de origen." };
@@ -202,7 +199,7 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
         catch (caught) { return failure(caught, "No fue posible crear la pila."); }
       }
 
-      const selectedLots = payload.sourceAllocations.map((source) => ({ source, lot: intakeLots.find((lot) => lot.id === source.intakeLotId) }));
+      const selectedLots = payload.sourceAllocations.map((source) => ({ source, lot: effectiveIntakeLots.find((lot) => lot.id === source.intakeLotId) }));
       if (selectedLots.some(({ lot }) => !lot || lot.plantId !== payload.plantId || !["available", "in_process"].includes(lot.status))) return { ok: false, error: "Uno o más lotes no están disponibles para proceso." };
       for (const { source, lot } of selectedLots) if (!lot || source.massKg > lot.availableMassKg) return { ok: false, error: `La masa asignada supera lo disponible en ${lot?.lotCode ?? "un lote"}.` };
       if (payload.workerIds.some((id) => !workers.some((worker) => worker.id === id && worker.plantId === payload.plantId))) return { ok: false, error: "Uno o más trabajadores no pertenecen a la planta." };
@@ -218,9 +215,9 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
       };
       const formationId = crypto.randomUUID();
       setPiles((current) => [pile, ...current]);
-      setSourceAllocations((current) => [...payload.sourceAllocations.map((source) => ({ pileId: id, intakeLotId: source.intakeLotId, lotCode: intakeLots.find((lot) => lot.id === source.intakeLotId)?.lotCode ?? "Lote", allocatedMassKg: source.massKg, allocationConfirmed: true })), ...current]);
+      setSourceAllocations((current) => [...payload.sourceAllocations.map((source) => ({ pileId: id, intakeLotId: source.intakeLotId, lotCode: effectiveIntakeLots.find((lot) => lot.id === source.intakeLotId)?.lotCode ?? "Lote", allocatedMassKg: source.massKg, allocationConfirmed: true })), ...current]);
       setEvents((current) => [{ id: formationId, pileId: id, type: "formation", startedAt: payload.formationStartedAt, endedAt: payload.formationEndedAt, volumeM3: payload.formationVolumeM3, workerIds: payload.workerIds, notes: payload.notes?.trim() || undefined }, ...current]);
-      setIntakeLots((current) => current.map((lot) => {
+      setIntakeLots(effectiveIntakeLots.map((lot) => {
         const allocation = payload.sourceAllocations.find((source) => source.intakeLotId === lot.id);
         if (!allocation) return lot;
         const availableMassKg = Math.max(0, lot.availableMassKg - allocation.massKg);
@@ -313,7 +310,7 @@ export function CompostStoreProvider({ children }: { children: ReactNode }) {
       setPiles(seedCompostPiles); setMeasurements(seedCompostMeasurements); setIntakeLots(intakeLotsFromReceptions(receptions));
       setSourceAllocations([]); setEvents([]); setControlRanges([]); setError(undefined); window.localStorage.removeItem(STORAGE_KEY);
     },
-  }), [access, controlRanges, error, events, intakeLots, measurements, piles, ready, receptions, refreshCompost, reloadRemote, remoteMode, sourceAllocations, workers]);
+  }), [access, controlRanges, effectiveIntakeLots, error, events, measurements, piles, ready, receptions, refreshCompost, reloadRemote, remoteMode, sourceAllocations, workers]);
 
   return <CompostContext.Provider value={value}>{children}</CompostContext.Provider>;
 }

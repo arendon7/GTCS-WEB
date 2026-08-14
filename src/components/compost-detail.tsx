@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { CompostStatusPill } from "@/components/compost-status-pill";
 import { useCompostStore } from "@/components/compost-store";
 import { useOpsStore } from "@/components/ops-store";
@@ -19,9 +19,10 @@ import { bogotaDatetimeLocalToIso, bogotaDatetimeLocalValue, bogotaTime } from "
 
 const eventLabels = { formation: "Conformación", turning: "Volteo", hydration: "Hidratación", other: "Otro" } as const;
 
-function optionalNumber(value: string) {
-  if (!value.trim()) return undefined;
-  const parsed = Number(value);
+function optionalNumber(value: FormDataEntryValue | null) {
+  const text = typeof value === "string" ? value.trim() : "";
+  if (!text) return undefined;
+  const parsed = Number(text);
   return Number.isFinite(parsed) ? parsed : Number.NaN;
 }
 
@@ -43,6 +44,14 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   const workerNames = new Map(workers.map((worker) => [worker.id, worker.name]));
   const plantAccess = pile ? access.find((item) => item.plantId === pile.plantId) : undefined;
   const canConfigureRange = backend.mode !== "supabase" || Boolean(plantAccess && ["technical", "admin", "director"].includes(plantAccess.role));
+  const rangeFormRef = useRef<HTMLFormElement>(null);
+  const rangeFormKey = [
+    controlRange?.temperatureAvgMinC ?? "",
+    controlRange?.temperatureAvgMaxC ?? "",
+    controlRange?.humidityMinPct ?? "",
+    controlRange?.humidityMaxPct ?? "",
+    controlRange?.active ?? false,
+  ].join("|");
 
   const [temps, setTemps] = useState(["", "", ""]);
   const [ambient, setAmbient] = useState("");
@@ -54,21 +63,10 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   const [eventVolume, setEventVolume] = useState("");
   const [eventWorkerIds, setEventWorkerIds] = useState<string[]>([]);
   const [eventNotes, setEventNotes] = useState("");
-  const [temperatureMin, setTemperatureMin] = useState("");
-  const [temperatureMax, setTemperatureMax] = useState("");
-  const [humidityMin, setHumidityMin] = useState("");
-  const [humidityMax, setHumidityMax] = useState("");
   const [finalWeight, setFinalWeight] = useState("");
   const [feedback, setFeedback] = useState("");
   const [busy, setBusy] = useState(false);
   const [nowIso] = useState(() => new Date().toISOString());
-
-  useEffect(() => {
-    setTemperatureMin(controlRange?.temperatureAvgMinC?.toString() ?? "");
-    setTemperatureMax(controlRange?.temperatureAvgMaxC?.toString() ?? "");
-    setHumidityMin(controlRange?.humidityMinPct?.toString() ?? "");
-    setHumidityMax(controlRange?.humidityMaxPct?.toString() ?? "");
-  }, [controlRange?.humidityMaxPct, controlRange?.humidityMinPct, controlRange?.temperatureAvgMaxC, controlRange?.temperatureAvgMinC]);
 
   if (!pile) return <section className="panel mx-auto max-w-4xl"><h1 className="text-2xl">Pila no encontrada</h1><Link className="button secondary mt-5" href="/compost">Volver</Link></section>;
 
@@ -99,7 +97,6 @@ export function CompostDetail({ pileId }: { pileId: string }) {
       });
       if (!result.ok) return setFeedback(result.error);
       setEventVolume(""); setEventWorkerIds([]); setEventNotes("");
-      setEventStartedAt(bogotaDatetimeLocalValue(new Date(Date.now() - 15 * 60_000))); setEventEndedAt(bogotaDatetimeLocalValue());
       setFeedback(`${eventLabels[eventType]} registrado.`);
     } catch (error) { setFeedback(error instanceof Error ? error.message : "No fue posible interpretar la hora del evento."); }
     finally { setBusy(false); }
@@ -107,11 +104,18 @@ export function CompostDetail({ pileId }: { pileId: string }) {
 
   const saveRange = async (active: boolean) => {
     if (busy) return;
+    const form = rangeFormRef.current;
+    if (!form) return;
+    const data = new FormData(form);
     setBusy(true); setFeedback("");
     try {
       const result = await configureRange({
-        plantId: pile.plantId, temperatureAvgMinC: optionalNumber(temperatureMin), temperatureAvgMaxC: optionalNumber(temperatureMax),
-        humidityMinPct: optionalNumber(humidityMin), humidityMaxPct: optionalNumber(humidityMax), active,
+        plantId: pile.plantId,
+        temperatureAvgMinC: optionalNumber(data.get("temperatureMin")),
+        temperatureAvgMaxC: optionalNumber(data.get("temperatureMax")),
+        humidityMinPct: optionalNumber(data.get("humidityMin")),
+        humidityMaxPct: optionalNumber(data.get("humidityMax")),
+        active,
       });
       setFeedback(result.ok ? (active ? "Rango técnico guardado." : "Evaluación automática de rangos desactivada.") : result.error);
     } finally { setBusy(false); }
@@ -160,8 +164,10 @@ export function CompostDetail({ pileId }: { pileId: string }) {
 
     {canConfigureRange && <section className="panel mx-auto mt-4 max-w-5xl">
       <div className="section-head"><div><p className="eyebrow">Configuración técnica</p><h2>Rangos de control de {pile.plant}</h2><p className="quiet">No existen valores por defecto: solo se evalúa lo que Dirección/Técnica haya validado.</p></div><span className="quiet">{controlRange?.active ? "Evaluación activa" : "Sin evaluación activa"}</span></div>
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4"><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Temp. promedio mín. (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" inputMode="decimal" value={temperatureMin} onChange={(event) => setTemperatureMin(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Temp. promedio máx. (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" inputMode="decimal" value={temperatureMax} onChange={(event) => setTemperatureMax(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad mín. (%)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" inputMode="decimal" value={humidityMin} onChange={(event) => setHumidityMin(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad máx. (%)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" inputMode="decimal" value={humidityMax} onChange={(event) => setHumidityMax(event.target.value)} /></label></div>
-      <div className="mt-5 flex flex-wrap justify-end gap-2"><button className="button secondary" type="button" disabled={busy} onClick={() => saveRange(false)}>Desactivar evaluación</button><button className="button primary" type="button" disabled={busy} onClick={() => saveRange(true)}>Guardar rangos</button></div>
+      <form key={rangeFormKey} ref={rangeFormRef} onSubmit={(event) => event.preventDefault()}>
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4"><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Temp. promedio mín. (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" name="temperatureMin" inputMode="decimal" defaultValue={controlRange?.temperatureAvgMinC ?? ""} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Temp. promedio máx. (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" name="temperatureMax" inputMode="decimal" defaultValue={controlRange?.temperatureAvgMaxC ?? ""} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad mín. (%)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" name="humidityMin" inputMode="decimal" defaultValue={controlRange?.humidityMinPct ?? ""} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Humedad máx. (%)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm" name="humidityMax" inputMode="decimal" defaultValue={controlRange?.humidityMaxPct ?? ""} /></label></div>
+        <div className="mt-5 flex flex-wrap justify-end gap-2"><button className="button secondary" type="button" disabled={busy} onClick={() => saveRange(false)}>Desactivar evaluación</button><button className="button primary" type="button" disabled={busy} onClick={() => saveRange(true)}>Guardar rangos</button></div>
+      </form>
     </section>}
 
     {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Etapa</p><h2>{pile.status === "active" ? "Proceso activo" : "Maduración"}</h2></div>{pile.status === "active" ? <button className="button secondary" type="button" disabled={busy} onClick={mature}>{busy ? "Actualizando…" : "Pasar a maduración"}</button> : <span className="quiet">{Math.floor(maturationDays(pile, nowIso))} días en maduración</span>}</div>{pile.status === "maturing" && <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="grid grow gap-2 text-xs font-bold text-[var(--muted)]">Peso final medido (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={finalWeight} onChange={(event) => setFinalWeight(event.target.value)} /></label><button className="button primary" type="button" disabled={busy} onClick={close}>{busy ? "Cerrando…" : "Cerrar pila"}</button></div>}</section>}
