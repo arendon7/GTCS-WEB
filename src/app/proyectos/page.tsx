@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ProjectEvidenceCard } from "@/components/project-evidence-card";
 import { publicProjects } from "@/data/projects-public";
 import styles from "./projects.module.css";
 
@@ -51,16 +52,10 @@ export default function ProjectsPage() {
             <div className={styles.sectionHead}>
               <span className={styles.eyebrow}>Casos documentados</span>
               <h2>Dos plantas, aprendizajes diferentes.</h2>
-              <p>Yarumal permite mostrar aprendizajes de operación y trazabilidad. Támesis aporta un caso especialmente útil sobre diagnóstico, rehabilitación y puesta en marcha progresiva.</p>
+              <p>Yarumal ya cuenta con evidencia visual pública conciliada. Támesis conserva su caso técnico sin sustituir la falta de fotografía validada por una imagen genérica.</p>
             </div>
             <div className={styles.projectGrid}>
-              {publicProjects.map((project, index) => (
-                <article className={styles.projectCard} key={project.slug}>
-                  <span className={styles.projectIndex}>{String(index + 1).padStart(2, "0")}</span>
-                  <div><span className={styles.status}>{project.statusLabel}</span><h2>{project.name}</h2><span className={styles.region}>{project.region}</span><p>{project.summary}</p></div>
-                  <Link href={`/proyectos/${project.slug}`}>Ver caso {project.name} →</Link>
-                </article>
-              ))}
+              {publicProjects.map((project, index) => <ProjectEvidenceCard project={project} index={index} key={project.slug} />)}
             </div>
           </div>
         </section>

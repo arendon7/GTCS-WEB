@@ -23,6 +23,17 @@ test("contact page routes the first conversation by problem", async ({ page }) =
   await expect(page.getByRole("link", { name: "Tengo un proyecto" })).toHaveAttribute("href", "/soluciones/prefactibilidad");
 });
 
+test("contact page exposes distinct Wondergreen audience paths", async ({ page }) => {
+  await page.goto("/contacto#wondergreen");
+
+  await expect(page.getByRole("heading", { name: "La conversación cambia según quién está tomando la decisión." })).toBeVisible();
+  for (const name of ["Soy productor", "Soy agrotienda / distribuidor", "Soy agrónomo / técnico"]) {
+    const route = page.getByRole("link", { name: new RegExp(name.replace("/", "\\/"), "i") });
+    await expect(route).toHaveAttribute("href", /^https:\/\/outlook\.office\.com\//);
+    await expect(route).toHaveAttribute("target", "_blank");
+  }
+});
+
 test("contact page exposes the configured technical booking link", async ({ page }) => {
   await page.goto("/contacto");
   const booking = page.getByRole("link", { name: "Agendar reunión" });
