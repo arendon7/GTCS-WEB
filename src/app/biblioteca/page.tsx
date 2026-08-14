@@ -8,6 +8,57 @@ export const metadata: Metadata = {
   description: "Guías, programas por cultivo, manuales y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
 };
 
+const intentRoutes = [
+  {
+    number: "01",
+    kicker: "Tengo un cultivo",
+    title: "Quiero orientar el programa según la etapa.",
+    copy: "Entra por café, cacao, aguacate, limón Tahití o pastos y revisa momentos, objetivos, cautelas, alertas y seguimiento.",
+    href: "/wondergreen/cultivos",
+    cta: "Elegir cultivo",
+  },
+  {
+    number: "02",
+    kicker: "Veo síntomas",
+    title: "Quiero entender una posible deficiencia.",
+    copy: "Empieza por tejido afectado, patrón del lote y posibles confundidores antes de asumir que el problema se resuelve con fertilización.",
+    href: "/biblioteca/guia-deficiencias",
+    cta: "Revisar síntomas",
+  },
+  {
+    number: "03",
+    kicker: "Estoy revisando una recomendación",
+    title: "Quiero comprobar si tengo suficiente contexto.",
+    copy: "Revisa suelo, etapa, densidad, historial de fertilización y objetivo productivo antes de cerrar una decisión nutricional.",
+    href: "/biblioteca/criterios-nutricionales",
+    cta: "Comprobar criterios",
+  },
+  {
+    number: "04",
+    kicker: "Voy a aplicar Wondergreen",
+    title: "Necesito preparar y registrar bien la aplicación.",
+    copy: "Confirma referencia, condiciones, equipo, vía de aplicación, registro y seguimiento sin convertir el manual en una receta universal.",
+    href: "/biblioteca/manual-uso-wondergreen",
+    cta: "Abrir manual de uso",
+  },
+  {
+    number: "05",
+    kicker: "Quiero comparar referencias",
+    title: "Necesito ver el Product Master público.",
+    copy: "Consulta familias, fórmulas, formatos, estado público y relación con el sistema Wondergreen desde la fuente gobernada.",
+    href: "/wondergreen/productos",
+    cta: "Ver Product Master",
+  },
+  {
+    number: "06",
+    kicker: "La información no alcanza",
+    title: "Necesito escalar a una conversación técnica.",
+    copy: "Cuando faltan análisis, contexto del lote o una referencia clara, la salida correcta es pedir soporte antes de improvisar una recomendación.",
+    href: "/contacto#wondergreen",
+    cta: "Pedir acompañamiento",
+  },
+] as const;
+
 export default function LibraryPage() {
   return (
     <div className={styles.page}>
@@ -26,6 +77,27 @@ export default function LibraryPage() {
           </div>
         </section>
 
+        <section className={`${styles.section} ${styles.soft}`} aria-labelledby="library-router-title">
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <span className={styles.eyebrow}>Empieza por tu decisión</span>
+              <h2 id="library-router-title">No necesitas conocer el nombre del recurso.</h2>
+              <p>Elige qué estás tratando de resolver. La biblioteca te lleva a la ruta técnica más útil y conserva una salida explícita hacia acompañamiento cuando el contexto es insuficiente.</p>
+            </div>
+            <div className={styles.intentGrid}>
+              {intentRoutes.map((route) => (
+                <Link className={styles.intentCard} href={route.href} key={route.number}>
+                  <span className={styles.intentNumber}>{route.number}</span>
+                  <small className={styles.intentKicker}>{route.kicker}</small>
+                  <h3>{route.title}</h3>
+                  <p>{route.copy}</p>
+                  <strong>{route.cta} →</strong>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className={`${styles.section} ${styles.white}`}>
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
@@ -36,7 +108,10 @@ export default function LibraryPage() {
             <div className={styles.libraryGrid}>
               {publicResources.map((resource) => (
                 <article className={styles.libraryCard} key={resource.id}>
-                  <span className={styles.status}>{resource.statusLabel}</span>
+                  <div className={styles.resourceMeta}>
+                    <span className={styles.status}>{resource.statusLabel}</span>
+                    <small className={styles.delivery}>{resource.delivery === "web-native" ? "Lectura web disponible" : "Lectura web disponible · descarga pública en preparación"}</small>
+                  </div>
                   <h3>{resource.title}</h3>
                   <p>{resource.copy}</p>
                   <Link href={resource.href}>{resource.cta} →</Link>
@@ -65,7 +140,10 @@ export default function LibraryPage() {
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Biblioteca Greenatics</span><h2>¿Buscas una guía para un cultivo específico?</h2></div>
-            <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/cultivos">Ver cultivos</Link>
+            <div className={styles.closingActions}>
+              <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/cultivos">Ver cultivos</Link>
+              <Link className={`${styles.button} ${styles.secondary}`} href="/contacto#wondergreen">Hablar con un asesor</Link>
+            </div>
           </div>
         </section>
       </main>
