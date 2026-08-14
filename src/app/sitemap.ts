@@ -3,6 +3,7 @@ import { publicProjects } from "@/data/projects-public";
 import { publicSite, publicStaticRoutes } from "@/data/public-site";
 import { services } from "@/data/services";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
+import { wondergreenReferences } from "@/data/wondergreen-public";
 
 const baseUrl = publicSite.publicDomainTarget.replace(/\/$/, "");
 
@@ -35,5 +36,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry(`/wondergreen/cultivos/${crop.slug}`, 0.74, "monthly"),
   );
 
-  return [...staticEntries, ...serviceEntries, ...projectEntries, ...cropEntries];
+  const productEntries = wondergreenReferences.map((reference) =>
+    entry(`/wondergreen/productos/${reference.slug}`, reference.truthStatus === "commercial-reconciled" ? 0.76 : 0.64, "monthly"),
+  );
+
+  return [...staticEntries, ...serviceEntries, ...projectEntries, ...cropEntries, ...productEntries];
 }
