@@ -38,6 +38,7 @@ export const publicFooterNav = [
     title: "Agro",
     links: [
       { href: "/wondergreen", label: "Wondergreen" },
+      { href: "/wondergreen/productos", label: "Productos" },
       { href: "/wondergreen/cultivos", label: "Cultivos" },
       { href: "/biblioteca/manual-uso-wondergreen", label: "Manual de uso" },
       { href: "/biblioteca", label: "Biblioteca" },
@@ -57,6 +58,7 @@ export const publicStaticRoutes = [
   "/",
   "/soluciones",
   "/wondergreen",
+  "/wondergreen/productos",
   "/wondergreen/cultivos",
   "/proyectos",
   "/impacto",
