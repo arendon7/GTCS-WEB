@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(38);
+select plan(40);
 
 select has_column('public','maintenance_tickets','failure_type','maintenance stores structured failure type');
 select has_column('public','maintenance_tickets','failed_at','maintenance stores actual failure occurrence time');
@@ -28,7 +28,7 @@ insert into public.equipment(id,plant_id,code,name,status,area) values
 insert into public.scheduled_activities(id,plant_id,title,planned_start,planned_end,status,equipment_id) values
  ('a4000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','Uso programado QA',now()-interval '4 hours',now(),'planned','a3000000-0000-4000-8000-000000000001');
 insert into public.supplies(id,name,category,unit,active) values
- ('a5000000-0000-4000-8000-000000000001','Rodamiento QA','spare_part','unidad',true);
+ ('a5000000-0000-4000-8000-000000000001','Rodamiento QA','spare_part','unidades',true);
 insert into public.supply_movements(id,plant_id,supply_id,lot_code,kind,quantity,occurred_on,destination,recorded_at) values
  ('a6000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','a5000000-0000-4000-8000-000000000001','LOT-MNT-QA','receipt',5,current_date,'Bodega QA',now());
 
@@ -46,6 +46,7 @@ set local request.jwt.claim.sub='a1000000-0000-4000-8000-000000000002';
 select lives_ok($$select public.ops_start_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '2 hours')$$,'maintenance role can start repair');
 select is((select status from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),'repairing'::text,'ticket moves to repairing');
 select is((select status from public.equipment where id='a3000000-0000-4000-8000-000000000001'),'maintenance'::text,'equipment moves to maintenance');
+select throws_like($$select public.consume_supply('a2000000-0000-4000-8000-000000000001','a5000000-0000-4000-8000-000000000001','LOT-MNT-QA',1,current_date,'Atajo mantenimiento','a3000000-0000-4000-8000-000000000001','maintenance:manual','No debe permitirse')$$,'%Sin permiso para registrar consumo%','maintenance cannot bypass repair lifecycle with generic supply consumption');
 select throws_like($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[6::numeric],array[]::text[])$$,'%Stock insuficiente%','close rolls back when spare stock is insufficient');
 select is((select coalesce(sum(case when kind in ('receipt','adjustment_in') then quantity else -quantity end),0) from public.supply_movements where supply_id='a5000000-0000-4000-8000-000000000001' and lot_code='LOT-MNT-QA'),5::numeric,'failed close does not consume physical stock');
 select lives_ok($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento y prueba funcional',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[2::numeric],array['evidencia://reparacion-qa'])$$,'repair closes atomically with physical spare consumption');
