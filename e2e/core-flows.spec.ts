@@ -51,17 +51,29 @@ test("maintenance ticket follows stopped to repairing to available", async ({ pa
 });
 
 test("operator can create, monitor and close a compost pile", async ({ page }) => {
+  await page.goto("/receptions/new");
+  await page.getByLabel("Generador / proveedor").fill("QA Origen compostaje");
+  await page.getByLabel("Ruta / origen").fill("QA Ruta compostaje");
+  await page.getByLabel("Peso neto (kg)").fill("1500");
+  await page.getByLabel("Rechazo (kg)").fill("0");
+  await page.getByRole("button", { name: "Guardar recepción y crear lote" }).click();
+  await expect(page).toHaveURL(/\/receptions$/);
+
   await page.goto("/compost/new");
   await page.getByLabel("Ubicación").fill("QA Zona compostaje");
-  await page.getByRole("group", { name: "Lotes de origen" }).getByRole("checkbox").first().check();
-  await page.getByLabel("Peso inicial medido (kg)").fill("1500");
-  await page.getByRole("button", { name: "Crear pila" }).click();
+  const sourceGroup = page.getByRole("group", { name: "Lotes físicos y masa asignada" });
+  await sourceGroup.getByRole("checkbox").first().check();
+  await page.getByLabel("Asignar (kg)").fill("1500");
+  await page.getByLabel("Volumen conformado (m³)").fill("8");
+  await page.getByRole("group", { name: "Trabajadores de conformación" }).getByRole("checkbox").first().check();
+  await page.getByRole("button", { name: "Conformar pila" }).click();
   await expect(page).toHaveURL(/\/compost\/[^/]+$/);
-  await expect(page.getByText("Trazabilidad de origen, controles y cierre de la pila.")).toBeVisible();
+  await expect(page.getByText("Trazabilidad física, eventos operacionales, controles técnicos y rendimiento.")).toBeVisible();
 
   await page.getByLabel("Temperatura punto 1 (°C)").fill("58");
   await page.getByLabel("Temperatura punto 2 (°C)").fill("58");
   await page.getByLabel("Temperatura punto 3 (°C)").fill("58");
+  await page.getByLabel("Temperatura ambiente (°C)").fill("22");
   await page.getByLabel(/Humedad \(%\)/).fill("52");
   await page.getByRole("button", { name: "Guardar control" }).click();
   await expect(page.getByText("58.0 °C promedio")).toBeVisible();
