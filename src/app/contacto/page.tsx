@@ -26,11 +26,19 @@ const preparation = [
   },
 ];
 
+const wondergreenRoutes = [
+  { id: "productor", title: "Soy productor", copy: "Quiero orientar una decisión para mi cultivo, etapa, lote o problema agronómico.", cta: "Agendar asesoría técnica" },
+  { id: "distribuidor", title: "Soy agrotienda / distribuidor", copy: "Quiero conocer referencias, formatos, condición comercial y posibilidad de distribuir Wondergreen.", cta: "Hablar de distribución" },
+  { id: "tecnico", title: "Soy agrónomo / técnico", copy: "Quiero revisar Product Master, guías, criterios de uso y soporte técnico del portafolio.", cta: "Revisar portafolio técnico" },
+] as const;
+
 export default function ContactPage() {
   return (
     <div className={styles.page}>
       <main>
         <section className={styles.contactHero}><div className={`${styles.container} ${styles.contactGrid}`}><div><span className={styles.eyebrow} style={{color:"#c8f5ad"}}>Contacto Greenatics</span><h1>Cuéntanos qué quieres transformar.</h1><p className={styles.lead}>Podemos hablar de Wondergreen, gestión de residuos, proyectos municipales, plantas, rehabilitación, operación o soluciones para grandes generadores.</p></div><aside className={styles.contactPanel}><span>Reunión técnica</span><h2>Agenda directamente con el equipo.</h2><p>La conversación funciona mejor cuando llegamos con contexto mínimo. Usa la guía inferior y trae lo que ya tengas; no necesitas tener toda la información resuelta.</p><a className={`${styles.button} ${styles.primary}`} href={publicSite.bookingUrl} target="_blank" rel="noreferrer">Agendar reunión</a></aside></div></section>
+
+        <section className={`${styles.section} ${styles.soft}`} id="wondergreen"><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Wondergreen · elige tu ruta</span><h2>La conversación cambia según quién está tomando la decisión.</h2><p>Producto, cultivo y canal comercial comparten el mismo Product Master, pero requieren preguntas y soporte diferentes.</p></div><div className={styles.ecosystem}>{wondergreenRoutes.map((route)=><a id={route.id} href={publicSite.bookingUrl} target="_blank" rel="noreferrer" key={route.id}><strong>{route.title}</strong><span>{route.copy}</span><small>{route.cta} →</small></a>)}</div></div></section>
 
         <section className={`${styles.section} ${styles.white}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Antes de la reunión</span><h2>Cuatro datos pueden ahorrar mucho tiempo.</h2><p>No es un formulario obligatorio. Es una lista corta para que la primera conversación llegue más rápido al problema real.</p></div><div className={styles.prepGrid}>{preparation.map((group,index)=><article className={styles.prep} key={group.audience}><span>{String(index+1).padStart(2,"0")} · {group.audience}</span><h3>{group.title}</h3><ul>{group.items.map((item)=><li key={item}>{item}</li>)}</ul></article>)}</div></div></section>
 
