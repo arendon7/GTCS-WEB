@@ -14,7 +14,7 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
   return <div className="metric-block"><span>{label}</span><strong>{value}</strong><small>{note}</small></div>;
 }
 
-const statusLabel: Record<AcceptanceStatus, string> = { accepted: "Aceptado", conditioned: "Condicionado", rejected: "Rechazado", unknown: "Sin dato histórico" };
+const statusLabel: Record<AcceptanceStatus, string> = { accepted: "Aceptado", conditioned: "Condicionado", partial_rejection: "Rechazo parcial", rejected: "Rechazado", unknown: "Sin dato histórico" };
 const dayFormatter = new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "America/Bogota" });
 
 function timeLabel(iso?: string) {
@@ -40,7 +40,7 @@ export function TodayDashboard() {
   const running = activities.filter((activity) => activity.status === "running");
   const workerRows = running.flatMap((activity) => activity.workerIds.map((workerId) => ({ activity, worker: workers.find((item) => item.id === workerId) })));
   const delayed = activities.filter((activity) => (activity.status === "delayed" || activity.status === "missed") && bogotaDateKey(activity.plannedStart) === currentDateKey);
-  const nonConforming = todayReceptions.filter((reception)=>reception.acceptance === "conditioned" || reception.acceptance === "rejected");
+  const nonConforming = todayReceptions.filter((reception)=>reception.acceptance === "conditioned" || reception.acceptance === "partial_rejection" || reception.acceptance === "rejected");
   const openIncidents = incidents.filter((incident) => incident.status === "open");
   const activeMaintenance = tickets.filter((ticket) => ticket.status !== "closed");
   const currentAttentionCount = activeMaintenance.length + openIncidents.length + nonConforming.length + delayed.length;
