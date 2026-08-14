@@ -62,15 +62,12 @@ select lives_ok(
   'planner can still create schedules through the canonical RPC'
 );
 
-select is(
-  (with updated as (
-    update public.scheduled_activities
+select is_empty(
+  $$update public.scheduled_activities
     set planned_start='2026-09-02 15:00+00'::timestamptz,
         planned_end='2026-09-02 16:00+00'::timestamptz
     where planning_note='Canonical RPC'
-    returning id
-  ) select count(*) from updated),
-  0::bigint,
+    returning id$$,
   'planner direct UPDATE sees no mutable schedule rows'
 );
 
