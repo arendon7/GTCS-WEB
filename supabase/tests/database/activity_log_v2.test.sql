@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(25);
+select plan(30);
 
 select has_table('public','operational_tools','operational tool master exists');
 select has_table('public','activity_tools','activity-tool relation exists');
@@ -245,6 +245,10 @@ select is(
   2::bigint,
   'both Bitácora RPCs are installed'
 );
+
+-- This assertion validates the global canonical seed, not the B2-TAM operator's
+-- plant-scoped visibility. Leave the restricted role before checking it.
+reset role;
 select is(
   (select count(*) from public.activity_templates t join public.plants p on p.id=t.plant_id where p.code='TAM' and t.code='RECEPCION_RESIDUOS' and not t.allows_unplanned),
   1::bigint,
