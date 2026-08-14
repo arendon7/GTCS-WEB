@@ -18,14 +18,14 @@ describe("public site contact configuration", () => {
     expect(publicSite.legacyIndexedDomain).toBe("https://greenatics.org");
   });
 
-  it("prioritizes the governed Wondergreen catalog in primary navigation", () => {
+  it("adds the governed Wondergreen catalog without removing established primary routes", () => {
     const primaryLinks: readonly PublicLink[] = publicNav;
     expect(primaryLinks).toContainEqual({ href: "/wondergreen", label: "Wondergreen" });
     expect(primaryLinks).toContainEqual({ href: "/wondergreen/productos", label: "Productos" });
-    expect(primaryLinks.some((item) => item.href === "/impacto")).toBe(false);
+    expect(primaryLinks).toContainEqual({ href: "/impacto", label: "Impacto" });
   });
 
-  it("keeps impact discoverable and indexable outside the primary commercial nav", () => {
+  it("keeps impact discoverable and indexable across public navigation", () => {
     const footerLinks: PublicLink[] = publicFooterNav.flatMap(
       (group) => [...group.links] as PublicLink[],
     );
