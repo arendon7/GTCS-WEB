@@ -28,7 +28,7 @@ insert into public.equipment(id,plant_id,code,name,status,area) values
 insert into public.scheduled_activities(id,plant_id,title,planned_start,planned_end,status,equipment_id) values
  ('a4000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','Uso programado QA',now()-interval '4 hours',now(),'planned','a3000000-0000-4000-8000-000000000001');
 insert into public.supplies(id,name,category,unit,active) values
- ('a5000000-0000-4000-8000-000000000001','Rodamiento QA','Repuesto','unidad',true);
+ ('a5000000-0000-4000-8000-000000000001','Rodamiento QA','spare_part','unidad',true);
 insert into public.supply_movements(id,plant_id,supply_id,lot_code,kind,quantity,occurred_on,destination,recorded_at) values
  ('a6000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','a5000000-0000-4000-8000-000000000001','LOT-MNT-QA','receipt',5,current_date,'Bodega QA',now());
 
