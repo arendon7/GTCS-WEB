@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(38);
+select plan(39);
 
 select has_column('public','maintenance_tickets','failure_type','maintenance stores structured failure type');
 select has_column('public','maintenance_tickets','failed_at','maintenance stores actual failure occurrence time');
