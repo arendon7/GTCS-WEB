@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(26);
+select plan(27);
 
 select has_table('public','measurement_units','measurement unit master exists');
 select has_table('public','operational_processes','operational process master exists');
