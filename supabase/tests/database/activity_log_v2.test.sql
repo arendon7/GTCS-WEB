@@ -1,0 +1,255 @@
+begin;
+
+create extension if not exists pgtap with schema extensions;
+select plan(25);
+
+select has_table('public','operational_tools','operational tool master exists');
+select has_table('public','activity_tools','activity-tool relation exists');
+select has_column('public','activities','activity_comment','activity has dedicated operational comment');
+select ok((select relrowsecurity from pg_class where oid='public.operational_tools'::regclass),'operational tool RLS is enabled');
+select ok((select relrowsecurity from pg_class where oid='public.activity_tools'::regclass),'activity-tool RLS is enabled');
+
+select is(
+  (select count(*) from pg_policies where schemaname='public' and tablename='activity_tools' and cmd in ('INSERT','UPDATE','DELETE')),
+  0::bigint,
+  'activity-tool writes are RPC-only for authenticated users'
+);
+
+select is(
+  (select count(*) from public.activity_templates t join public.plants p on p.id=t.plant_id where p.code='TAM'),
+  22::bigint,
+  'Támesis receives stable activity templates recovered from the operational workbook'
+);
+select is(
+  (select count(*) from public.activity_templates t join public.plants p on p.id=t.plant_id where p.code='YAR'),
+  33::bigint,
+  'Yarumal receives stable activity templates recovered from the operational workbook'
+);
+select is(
+  (select count(*) from public.operational_tools t join public.plants p on p.id=t.plant_id where p.code='TAM'),
+  4::bigint,
+  'Támesis receives only tools evidenced in its workbook'
+);
+select is(
+  (select count(*) from public.operational_tools t join public.plants p on p.id=t.plant_id where p.code='YAR'),
+  23::bigint,
+  'Yarumal receives the stable tool vocabulary evidenced in its workbook'
+);
+
+insert into auth.users(id,email,created_at,updated_at)
+values
+  ('d1000000-0000-4000-8000-000000000001','bitacora-director@greenatics.test',now(),now()),
+  ('d1000000-0000-4000-8000-000000000002','bitacora-operator@greenatics.test',now(),now());
+
+insert into public.plants(id,code,name,active)
+values
+  ('d2000000-0000-4000-8000-000000000001','B2-TAM','Bitácora Támesis',true),
+  ('d2000000-0000-4000-8000-000000000002','B2-YAR','Bitácora Yarumal',true);
+
+insert into public.profiles(id,display_name)
+values
+  ('d1000000-0000-4000-8000-000000000001','Bitácora Director'),
+  ('d1000000-0000-4000-8000-000000000002','Bitácora Operator');
+
+insert into public.plant_memberships(user_id,plant_id,role)
+values
+  ('d1000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','director'),
+  ('d1000000-0000-4000-8000-000000000002','d2000000-0000-4000-8000-000000000001','operator');
+
+insert into public.operational_processes(id,plant_id,code,name)
+values
+  ('d3000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','COMPOST','Compostaje B2'),
+  ('d3000000-0000-4000-8000-000000000002','d2000000-0000-4000-8000-000000000002','COMPOST','Compostaje B2 YAR');
+
+insert into public.activity_templates(
+  id,plant_id,process_id,code,name,default_unit_code,allows_unplanned
+) values
+  ('d4000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','d3000000-0000-4000-8000-000000000001','VOLTEO','Volteo Bitácora','kg',true),
+  ('d4000000-0000-4000-8000-000000000002','d2000000-0000-4000-8000-000000000001','d3000000-0000-4000-8000-000000000001','LOTE','Actividad con lote','kg',true);
+update public.activity_templates set requires_lot=true where id='d4000000-0000-4000-8000-000000000002';
+
+insert into public.employees(id,plant_id,display_name)
+values
+  ('d5000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','Operario Bitácora'),
+  ('d5000000-0000-4000-8000-000000000002','d2000000-0000-4000-8000-000000000002','Operario Otra Planta');
+
+insert into public.equipment(id,plant_id,code,name,status)
+values ('d6000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','EQ-B2','Equipo Bitácora','available');
+insert into public.equipment_processes(equipment_id,process_id,plant_id)
+values ('d6000000-0000-4000-8000-000000000001','d3000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001');
+
+insert into public.operational_tools(id,plant_id,code,name)
+values
+  ('d7000000-0000-4000-8000-000000000001','d2000000-0000-4000-8000-000000000001','PALA','Pala B2'),
+  ('d7000000-0000-4000-8000-000000000002','d2000000-0000-4000-8000-000000000002','PALA','Pala otra planta');
+
+set local role authenticated;
+set local request.jwt.claim.sub='d1000000-0000-4000-8000-000000000002';
+
+select lives_ok(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000001'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    '2026-08-10T13:00:00Z'::timestamptz,
+    '2026-08-10T14:00:00Z'::timestamptz,
+    'd6000000-0000-4000-8000-000000000001'::uuid,
+    array['d7000000-0000-4000-8000-000000000001'::uuid],
+    'Volteo realizado sin novedad',
+    120,
+    'kg'
+  )$$,
+  'operator can record a completed structured activity'
+);
+
+select is(
+  (select title from public.activities where plant_id='d2000000-0000-4000-8000-000000000001' and title='Volteo Bitácora'),
+  'Volteo Bitácora'::text,
+  'activity title comes from the canonical template'
+);
+select is(
+  (select process from public.activities where plant_id='d2000000-0000-4000-8000-000000000001' and title='Volteo Bitácora'),
+  'Compostaje B2'::text,
+  'process label comes from the canonical process'
+);
+select is(
+  (select activity_comment from public.activities where plant_id='d2000000-0000-4000-8000-000000000001' and title='Volteo Bitácora'),
+  'Volteo realizado sin novedad'::text,
+  'normal operational comment is preserved separately from novelty notes'
+);
+select is(
+  (select count(*) from public.activity_workers aw join public.activities a on a.id=aw.activity_id where a.title='Volteo Bitácora'),
+  1::bigint,
+  'structured activity persists actual workers'
+);
+select is(
+  (select count(*) from public.activity_tools at join public.activities a on a.id=at.activity_id where a.title='Volteo Bitácora'),
+  1::bigint,
+  'structured activity persists tools used'
+);
+
+select throws_like(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000001'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    '2026-08-11T13:00:00Z'::timestamptz,
+    '2026-08-11T14:00:00Z'::timestamptz,
+    null,
+    array['d7000000-0000-4000-8000-000000000002'::uuid]
+  )$$,
+  '%herramientas no pertenecen a la planta%',
+  'cross-plant tools are rejected'
+);
+
+select throws_like(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000002'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    '2026-08-11T13:00:00Z'::timestamptz,
+    '2026-08-11T14:00:00Z'::timestamptz
+  )$$,
+  '%requiere un lote%',
+  'generic Bitácora refuses templates that require a typed lot relation'
+);
+
+select throws_like(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000001'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    now()+interval '1 hour',
+    null
+  )$$,
+  '%hora de inicio no puede estar en el futuro%',
+  'future actual starts are rejected'
+);
+
+select throws_like(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000001'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    '2026-08-10T13:30:00Z'::timestamptz,
+    '2026-08-10T14:30:00Z'::timestamptz
+  )$$,
+  '%otra actividad real en ese horario%',
+  'worker overlap is rejected for backdated actual activity'
+);
+
+select throws_ok(
+  $$insert into public.operational_tools(plant_id,code,name)
+    values ('d2000000-0000-4000-8000-000000000001'::uuid,'NO','No permitido')$$,
+  '42501',
+  'new row violates row-level security policy for table "operational_tools"',
+  'operator cannot administer the tool catalog'
+);
+
+set local request.jwt.claim.sub='d1000000-0000-4000-8000-000000000001';
+
+select lives_ok(
+  $$insert into public.operational_tools(plant_id,code,name)
+    values ('d2000000-0000-4000-8000-000000000001'::uuid,'ESCOBA','Escoba B2')$$,
+  'director can administer the tool catalog'
+);
+
+set local request.jwt.claim.sub='d1000000-0000-4000-8000-000000000002';
+
+select lives_ok(
+  $$select public.ops_record_activity_log(
+    'd2000000-0000-4000-8000-000000000001'::uuid,
+    'd4000000-0000-4000-8000-000000000001'::uuid,
+    array['d5000000-0000-4000-8000-000000000001'::uuid],
+    now()-interval '20 minutes',
+    null,
+    null,
+    '{}'::uuid[],
+    'Actividad iniciada desde Bitácora'
+  )$$,
+  'operator can create an open structured activity'
+);
+
+select lives_ok(
+  $$select public.ops_finish_activity_v2(
+    (select id from public.activities where activity_comment='Actividad iniciada desde Bitácora' order by created_at desc limit 1),
+    null,null,null,null,false,
+    'Cierre operativo normal',
+    array['d7000000-0000-4000-8000-000000000001'::uuid]
+  )$$,
+  'operator can finish a structured activity with final comment and tools'
+);
+
+select is(
+  (select activity_comment from public.activities where activity_comment='Cierre operativo normal' order by created_at desc limit 1),
+  'Cierre operativo normal'::text,
+  'finish v2 stores the final operational comment'
+);
+select is(
+  (select count(*) from public.activity_tools at join public.activities a on a.id=at.activity_id where a.activity_comment='Cierre operativo normal'),
+  1::bigint,
+  'finish v2 stores the final tool selection'
+);
+select ok(
+  (select ended_at is not null from public.activities where activity_comment='Cierre operativo normal' order by created_at desc limit 1),
+  'finish v2 closes the real activity'
+);
+
+select is(
+  (select count(*) from pg_policies where schemaname='public' and tablename='operational_tools' and cmd='DELETE'),
+  0::bigint,
+  'tool catalog exposes no DELETE policy'
+);
+select is(
+  (select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('ops_record_activity_log','ops_finish_activity_v2')),
+  2::bigint,
+  'both Bitácora RPCs are installed'
+);
+select is(
+  (select count(*) from public.activity_templates t join public.plants p on p.id=t.plant_id where p.code='TAM' and t.code='RECEPCION_RESIDUOS' and not t.allows_unplanned),
+  1::bigint,
+  'reception activity is routed away from generic Bitácora into its specific operational flow'
+);
+
+select * from finish();
+rollback;
