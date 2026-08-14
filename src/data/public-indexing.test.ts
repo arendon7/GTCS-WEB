@@ -6,6 +6,7 @@ import { publicNav, publicSite, publicStaticRoutes } from "./public-site";
 import { services } from "./services";
 import { publicProjects } from "./projects-public";
 import { wondergreenCrops } from "./wondergreen-crops";
+import { wondergreenReferences } from "./wondergreen-public";
 
 describe("public navigation and indexing contract", () => {
   it("keeps primary navigation on real public routes", () => {
@@ -17,12 +18,14 @@ describe("public navigation and indexing contract", () => {
   it("builds a sitemap from governed public data only", () => {
     const entries = sitemap();
     const urls = entries.map((item) => item.url);
-    const expectedCount = publicStaticRoutes.length + services.length + publicProjects.length + wondergreenCrops.length;
+    const expectedCount = publicStaticRoutes.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
 
     expect(entries).toHaveLength(expectedCount);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/diagnostico-caracterizacion`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/proyectos/yarumal`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/cultivos/cafe`);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/2grow-solido-15-3-3`);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/extracto-neem`);
     expect(urls.some((url) => url.includes("/app"))).toBe(false);
     expect(urls.some((url) => url.includes("/dashboard"))).toBe(false);
   });
