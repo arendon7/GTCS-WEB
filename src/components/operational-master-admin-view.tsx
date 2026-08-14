@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { LegacyOperationalReconciliationSection } from "@/components/legacy-operational-reconciliation-section";
 import { useOpsStore } from "@/components/ops-store";
 import {
   canManageOperationalMasters,
@@ -221,6 +222,7 @@ export function OperationalMasterAdminView() {
   const managedPlants = useMemo(() => access.filter((plant) => canManageOperationalMasters(plant.role)), [access]);
   const [plantId, setPlantId] = useState("");
   const effectivePlantId = managedPlants.some((plant) => plant.plantId === plantId) ? plantId : managedPlants[0]?.plantId ?? "";
+  const effectiveRole = managedPlants.find((plant) => plant.plantId === effectivePlantId)?.role ?? "";
   const [snapshot, setSnapshot] = useState<OperationalMasterSnapshot>(emptySnapshot);
   const [loading, setLoading] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null);
 
@@ -246,6 +248,7 @@ export function OperationalMasterAdminView() {
       <SourcesSection plantId={effectivePlantId} items={snapshot.sources} onChanged={load} />
       <SimpleMasterSection plantId={effectivePlantId} title="Tipos de material" description="Clasificación canónica del material recibido o utilizado." kind="materialType" items={snapshot.materialTypes} onChanged={load} />
       <EquipmentProcessesSection plantId={effectivePlantId} snapshot={snapshot} onChanged={load} />
+      <LegacyOperationalReconciliationSection plantId={effectivePlantId} role={effectiveRole} snapshot={snapshot} />
     </div>}
   </>;
 }
