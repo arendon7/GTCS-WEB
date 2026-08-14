@@ -1,0 +1,107 @@
+# Default-branch dispatcher for refreshing the hosted GREENATICS OPS product only.
+# It deploys the canonical develop branch and never mutates Auth users, profiles or memberships.
+name: hosted-pilot-production-refresh
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-production
+  cancel-in-progress: false
+
+jobs:
+  refresh-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "OPS Production refresh from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require hosted deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in VERCEL_TOKEN VERCEL_ORG_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted OPS deployment."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Static and unit gate
+        run: |
+          npm run check
+          npx vitest run src/lib/deployment-origin.test.ts scripts/vercel-ops-production-deploy.test.mjs
+
+      - name: Certify hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Deploy full OPS Preview
+        id: preview
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify stable human-accessible OPS origin
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Production refresh summary
+        shell: bash
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+        run: |
+          echo "Stable OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Preview and Production passed their preflight gates." >> "$GITHUB_STEP_SUMMARY"
+          echo "No Auth users, profiles or memberships were mutated by this workflow." >> "$GITHUB_STEP_SUMMARY"
