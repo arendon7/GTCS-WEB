@@ -24,7 +24,7 @@ create index if not exists compost_pile_intake_sources_lot_idx on public.compost
 
 -- Preserve discoverability of piles created before Reception 2.0 without inventing or decrementing historical mass.
 insert into public.compost_pile_intake_sources(pile_id,intake_lot_id,plant_id,allocated_mass_kg,allocation_confirmed,created_by)
-select distinct cps.pile_id,mil.id,p.plant_id,null,false,p.created_by
+select distinct cps.pile_id,mil.id,p.plant_id,null::numeric,false,p.created_by
 from public.compost_pile_sources cps
 join public.compost_piles p on p.id=cps.pile_id
 join public.material_intake_lots mil on mil.receipt_id=cps.material_receipt_id and mil.plant_id=p.plant_id
