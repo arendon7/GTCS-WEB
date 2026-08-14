@@ -18,6 +18,12 @@ describe("public media registry", () => {
     }
   });
 
+  it("binds every project photo to one explicit project slug", () => {
+    for (const asset of publicMediaAssets.filter((item) => item.kind === "project-photo")) {
+      expect(asset.projectSlug?.trim().length).toBeGreaterThan(0);
+    }
+  });
+
   it("does not declare product packshots before an approved master exists", () => {
     expect(publicMediaAssets.some((asset) => /packshot|producto|product/i.test(`${asset.id} ${asset.src}`))).toBe(false);
   });
@@ -25,5 +31,6 @@ describe("public media registry", () => {
   it("exposes real project evidence only where registered", () => {
     expect(getProjectMedia("yarumal")).toHaveLength(2);
     expect(getProjectMedia("tamesis")).toHaveLength(0);
+    expect(getProjectMedia("proyecto-no-registrado")).toHaveLength(0);
   });
 });
