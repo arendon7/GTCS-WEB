@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { HomeCropPrograms, HomeProjectEvidence } from "@/components/public-home-evidence-crops";
 import { PublicShell } from "@/components/public-shell";
-import { getPrimaryProjectMedia } from "@/data/public-media";
 import styles from "./public-home.module.css";
 
 export const metadata: Metadata = {
@@ -87,8 +87,6 @@ const knowledge = [
 ];
 
 export default function Home() {
-  const yarumalMedia = getPrimaryProjectMedia("yarumal");
-
   return (
     <PublicShell>
       <div className={styles.publicSite}>
@@ -195,6 +193,8 @@ export default function Home() {
           </div>
         </section>
 
+        <HomeCropPrograms />
+
         <section className={styles.paths} id="soluciones">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
@@ -225,34 +225,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={styles.evidence}>
-          <div className={`${styles.container} ${styles.evidenceGrid}`}>
-            {yarumalMedia ? (
-              <figure className={styles.evidenceMedia}>
-                <Image
-                  src={yarumalMedia.src}
-                  alt={yarumalMedia.alt}
-                  width={1200}
-                  height={900}
-                  sizes="(max-width: 900px) 100vw, 56vw"
-                />
-                <figcaption>{yarumalMedia.caption}</figcaption>
-              </figure>
-            ) : null}
-            <div className={styles.evidenceCopy}>
-              <span className={styles.eyebrow}>Experiencia que deja evidencia</span>
-              <h2>Proyecto, operación y aprendizaje en territorio.</h2>
-              <p>
-                La web incorpora material real de los proyectos para explicar lo que Greenatics ha construido y aprendido. Las fotografías históricas documentan experiencia; no se usan para afirmar capacidad, producción o estado actual sin una fuente vigente y aprobada.
-              </p>
-              <div className={styles.evidenceFacts}>
-                <div><span>Caso</span><strong>Yarumal</strong></div>
-                <div><span>Estado de publicación</span><strong>Evidencia visual conciliada</strong></div>
-              </div>
-              <Link className={styles.inlineLink} href="/proyectos/yarumal">Ver caso Yarumal →</Link>
-            </div>
-          </div>
-        </section>
+        <HomeProjectEvidence />
 
         <section className={styles.chain}>
           <div className={styles.container}>
