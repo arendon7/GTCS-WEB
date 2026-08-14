@@ -29,11 +29,13 @@ function fakeClient({
     { code: "YAR", name: "Yarumal", active: true },
   ],
   activeDirectors = 0,
+  directorMembershipUserIds = Array.from({ length: activeDirectors }, (_, index) => `director-${index + 1}`),
   authError = null,
   contract = null,
   schemaError = null,
 } = {}) {
-  const effectiveContract = contract ?? schemaContract({ active_directors: activeDirectors });
+  const distinctDirectorUsers = new Set(directorMembershipUserIds).size;
+  const effectiveContract = contract ?? schemaContract({ active_directors: distinctDirectorUsers });
   return {
     rpc: vi.fn(async (name) => {
       if (name !== "admin_hosted_schema_contract") throw new Error(`Unexpected RPC ${name}`);
@@ -59,7 +61,10 @@ function fakeClient({
       if (table === "plant_memberships") {
         return {
           select() {
-            const response = { data: null, count: activeDirectors, error: null };
+            const response = {
+              data: directorMembershipUserIds.map((user_id) => ({ user_id })),
+              error: null,
+            };
             const chain = {
               eq() { return chain; },
               then(resolve, reject) { return Promise.resolve(response).then(resolve, reject); },
@@ -110,6 +115,20 @@ describe("hosted backend preflight", () => {
     );
   });
 
+  it("counts one active Director once even when that user belongs to both pilot plants", async () => {
+    const result = await runHostedBackendPreflight({
+      env,
+      requireDirector: true,
+      createClientImpl: () => fakeClient({
+        directorMembershipUserIds: ["director-carlos", "director-carlos"],
+      }),
+    });
+
+    expect(result.activeDirectors).toBe(1);
+    expect(result.schemaContract.activeDirectors).toBe(1);
+    expect(result.directorState).toBe("present");
+  });
+
   it("fails closed when the hosted database is behind the canonical schema contract", async () => {
     await expect(runHostedBackendPreflight({
       env,
@@ -157,7 +176,7 @@ describe("hosted backend preflight", () => {
     await expect(runHostedBackendPreflight({
       env,
       createClientImpl: () => fakeClient({
-        activeDirectors: 1,
+        directorMembershipUserIds: ["director-1"],
         contract: schemaContract({ active_directors: 0 }),
       }),
     })).rejects.toThrow(/cambió durante el preflight/);
