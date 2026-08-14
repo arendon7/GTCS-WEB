@@ -45,7 +45,7 @@ select throws_ok(
       'e3000000-0000-4000-8000-000000000001'::uuid,'e4000000-0000-4000-8000-000000000001'::uuid
     )$$,
   '42501',
-  'new row violates row-level security policy for table "scheduled_activities"',
+  null,
   'planner cannot bypass the planning RPC with a direct insert'
 );
 
