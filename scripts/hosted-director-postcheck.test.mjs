@@ -7,6 +7,11 @@ const env = {
 };
 
 function fakeClient(activeDirectors) {
+  const directorMemberships = Array.from(
+    { length: activeDirectors },
+    (_, index) => ({ user_id: `director-${index + 1}` }),
+  );
+
   return {
     rpc: vi.fn(async () => ({
       data: [{
@@ -40,7 +45,7 @@ function fakeClient(activeDirectors) {
       if (table === "plant_memberships") {
         return {
           select() {
-            const response = { data: null, count: activeDirectors, error: null };
+            const response = { data: directorMemberships, error: null };
             const chain = {
               eq() { return chain; },
               then(resolve, reject) { return Promise.resolve(response).then(resolve, reject); },
