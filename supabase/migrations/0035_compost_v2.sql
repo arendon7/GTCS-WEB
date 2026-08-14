@@ -201,10 +201,10 @@ begin
   for idx in 1..supplied_count loop
     insert into public.compost_pile_intake_sources(pile_id,intake_lot_id,plant_id,allocated_mass_kg,allocation_confirmed,created_by)
     values(new_pile_id,intake_lot_ids[idx],target_plant,intake_allocations_kg[idx],true,auth.uid());
-    update public.material_intake_lots
-    set available_mass_kg=available_mass_kg-intake_allocations_kg[idx],
-        status=case when available_mass_kg-intake_allocations_kg[idx] <= 0.001 then 'depleted' else 'in_process' end
-    where id=intake_lot_ids[idx];
+    update public.material_intake_lots as l
+    set available_mass_kg=l.available_mass_kg-intake_allocations_kg[idx],
+        status=case when l.available_mass_kg-intake_allocations_kg[idx] <= 0.001 then 'depleted' else 'in_process' end
+    where l.id=intake_lot_ids[idx];
   end loop;
 
   insert into public.compost_events(pile_id,plant_id,event_type,started_at,ended_at,volume_m3,notes,created_by)
