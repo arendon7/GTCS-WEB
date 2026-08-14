@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public-shell";
+import { getPrimaryProjectMedia } from "@/data/public-media";
 import styles from "./public-home.module.css";
 
 export const metadata: Metadata = {
@@ -80,12 +81,14 @@ const techSteps = [
 ];
 
 const knowledge = [
-  ["Guías por cultivo", "Café, cacao, aguacate, limón Tahití y pastos ya cuentan con conocimiento técnico que estamos llevando a la web."],
-  ["Deficiencias nutricionales", "Lectura de síntomas, posibles confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante."],
-  ["Uso Wondergreen", "Etapa, objetivo, formato, complemento, aplicación, seguimiento y ajuste como una ruta técnica, no una receta automática."],
+  ["Guías por cultivo", "Café, cacao, aguacate, limón Tahití y pastos ya cuentan con programas técnicos navegables por etapa y contexto.", "/wondergreen/cultivos"],
+  ["Deficiencias nutricionales", "Lectura de síntomas, posibles confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante.", "/biblioteca/guia-deficiencias"],
+  ["Uso Wondergreen", "Etapa, objetivo, formato, complemento, aplicación, seguimiento y ajuste como una ruta técnica, no una receta automática.", "/biblioteca/manual-uso-wondergreen"],
 ];
 
 export default function Home() {
+  const yarumalMedia = getPrimaryProjectMedia("yarumal");
+
   return (
     <PublicShell>
       <div className={styles.publicSite}>
@@ -166,8 +169,8 @@ export default function Home() {
                   Wondergreen integra suelo, nutrición, biología, conocimiento y acompañamiento. El portafolio se entiende como un sistema alrededor del cultivo y de su etapa, no como una colección de fórmulas aisladas.
                 </p>
                 <div className={styles.buttonRow}>
-                  <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen">Explorar Wondergreen</Link>
-                  <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Ver cultivos</Link>
+                  <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/productos">Ver productos</Link>
+                  <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Buscar por cultivo</Link>
                 </div>
               </div>
             </div>
@@ -224,25 +227,27 @@ export default function Home() {
 
         <section className={styles.evidence}>
           <div className={`${styles.container} ${styles.evidenceGrid}`}>
-            <figure className={styles.evidenceMedia}>
-              <Image
-                src="/projects/yarumal/aerial-01.webp"
-                alt="Vista aérea documentada de la planta de Yarumal"
-                width={1200}
-                height={900}
-                sizes="(max-width: 900px) 100vw, 56vw"
-              />
-              <figcaption>Archivo de proyecto · Yarumal · experiencia documentada</figcaption>
-            </figure>
+            {yarumalMedia ? (
+              <figure className={styles.evidenceMedia}>
+                <Image
+                  src={yarumalMedia.src}
+                  alt={yarumalMedia.alt}
+                  width={1200}
+                  height={900}
+                  sizes="(max-width: 900px) 100vw, 56vw"
+                />
+                <figcaption>{yarumalMedia.caption}</figcaption>
+              </figure>
+            ) : null}
             <div className={styles.evidenceCopy}>
               <span className={styles.eyebrow}>Experiencia que deja evidencia</span>
               <h2>Proyecto, operación y aprendizaje en territorio.</h2>
               <p>
-                La web empieza a incorporar material real de los proyectos para explicar lo que Greenatics ha construido y aprendido. Las fotografías históricas documentan experiencia; no se usan para afirmar capacidad, producción o estado actual sin una fuente vigente y aprobada.
+                La web incorpora material real de los proyectos para explicar lo que Greenatics ha construido y aprendido. Las fotografías históricas documentan experiencia; no se usan para afirmar capacidad, producción o estado actual sin una fuente vigente y aprobada.
               </p>
               <div className={styles.evidenceFacts}>
                 <div><span>Caso</span><strong>Yarumal</strong></div>
-                <div><span>Estado de publicación</span><strong>Experiencia documentada</strong></div>
+                <div><span>Estado de publicación</span><strong>Evidencia visual conciliada</strong></div>
               </div>
               <Link className={styles.inlineLink} href="/proyectos/yarumal">Ver caso Yarumal →</Link>
             </div>
@@ -275,7 +280,7 @@ export default function Home() {
               <p>
                 En las referencias sólidas que correspondan, Wondergreen se explica desde la matriz organomineral, la oclusión y el peletizado. La web diferencia siempre una característica documentada del producto de cualquier efecto agronómico que todavía requiera evidencia específica.
               </p>
-              <Link className={styles.inlineLink} href="/wondergreen">Ir al Product Master público →</Link>
+              <Link className={styles.inlineLink} href="/wondergreen/productos">Ir al Product Master público →</Link>
             </div>
             <div className={styles.techFlow}>
               {techSteps.map(([number, title, copy]) => (
@@ -296,12 +301,12 @@ export default function Home() {
               <p>La biblioteca conecta cultivos, síntomas, criterios de diagnóstico y familias de producto sin convertir una lectura visual en una prescripción automática.</p>
             </div>
             <div className={styles.knowledgeGrid}>
-              {knowledge.map(([title, copy], index) => (
+              {knowledge.map(([title, copy, href], index) => (
                 <article className={styles.knowledgeItem} key={title}>
                   <span>0{index + 1}</span>
                   <h3>{title}</h3>
                   <p>{copy}</p>
-                  <Link href="/biblioteca">Explorar biblioteca →</Link>
+                  <Link href={href}>Abrir recurso →</Link>
                 </article>
               ))}
             </div>
