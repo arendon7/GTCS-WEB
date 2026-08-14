@@ -8,6 +8,7 @@ test("Wondergreen uses the canonical public shell without duplicate chrome", asy
   await expect(page.getByRole("navigation", { name: "Navegación pública" })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Navegación Wondergreen" })).toBeVisible();
   await expect(page.getByRole("link", { name: "GREENATICS OPS" })).toHaveAttribute("href", "/app");
+  await expect(page.getByRole("navigation", { name: "Navegación Wondergreen" }).getByRole("link", { name: "Productos" })).toHaveAttribute("href", "/wondergreen/productos");
 });
 
 test("Wondergreen editorial hub preserves governed product truth", async ({ page }) => {
@@ -18,15 +19,16 @@ test("Wondergreen editorial hub preserves governed product truth", async ({ page
   await expect(page.getByRole("heading", { name: "Dos grandes líneas dentro de una misma marca." })).toBeVisible();
 
   const portfolio = page.locator("#portafolio");
-  await expect(portfolio.getByText("2Grow Sólido · 15-3-3", { exact: true })).toBeVisible();
-  await expect(portfolio.getByText("Extracto de Neem", { exact: true })).toBeVisible();
-  await expect(portfolio.getByText("Extracto Ajo–Ají", { exact: true })).toBeVisible();
+  await expect(portfolio.getByRole("link", { name: /2Grow Sólido · 15-3-3/ })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
+  await expect(portfolio.getByRole("link", { name: /Extracto de Neem/ })).toHaveAttribute("href", "/wondergreen/productos/extracto-neem");
+  await expect(portfolio.getByRole("link", { name: /Extracto Ajo–Ají/ })).toHaveAttribute("href", "/wondergreen/productos/extracto-ajo-aji");
   await expect(page.getByText(/únicamente desde la versión técnica vigente/i)).toBeVisible();
 });
 
 test("Wondergreen commercial routes end in real public destinations", async ({ page }) => {
   await page.goto("/wondergreen");
 
+  await expect(page.getByRole("link", { name: "Explorar productos" })).toHaveAttribute("href", "/wondergreen/productos");
   await expect(page.getByRole("link", { name: "Empezar por cultivo" })).toHaveAttribute("href", "/wondergreen/cultivos");
   await expect(page.getByRole("link", { name: "Hablar con equipo técnico" })).toHaveAttribute("href", "/contacto");
   await expect(page.getByRole("link", { name: "Quiero vender Wondergreen →" })).toHaveAttribute("href", "/contacto");
