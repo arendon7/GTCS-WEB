@@ -2,11 +2,12 @@ import { test, expect } from "@playwright/test";
 
 test("OPS home exposes the daily operational surface", async ({ page }) => {
   await page.goto("/app");
-  await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Registrar recepción" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Registrar actividad" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Excepciones" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Estado operativo" })).toBeVisible();
+  const main = page.getByRole("main");
+  await expect(main.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
+  await expect(main.getByRole("link", { name: "Registrar recepción" })).toBeVisible();
+  await expect(main.getByRole("link", { name: "Registrar actividad" })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Excepciones" })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Estado operativo" })).toBeVisible();
 });
 
 test("operator can register a reception and get a generated lot", async ({ page }) => {
@@ -25,10 +26,10 @@ test("operator can register a reception and get a generated lot", async ({ page 
 
 test("operator can create and finish an unplanned activity", async ({ page }) => {
   await page.goto("/activities/new");
-  await page.getByPlaceholder("Proceso").fill("QA proceso");
-  await page.getByPlaceholder("Actividad").fill("QA actividad");
+  await page.getByLabel("Proceso", { exact: true }).fill("QA proceso");
+  await page.getByLabel("Actividad", { exact: true }).fill("QA actividad");
   await page.getByLabel("Juan").check();
-  await page.getByRole("button", { name: "Registrar e iniciar" }).click();
+  await page.getByRole("button", { name: "Iniciar actividad" }).click();
   await expect(page.getByRole("heading", { name: "QA actividad" })).toBeVisible();
   await expect(page.getByText("En curso", { exact: true })).toBeVisible();
   await page.getByLabel(/Cantidad procesada/).fill("250");
