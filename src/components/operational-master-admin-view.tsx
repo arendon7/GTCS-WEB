@@ -47,6 +47,35 @@ function FeedbackBox({ feedback }: { feedback: Feedback }) {
   return <p role="status" className={`mt-3 rounded-lg p-3 text-xs font-semibold ${feedback.kind === "error" ? "bg-[var(--red-soft)] text-[var(--red)]" : "bg-[var(--surface-soft)] text-[var(--green)]"}`}>{feedback.text}</p>;
 }
 
+function SimpleMasterRow({ kind, item, busy, onBusy, onChanged, onFeedback }: {
+  kind: SimpleMasterKind;
+  item: SimpleItem;
+  busy: boolean;
+  onBusy: (busy: boolean) => void;
+  onChanged: () => Promise<void>;
+  onFeedback: (feedback: Feedback) => void;
+}) {
+  const [name, setName] = useState(item.name);
+
+  async function save(active = item.active) {
+    const nextName = name.trim();
+    if (!nextName) return onFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
+    onBusy(true); onFeedback(null);
+    try {
+      const result = await updateSimpleOperationalMaster({ kind, id: item.id, name: nextName, active });
+      if (!result.ok) return onFeedback({ kind: "error", text: result.error });
+      await onChanged(); onFeedback({ kind: "ok", text: "Maestro actualizado." });
+    } finally { onBusy(false); }
+  }
+
+  return <div className="grid gap-2 rounded-xl border border-[var(--line)] p-3 md:grid-cols-[110px_1fr_auto_auto] md:items-center">
+    <strong className="text-xs text-[var(--green)]">{item.code}</strong>
+    <input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} disabled={busy} aria-label={`Nombre ${item.code}`} />
+    <span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activo" : "Inactivo"}</span>
+    <div className="flex gap-2"><button className="button secondary" type="button" disabled={busy} onClick={() => void save()}>Guardar</button><button className="button secondary" type="button" disabled={busy} onClick={() => void save(!item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div>
+  </div>;
+}
+
 function SimpleMasterSection({ plantId, title, description, kind, items, onChanged }: {
   plantId: string;
   title: string;
@@ -55,127 +84,118 @@ function SimpleMasterSection({ plantId, title, description, kind, items, onChang
   items: SimpleItem[];
   onChanged: () => Promise<void>;
 }) {
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [draftNames, setDraftNames] = useState<Record<string, string>>({});
-  const [busyId, setBusyId] = useState("");
-  const [feedback, setFeedback] = useState<Feedback>(null);
-
-  useEffect(() => setDraftNames(Object.fromEntries(items.map((item) => [item.id, item.name]))), [items]);
+  const [code, setCode] = useState(""); const [name, setName] = useState(""); const [busy, setBusy] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null);
 
   async function create() {
-    if (busyId) return;
+    if (busy) return;
     const identity = validateMasterIdentity(code || name, name);
     if (!identity.ok) return setFeedback({ kind: "error", text: identity.error });
-    setBusyId("new"); setFeedback(null);
+    setBusy(true); setFeedback(null);
     try {
       const result = await createSimpleOperationalMaster({ kind, plantId, code: identity.code, name: identity.name });
       if (!result.ok) return setFeedback({ kind: "error", text: result.error });
       setCode(""); setName(""); await onChanged(); setFeedback({ kind: "ok", text: "Registro creado." });
-    } finally { setBusyId(""); }
-  }
-
-  async function save(item: SimpleItem, active = item.active) {
-    if (busyId) return;
-    const nextName = (draftNames[item.id] ?? item.name).trim();
-    if (!nextName) return setFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
-    setBusyId(item.id); setFeedback(null);
-    try {
-      const result = await updateSimpleOperationalMaster({ kind, id: item.id, name: nextName, active });
-      if (!result.ok) return setFeedback({ kind: "error", text: result.error });
-      await onChanged(); setFeedback({ kind: "ok", text: "Maestro actualizado." });
-    } finally { setBusyId(""); }
+    } finally { setBusy(false); }
   }
 
   return <section className="panel">
     <div className="section-head"><div><p className="eyebrow">Maestro operacional</p><h2>{title}</h2><p className="quiet mt-1">{description}</p></div><span className="quiet">{items.filter((item) => item.active).length} activos</span></div>
-    <div className="grid gap-2">{items.map((item) => <div className="grid gap-2 rounded-xl border border-[var(--line)] p-3 md:grid-cols-[110px_1fr_auto_auto] md:items-center" key={item.id}>
-      <strong className="text-xs text-[var(--green)]">{item.code}</strong>
-      <input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={draftNames[item.id] ?? item.name} onChange={(event) => setDraftNames((current) => ({ ...current, [item.id]: event.target.value }))} disabled={busyId === item.id} aria-label={`Nombre ${item.code}`} />
-      <span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activo" : "Inactivo"}</span>
-      <div className="flex gap-2"><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item)}>{busyId === item.id ? "Guardando…" : "Guardar"}</button><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item, !item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div>
-    </div>)}</div>
-    <div className="mt-4 rounded-xl bg-[var(--surface-soft)] p-4"><strong className="text-xs">Crear nuevo</strong><div className="mt-3 grid gap-3 md:grid-cols-[180px_1fr_auto]"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" aria-label={`Código nuevo ${title}`} /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre visible" aria-label={`Nombre nuevo ${title}`} /><button className="button primary" type="button" disabled={Boolean(busyId)} onClick={() => void create()}>{busyId === "new" ? "Creando…" : "Crear"}</button></div></div>
+    <div className="grid gap-2">{items.map((item) => <SimpleMasterRow key={`${item.id}:${item.name}:${item.active}`} kind={kind} item={item} busy={busy} onBusy={setBusy} onChanged={onChanged} onFeedback={setFeedback} />)}</div>
+    <div className="mt-4 rounded-xl bg-[var(--surface-soft)] p-4"><strong className="text-xs">Crear nuevo</strong><div className="mt-3 grid gap-3 md:grid-cols-[180px_1fr_auto]"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" aria-label={`Código nuevo ${title}`} /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre visible" aria-label={`Nombre nuevo ${title}`} /><button className="button primary" type="button" disabled={busy} onClick={() => void create()}>{busy ? "Guardando…" : "Crear"}</button></div></div>
     <FeedbackBox feedback={feedback} />
   </section>;
 }
 
+function SourceRow({ item, busy, onBusy, onChanged, onFeedback }: {
+  item: MaterialSource;
+  busy: boolean;
+  onBusy: (busy: boolean) => void;
+  onChanged: () => Promise<void>;
+  onFeedback: (feedback: Feedback) => void;
+}) {
+  const [name, setName] = useState(item.name);
+  const [sourceKind, setSourceKind] = useState<MaterialSourceKind>(item.sourceKind);
+
+  async function save(active = item.active) {
+    if (!name.trim()) return onFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
+    onBusy(true); onFeedback(null);
+    try {
+      const result = await updateMaterialSource({ id: item.id, name: name.trim(), sourceKind, active });
+      if (!result.ok) return onFeedback({ kind: "error", text: result.error });
+      await onChanged(); onFeedback({ kind: "ok", text: "Origen actualizado." });
+    } finally { onBusy(false); }
+  }
+
+  return <div className="grid gap-2 rounded-xl border border-[var(--line)] p-3 lg:grid-cols-[110px_1fr_170px_auto_auto] lg:items-center"><strong className="text-xs text-[var(--green)]">{item.code}</strong><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} disabled={busy} /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={sourceKind} onChange={(event) => setSourceKind(event.target.value as MaterialSourceKind)} disabled={busy}>{Object.entries(sourceKindLabel).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select><span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activo" : "Inactivo"}</span><div className="flex gap-2"><button className="button secondary" type="button" disabled={busy} onClick={() => void save()}>Guardar</button><button className="button secondary" type="button" disabled={busy} onClick={() => void save(!item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div></div>;
+}
+
 function SourcesSection({ plantId, items, onChanged }: { plantId: string; items: MaterialSource[]; onChanged: () => Promise<void> }) {
   const [code, setCode] = useState(""); const [name, setName] = useState(""); const [sourceKind, setSourceKind] = useState<MaterialSourceKind>("generator");
-  const [draft, setDraft] = useState<Record<string, { name: string; sourceKind: MaterialSourceKind }>>({});
-  const [busyId, setBusyId] = useState(""); const [feedback, setFeedback] = useState<Feedback>(null);
-
-  useEffect(() => setDraft(Object.fromEntries(items.map((item) => [item.id, { name: item.name, sourceKind: item.sourceKind }]))), [items]);
+  const [busy, setBusy] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null);
 
   async function create() {
     const identity = validateMasterIdentity(code || name, name);
     if (!identity.ok) return setFeedback({ kind: "error", text: identity.error });
-    setBusyId("new"); setFeedback(null);
+    setBusy(true); setFeedback(null);
     try {
       const result = await createMaterialSource({ plantId, code: identity.code, name: identity.name, sourceKind });
       if (!result.ok) return setFeedback({ kind: "error", text: result.error });
       setCode(""); setName(""); setSourceKind("generator"); await onChanged(); setFeedback({ kind: "ok", text: "Origen creado." });
-    } finally { setBusyId(""); }
-  }
-
-  async function save(item: MaterialSource, active = item.active) {
-    const value = draft[item.id] ?? { name: item.name, sourceKind: item.sourceKind };
-    if (!value.name.trim()) return setFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
-    setBusyId(item.id); setFeedback(null);
-    try {
-      const result = await updateMaterialSource({ id: item.id, name: value.name.trim(), sourceKind: value.sourceKind, active });
-      if (!result.ok) return setFeedback({ kind: "error", text: result.error });
-      await onChanged(); setFeedback({ kind: "ok", text: "Origen actualizado." });
-    } finally { setBusyId(""); }
+    } finally { setBusy(false); }
   }
 
   return <section className="panel"><div className="section-head"><div><p className="eyebrow">Recepción · futuro 2B</p><h2>Orígenes y generadores</h2><p className="quiet mt-1">Generadores, proveedores y orígenes internos con identidad estable.</p></div></div>
-    <div className="grid gap-2">{items.map((item) => { const value = draft[item.id] ?? { name: item.name, sourceKind: item.sourceKind }; return <div className="grid gap-2 rounded-xl border border-[var(--line)] p-3 lg:grid-cols-[110px_1fr_170px_auto_auto] lg:items-center" key={item.id}><strong className="text-xs text-[var(--green)]">{item.code}</strong><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={value.name} onChange={(event) => setDraft((current) => ({ ...current, [item.id]: { ...value, name: event.target.value } }))} /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={value.sourceKind} onChange={(event) => setDraft((current) => ({ ...current, [item.id]: { ...value, sourceKind: event.target.value as MaterialSourceKind } }))}>{Object.entries(sourceKindLabel).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select><span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activo" : "Inactivo"}</span><div className="flex gap-2"><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item)}>Guardar</button><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item, !item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div></div>; })}</div>
-    <div className="mt-4 grid gap-3 rounded-xl bg-[var(--surface-soft)] p-4 md:grid-cols-[160px_1fr_170px_auto]"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre visible" /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={sourceKind} onChange={(event) => setSourceKind(event.target.value as MaterialSourceKind)}>{Object.entries(sourceKindLabel).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select><button className="button primary" type="button" disabled={Boolean(busyId)} onClick={() => void create()}>{busyId === "new" ? "Creando…" : "Crear origen"}</button></div><FeedbackBox feedback={feedback} />
+    <div className="grid gap-2">{items.map((item) => <SourceRow key={`${item.id}:${item.name}:${item.sourceKind}:${item.active}`} item={item} busy={busy} onBusy={setBusy} onChanged={onChanged} onFeedback={setFeedback} />)}</div>
+    <div className="mt-4 grid gap-3 rounded-xl bg-[var(--surface-soft)] p-4 md:grid-cols-[160px_1fr_170px_auto]"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre visible" /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={sourceKind} onChange={(event) => setSourceKind(event.target.value as MaterialSourceKind)}>{Object.entries(sourceKindLabel).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select><button className="button primary" type="button" disabled={busy} onClick={() => void create()}>{busy ? "Guardando…" : "Crear origen"}</button></div><FeedbackBox feedback={feedback} />
   </section>;
+}
+
+function TemplateRow({ item, snapshot, busy, onBusy, onChanged, onFeedback }: {
+  item: ActivityTemplate;
+  snapshot: OperationalMasterSnapshot;
+  busy: boolean;
+  onBusy: (busy: boolean) => void;
+  onChanged: () => Promise<void>;
+  onFeedback: (feedback: Feedback) => void;
+}) {
+  const [draft, setDraft] = useState(item);
+  function patch(changes: Partial<ActivityTemplate>) { setDraft((current) => ({ ...current, ...changes })); }
+
+  async function save(active = item.active) {
+    if (!draft.name.trim()) return onFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
+    onBusy(true); onFeedback(null);
+    try {
+      const result = await updateActivityTemplate({ id: item.id, processId: draft.processId, name: draft.name.trim(), defaultUnitCode: draft.defaultUnitCode, requiresQuantity: draft.requiresQuantity, requiresLot: draft.requiresLot, requiresEquipment: draft.requiresEquipment, allowsUnplanned: draft.allowsUnplanned, active });
+      if (!result.ok) return onFeedback({ kind: "error", text: result.error });
+      await onChanged(); onFeedback({ kind: "ok", text: "Plantilla actualizada." });
+    } finally { onBusy(false); }
+  }
+
+  return <article className="rounded-xl border border-[var(--line)] p-4"><div className="grid gap-3 lg:grid-cols-[110px_1fr_220px_130px_auto] lg:items-center"><strong className="text-xs text-[var(--green)]">{item.code}</strong><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={draft.name} onChange={(event) => patch({ name: event.target.value })} disabled={busy} /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={draft.processId} onChange={(event) => patch({ processId: event.target.value })} disabled={busy}>{snapshot.processes.map((process) => <option value={process.id} key={process.id}>{process.name}{process.active ? "" : " · inactivo"}</option>)}</select><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={draft.defaultUnitCode ?? ""} onChange={(event) => patch({ defaultUnitCode: event.target.value || undefined })} disabled={busy}><option value="">Sin unidad</option>{snapshot.units.map((unit) => <option value={unit.code} key={unit.code}>{unit.symbol} · {unit.name}</option>)}</select><span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activa" : "Inactiva"}</span></div><div className="mt-3 flex flex-wrap gap-4 text-xs">{templateFlags.map(([key, label]) => <label className="flex items-center gap-2" key={key}><input type="checkbox" checked={draft[key]} disabled={busy} onChange={(event) => patch({ [key]: event.target.checked })} />{label}</label>)}</div><div className="mt-4 flex justify-end gap-2"><button className="button secondary" type="button" disabled={busy} onClick={() => void save()}>Guardar</button><button className="button secondary" type="button" disabled={busy} onClick={() => void save(!item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div></article>;
 }
 
 function TemplatesSection({ plantId, snapshot, onChanged }: { plantId: string; snapshot: OperationalMasterSnapshot; onChanged: () => Promise<void> }) {
   const activeProcesses = snapshot.processes.filter((item) => item.active);
   const [code, setCode] = useState(""); const [name, setName] = useState(""); const [processId, setProcessId] = useState(""); const [unitCode, setUnitCode] = useState("");
   const [requiresQuantity, setRequiresQuantity] = useState(false); const [requiresLot, setRequiresLot] = useState(false); const [requiresEquipment, setRequiresEquipment] = useState(false); const [allowsUnplanned, setAllowsUnplanned] = useState(true);
-  const [draft, setDraft] = useState<Record<string, ActivityTemplate>>({}); const [busyId, setBusyId] = useState(""); const [feedback, setFeedback] = useState<Feedback>(null);
-
-  useEffect(() => setDraft(Object.fromEntries(snapshot.activityTemplates.map((item) => [item.id, item]))), [snapshot.activityTemplates]);
+  const [busy, setBusy] = useState(false); const [feedback, setFeedback] = useState<Feedback>(null);
   const effectiveProcessId = activeProcesses.some((item) => item.id === processId) ? processId : activeProcesses[0]?.id ?? "";
-
-  function patch(id: string, changes: Partial<ActivityTemplate>) {
-    const base = draft[id] ?? snapshot.activityTemplates.find((item) => item.id === id);
-    if (!base) return;
-    setDraft((current) => ({ ...current, [id]: { ...base, ...changes } }));
-  }
 
   async function create() {
     const identity = validateMasterIdentity(code || name, name);
     if (!identity.ok) return setFeedback({ kind: "error", text: identity.error });
     if (!effectiveProcessId) return setFeedback({ kind: "error", text: "Crea o activa un proceso antes de crear plantillas." });
-    setBusyId("new"); setFeedback(null);
+    setBusy(true); setFeedback(null);
     try {
       const result = await createActivityTemplate({ plantId, processId: effectiveProcessId, code: identity.code, name: identity.name, defaultUnitCode: unitCode || undefined, requiresQuantity, requiresLot, requiresEquipment, allowsUnplanned });
       if (!result.ok) return setFeedback({ kind: "error", text: result.error });
       setCode(""); setName(""); setUnitCode(""); setRequiresQuantity(false); setRequiresLot(false); setRequiresEquipment(false); setAllowsUnplanned(true); await onChanged(); setFeedback({ kind: "ok", text: "Plantilla creada." });
-    } finally { setBusyId(""); }
-  }
-
-  async function save(item: ActivityTemplate, active = item.active) {
-    const value = draft[item.id] ?? item;
-    if (!value.name.trim()) return setFeedback({ kind: "error", text: "El nombre no puede quedar vacío." });
-    setBusyId(item.id); setFeedback(null);
-    try {
-      const result = await updateActivityTemplate({ id: item.id, processId: value.processId, name: value.name.trim(), defaultUnitCode: value.defaultUnitCode, requiresQuantity: value.requiresQuantity, requiresLot: value.requiresLot, requiresEquipment: value.requiresEquipment, allowsUnplanned: value.allowsUnplanned, active });
-      if (!result.ok) return setFeedback({ kind: "error", text: result.error });
-      await onChanged(); setFeedback({ kind: "ok", text: "Plantilla actualizada." });
-    } finally { setBusyId(""); }
+    } finally { setBusy(false); }
   }
 
   return <section className="panel"><div className="section-head"><div><p className="eyebrow">Planeación</p><h2>Plantillas de actividad</h2><p className="quiet mt-1">Definen qué exige una tarea y serán la fuente del planificador y de Bitácora 2.0.</p></div><span className="quiet">{snapshot.activityTemplates.filter((item) => item.active).length} activas</span></div>
-    <div className="grid gap-3">{snapshot.activityTemplates.map((item) => { const value = draft[item.id] ?? item; return <article className="rounded-xl border border-[var(--line)] p-4" key={item.id}><div className="grid gap-3 lg:grid-cols-[110px_1fr_220px_130px_auto] lg:items-center"><strong className="text-xs text-[var(--green)]">{item.code}</strong><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={value.name} onChange={(event) => patch(item.id, { name: event.target.value })} /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={value.processId} onChange={(event) => patch(item.id, { processId: event.target.value })}>{snapshot.processes.map((process) => <option value={process.id} key={process.id}>{process.name}{process.active ? "" : " · inactivo"}</option>)}</select><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={value.defaultUnitCode ?? ""} onChange={(event) => patch(item.id, { defaultUnitCode: event.target.value || undefined })}><option value="">Sin unidad</option>{snapshot.units.map((unit) => <option value={unit.code} key={unit.code}>{unit.symbol} · {unit.name}</option>)}</select><span className={`status-pill ${item.active ? "status-normal" : "status-planned"}`}>{item.active ? "Activa" : "Inactiva"}</span></div><div className="mt-3 flex flex-wrap gap-4 text-xs">{templateFlags.map(([key, label]) => <label className="flex items-center gap-2" key={key}><input type="checkbox" checked={value[key]} onChange={(event) => patch(item.id, { [key]: event.target.checked })} />{label}</label>)}</div><div className="mt-4 flex justify-end gap-2"><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item)}>Guardar</button><button className="button secondary" type="button" disabled={Boolean(busyId)} onClick={() => void save(item, !item.active)}>{item.active ? "Desactivar" : "Activar"}</button></div></article>; })}</div>
-    <div className="mt-5 rounded-xl bg-[var(--surface-soft)] p-4"><strong className="text-xs">Nueva plantilla</strong><div className="mt-3 grid gap-3 lg:grid-cols-4"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre de actividad" /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={effectiveProcessId} onChange={(event) => setProcessId(event.target.value)}>{activeProcesses.map((process) => <option value={process.id} key={process.id}>{process.name}</option>)}</select><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={unitCode} onChange={(event) => setUnitCode(event.target.value)}><option value="">Sin unidad</option>{snapshot.units.map((unit) => <option value={unit.code} key={unit.code}>{unit.symbol} · {unit.name}</option>)}</select></div><div className="mt-3 flex flex-wrap gap-4 text-xs"><label className="flex items-center gap-2"><input type="checkbox" checked={requiresQuantity} onChange={(event) => setRequiresQuantity(event.target.checked)} />Requiere cantidad</label><label className="flex items-center gap-2"><input type="checkbox" checked={requiresLot} onChange={(event) => setRequiresLot(event.target.checked)} />Requiere lote</label><label className="flex items-center gap-2"><input type="checkbox" checked={requiresEquipment} onChange={(event) => setRequiresEquipment(event.target.checked)} />Requiere equipo</label><label className="flex items-center gap-2"><input type="checkbox" checked={allowsUnplanned} onChange={(event) => setAllowsUnplanned(event.target.checked)} />Permite ejecución no programada</label></div><div className="mt-4 flex justify-end"><button className="button primary" type="button" disabled={Boolean(busyId) || !activeProcesses.length} onClick={() => void create()}>{busyId === "new" ? "Creando…" : "Crear plantilla"}</button></div></div><FeedbackBox feedback={feedback} />
+    <div className="grid gap-3">{snapshot.activityTemplates.map((item) => <TemplateRow key={`${item.id}:${item.name}:${item.processId}:${item.active}:${item.defaultUnitCode ?? ""}`} item={item} snapshot={snapshot} busy={busy} onBusy={setBusy} onChanged={onChanged} onFeedback={setFeedback} />)}</div>
+    <div className="mt-5 rounded-xl bg-[var(--surface-soft)] p-4"><strong className="text-xs">Nueva plantilla</strong><div className="mt-3 grid gap-3 lg:grid-cols-4"><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={code} onChange={(event) => setCode(normalizeMasterCode(event.target.value))} placeholder="CÓDIGO" /><input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={name} onChange={(event) => setName(event.target.value)} placeholder="Nombre de actividad" /><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={effectiveProcessId} onChange={(event) => setProcessId(event.target.value)}>{activeProcesses.map((process) => <option value={process.id} key={process.id}>{process.name}</option>)}</select><select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={unitCode} onChange={(event) => setUnitCode(event.target.value)}><option value="">Sin unidad</option>{snapshot.units.map((unit) => <option value={unit.code} key={unit.code}>{unit.symbol} · {unit.name}</option>)}</select></div><div className="mt-3 flex flex-wrap gap-4 text-xs"><label className="flex items-center gap-2"><input type="checkbox" checked={requiresQuantity} onChange={(event) => setRequiresQuantity(event.target.checked)} />Requiere cantidad</label><label className="flex items-center gap-2"><input type="checkbox" checked={requiresLot} onChange={(event) => setRequiresLot(event.target.checked)} />Requiere lote</label><label className="flex items-center gap-2"><input type="checkbox" checked={requiresEquipment} onChange={(event) => setRequiresEquipment(event.target.checked)} />Requiere equipo</label><label className="flex items-center gap-2"><input type="checkbox" checked={allowsUnplanned} onChange={(event) => setAllowsUnplanned(event.target.checked)} />Permite ejecución no programada</label></div><div className="mt-4 flex justify-end"><button className="button primary" type="button" disabled={busy || !activeProcesses.length} onClick={() => void create()}>{busy ? "Guardando…" : "Crear plantilla"}</button></div></div><FeedbackBox feedback={feedback} />
   </section>;
 }
 
