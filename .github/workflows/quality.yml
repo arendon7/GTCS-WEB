@@ -136,17 +136,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Database RLS and transactional gates
-        run: |
-          set -o pipefail
-          supabase test db 2>&1 | tee supabase-db-test.log
-      - name: Upload database test diagnostics
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: supabase-db-test-diagnostics
-          path: supabase-db-test.log
-          if-no-files-found: error
-          retention-days: 7
+        run: supabase test db
       - name: Postgres lint
         run: supabase db lint --local --level error
       - name: Stop local Supabase
