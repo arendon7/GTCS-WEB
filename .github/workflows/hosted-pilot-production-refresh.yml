@@ -65,8 +65,10 @@ jobs:
 
       - name: Static and unit gate
         run: |
-          npm run check
-          npx vitest run src/lib/deployment-origin.test.ts scripts/vercel-ops-production-deploy.test.mjs
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
 
       - name: Certify hosted backend
         run: npm run pilot:backend-preflight -- --plants TAM,YAR
