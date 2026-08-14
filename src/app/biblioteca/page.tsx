@@ -4,49 +4,56 @@ import styles from "./library.module.css";
 
 export const metadata: Metadata = {
   title: "Biblioteca | Greenatics",
-  description: "Guías, programas por cultivo y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
+  description: "Guías, programas por cultivo, manuales y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
 };
 
 const resources = [
   {
     status: "Disponible",
     title: "Programas Wondergreen por cultivo",
-    copy: "Café, cacao, aguacate, limón Tahití y pastos con lectura por etapa, cautelas, alertas y seguimiento.",
+    copy: "Café, cacao, aguacate, limón Tahití y pastos con lectura por etapa, cautelas, alertas, producto relacionado y seguimiento.",
     href: "/wondergreen/cultivos",
     cta: "Explorar cultivos",
   },
   {
     status: "Disponible",
+    title: "Manual de uso Wondergreen",
+    copy: "Ruta común para revisar contexto, confirmar referencia, preparar, aplicar, registrar y hacer seguimiento sin convertir la guía en receta universal.",
+    href: "/biblioteca/manual-uso-wondergreen",
+    cta: "Abrir manual",
+  },
+  {
+    status: "Disponible",
+    title: "Criterios de revisión nutricional",
+    copy: "Suelo, etapa, densidad, historial de fertilización y objetivo productivo como cinco comprobaciones antes de cerrar una recomendación.",
+    href: "/biblioteca/criterios-nutricionales",
+    cta: "Revisar criterios",
+  },
+  {
+    status: "Disponible",
     title: "Guía práctica de deficiencias nutricionales",
-    copy: "Una herramienta de lectura visual inicial que obliga a revisar tejido, patrón del lote y contexto antes de recomendar.",
+    copy: "Lectura visual inicial de síntomas y confundidores que obliga a revisar tejido, patrón del lote y contexto antes de recomendar.",
     href: "/biblioteca/guia-deficiencias",
     cta: "Abrir guía",
   },
   {
-    status: "Integrado en Wondergreen",
-    title: "Más que NPK",
-    copy: "Matriz orgánica, formulación, oclusión y peletizado explicados con un claim gate que separa característica técnica de promesa agronómica.",
-    href: "/wondergreen#tecnologia",
-    cta: "Ver tecnología",
-  },
-  {
-    status: "En consolidación",
-    title: "Manual de uso Wondergreen",
-    copy: "Criterios comunes de aplicación, agua, compatibilidad, registro de eventos y seguimiento. Se publicará por versiones, no como receta universal.",
-    href: "/wondergreen/cultivos",
-    cta: "Ver criterios en cultivo",
-  },
-  {
-    status: "En consolidación",
+    status: "Product Master público",
     title: "Catálogo técnico gobernado",
-    copy: "Productos, formatos, presentaciones, estados comerciales y documentación vinculados al Product Master público.",
+    copy: "Familias, fórmulas, formatos y estado público de cada referencia conectados con el sistema Wondergreen y su versión técnica.",
     href: "/wondergreen#portafolio",
-    cta: "Ver Product Master",
+    cta: "Ver portafolio",
   },
   {
-    status: "Próxima capa",
-    title: "Diagnóstico orientativo",
-    copy: "Cultivo + etapa + necesidad + problema + contexto. El resultado será una ruta potencial, no una prescripción automática.",
+    status: "Tecnología",
+    title: "Más que NPK",
+    copy: "Matriz orgánica, formulación, oclusión y peletizado explicados separando característica técnica de promesa agronómica.",
+    href: "/wondergreen#tecnologia",
+    cta: "Entender la tecnología",
+  },
+  {
+    status: "Ruta orientativa",
+    title: "Wondergreen Finder",
+    copy: "Cultivo + etapa + necesidad + problema + contexto. El resultado orienta una ruta y deriva a asesoría cuando falta información.",
     href: "/wondergreen#finder",
     cta: "Conocer el Finder",
   },
@@ -61,7 +68,7 @@ export default function LibraryPage() {
             <div>
               <span className={styles.eyebrow}>Greenatics · conocimiento aplicado</span>
               <h1>La biblioteca no es un archivo. Es parte de la decisión.</h1>
-              <p className={styles.lead}>Convertimos guías, manuales y conocimiento técnico ya construido en rutas web conectadas con cultivos, productos, síntomas, evidencia y acompañamiento.</p>
+              <p className={styles.lead}>Guías, manuales y conocimiento técnico se convierten en rutas web conectadas con cultivos, productos, síntomas, evidencia y acompañamiento.</p>
             </div>
             <aside className={styles.warning}>
               <strong>Conocimiento antes que recomendación.</strong>
@@ -73,9 +80,9 @@ export default function LibraryPage() {
         <section className={`${styles.section} ${styles.white}`}>
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Recursos</span>
-              <h2>De PDF aislado a sistema de conocimiento.</h2>
-              <p>Cada recurso tendrá estado, fuente y relación explícita con el Product Master o con una ruta técnica.</p>
+              <span className={styles.eyebrow}>Recursos disponibles</span>
+              <h2>De documentos aislados a un sistema de conocimiento.</h2>
+              <p>Cada recurso se conecta con el Product Master, una ruta agronómica o una decisión concreta. El estado visible evita presentar como definitivo lo que todavía requiere validación.</p>
             </div>
             <div className={styles.libraryGrid}>
               {resources.map((resource) => (
@@ -86,6 +93,22 @@ export default function LibraryPage() {
                   <Link href={resource.href}>{resource.cta} →</Link>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.soft}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <span className={styles.eyebrow}>Cómo usar la biblioteca</span>
+              <h2>Diagnosticar → entender → elegir → aplicar → medir.</h2>
+              <p>La navegación debe acompañar la decisión, no obligar al usuario a conocer de antemano el nombre del producto.</p>
+            </div>
+            <div className={styles.ruleGrid}>
+              <article className={styles.ruleCard}><span>01</span><h3>Diagnosticar</h3><p>Revisa síntomas, lote, suelo y posibles confundidores.</p></article>
+              <article className={styles.ruleCard}><span>02</span><h3>Entender etapa</h3><p>Ubica el momento fisiológico y el objetivo productivo.</p></article>
+              <article className={styles.ruleCard}><span>03</span><h3>Aplicar con criterio</h3><p>Confirma referencia, vía, equipo, condiciones y registro.</p></article>
+              <article className={styles.ruleCard}><span>04</span><h3>Medir y ajustar</h3><p>Observa respuesta y usa evidencia para decidir el siguiente evento.</p></article>
             </div>
           </div>
         </section>
