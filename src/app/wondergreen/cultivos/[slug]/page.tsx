@@ -108,16 +108,16 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Product Master relacionado</span>
               <h2>Referencias que aparecen en este programa.</h2>
-              <p>El estado comercial se muestra de forma explícita para no confundir una referencia técnica con un SKU confirmado para compra.</p>
+              <p>El estado comercial se muestra de forma explícita para no confundir una referencia técnica con un SKU confirmado para compra. Cada tarjeta abre la ficha gobernada de la referencia.</p>
             </div>
             <div className={styles.referenceGrid}>
               {references.map((reference) => (
-                <article className={styles.referenceCard} key={reference.slug}>
+                <Link className={styles.referenceCard} href={`/wondergreen/productos/${reference.slug}`} key={reference.slug}>
                   <span>{reference.publicStatus}</span>
                   <h3>{reference.name}{reference.formula ? ` · ${reference.formula}` : ""}</h3>
                   <p>{reference.role}</p>
-                  <small>{reference.stage}</small>
-                </article>
+                  <small>{reference.stage} · Abrir ficha →</small>
+                </Link>
               ))}
             </div>
           </div>
@@ -126,7 +126,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Siguiente decisión</span><h2>¿Quieres convertir esta ruta en un programa para tu lote?</h2></div>
-            <div><Link className={`${styles.button} ${styles.primary}`} href="/wondergreen#contacto">Hablar con equipo técnico</Link></div>
+            <div><Link className={`${styles.button} ${styles.primary}`} href="/contacto#productor">Hablar con equipo técnico</Link></div>
           </div>
         </section>
       </main>
