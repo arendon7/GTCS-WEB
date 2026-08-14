@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(6);
+select plan(7);
 
 select is(
   (select count(*) from pg_policies where schemaname='public' and tablename='scheduled_activities' and cmd='INSERT'),
@@ -62,14 +62,22 @@ select lives_ok(
   'planner can still create schedules through the canonical RPC'
 );
 
-select throws_ok(
-  $$update public.scheduled_activities
+select is(
+  (with updated as (
+    update public.scheduled_activities
     set planned_start='2026-09-02 15:00+00'::timestamptz,
         planned_end='2026-09-02 16:00+00'::timestamptz
-    where planning_note='Canonical RPC'$$,
-  '42501',
-  'new row violates row-level security policy for table "scheduled_activities"',
-  'planner cannot overwrite a canonical plan directly'
+    where planning_note='Canonical RPC'
+    returning id
+  ) select count(*) from updated),
+  0::bigint,
+  'planner direct UPDATE sees no mutable schedule rows'
+);
+
+select is(
+  (select planned_start from public.scheduled_activities where planning_note='Canonical RPC'),
+  '2026-09-02 13:00+00'::timestamptz,
+  'canonical schedule remains unchanged after a direct update attempt'
 );
 
 select * from finish();
