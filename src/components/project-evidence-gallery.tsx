@@ -6,15 +6,17 @@ export function ProjectEvidenceGallery({ slug }: { slug: string }) {
   const evidence = getProjectMedia(slug);
   if (evidence.length === 0) return null;
 
+  const title = slug === "yarumal" ? "Un registro real del caso Yarumal." : "Registro documental del proyecto.";
+
   return (
     <section className={styles.section} aria-labelledby={`${slug}-evidence-title`}>
       <div className={styles.inner}>
         <div className={styles.heading}>
           <div>
             <span className={styles.eyebrow}>Evidencia visual conciliada</span>
-            <h2 id={`${slug}-evidence-title`}>Registro documental del proyecto.</h2>
+            <h2 id={`${slug}-evidence-title`}>{title}</h2>
           </div>
-          <p>Solo aparecen activos incorporados al registro público de medios. Una fotografía documenta experiencia y contexto; no se usa para afirmar por sí sola capacidad, producción o estado operativo actual.</p>
+          <p>El registro visual documenta experiencia histórica y contexto. Solo aparecen activos incorporados al registro público de medios; una fotografía no se usa para afirmar por sí sola capacidad, producción o estado operativo actual.</p>
         </div>
 
         <div className={styles.grid}>
