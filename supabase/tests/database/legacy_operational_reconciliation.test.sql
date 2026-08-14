@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(31);
+select plan(33);
 
 select is(
   private.normalize_operational_label('  Biodigestión / UASB_01  '),
