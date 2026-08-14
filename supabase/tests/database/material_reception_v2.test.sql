@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(23);
 select has_table('public','material_intake_lots','physical intake lot table exists');
 select has_column('public','material_receipts','material_source_id','receipt has canonical source FK');
 select has_column('public','material_receipts','accepted_weight_kg','receipt stores accepted mass');
