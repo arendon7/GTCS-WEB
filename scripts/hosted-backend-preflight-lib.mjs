@@ -146,13 +146,19 @@ export async function runHostedBackendPreflight({
 
   const directorResponse = await admin
     .from("plant_memberships")
-    .select("user_id", { head: true, count: "exact" })
+    .select("user_id")
     .eq("role", "director")
     .eq("active", true);
-  if (directorResponse.error) {
-    throw new BackendPreflightError(`No fue posible validar el estado del director: ${directorResponse.error.message || "error remoto"}.`);
+  const directorRows = requireRows(
+    directorResponse.data,
+    directorResponse.error,
+    "No fue posible validar el estado del director",
+  );
+  const directorUserIds = directorRows.map((row) => clean(row?.user_id));
+  if (directorUserIds.some((userId) => !userId)) {
+    throw new BackendPreflightError("Estado del director: se encontró una membresía activa sin user_id válido.");
   }
-  const activeDirectors = parseNonNegativeInteger(directorResponse.count ?? 0, "Estado del director");
+  const activeDirectors = new Set(directorUserIds).size;
   if (schemaContract.activeDirectors !== activeDirectors) {
     throw new BackendPreflightError(
       `Estado del director cambió durante el preflight (${schemaContract.activeDirectors} → ${activeDirectors}); vuelve a ejecutar el gate.`,
