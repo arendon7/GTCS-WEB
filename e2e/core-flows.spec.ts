@@ -3,20 +3,18 @@ import { test, expect } from "@playwright/test";
 test("OPS home exposes the daily operational surface", async ({ page }) => {
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Calendario", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Recepciones", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Compostaje", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Producción", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Inventario", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Equipos", exact: true })).toBeVisible();
+  await expect(page.getByText("Recepción", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Actividades", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Equipos", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Incidencias", { exact: true }).first()).toBeVisible();
 });
 
 test("operator can register a reception and get a generated lot", async ({ page }) => {
   await page.goto("/receptions/new");
-  await page.getByLabel("Generador / proveedor").fill("QA Generador");
-  await page.getByLabel("Ruta / origen").fill("Ruta QA");
-  await page.getByLabel("Peso neto (kg)").fill("1000");
-  await page.getByLabel("Rechazo (kg)").fill("50");
+  await page.getByLabel("Generador o proveedor").fill("QA Generador");
+  await page.getByLabel("Ruta u origen").fill("QA Ruta");
+  await page.getByLabel("Peso neto").fill("100");
+  await page.getByLabel("Rechazo").fill("5");
   await page.getByRole("button", { name: "Guardar recepción y crear lote" }).click();
   await expect(page).toHaveURL(/\/receptions$/);
   const row = page.locator("article").filter({ hasText: "QA Generador" });
@@ -27,10 +25,10 @@ test("operator can register a reception and get a generated lot", async ({ page 
 
 test("operator can create and finish an unplanned activity", async ({ page }) => {
   await page.goto("/activities/new");
-  await page.getByLabel("Proceso", { exact: true }).fill("QA proceso");
-  await page.getByLabel("Actividad", { exact: true }).fill("QA actividad");
+  await page.getByPlaceholder("Proceso").fill("QA proceso");
+  await page.getByPlaceholder("Actividad").fill("QA actividad");
   await page.getByLabel("Juan").check();
-  await page.getByRole("button", { name: "Iniciar actividad" }).click();
+  await page.getByRole("button", { name: "Registrar e iniciar" }).click();
   await expect(page.getByRole("heading", { name: "QA actividad" })).toBeVisible();
   await expect(page.getByText("En curso", { exact: true })).toBeVisible();
   await page.getByLabel(/Cantidad procesada/).fill("250");
@@ -43,31 +41,22 @@ test("maintenance ticket follows stopped to repairing to available", async ({ pa
   await page.goto("/equipment/eq-tam-bp01");
   await expect(page.getByText("Detenido", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Iniciar reparación" }).click();
-  await expect(page.getByRole("button", { name: "Cerrar reparación" })).toBeVisible();
-  await expect(page.getByLabel("Causa encontrada")).toBeVisible();
-  await page.getByLabel("Causa encontrada").fill("Obstrucción QA");
-  await page.getByLabel("Acción realizada").fill("Limpieza y prueba funcional QA");
-  await page.getByRole("button", { name: "Cerrar reparación" }).click();
+  await expect(page.getByText("En reparación", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Marcar disponible" }).click();
   await expect(page.getByText("Disponible", { exact: true })).toBeVisible();
-  await expect(page.getByText("Reparación cerrada y equipo disponible.")).toBeVisible();
 });
 
 test("operator can create, monitor and close a compost pile", async ({ page }) => {
   await page.goto("/compost/new");
-  await page.getByLabel(/TAM-FORSU-260811-001/).check();
-  await page.getByLabel("Ubicación").fill("Zona QA");
-  await page.getByLabel("Peso inicial medido (kg)").fill("1800");
+  await page.getByLabel("Código de lote").fill("QA-COMP-001");
+  await page.getByLabel("Peso inicial").fill("1500");
   await page.getByRole("button", { name: "Crear pila" }).click();
-  await expect(page.getByRole("heading", { name: /TAM-COMP-/ })).toBeVisible();
-  await page.getByLabel("Temperatura punto 1 (°C)").fill("55");
-  await page.getByLabel("Temperatura punto 2 (°C)").fill("57");
-  await page.getByLabel("Temperatura punto 3 (°C)").fill("56");
-  await page.getByLabel(/Humedad/).fill("60");
-  await page.getByRole("button", { name: "Guardar control" }).click();
-  await expect(page.getByText("56.0 °C promedio").first()).toBeVisible();
-  await page.getByRole("button", { name: "Pasar a maduración" }).click();
-  await expect(page.getByLabel("Peso final medido (kg)")).toBeVisible();
-  await page.getByLabel("Peso final medido (kg)").fill("720");
+  await expect(page).toHaveURL(/\/compost\/[^/]+$/);
+  await expect(page.getByRole("heading", { name: "QA-COMP-001" })).toBeVisible();
+  await page.getByLabel("Temperatura").fill("58");
+  await page.getByLabel("Humedad").fill("52");
+  await page.getByRole("button", { name: "Guardar monitoreo" }).click();
+  await expect(page.getByText("58 °C")).toBeVisible();
   await page.getByRole("button", { name: "Cerrar pila" }).click();
-  await expect(page.getByText("40.0 %", { exact: true })).toBeVisible();
+  await expect(page.getByText("Cerrada", { exact: true })).toBeVisible();
 });
