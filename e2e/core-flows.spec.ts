@@ -3,18 +3,18 @@ import { test, expect } from "@playwright/test";
 test("OPS home exposes the daily operational surface", async ({ page }) => {
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
-  await expect(page.getByText("Recepción", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Actividades", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Equipos", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Incidencias", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Registrar recepción" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Registrar actividad" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Excepciones" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Estado operativo" })).toBeVisible();
 });
 
 test("operator can register a reception and get a generated lot", async ({ page }) => {
   await page.goto("/receptions/new");
-  await page.getByLabel("Generador o proveedor").fill("QA Generador");
-  await page.getByLabel("Ruta u origen").fill("QA Ruta");
-  await page.getByLabel("Peso neto").fill("100");
-  await page.getByLabel("Rechazo").fill("5");
+  await page.getByLabel("Generador / proveedor").fill("QA Generador");
+  await page.getByLabel("Ruta / origen").fill("QA Ruta");
+  await page.getByLabel("Peso neto (kg)").fill("100");
+  await page.getByLabel("Rechazo (kg)").fill("5");
   await page.getByRole("button", { name: "Guardar recepción y crear lote" }).click();
   await expect(page).toHaveURL(/\/receptions$/);
   const row = page.locator("article").filter({ hasText: "QA Generador" });
@@ -39,24 +39,35 @@ test("operator can create and finish an unplanned activity", async ({ page }) =>
 
 test("maintenance ticket follows stopped to repairing to available", async ({ page }) => {
   await page.goto("/equipment/eq-tam-bp01");
-  await expect(page.getByText("Detenido", { exact: true })).toBeVisible();
+  await expect(page.getByText("Detenido", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "Iniciar reparación" }).click();
-  await expect(page.getByText("En reparación", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Marcar disponible" }).click();
-  await expect(page.getByText("Disponible", { exact: true })).toBeVisible();
+  await expect(page.getByText("En reparación", { exact: true }).first()).toBeVisible();
+  await page.getByLabel("Causa encontrada").fill("QA causa verificada");
+  await page.getByLabel("Acción realizada").fill("QA ajuste ejecutado");
+  await page.getByRole("button", { name: "Cerrar reparación" }).click();
+  await expect(page.getByText("Disponible", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Reparación cerrada y equipo disponible.")).toBeVisible();
 });
 
 test("operator can create, monitor and close a compost pile", async ({ page }) => {
   await page.goto("/compost/new");
-  await page.getByLabel("Código de lote").fill("QA-COMP-001");
-  await page.getByLabel("Peso inicial").fill("1500");
+  await page.getByLabel("Ubicación").fill("QA Zona compostaje");
+  await page.getByRole("group", { name: "Lotes de origen" }).getByRole("checkbox").first().check();
+  await page.getByLabel("Peso inicial medido (kg)").fill("1500");
   await page.getByRole("button", { name: "Crear pila" }).click();
   await expect(page).toHaveURL(/\/compost\/[^/]+$/);
-  await expect(page.getByRole("heading", { name: "QA-COMP-001" })).toBeVisible();
-  await page.getByLabel("Temperatura").fill("58");
-  await page.getByLabel("Humedad").fill("52");
-  await page.getByRole("button", { name: "Guardar monitoreo" }).click();
-  await expect(page.getByText("58 °C")).toBeVisible();
+  await expect(page.getByText("Trazabilidad de origen, controles y cierre de la pila.")).toBeVisible();
+
+  await page.getByLabel("Temperatura punto 1 (°C)").fill("58");
+  await page.getByLabel("Temperatura punto 2 (°C)").fill("58");
+  await page.getByLabel("Temperatura punto 3 (°C)").fill("58");
+  await page.getByLabel(/Humedad \(%\)/).fill("52");
+  await page.getByRole("button", { name: "Guardar control" }).click();
+  await expect(page.getByText("58.0 °C promedio")).toBeVisible();
+
+  await page.getByRole("button", { name: "Pasar a maduración" }).click();
+  await page.getByLabel("Peso final medido (kg)").fill("1000");
   await page.getByRole("button", { name: "Cerrar pila" }).click();
   await expect(page.getByText("Cerrada", { exact: true })).toBeVisible();
+  await expect(page.getByText("Pila cerrada y rendimiento calculado.")).toBeVisible();
 });
