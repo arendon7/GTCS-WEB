@@ -39,6 +39,26 @@ test("commercial product page shows reconciled state without inventing a packsho
   await expect(page.getByRole("link", { name: "Manual de uso Wondergreen" })).toHaveAttribute("href", "/biblioteca/manual-uso-wondergreen");
 });
 
+test("product consultation preserves the exact governed reference into contact", async ({ page }) => {
+  await page.goto("/wondergreen/productos/2grow-solido-15-3-3");
+
+  const consult = page.getByRole("link", { name: "Consultar esta referencia" });
+  await expect(consult).toHaveAttribute("href", "/contacto?producto=2grow-solido-15-3-3#wondergreen");
+  await consult.click();
+
+  await expect(page.getByRole("heading", { name: "Estás consultando 2Grow Sólido 15-3-3." })).toBeVisible();
+  await expect(page.getByText("Referencia comercial reconciliada").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Volver a la ficha" })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
+  await expect(page.getByRole("link", { name: "Agendar sobre esta referencia" })).toHaveAttribute("href", /^https:\/\/outlook\.office\.com\//);
+});
+
+test("unknown product context is ignored instead of fabricating a reference", async ({ page }) => {
+  await page.goto("/contacto?producto=referencia-inexistente#wondergreen");
+
+  await expect(page.getByRole("heading", { name: "Cuéntanos qué quieres transformar." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Estás consultando/ })).toHaveCount(0);
+});
+
 test("technical bioinput page does not pretend to be commercially available", async ({ page }) => {
   await page.goto("/wondergreen/productos/extracto-neem");
 

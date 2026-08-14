@@ -47,6 +47,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
 
   const crops = relatedCrops(reference.family);
   const isCommercial = reference.truthStatus === "commercial-reconciled";
+  const contactHref = `/contacto?producto=${encodeURIComponent(reference.slug)}#wondergreen`;
 
   return (
     <div className={styles.page}>
@@ -63,7 +64,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
                 <span>{reference.stage}</span>
               </div>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Consultar esta referencia</Link>
+                <Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Consultar esta referencia</Link>
                 {crops.length > 0 ? <Link className={`${styles.button} ${styles.ghost}`} href={`/wondergreen/cultivos/${crops[0].slug}`}>Ver en cultivo</Link> : null}
               </div>
             </div>
@@ -157,7 +158,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Siguiente paso</span><h2>¿Quieres validar esta referencia para tu cultivo o negocio?</h2></div>
-            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen">Ver Wondergreen</Link></div>
+            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen">Ver Wondergreen</Link></div>
           </div>
         </section>
       </main>
