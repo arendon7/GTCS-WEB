@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const entryPaths = [
   ["01", "Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "/wondergreen/cultivos"],
   ["02", "Tengo una necesidad", "Nutrición, suelo, floración, producción, raíz, plagas o enfermedades.", "#finder"],
-  ["03", "Sé qué producto busco", "Entra al mapa del portafolio por familia y formato.", "#portafolio"],
+  ["03", "Sé qué producto busco", "Entra al catálogo técnico por familia, formato y estado público.", "/wondergreen/productos"],
 ];
 
 const system = [
@@ -61,7 +61,7 @@ export default function WondergreenPage() {
         <div className={styles.container}>
           <span>Wondergreen</span>
           <div>
-            <a href="#portafolio">Portafolio</a>
+            <Link href="/wondergreen/productos">Productos</Link>
             <a href="#tecnologia">Tecnología</a>
             <a href="#bioinsumos">Bioinsumos</a>
             <Link href="/wondergreen/cultivos">Cultivos</Link>
@@ -90,7 +90,7 @@ export default function WondergreenPage() {
               </p>
               <div className={styles.buttonRow}>
                 <a className={`${styles.button} ${styles.primary}`} href="#finder">Encontrar mi solución</a>
-                <a className={`${styles.button} ${styles.ghost}`} href="#portafolio">Ver portafolio</a>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/productos">Explorar productos</Link>
               </div>
             </div>
 
@@ -161,11 +161,12 @@ export default function WondergreenPage() {
                   <div><strong>{solidFertilizers.length}</strong><small>sólidas</small></div>
                   <div><strong>{compostReferences.length}</strong><small>compost</small></div>
                 </div>
+                <Link href="/wondergreen/productos">Ver catálogo completo →</Link>
               </div>
               <div className={styles.productTable}>
-                {compostReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
-                {solidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
-                {liquidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
+                {compostReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></Link>)}
+                {solidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></Link>)}
+                {liquidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></Link>)}
               </div>
             </div>
 
@@ -174,9 +175,10 @@ export default function WondergreenPage() {
                 <span>02 · Bioinsumos</span>
                 <h3>Biología y manejo</h3>
                 <p>Microorganismos, inoculantes y extractos botánicos se seleccionan según cultivo, problema, contexto técnico y estado regulatorio/comercial.</p>
+                <Link href="/wondergreen/productos#bioinsumos">Ver bioinsumos en catálogo →</Link>
               </div>
               <div className={styles.productTable}>
-                {bioinputReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
+                {bioinputReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></Link>)}
               </div>
             </div>
           </div>
