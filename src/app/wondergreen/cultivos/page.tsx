@@ -52,15 +52,16 @@ export default function WondergreenCropsPage() {
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Principio de uso</span>
               <h2>Cultivo → etapa → objetivo → contexto → solución potencial.</h2>
-              <p>Las páginas de cultivo son una capa de orientación. El siguiente paso será conectar síntomas, análisis, Product Master y bioinsumos para formar el Finder sin convertirlo en prescripción autónoma.</p>
+              <p>Las páginas de cultivo son una capa de orientación. Ahora se conectan con el Product Master público para pasar de una familia potencial a una ficha concreta sin confundir pertinencia agronómica con disponibilidad comercial.</p>
             </div>
+            <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/productos">Explorar Product Master</Link>
           </div>
         </section>
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Wondergreen</span><h2>¿No encuentras tu cultivo?</h2></div>
-            <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen#contacto">Hablar con equipo técnico</Link>
+            <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con equipo técnico</Link>
           </div>
         </section>
       </main>
