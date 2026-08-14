@@ -18,8 +18,8 @@ export const publicSite = {
 export const publicNav = [
   { href: "/soluciones", label: "Soluciones" },
   { href: "/wondergreen", label: "Wondergreen" },
+  { href: "/wondergreen/productos", label: "Productos" },
   { href: "/proyectos", label: "Proyectos" },
-  { href: "/impacto", label: "Impacto" },
   { href: "/biblioteca", label: "Conocimiento" },
   { href: "/nosotros", label: "Nosotros" },
 ] as const;
