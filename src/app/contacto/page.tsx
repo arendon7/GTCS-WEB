@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { publicSite } from "@/data/public-site";
+import { getWondergreenReference } from "@/data/wondergreen-public";
 import styles from "../company-public.module.css";
 
 export const metadata: Metadata = {
@@ -32,11 +33,44 @@ const wondergreenRoutes = [
   { id: "tecnico", title: "Soy agrónomo / técnico", copy: "Quiero revisar Product Master, guías, criterios de uso y soporte técnico del portafolio.", cta: "Revisar portafolio técnico" },
 ] as const;
 
-export default function ContactPage() {
+type ContactSearchParams = {
+  producto?: string | string[];
+};
+
+function firstParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function ContactPage({ searchParams }: { searchParams: Promise<ContactSearchParams> }) {
+  const query = await searchParams;
+  const productSlug = firstParam(query.producto);
+  const product = productSlug ? getWondergreenReference(productSlug) : undefined;
+
   return (
     <div className={styles.page}>
       <main>
         <section className={styles.contactHero}><div className={`${styles.container} ${styles.contactGrid}`}><div><span className={styles.eyebrow} style={{color:"#c8f5ad"}}>Contacto Greenatics</span><h1>Cuéntanos qué quieres transformar.</h1><p className={styles.lead}>Podemos hablar de Wondergreen, gestión de residuos, proyectos municipales, plantas, rehabilitación, operación o soluciones para grandes generadores.</p></div><aside className={styles.contactPanel}><span>Reunión técnica</span><h2>Agenda directamente con el equipo.</h2><p>La conversación funciona mejor cuando llegamos con contexto mínimo. Usa la guía inferior y trae lo que ya tengas; no necesitas tener toda la información resuelta.</p><a className={`${styles.button} ${styles.primary}`} href={publicSite.bookingUrl} target="_blank" rel="noreferrer">Agendar reunión</a></aside></div></section>
+
+        {product ? (
+          <section className={`${styles.section} ${styles.soft}`} aria-label="Contexto de la consulta Wondergreen">
+            <div className={`${styles.container} ${styles.officeGrid}`}>
+              <div>
+                <span className={styles.eyebrow}>Consulta Wondergreen · referencia identificada</span>
+                <h2>Estás consultando {product.name}{product.formula ? ` ${product.formula}` : ""}.</h2>
+                <p className={styles.lead}>Conservamos la referencia al pasar desde el Product Master para que la conversación empiece por el producto correcto. La disponibilidad, versión, dosis y recomendación final se confirman con el contexto real del cultivo o del canal comercial.</p>
+                <div className={styles.actions}>
+                  <a className={`${styles.button} ${styles.primary}`} href={publicSite.bookingUrl} target="_blank" rel="noreferrer">Agendar sobre esta referencia</a>
+                  <Link className={`${styles.button} ${styles.ghost}`} href={`/wondergreen/productos/${product.slug}`}>Volver a la ficha</Link>
+                </div>
+              </div>
+              <aside className={styles.officeCard}>
+                <strong>{product.publicStatus}</strong>
+                <span>{product.stage}</span>
+                <span>{product.presentations?.length ? `Presentaciones documentadas: ${product.presentations.join(", ")}` : "Presentaciones por confirmar"}</span>
+              </aside>
+            </div>
+          </section>
+        ) : null}
 
         <section className={`${styles.section} ${styles.soft}`} id="wondergreen"><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Wondergreen · elige tu ruta</span><h2>La conversación cambia según quién está tomando la decisión.</h2><p>Producto, cultivo y canal comercial comparten el mismo Product Master, pero requieren preguntas y soporte diferentes.</p></div><div className={styles.ecosystem}>{wondergreenRoutes.map((route)=><a id={route.id} href={publicSite.bookingUrl} target="_blank" rel="noreferrer" key={route.id}><strong>{route.title}</strong><span>{route.copy}</span><small>{route.cta} →</small></a>)}</div></div></section>
 
