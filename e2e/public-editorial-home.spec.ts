@@ -5,7 +5,7 @@ test("public HOME presents the editorial hierarchy and governed Yarumal evidence
 
   await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Más que NPK." })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Vista aérea documentada de la planta de Yarumal" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ver caso Yarumal →" })).toHaveAttribute("href", "/proyectos/yarumal");
   await expect(page.getByText(/Product Truth vigente/i)).toBeVisible();
 });

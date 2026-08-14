@@ -1,43 +1,36 @@
 import Image from "next/image";
+import { getProjectMedia } from "@/data/public-media";
 import styles from "./project-evidence-gallery.module.css";
 
-const yarumalEvidence = [
-  {
-    src: "/projects/yarumal/aerial-01.webp",
-    alt: "Vista aérea documentada del caso Greenatics en Yarumal",
-  },
-  {
-    src: "/projects/yarumal/aerial-02.webp",
-    alt: "Segunda vista aérea documentada del caso Greenatics en Yarumal",
-  },
-] as const;
-
 export function ProjectEvidenceGallery({ slug }: { slug: string }) {
-  if (slug !== "yarumal") return null;
+  const evidence = getProjectMedia(slug);
+  if (evidence.length === 0) return null;
+
+  const title = slug === "yarumal" ? "Un registro real del caso Yarumal." : "Registro documental del proyecto.";
 
   return (
-    <section className={styles.section} aria-labelledby="yarumal-evidence-title">
+    <section className={styles.section} aria-labelledby={`${slug}-evidence-title`}>
       <div className={styles.inner}>
         <div className={styles.heading}>
           <div>
-            <span className={styles.eyebrow}>Evidencia visual recuperada</span>
-            <h2 id="yarumal-evidence-title">Un registro real del caso Yarumal.</h2>
+            <span className={styles.eyebrow}>Evidencia visual conciliada</span>
+            <h2 id={`${slug}-evidence-title`}>{title}</h2>
           </div>
-          <p>Estas imágenes pertenecían a la web pública anterior y se recuperan como activos documentales del proyecto. Se conservan sin reinterpretación ni generación artificial.</p>
+          <p>El registro visual documenta experiencia histórica y contexto. Solo aparecen activos incorporados al registro público de medios; una fotografía no se usa para afirmar por sí sola capacidad, producción o estado operativo actual.</p>
         </div>
 
         <div className={styles.grid}>
-          {yarumalEvidence.map((asset, index) => (
-            <figure className={styles.figure} key={asset.src}>
+          {evidence.map((asset) => (
+            <figure className={styles.figure} key={asset.id}>
               <div className={styles.visual}>
                 <Image src={asset.src} alt={asset.alt} fill sizes="(max-width: 760px) 100vw, 50vw" />
               </div>
-              <figcaption>Registro visual histórico · Yarumal · vista {index + 1}</figcaption>
+              <figcaption>{asset.caption}</figcaption>
             </figure>
           ))}
         </div>
 
-        <p className={styles.truth}><strong>Truth lock:</strong> el registro visual documenta experiencia histórica; por sí solo no certifica el estado, capacidad, producción o condiciones actuales de la operación.</p>
+        <p className={styles.truth}><strong>Truth lock:</strong> los medios públicos conservan fuente y alcance. Si un proyecto no tiene activo conciliado, la web no fabrica una imagen para completar la composición.</p>
       </div>
     </section>
   );
