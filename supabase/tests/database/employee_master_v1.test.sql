@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+select plan(21);
 
 select has_column('public','employees','code','worker master has stable code');
 select has_column('public','employees','provisional','worker master identifies provisional seed records');
