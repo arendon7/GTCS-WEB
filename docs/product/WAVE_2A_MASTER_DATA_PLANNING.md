@@ -166,12 +166,13 @@ Regla temporal:
 
 - escritura nueva desde UI Wave 2A: IDs canónicos;
 - lectura: primero ID canónico, fallback al texto legacy;
-- histórico: no se muta automáticamente;
-- eliminación de campos legacy: fuera de Wave 2A y solo después de reconciliación completa.
+- histórico: el texto original no se reescribe;
+- reconciliación: únicamente completa FKs canónicas vacías;
+- eliminación de campos legacy: fuera de Wave 2A y solo después de reconciliación completa y auditada.
 
-## Reglas de integridad para la fase de planificación
+## Reglas de integridad para planificación
 
-La fase 2A.3 deberá imponer mediante RPC/DB:
+La fase 2A.3 impone mediante RPC/DB:
 
 1. plantilla, proceso y equipo deben pertenecer a la misma planta de la programación;
 2. trabajadores asignados deben pertenecer a la planta y estar activos;
@@ -180,7 +181,8 @@ La fase 2A.3 deberá imponer mediante RPC/DB:
 5. un equipo no puede quedar reservado en dos programaciones activas que se solapen;
 6. una programación `done` o con ejecución real no se reescribe como si nunca hubiera ocurrido;
 7. toda revisión/reprogramación requiere motivo y autor;
-8. el registro anterior queda trazable y no se borra.
+8. el registro anterior queda trazable y no se borra;
+9. `scheduled_activities` no admite INSERT/UPDATE autenticado directo: toda mutación de planificación pasa por RPC transaccional.
 
 ## RLS objetivo
 
@@ -193,7 +195,7 @@ Escritura de maestros operacionales:
 - admin
 - director
 
-Relación equipo-proceso también puede ser administrada por `maintenance`.
+Relación equipo-proceso también puede ser administrada por `maintenance` cuando el contrato de roles correspondiente esté habilitado.
 
 Programación:
 
@@ -206,15 +208,62 @@ Operadores consumen el plan y ejecutan; no administran catálogos ni reprograman
 
 No se habilitan DELETE policies sobre registros operacionales. Los maestros usan `active=false`.
 
-## Migración de texto legacy
+## 2A.5 · Reconciliación de texto legacy
 
-La reconciliación se hará en 2A.5 con tres estados:
+La reconciliación usa tres estados explícitos:
 
-- `exact`: coincidencia segura por código/nombre normalizado;
-- `curated`: mapeo aprobado por un administrador;
-- `unmapped`: se conserva texto legacy y se marca pendiente.
+- `exact`: existe una única coincidencia por código o nombre después de normalizar mayúsculas, acentos, puntuación y espacios;
+- `curated`: una persona autorizada aprobó explícitamente el destino canónico;
+- `unmapped`: no existe una equivalencia única segura o se decidió conservar el valor sin equivalencia.
 
-Queda prohibido promover automáticamente coincidencias fuzzy a producción.
+### Reglas no negociables
+
+1. **No fuzzy automático.** Una semejanza ortográfica nunca se promueve por sí sola.
+2. **Aislamiento por planta.** Un destino de Támesis no puede resolver un valor de Yarumal y viceversa.
+3. **Texto histórico inmutable.** `title`, `process` y `equipment_ref` se conservan como evidencia de origen.
+4. **Backfill limitado.** Solo se completan FKs canónicas actualmente nulas.
+5. **Compatibilidad plantilla↔proceso.** Una plantilla no se asigna si contradice un proceso canónico ya resuelto; el conflicto queda reportado para revisión.
+6. **Curaduría append-only.** Las decisiones no se editan ni borran: una nueva versión reemplaza lógicamente a la anterior y ambas quedan auditables.
+7. **Veto humano.** Una decisión `unmapped` explícita puede bloquear incluso una coincidencia exacta; una decisión posterior puede supersederla sin borrar historia.
+8. **Privilegios separados.** Supervisor/Técnico pueden administrar maestros según su contrato, pero solo `admin` y `director` pueden curar equivalencias o ejecutar el backfill legacy.
+9. **Planificación sigue cerrada.** La reconciliación de `scheduled_activities` se ejecuta dentro de una RPC autorizada; no reabre UPDATE directo sobre la tabla.
+
+### Componentes implementados
+
+Base de datos:
+
+- `private.normalize_operational_label(text)`;
+- `legacy_operational_mapping_decisions`;
+- resolver exacto/curado/unmapped;
+- `ops_list_legacy_operational_reconciliation`;
+- `ops_legacy_operational_reconciliation_metrics`;
+- `ops_curate_legacy_operational_mapping`;
+- `ops_apply_legacy_operational_reconciliation`.
+
+Interfaz `/admin/operations`:
+
+- cobertura por proceso, actividad y equipo;
+- conteo canónico, pendiente, resoluble y sin mapa;
+- frecuencia del texto legacy separada entre bitácora y programación;
+- destino canónico por planta;
+- acción para guardar equivalencia versionada;
+- acción para marcar explícitamente `unmapped`;
+- aplicación de referencias seguras con resultado y número de conflictos.
+
+Pruebas:
+
+- coincidencia exacta;
+- ambigüedad;
+- prohibición de fuzzy automático;
+- aislamiento entre plantas;
+- permisos de curaduría;
+- historial de versiones;
+- veto `unmapped`;
+- backfill de actividad y programación;
+- preservación del texto legacy;
+- conflictos plantilla↔proceso;
+- métricas de cobertura;
+- permisos equivalentes en la capa TypeScript.
 
 ## Entregables técnicos
 
@@ -228,7 +277,7 @@ Queda prohibido promover automáticamente coincidencias fuzzy a producción.
 
 ### 2A.2 · Master data administration
 
-- `/admin/operations` o superficie equivalente;
+- `/admin/operations`;
 - CRUD lógico create/update/active;
 - filtros por planta;
 - procesos, plantillas, rutas, orígenes, materiales;
@@ -240,7 +289,8 @@ Queda prohibido promover automáticamente coincidencias fuzzy a producción.
 - RPC revisar/reprogramar;
 - asignación de trabajadores;
 - validación de solapamientos;
-- lectura de cadena de revisión.
+- lectura de cadena de revisión;
+- frontera RPC-only para mutaciones autenticadas.
 
 ### 2A.4 · Planner UI
 
@@ -253,10 +303,26 @@ Queda prohibido promover automáticamente coincidencias fuzzy a producción.
 ### 2A.5 · Legacy reconciliation
 
 - detectar textos actuales;
-- proponer mapeos exactos;
-- UI/flujo de curaduría;
-- backfill seguro de FKs;
-- métricas de cobertura de reconciliación.
+- resolver solo coincidencias exactas únicas;
+- curar equivalencias de forma versionada;
+- permitir veto `unmapped` explícito;
+- aplicar backfill seguro de FKs;
+- preservar evidencia textual;
+- exponer métricas de cobertura;
+- reportar conflictos plantilla↔proceso.
+
+## Estado de despliegue
+
+Las migraciones de Wave 2A en código son:
+
+- `0027_operational_master_data_planning.sql`
+- `0028_planning_service.sql`
+- `0029_planning_write_boundary.sql`
+- `0030_legacy_operational_reconciliation.sql`
+
+Antes del rollout hospedado, el proyecto Supabase `greenatics-ops` continúa intencionalmente en `0026_hosted_schema_contract`. El rollout 0027–0030 solo se ejecuta después de que el `develop` que contiene UI, pruebas y documentación complete todos los gates de CI.
+
+No se crean mapeos ficticios para validar producción. Si no existen filas históricas promovidas, la reconciliación debe mostrar cero pendientes hasta que se cargue histórico real.
 
 ## Criterio de cierre de Wave 2A
 
@@ -268,4 +334,6 @@ Wave 2A se considera cerrada cuando:
 - reprogramar deja historial y motivo;
 - plan vs. real sigue funcionando;
 - RLS impide leer o administrar maestros de una planta no autorizada;
-- registros legacy continúan legibles sin mutación destructiva.
+- registros legacy continúan legibles sin mutación destructiva;
+- la cobertura de reconciliación es observable y toda equivalencia no exacta exige decisión humana;
+- ninguna reconciliación reabre escritura directa sobre planificación.
