@@ -1,0 +1,142 @@
+# Safe dispatcher for refreshing the hosted GREENATICS OPS product.
+# Runtime source is always the canonical develop branch checked out below.
+# This workflow does not create, update or delete Auth users, profiles or memberships.
+name: hosted-pilot-production-refresh
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-production
+  cancel-in-progress: false
+
+jobs:
+  refresh-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
+      PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+      PILOT_DIRECTOR_PLANTS: TAM,YAR
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "OPS production refresh from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require hosted deployment and UAT secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY \
+            PILOT_DIRECTOR_EMAIL \
+            PILOT_DIRECTOR_PASSWORD \
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted OPS production certification."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Canonical quality gate
+        run: |
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Certify hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Certify Director vs Operario Támesis RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
+        run: npm run pilot:rls-smoke
+
+      - name: Deploy full OPS Preview
+        id: preview
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify stable human-accessible OPS origin
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Production refresh summary
+        shell: bash
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+        run: |
+          echo "Stable OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, backend, TAM/YAR RLS, Preview and Production gates passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "No Auth users, profiles or memberships were mutated by this workflow." >> "$GITHUB_STEP_SUMMARY"
