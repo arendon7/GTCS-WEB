@@ -1,46 +1,46 @@
-import { expect, test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 test("OPS home exposes the daily operational surface", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Hoy" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Recepciones" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Actividades" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Compostaje" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Mantenimiento" })).toBeVisible();
+  await page.goto("/app");
+  const main = page.getByRole("main");
+  await expect(main.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
+  await expect(main.getByRole("link", { name: "Registrar recepción" })).toBeVisible();
+  await expect(main.getByRole("link", { name: "Registrar actividad" })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Excepciones" })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Estado operativo" })).toBeVisible();
 });
 
 test("operator can register a reception and get a generated lot", async ({ page }) => {
   await page.goto("/receptions/new");
   await page.getByLabel("Generador / proveedor").fill("QA Generador");
   await page.getByLabel("Ruta / origen").fill("QA Ruta");
-  await page.getByLabel("Peso neto (kg)").fill("1000");
-  await page.getByLabel("Rechazo (kg)").fill("100");
+  await page.getByLabel("Peso neto (kg)").fill("100");
+  await page.getByLabel("Rechazo (kg)").fill("5");
   await page.getByRole("button", { name: "Guardar recepción y crear lote" }).click();
   await expect(page).toHaveURL(/\/receptions$/);
-  await expect(page.getByText(/QA Generador/).first()).toBeVisible();
-  await expect(page.getByText(/900 kg/).first()).toBeVisible();
+  const row = page.locator("article").filter({ hasText: "QA Generador" });
+  await expect(row).toBeVisible();
+  await expect(row).toContainText("TAM-FORSU-");
+  await expect(row).toContainText("5.0 %");
 });
 
 test("operator can create and finish an unplanned activity", async ({ page }) => {
   await page.goto("/activities/new");
-  await page.getByLabel("Actividad").fill("QA Actividad no programada");
-  await page.getByLabel("Proceso").fill("QA Proceso");
-  await page.getByRole("group", { name: "Trabajadores" }).getByRole("checkbox").first().check();
+  await page.getByLabel("Proceso", { exact: true }).fill("QA proceso");
+  await page.getByLabel("Actividad", { exact: true }).fill("QA actividad");
+  await page.getByLabel("Juan").check();
   await page.getByRole("button", { name: "Iniciar actividad" }).click();
-  await expect(page).toHaveURL(/\/activities\/[^/]+$/);
-  await page.getByLabel("Cantidad").fill("20");
-  await page.getByLabel("Unidad").selectOption("kg");
+  await expect(page.getByRole("heading", { name: "QA actividad" })).toBeVisible();
+  await expect(page.getByText("En curso", { exact: true })).toBeVisible();
+  await page.getByLabel(/Cantidad procesada/).fill("250");
   await page.getByRole("button", { name: "Finalizar actividad" }).click();
-  await expect(page.getByText("Finalizada", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/app$/);
+  await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });
 
 test("maintenance ticket follows stopped to repairing to available", async ({ page }) => {
-  await page.goto("/maintenance/new");
-  await page.getByLabel("Equipo").selectOption({ index: 1 });
-  await page.getByLabel("Descripción de la falla").fill("QA falla controlada");
-  await page.getByRole("button", { name: "Registrar falla" }).click();
-  await expect(page).toHaveURL(/\/maintenance\/[^/]+$/);
-  await expect(page.getByText("Fuera de servicio", { exact: true }).first()).toBeVisible();
+  await page.goto("/equipment/eq-tam-bp01");
+  await expect(page.getByText("Detenido", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "Iniciar reparación" }).click();
   await expect(page.getByText("En reparación", { exact: true }).first()).toBeVisible();
   await page.getByLabel("Causa encontrada").fill("QA causa verificada");
