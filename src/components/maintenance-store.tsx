@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useOpsStore } from "@/components/ops-store";
 import type { AlertSeverity } from "@/lib/domain";
-import type { EquipmentRecord, MaintenanceTicket } from "@/lib/maintenance-domain";
+import type { EquipmentRecord, MaintenanceFailureType, MaintenanceTicket } from "@/lib/maintenance-domain";
 import { seedEquipment, seedMaintenanceTickets } from "@/lib/maintenance-data";
 import {
   closeRemoteMaintenanceTicket,
@@ -12,12 +12,26 @@ import {
   startRemoteRepair,
 } from "@/lib/supabase/maintenance-repository";
 
-const STORAGE_KEY = "greenatics-ops-maintenance-mvp-003";
+const STORAGE_KEY = "greenatics-ops-maintenance-mvp-004";
 
 type Result = { ok: true } | { ok: false; error: string };
 type CreateResult = { ok: true; id: string } | { ok: false; error: string };
-type FailurePayload = { equipmentId: string; severity: AlertSeverity; title: string; description: string };
-type ClosePayload = { cause: string; resolution: string };
+type FailurePayload = {
+  equipmentId: string;
+  failureType: MaintenanceFailureType;
+  failedAt: string;
+  severity: AlertSeverity;
+  title: string;
+  description: string;
+  evidenceRefs: string[];
+};
+type ClosePayload = { cause: string; resolution: string; evidenceRefs: string[] };
+type LegacyStoredTicket = Omit<MaintenanceTicket, "failedAt" | "failureType" | "failureEvidenceRefs" | "repairEvidenceRefs"> & {
+  failedAt?: string;
+  failureType?: MaintenanceFailureType;
+  failureEvidenceRefs?: string[];
+  repairEvidenceRefs?: string[];
+};
 
 type MaintenanceStore = {
   equipment: EquipmentRecord[];
@@ -35,6 +49,16 @@ const MaintenanceContext = createContext<MaintenanceStore | null>(null);
 
 function failure(error: unknown, fallback: string): { ok: false; error: string } {
   return { ok: false, error: error instanceof Error ? error.message : fallback };
+}
+
+function normalizeStoredTicket(ticket: LegacyStoredTicket): MaintenanceTicket {
+  return {
+    ...ticket,
+    failedAt: ticket.failedAt || ticket.openedAt,
+    failureType: ticket.failureType || "other",
+    failureEvidenceRefs: ticket.failureEvidenceRefs ?? [],
+    repairEvidenceRefs: ticket.repairEvidenceRefs ?? [],
+  };
 }
 
 export function MaintenanceStoreProvider({ children }: { children: ReactNode }) {
@@ -87,9 +111,9 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
         if (raw) {
-          const parsed = JSON.parse(raw) as { equipment?: EquipmentRecord[]; tickets?: MaintenanceTicket[] };
+          const parsed = JSON.parse(raw) as { equipment?: EquipmentRecord[]; tickets?: LegacyStoredTicket[] };
           if (parsed.equipment?.length) setEquipment(parsed.equipment);
-          if (parsed.tickets) setTickets(parsed.tickets);
+          if (parsed.tickets) setTickets(parsed.tickets.map(normalizeStoredTicket));
         }
       } catch {
         window.localStorage.removeItem(STORAGE_KEY);
@@ -124,11 +148,14 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       if (!asset) return { ok: false, error: "Equipo no encontrado." };
       if (!payload.title.trim()) return { ok: false, error: "Describe brevemente la falla." };
       if (!payload.description.trim()) return { ok: false, error: "Indica qué ocurrió o qué efecto tuvo." };
+      const failedAtMs = Date.parse(payload.failedAt);
+      if (!Number.isFinite(failedAtMs)) return { ok: false, error: "Indica cuándo ocurrió la falla." };
+      if (failedAtMs > Date.now() + 5 * 60_000) return { ok: false, error: "La hora de falla no puede estar en el futuro." };
       if (tickets.some((ticket) => ticket.equipmentId === asset.id && ticket.status !== "closed")) return { ok: false, error: "Este equipo ya tiene una falla o reparación abierta." };
 
       if (remoteMode) {
         try {
-          const id = await reportRemoteFailure(access, { ...payload, plantId: asset.plantId });
+          const id = await reportRemoteFailure(payload);
           await reloadRemote();
           return { ok: true, id };
         } catch (caught) {
@@ -138,7 +165,21 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
 
       const id = crypto.randomUUID();
       const openedAt = new Date().toISOString();
-      const ticket: MaintenanceTicket = { id, equipmentId: asset.id, plantId: asset.plantId, plant: asset.plant, severity: payload.severity, title: payload.title.trim(), description: payload.description.trim(), openedAt, status: "open" };
+      const ticket: MaintenanceTicket = {
+        id,
+        equipmentId: asset.id,
+        plantId: asset.plantId,
+        plant: asset.plant,
+        severity: payload.severity,
+        failureType: payload.failureType,
+        title: payload.title.trim(),
+        description: payload.description.trim(),
+        failedAt: new Date(payload.failedAt).toISOString(),
+        openedAt,
+        failureEvidenceRefs: payload.evidenceRefs,
+        repairEvidenceRefs: [],
+        status: "open",
+      };
       setTickets((current) => [ticket, ...current]);
       setEquipment((current) => current.map((item) => item.id === asset.id ? { ...item, status: "stopped" } : item));
       return { ok: true, id };
@@ -172,7 +213,7 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
 
       if (remoteMode) {
         try {
-          await closeRemoteMaintenanceTicket(ticketId, payload.cause, payload.resolution);
+          await closeRemoteMaintenanceTicket(ticketId, payload);
           await reloadRemote();
           return { ok: true };
         } catch (caught) {
@@ -181,7 +222,14 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       }
 
       const closedAt = new Date().toISOString();
-      setTickets((current) => current.map((item) => item.id === ticketId ? { ...item, cause: payload.cause.trim(), resolution: payload.resolution.trim(), closedAt, status: "closed" } : item));
+      setTickets((current) => current.map((item) => item.id === ticketId ? {
+        ...item,
+        cause: payload.cause.trim(),
+        resolution: payload.resolution.trim(),
+        repairEvidenceRefs: payload.evidenceRefs,
+        closedAt,
+        status: "closed",
+      } : item));
       setEquipment((current) => current.map((item) => item.id === ticket.equipmentId ? { ...item, status: "available" } : item));
       return { ok: true };
     },
@@ -196,7 +244,7 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       setError(undefined);
       window.localStorage.removeItem(STORAGE_KEY);
     },
-  }), [access, equipment, error, ready, refreshMaintenance, reloadRemote, remoteMode, tickets]);
+  }), [equipment, error, ready, refreshMaintenance, reloadRemote, remoteMode, tickets]);
 
   return <MaintenanceContext.Provider value={value}>{children}</MaintenanceContext.Provider>;
 }
