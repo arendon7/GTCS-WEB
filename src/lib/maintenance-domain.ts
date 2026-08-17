@@ -41,6 +41,7 @@ export type MaintenanceTicket = {
   resolution?: string;
   failureEvidenceRefs?: string[];
   repairEvidenceRefs?: string[];
+  repairActivityId?: string;
   status: MaintenanceStatus;
 };
 
@@ -60,4 +61,11 @@ export function getDowntimeMinutes(ticket: MaintenanceTicket, nowIso?: string) {
   if (!end) return 0;
   const start = ticket.failedAt || ticket.openedAt;
   return Math.max(0, (new Date(end).getTime() - new Date(start).getTime()) / 60000);
+}
+
+export function getRepairMinutes(ticket: MaintenanceTicket, nowIso?: string) {
+  if (!ticket.repairStartedAt) return 0;
+  const end = ticket.closedAt ?? nowIso;
+  if (!end) return 0;
+  return Math.max(0, (new Date(end).getTime() - new Date(ticket.repairStartedAt).getTime()) / 60000);
 }
