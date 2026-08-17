@@ -25,6 +25,13 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
+      PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+      PILOT_DIRECTOR_PLANTS: TAM,YAR
 
     steps:
       - name: Checkout canonical develop
@@ -47,15 +54,26 @@ jobs:
           echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
           echo "OPS production refresh from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Require hosted deployment secrets
+      - name: Require hosted deployment and UAT secrets
         shell: bash
         run: |
           set -euo pipefail
           missing=0
-          for name in VERCEL_TOKEN VERCEL_ORG_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY \
+            PILOT_DIRECTOR_EMAIL \
+            PILOT_DIRECTOR_PASSWORD \
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
           do
             if [ -z "${!name:-}" ]; then
-              echo "::error::$name is not configured for hosted OPS deployment."
+              echo "::error::$name is not configured for hosted OPS production certification."
               missing=1
             fi
           done
@@ -74,7 +92,18 @@ jobs:
       - name: Certify hosted backend
         run: npm run pilot:backend-preflight -- --plants TAM,YAR
 
-      - name: Run hosted RLS smoke
+      - name: Certify Director vs Operario Támesis RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
         run: npm run pilot:rls-smoke
 
       - name: Deploy full OPS Preview
@@ -109,5 +138,5 @@ jobs:
           OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
         run: |
           echo "Stable OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
-          echo "Quality, backend, RLS, Preview and Production gates passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, backend, TAM/YAR RLS, Preview and Production gates passed." >> "$GITHUB_STEP_SUMMARY"
           echo "No Auth users, profiles or memberships were mutated by this workflow." >> "$GITHUB_STEP_SUMMARY"
