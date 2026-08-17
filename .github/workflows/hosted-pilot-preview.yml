@@ -11,6 +11,14 @@ on:
         options:
           - public-only
           - full-ops
+      ops_backend_state:
+        description: Backend state for full-ops certification
+        required: true
+        type: choice
+        default: steady-state
+        options:
+          - steady-state
+          - prebootstrap
 
 permissions:
   contents: read
@@ -25,6 +33,7 @@ jobs:
     timeout-minutes: 20
     env:
       PILOT_PREVIEW_MODE: ${{ inputs.mode }}
+      PILOT_BACKEND_STATE: ${{ inputs.ops_backend_state }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       DEPLOY_GIT_REF: develop
@@ -49,6 +58,9 @@ jobs:
           test "${#sha}" -eq 40
           echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
           echo "Deploying ${PILOT_PREVIEW_MODE} preview from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$PILOT_PREVIEW_MODE" = "full-ops" ]; then
+            echo "OPS backend state: ${PILOT_BACKEND_STATE}" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Require Vercel preview secrets
         shell: bash
@@ -86,13 +98,21 @@ jobs:
       - name: Install dependencies
         run: npm install --ignore-scripts
 
-      - name: Certify hosted Supabase before full OPS deployment
-        if: ${{ inputs.mode == 'full-ops' }}
+      - name: Certify pristine hosted Supabase before first Director bootstrap
+        if: ${{ inputs.mode == 'full-ops' && inputs.ops_backend_state == 'prebootstrap' }}
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
           SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
         run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
+
+      - name: Certify steady-state hosted Supabase
+        if: ${{ inputs.mode == 'full-ops' && inputs.ops_backend_state == 'steady-state' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
 
       - name: Create or reuse isolated Vercel project and deploy Preview
         id: deploy
