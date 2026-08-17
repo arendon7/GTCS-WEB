@@ -38,6 +38,28 @@ describe("dashboard analytics", () => {
     expect(result.exceptionsCount).toBe(2);
   });
 
+  it("keeps execution coverage separate from plan compliance after deviations", () => {
+    const deviated: ActivityRecord = {
+      id: "dev-1", plantId: "tamesis", plant: "Támesis", title: "Volteo", process: "Compostaje",
+      plannedStart: "2026-08-11T08:00:00-05:00", plannedEnd: "2026-08-11T09:00:00-05:00",
+      actualStart: "2026-08-11T08:15:00-05:00", actualEnd: "2026-08-11T08:45:00-05:00",
+      workerIds: ["w1"], status: "done", source: "scheduled", deviationReason: "Lluvia intensa",
+    };
+    const lateWithoutManualDeviation: ActivityRecord = {
+      id: "dev-2", plantId: "tamesis", plant: "Támesis", title: "Limpieza", process: "Aseo",
+      plannedStart: "2026-08-11T08:00:00-05:00", plannedEnd: "2026-08-11T09:00:00-05:00",
+      actualStart: "2026-08-11T10:00:00-05:00", actualEnd: "2026-08-11T10:30:00-05:00",
+      workerIds: ["w1"], status: "done", source: "scheduled",
+    };
+    const result = buildOperationalAnalytics({ activities: [deviated, lateWithoutManualDeviation], receptions: [], incidents: [], tickets: [], equipment: [], piles: [], measurements: [], workers, preset: "day", anchorKey: "2026-08-11", plantId: "tamesis", nowIso: "2026-08-11T16:00:00-05:00" });
+    expect(result.scheduledCount).toBe(2);
+    expect(result.executedScheduledCount).toBe(2);
+    expect(result.delayedCount).toBe(2);
+    expect(result.compliancePct).toBe(0);
+    expect(result.exceptionsCount).toBe(2);
+    expect(result.plantComparison.find((row) => row.plantId === "tamesis")?.compliancePct).toBe(0);
+  });
+
   it("does not turn unknown historical acceptance into a non-conformity", () => {
     const historical: ReceptionRecord = { id: "rh", plantId: "tamesis", plant: "Támesis", generator: "Histórico", route: "Histórica", wasteType: "FORSU", netWeightKg: 700, rejectionKg: 20, acceptance: "unknown", startedAt: "2026-08-11T13:00:00-05:00", endedAt: "2026-08-11T13:00:00-05:00", lotCode: "HIST-1", source: "historical" };
     const result = buildOperationalAnalytics({ activities: [], receptions: [historical], incidents: [], tickets: [], equipment: [], piles: [], measurements: [], workers: [], preset: "day", anchorKey: "2026-08-11", plantId: "all", nowIso: "2026-08-11T16:00:00-05:00" });
