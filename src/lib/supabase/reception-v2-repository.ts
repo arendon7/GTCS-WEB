@@ -1,3 +1,4 @@
+import type { IntakeLotDispositionDecision } from "@/lib/domain";
 import type { PlantAccess } from "@/lib/ops-data-contract";
 import type { ReceptionDecision } from "@/lib/reception-v2";
 import { createClient } from "@/lib/supabase/client";
@@ -10,4 +11,14 @@ export async function createRemoteReceptionV2(access:PlantAccess[],payload:Remot
  const row=Array.isArray(data)?data[0]:data;
  if(!row||typeof row.id!=="string"||typeof row.lot_code!=="string")throw new Error("La recepción fue registrada pero el servidor no devolvió identificadores válidos.");
  return{id:row.id as string,lotId:typeof row.lot_id==="string"?row.lot_id:undefined,lotCode:row.lot_code as string};
+}
+export async function disposeRemoteIntakeLot(lotId:string,decision:IntakeLotDispositionDecision,reason:string){
+ const cleanReason=reason.trim();
+ if(!lotId)throw new Error("Indica el lote físico.");
+ if(!cleanReason)throw new Error("Registra el motivo de la decisión técnica.");
+ const client=createClient();
+ const {data,error}=await client.rpc("ops_dispose_material_intake_lot",{target_lot:lotId,disposition:decision,disposition_reason:cleanReason});
+ if(error)throw new Error(`No fue posible resolver la cuarentena: ${error.message}`);
+ if(data!=="available"&&data!=="rejected")throw new Error("La decisión se registró pero el servidor devolvió un estado inesperado.");
+ return data as "available"|"rejected";
 }
