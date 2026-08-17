@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(25);
+select plan(26);
 
 select has_column('public','compost_events','activity_id','compost events expose canonical activity link');
 select is((
