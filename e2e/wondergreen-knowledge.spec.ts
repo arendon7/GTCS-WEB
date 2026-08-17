@@ -7,6 +7,19 @@ test("public library exposes live Wondergreen knowledge resources", async ({ pag
   await expect(page.getByRole("heading", { name: "Programas Wondergreen por cultivo" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Abrir guía/i })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
+  await expect(page.getByText("Lectura web disponible · descarga pública en preparación", { exact: true })).toBeVisible();
+});
+
+test("public library routes by user intent before product selection", async ({ page }) => {
+  await page.goto("/biblioteca");
+
+  await expect(page.getByRole("heading", { name: "No necesitas conocer el nombre del recurso." })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Elegir cultivo/ })).toHaveAttribute("href", "/wondergreen/cultivos");
+  await expect(page.getByRole("link", { name: /Revisar síntomas/ })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
+  await expect(page.getByRole("link", { name: /Comprobar criterios/ })).toHaveAttribute("href", "/biblioteca/criterios-nutricionales");
+  await expect(page.getByRole("link", { name: /Abrir manual de uso/ })).toHaveAttribute("href", "/biblioteca/manual-uso-wondergreen");
+  await expect(page.getByRole("link", { name: /Ver Product Master/ })).toHaveAttribute("href", "/wondergreen/productos");
+  await expect(page.getByRole("link", { name: /Pedir acompañamiento/ })).toHaveAttribute("href", "/contacto#wondergreen");
 });
 
 test("deficiency guide prevents symptom-only diagnosis and links to crop programs", async ({ page }) => {
