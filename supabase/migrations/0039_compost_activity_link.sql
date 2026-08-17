@@ -100,7 +100,7 @@ begin
       else 'Pila '||pile_code||' · '||btrim(event_notes)
     end,
     'app',auth.uid()
-  ) returning public.activities.id into activity_id;
+  ) returning id into activity_id;
 
   insert into public.activity_workers(activity_id,employee_id)
   select activity_id,value from unnest(employee_ids) value;
@@ -260,9 +260,13 @@ begin
 
   perform private.assert_activity_log_workers(pile.plant_id,employee_ids,event_started_at,event_ended_at);
 
+  -- Only turning has an unambiguous activity quantity in the current event contract.
+  -- Hydration keeps its optional operated-pile m3 on compost_events; it must not be mislabeled as litres of water.
   event_activity_id := private.insert_compost_activity(
     pile.plant_id,pile.code,event_kind,event_started_at,event_ended_at,
-    event_volume_m3,case when event_volume_m3 is null then null else 'm3' end,employee_ids,event_notes
+    case when event_kind='turning' then event_volume_m3 else null end,
+    case when event_kind='turning' then 'm3' else null end,
+    employee_ids,event_notes
   );
 
   insert into public.compost_events(pile_id,plant_id,activity_id,event_type,started_at,ended_at,volume_m3,notes,created_by)
