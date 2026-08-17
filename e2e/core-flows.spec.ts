@@ -68,7 +68,7 @@ test("operator can create, monitor and close a compost pile", async ({ page }) =
   await page.getByRole("group", { name: "Trabajadores de conformación" }).getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Conformar pila" }).click();
   await expect(page).toHaveURL(/\/compost\/[^/]+$/);
-  await expect(page.getByText("Trazabilidad física, eventos operacionales, controles técnicos y rendimiento.")).toBeVisible();
+  await expect(page.getByText("Trazabilidad física, eventos operacionales, bitácora canónica, controles técnicos y rendimiento.")).toBeVisible();
 
   await page.getByLabel("Temperatura punto 1 (°C)").fill("58");
   await page.getByLabel("Temperatura punto 2 (°C)").fill("58");

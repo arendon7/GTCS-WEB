@@ -40,6 +40,7 @@ export type CompostSourceAllocation = {
 export type CompostEvent = {
   id: string;
   pileId: string;
+  activityId?: string;
   type: CompostEventType;
   startedAt: string;
   endedAt: string;

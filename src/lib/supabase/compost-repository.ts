@@ -29,7 +29,7 @@ type MeasurementRow = {
   humidity_range_status?: CompostMeasurement["humidityRangeStatus"] | null; notes?: string | null; recorded_at: string;
 };
 type EventRow = {
-  id: string; pile_id: string; event_type: CompostEventType; started_at: string; ended_at: string;
+  id: string; pile_id: string; activity_id?: string | null; event_type: CompostEventType; started_at: string; ended_at: string;
   volume_m3?: number | string | null; notes?: string | null;
 };
 type EventWorkerRow = { event_id: string; employee_id: string };
@@ -98,7 +98,7 @@ export async function loadRemoteCompost(
     client.from("compost_pile_intake_sources").select("pile_id,intake_lot_id,allocated_mass_kg,allocation_confirmed"),
     client.from("material_intake_lots").select("id,plant_id,receipt_id,lot_code,received_at,initial_mass_kg,available_mass_kg,status").in("plant_id", plantIds).order("received_at", { ascending: false }),
     client.from("compost_measurements").select("id,pile_id,temperature_points_c,ambient_temperature_c,temperature_avg_c,humidity_pct,temperature_range_status,humidity_range_status,notes,recorded_at").order("recorded_at", { ascending: false }),
-    client.from("compost_events").select("id,pile_id,event_type,started_at,ended_at,volume_m3,notes").order("started_at", { ascending: false }),
+    client.from("compost_events").select("id,pile_id,activity_id,event_type,started_at,ended_at,volume_m3,notes").order("started_at", { ascending: false }),
     client.from("compost_event_workers").select("event_id,employee_id"),
     client.from("compost_control_ranges").select("plant_id,temperature_avg_min_c,temperature_avg_max_c,humidity_min_pct,humidity_max_pct,active"),
   ]);
@@ -160,7 +160,7 @@ export async function loadRemoteCompost(
   const events = ((eventResult.data ?? []) as unknown as EventRow[])
     .filter((row) => visiblePileIds.has(row.pile_id))
     .map((row): CompostEvent => ({
-      id: row.id, pileId: row.pile_id, type: row.event_type, startedAt: row.started_at, endedAt: row.ended_at,
+      id: row.id, pileId: row.pile_id, activityId: row.activity_id || undefined, type: row.event_type, startedAt: row.started_at, endedAt: row.ended_at,
       volumeM3: optionalNumber(row.volume_m3, `Evento ${row.id}`), workerIds: eventWorkers.get(row.id) ?? [], notes: row.notes || undefined,
     }));
   const controlRanges = ((rangeResult.data ?? []) as unknown as RangeRow[]).map((row): CompostControlRange => {
