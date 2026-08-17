@@ -13,6 +13,7 @@ export type ActivityRecord = {
   id:string; plantId:string; plant:string; title:string; process:string; processId?:string; activityTemplateId?:string;
   plannedStart:string; plannedEnd?:string; actualStart?:string; actualEnd?:string; workerIds:string[];
   equipment?:string; equipmentId?:string; toolIds?:string[]; tools?:string[]; comment?:string; status:ActivityStatus;
+  deviationReason?:string;
   quantity?:number; unit?:ActivityUnit; noveltyType?:NoveltyType; novelty?:string; source:"scheduled"|"unplanned"|"historical"; provenance?:HistoricalProvenance;
 };
 export type IncidentRecord = { id:string; activityId:string; plantId:string; plant:string; title:string; detail:string; severity:AlertSeverity; equipment?:string; openedAt:string; status:"open"|"closed" };

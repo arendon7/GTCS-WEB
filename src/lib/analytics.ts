@@ -82,6 +82,12 @@ function filterPlant<T extends { plantId: string }>(items: T[], plantId: PlantFi
 function pct(numerator: number, denominator: number) { return denominator > 0 ? (numerator / denominator) * 100 : 0; }
 function isNonConforming(receipt: ReceptionRecord) { return receipt.acceptance === "conditioned" || receipt.acceptance === "rejected"; }
 function hasKnownRejection(receipt: ReceptionRecord) { return receipt.rejectionKnown !== false; }
+function hasPlanningDeviation(activity: ActivityRecord) {
+  if (activity.status === "delayed" || activity.status === "missed") return true;
+  if (activity.deviationReason?.trim()) return true;
+  if (!activity.actualStart || !activity.plannedEnd) return false;
+  return new Date(activity.actualStart).getTime() > new Date(activity.plannedEnd).getTime();
+}
 function rank(map: Map<string, { label: string; value: number; detail?: string }>) { return [...map.entries()].map(([id, item]) => ({ id, ...item })).filter((item) => item.value > 0).sort((a, b) => b.value - a.value); }
 
 function periodDayKeys(period: DashboardPeriod) { const days: string[] = []; let current = period.startKey; while (current <= period.endKey && days.length <= 400) { days.push(current); current = addDaysKey(current, 1); } return days; }
@@ -94,16 +100,16 @@ function summarizePlant(plantId: string, plantName: string, period: DashboardPer
   const tickets = input.tickets.filter((item) => item.plantId === plantId);
   const incidents = input.incidents.filter((item) => item.plantId === plantId && item.status === "open" && inPeriod(item.openedAt, period));
   const scheduled = activities.filter((item) => item.source === "scheduled" && inPeriod(item.plannedStart, period));
-  const executed = scheduled.filter((item) => Boolean(item.actualStart));
+  const compliant = scheduled.filter((item) => Boolean(item.actualStart) && !hasPlanningDeviation(item));
   const laborHours = activities.reduce((sum, item) => sum + overlapMinutes(item.actualStart, item.actualEnd, period, input.nowIso) * item.workerIds.length / 60, 0);
   const downtimeMinutes = tickets.reduce((sum, item) => sum + overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso), 0);
   const receivedKg = receipts.reduce((sum, item) => sum + item.netWeightKg, 0);
   const rejectionBasisKg = knownRejectionReceipts.reduce((sum, item) => sum + item.netWeightKg, 0);
   const rejectionKg = knownRejectionReceipts.reduce((sum, item) => sum + item.rejectionKg, 0);
-  const delayed = scheduled.filter((item) => item.status === "delayed" || item.status === "missed").length;
+  const delayed = scheduled.filter(hasPlanningDeviation).length;
   const nonConforming = receipts.filter(isNonConforming).length;
   const activeTickets = tickets.filter((item) => item.status !== "closed" && overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso) > 0).length;
-  return { plantId, plant: plantName, receivedKg, rejectionPct: pct(rejectionKg, rejectionBasisKg), laborHours, compliancePct: pct(executed.length, scheduled.length), downtimeMinutes, attention: delayed + nonConforming + incidents.length + activeTickets };
+  return { plantId, plant: plantName, receivedKg, rejectionPct: pct(rejectionKg, rejectionBasisKg), laborHours, compliancePct: pct(compliant.length, scheduled.length), downtimeMinutes, attention: delayed + nonConforming + incidents.length + activeTickets };
 }
 
 export function buildOperationalAnalytics(input: DashboardAnalyticsInput): DashboardAnalytics {
@@ -122,7 +128,8 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   const nonConformingReceipts = periodReceipts.filter(isNonConforming).length;
   const scheduled = activities.filter((item) => item.source === "scheduled" && inPeriod(item.plannedStart, period));
   const executedScheduled = scheduled.filter((item) => Boolean(item.actualStart));
-  const delayed = scheduled.filter((item) => item.status === "delayed" || item.status === "missed");
+  const compliantScheduled = executedScheduled.filter((item) => !hasPlanningDeviation(item));
+  const delayed = scheduled.filter(hasPlanningDeviation);
   const unplanned = activities.filter((item) => item.source === "unplanned" && inPeriod(item.actualStart, period));
 
   const processMap = new Map<string, { label: string; value: number }>();
@@ -185,7 +192,7 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
     executedScheduledCount: executedScheduled.length,
     delayedCount: delayed.length,
     unplannedCount: unplanned.length,
-    compliancePct: pct(executedScheduled.length, scheduled.length),
+    compliancePct: pct(compliantScheduled.length, scheduled.length),
     exceptionsCount: delayed.length + nonConformingReceipts + openIncidents + activeMaintenance,
     nonConformingReceipts,
     openIncidents,
