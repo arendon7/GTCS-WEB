@@ -39,6 +39,10 @@ insert into public.plant_memberships(user_id,plant_id,role) values
 insert into public.material_sources(id,plant_id,code,name,source_kind) values ('f3000000-0000-4000-8000-000000000001','f2000000-0000-4000-8000-000000000001','C2_SRC','Origen Compost QA','generator');
 insert into public.material_types(id,plant_id,code,name) values ('f4000000-0000-4000-8000-000000000001','f2000000-0000-4000-8000-000000000001','FORSU','FORSU Compost QA');
 insert into public.employees(id,plant_id,code,display_name,active,provisional) values ('f5000000-0000-4000-8000-000000000001','f2000000-0000-4000-8000-000000000001','C2_OP_01','Operario Compost QA',true,false);
+insert into public.operational_processes(id,plant_id,code,name,active) values ('f6000000-0000-4000-8000-000000000001','f2000000-0000-4000-8000-000000000001','COMPOSTAJE','Compostaje',true);
+insert into public.activity_templates(id,plant_id,process_id,code,name,default_unit_code,allows_unplanned,active) values
+ ('f7000000-0000-4000-8000-000000000001','f2000000-0000-4000-8000-000000000001','f6000000-0000-4000-8000-000000000001','CONFORMACION_PILAS','Conformación de pilas','kg',true,true),
+ ('f7000000-0000-4000-8000-000000000002','f2000000-0000-4000-8000-000000000001','f6000000-0000-4000-8000-000000000001','VOLTEO_COMPOSTAJE','Volteo de compostaje',null,true,true);
 
 set local role authenticated;
 set local request.jwt.claim.sub='f1000000-0000-4000-8000-000000000001';
