@@ -28,7 +28,7 @@ set local request.jwt.claim.sub='b1000000-0000-4000-8000-000000000001';
 select lives_ok($$select public.ops_report_equipment_failure_v2(
  'b3000000-0000-4000-8000-000000000001','mechanical',now()-interval '20 minutes','medium',
  'Falla boundary','Falla registrada por RPC',array['evidencia://boundary-falla'])
-)$$,'operator can still report a failure through the guarded RPC');
+$$,'operator can still report a failure through the guarded RPC');
 select is((select status from public.equipment where id='b3000000-0000-4000-8000-000000000001'),'stopped'::text,'RPC report still applies the atomic equipment transition');
 
 set local request.jwt.claim.sub='b1000000-0000-4000-8000-000000000002';
