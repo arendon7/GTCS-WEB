@@ -70,6 +70,15 @@ describe("ops remote data contract",()=>{
     expect(r).toMatchObject({acceptedWeightKg:900,improperWeightKg:40,physicalLot:{id:"lot-v2",initialMassKg:900,availableMassKg:650,status:"quarantined"}});
   });
 
+  it("maps a final audited quarantine rejection without erasing physical mass",()=>{
+    const r=mapRemoteReceipt({id:"receipt-q",plant_id:"db-yar",generator:"Municipio",route:"Ruta 2",waste_type:"FORSU",net_weight_kg:"800",rejection_kg:"50",accepted_weight_kg:"750",acceptance_status:"conditioned",started_at:"2026-08-17T14:00:00Z",ended_at:"2026-08-17T14:20:00Z",lot_code:"YAR-FORSU-20260817-001",source_kind:"app"},access,{id:"lot-q",plant_id:"db-yar",receipt_id:"receipt-q",lot_code:"YAR-FORSU-20260817-001",initial_mass_kg:"750",available_mass_kg:"750",status:"rejected"},{lot_id:"lot-q",plant_id:"db-yar",decision:"reject",reason:"Contaminación no conforme",decided_at:"2026-08-17T15:00:00Z"});
+    expect(r.physicalLot).toEqual({id:"lot-q",initialMassKg:750,availableMassKg:750,status:"rejected",disposition:{decision:"reject",reason:"Contaminación no conforme",decidedAt:"2026-08-17T15:00:00Z"}});
+  });
+
+  it("rejects a disposition linked to another physical lot",()=>{
+    expect(()=>mapRemoteReceipt({id:"receipt-q",plant_id:"db-yar",generator:"Municipio",route:"Ruta 2",waste_type:"FORSU",net_weight_kg:"800",rejection_kg:"50",accepted_weight_kg:"750",acceptance_status:"conditioned",started_at:"2026-08-17T14:00:00Z",ended_at:"2026-08-17T14:20:00Z",lot_code:"YAR-FORSU-20260817-001",source_kind:"app"},access,{id:"lot-q",plant_id:"db-yar",receipt_id:"receipt-q",lot_code:"YAR-FORSU-20260817-001",initial_mass_kg:"750",available_mass_kg:"750",status:"available"},{lot_id:"other-lot",plant_id:"db-yar",decision:"release",reason:"Control conforme",decided_at:"2026-08-17T15:00:00Z"})).toThrow(/disposición técnica no coincide/);
+  });
+
   it("rejects a physical lot linked to another receipt",()=>{
     expect(()=>mapRemoteReceipt({id:"receipt-v2",plant_id:"db-tam",generator:"Municipio",route:"Ruta 1",waste_type:"FORSU",net_weight_kg:"1000",rejection_kg:"0",accepted_weight_kg:"1000",acceptance_status:"accepted",started_at:"2026-08-17T13:00:00Z",ended_at:"2026-08-17T13:20:00Z",lot_code:"TAM-FORSU-20260817-001",source_kind:"app"},access,{id:"bad-lot",plant_id:"db-tam",receipt_id:"other",lot_code:"TAM-FORSU-20260817-001",initial_mass_kg:"1000",available_mass_kg:"1000",status:"available"})).toThrow(/no coincide con la recepción/);
   });
