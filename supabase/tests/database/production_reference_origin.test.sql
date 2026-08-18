@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(29);
+select plan(31);
 
 select has_column('public','inventory_products','reference_code','product master exposes governed reference code');
 select has_column('public','production_records','product_reference_code','production snapshots product reference');
