@@ -1,4 +1,4 @@
-# Authenticated identity/RLS certification, one self-cleaning planning write, plus Preview deployment.
+# Authenticated identity/RLS certification, one self-cleaning plan→real lifecycle, plus Preview deployment.
 # Runtime source is always canonical develop. This workflow never deploys Production
 # and does not create, update or delete Auth users, profiles or memberships.
 name: hosted-pilot-uat
@@ -92,7 +92,7 @@ jobs:
           PILOT_OPERATOR_PLANTS: TAM
         run: npm run pilot:rls-smoke
 
-      - name: Certify hosted planning write boundary in Támesis
+      - name: Certify hosted plan vs real lifecycle in Támesis
         env:
           PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
           PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
@@ -123,5 +123,5 @@ jobs:
           echo "Director expected scope: TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
           echo "Operario Támesis expected scope: TAM; YAR read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
           echo "Operario Yarumal expected scope: YAR; TAM read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
-          echo "Planning write smoke: one temporary TAM schedule created by Director, visible to TAM Operario, operator write denied, exact row cleaned." >> "$GITHUB_STEP_SUMMARY"
+          echo "Plan-vs-real smoke: Director creates one temporary TAM schedule; TAM Operario reads it, cannot program, starts and finishes the linked real activity; schedule reaches done; exact UAT activity and schedule are cleaned." >> "$GITHUB_STEP_SUMMARY"
           echo "No Auth users, profiles or memberships were mutated by this workflow." >> "$GITHUB_STEP_SUMMARY"
