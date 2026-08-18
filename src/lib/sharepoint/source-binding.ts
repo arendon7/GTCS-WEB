@@ -14,10 +14,6 @@ function decodedPathSegments(pathname: string) {
     });
 }
 
-function sourceSiteSegments(sitePath: string) {
-  return sitePath.split("/").filter(Boolean).map((segment) => segment.toLowerCase());
-}
-
 export function assertSharePointDocumentSource(
   reference: SharePointDocumentReference,
   source: SharePointSourceConfig,
@@ -43,7 +39,7 @@ export function assertSharePointDocumentSource(
   }
 
   const actualSegments = decodedPathSegments(url.pathname);
-  const expectedSegments = sourceSiteSegments(source.sitePath);
+  const expectedSegments = decodedPathSegments(source.sitePath);
   const insideConfiguredSite =
     actualSegments.length >= expectedSegments.length &&
     expectedSegments.every((segment, index) => actualSegments[index] === segment);
