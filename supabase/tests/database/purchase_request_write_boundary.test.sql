@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(28);
 
 select ok(
   to_regprocedure('public.ops_submit_purchase_request(uuid,text,date,text,text,text,numeric,text,uuid,text,text)') is not null,
@@ -35,6 +35,9 @@ insert into public.equipment(id,plant_id,code,name,status) values
 set local role authenticated;
 set local request.jwt.claim.sub='a1000000-0000-4000-8000-000000000001';
 
+select is((select auth.uid()),'a1000000-0000-4000-8000-000000000001'::uuid,'fixture exposes authenticated subject before RPC');
+select is((select count(*) from auth.users where id='a1000000-0000-4000-8000-000000000001'),1::bigint,'authenticated fixture user exists before RPC');
+
 select lives_ok($$select public.ops_submit_purchase_request(
   'a2000000-0000-4000-8000-000000000001',
   '  Operador A  ',
@@ -48,6 +51,8 @@ select lives_ok($$select public.ops_submit_purchase_request(
   '  compostaje  ',
   '  evidencia/qa-001  '
 )$$,'authorized operator can submit a governed request');
+select is((select auth.uid()),'a1000000-0000-4000-8000-000000000001'::uuid,'authenticated subject remains stable after RPC');
+select is((select count(*) from auth.users where id='a1000000-0000-4000-8000-000000000001'),1::bigint,'authenticated fixture user still exists after RPC');
 select is((select count(*) from public.purchase_requests where plant_id='a2000000-0000-4000-8000-000000000001'),1::bigint,'RPC stores exactly one request');
 select is((select status from public.purchase_requests where plant_id='a2000000-0000-4000-8000-000000000001'),'submitted','new request is always submitted');
 select is((select requested_by_name from public.purchase_requests where plant_id='a2000000-0000-4000-8000-000000000001'),'Operador A','requester name is normalized at the write boundary');
@@ -76,5 +81,7 @@ set local request.jwt.claim.sub='a1000000-0000-4000-8000-000000000001';
 select is((select count(*) from public.purchase_requests),1::bigint,'RLS keeps another plant request invisible to the first operator');
 
 reset role;
+select is((select created_by from public.purchase_requests where plant_id='a2000000-0000-4000-8000-000000000001'),'a1000000-0000-4000-8000-000000000001'::uuid,'request provenance is physically stored outside RLS');
+select is((select actor_user_id from public.purchase_request_events pre join public.purchase_requests pr on pr.id=pre.request_id where pr.plant_id='a2000000-0000-4000-8000-000000000001' and pre.event_kind='submitted'),'a1000000-0000-4000-8000-000000000001'::uuid,'submitted-event provenance is physically stored outside RLS');
 select * from finish();
 rollback;
