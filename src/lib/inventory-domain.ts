@@ -40,6 +40,23 @@ export type InventoryMovement = {
   note?: string;
 };
 
+export type InventoryReconciliation = {
+  id: string;
+  plantId: string;
+  plant: string;
+  productId: string;
+  productName: string;
+  unit: InventoryUnit;
+  lotCode: string;
+  expectedQuantity: number;
+  countedQuantity: number;
+  differenceQuantity: number;
+  note: string;
+  evidenceUrls: string[];
+  adjustmentMovementId?: string;
+  occurredAt: string;
+};
+
 export type LotStock = {
   plantId: string;
   plant: string;

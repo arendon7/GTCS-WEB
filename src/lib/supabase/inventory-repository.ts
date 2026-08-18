@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { InventoryMovement, InventoryUnit, ProductMaster, ProductionRecord } from "@/lib/inventory-domain";
+import type { InventoryMovement, InventoryReconciliation, InventoryUnit, ProductMaster, ProductionRecord } from "@/lib/inventory-domain";
 import type { PlantAccess } from "@/lib/ops-data-contract";
 import { createClient } from "@/lib/supabase/client";
 
@@ -36,6 +36,20 @@ type MovementRow = {
   note?: string | null;
 };
 
+type ReconciliationRow = {
+  id: string;
+  plant_id: string;
+  product_id: string;
+  lot_code: string;
+  expected_quantity: number | string;
+  counted_quantity: number | string;
+  difference_quantity: number | string;
+  note: string;
+  evidence_urls?: string[] | null;
+  adjustment_movement_id?: string | null;
+  occurred_at: string;
+};
+
 export type RemoteProductionPayload = {
   plantId: string;
   productId: string;
@@ -55,6 +69,15 @@ export type RemoteDispatchPayload = {
   referenceId?: string;
 };
 
+export type RemoteReconciliationPayload = {
+  plantId: string;
+  productId: string;
+  lotCode: string;
+  countedQuantity: number;
+  note: string;
+  evidenceUrls?: string[];
+};
+
 function errorMessage(scope: string, error: { message?: string; code?: string } | null) {
   if (error?.code === "23505") return `${scope}: ya existe un registro con esa identidad.`;
   return `${scope}: ${error?.message || "error remoto desconocido"}`;
@@ -72,20 +95,34 @@ function positiveNumber(value: number | string, scope: string) {
   return parsed;
 }
 
+function nonNegativeNumber(value: number | string, scope: string) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`${scope} contiene una cantidad inválida.`);
+  return parsed;
+}
+
+function finiteNumber(value: number | string, scope: string) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) throw new Error(`${scope} contiene una cantidad inválida.`);
+  return parsed;
+}
+
 export async function loadRemoteInventory(
   access: PlantAccess[],
   client: SupabaseClient = createClient(),
-): Promise<{ products: ProductMaster[]; productions: ProductionRecord[]; movements: InventoryMovement[] }> {
-  if (access.length === 0) return { products: [], productions: [], movements: [] };
+): Promise<{ products: ProductMaster[]; productions: ProductionRecord[]; movements: InventoryMovement[]; reconciliations: InventoryReconciliation[] }> {
+  if (access.length === 0) return { products: [], productions: [], movements: [], reconciliations: [] };
   const plantDbIds = access.map((plant) => plant.dbId);
-  const [productsResult, productionsResult, movementsResult] = await Promise.all([
+  const [productsResult, productionsResult, movementsResult, reconciliationsResult] = await Promise.all([
     client.from("inventory_products").select("id,name,unit,active,created_at").order("name"),
     client.from("production_records").select("id,plant_id,product_id,quantity,lot_code,source_process,source_pile_id,completed_at,note").in("plant_id", plantDbIds).order("completed_at", { ascending: false }),
     client.from("inventory_movements").select("id,plant_id,product_id,lot_code,kind,quantity,occurred_at,reference_id,destination,note").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
+    client.from("inventory_reconciliations").select("id,plant_id,product_id,lot_code,expected_quantity,counted_quantity,difference_quantity,note,evidence_urls,adjustment_movement_id,occurred_at").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
   ]);
   if (productsResult.error) throw new Error(errorMessage("No fue posible cargar productos", productsResult.error));
   if (productionsResult.error) throw new Error(errorMessage("No fue posible cargar producción", productionsResult.error));
   if (movementsResult.error) throw new Error(errorMessage("No fue posible cargar kardex", movementsResult.error));
+  if (reconciliationsResult.error) throw new Error(errorMessage("No fue posible cargar conciliaciones", reconciliationsResult.error));
 
   const products = ((productsResult.data ?? []) as unknown as ProductRow[]).map((row): ProductMaster => ({
     id: row.id,
@@ -140,7 +177,30 @@ export async function loadRemoteInventory(
     };
   });
 
-  return { products, productions, movements };
+  const reconciliations = ((reconciliationsResult.data ?? []) as unknown as ReconciliationRow[]).map((row): InventoryReconciliation => {
+    const plant = plantMap.get(row.plant_id);
+    const product = productMap.get(row.product_id);
+    if (!plant) throw new Error(`Conciliación ${row.id} pertenece a una planta no visible.`);
+    if (!product) throw new Error(`Conciliación ${row.id} referencia un producto no visible.`);
+    return {
+      id: row.id,
+      plantId: plant.plantId,
+      plant: plant.name,
+      productId: product.id,
+      productName: product.name,
+      unit: product.unit,
+      lotCode: row.lot_code,
+      expectedQuantity: nonNegativeNumber(row.expected_quantity, `Conciliación ${row.id}`),
+      countedQuantity: nonNegativeNumber(row.counted_quantity, `Conciliación ${row.id}`),
+      differenceQuantity: finiteNumber(row.difference_quantity, `Conciliación ${row.id}`),
+      note: row.note,
+      evidenceUrls: row.evidence_urls ?? [],
+      adjustmentMovementId: row.adjustment_movement_id || undefined,
+      occurredAt: row.occurred_at,
+    };
+  });
+
+  return { products, productions, movements, reconciliations };
 }
 
 export async function createRemoteInventoryProduct(
@@ -198,4 +258,31 @@ export async function dispatchRemoteInventory(
   if (error) throw new Error(errorMessage("No fue posible registrar la salida", error));
   if (typeof data !== "string") throw new Error("La salida fue registrada pero el servidor no devolvió un identificador válido.");
   return data;
+}
+
+export async function reconcileRemoteInventory(
+  access: PlantAccess[],
+  payload: RemoteReconciliationPayload,
+  client: SupabaseClient = createClient(),
+) {
+  const { data, error } = await client.rpc("ops_reconcile_inventory", {
+    target_plant: remotePlantId(access, payload.plantId),
+    target_product: payload.productId,
+    target_lot: payload.lotCode,
+    physical_count: payload.countedQuantity,
+    reconciliation_note: payload.note,
+    reconciliation_evidence: payload.evidenceUrls ?? [],
+  });
+  if (error) throw new Error(errorMessage("No fue posible conciliar el inventario", error));
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row || typeof row.id !== "string") {
+    throw new Error("La conciliación fue registrada pero el servidor no devolvió un identificador válido.");
+  }
+  return {
+    id: row.id as string,
+    adjustmentMovementId: typeof row.adjustment_movement_id === "string" ? row.adjustment_movement_id : undefined,
+    expectedQuantity: Number(row.expected_quantity),
+    countedQuantity: Number(row.counted_quantity),
+    differenceQuantity: Number(row.difference_quantity),
+  };
 }
