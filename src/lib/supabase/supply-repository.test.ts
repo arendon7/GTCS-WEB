@@ -3,7 +3,7 @@ import { describe,expect,it,vi } from "vitest";
 import { consumeRemoteSupply,recordRemoteSupplyReceipt } from "@/lib/supabase/supply-repository";
 import type { PlantAccess } from "@/lib/ops-data-contract";
 
-const access:PlantAccess[]=[{plantId:"tamesis",dbId:"plant-db-1",name:"Támesis",role:"supervisor"}];
+const access:PlantAccess[]=[{plantId:"tamesis",dbId:"plant-db-1",code:"TAM",name:"Támesis",role:"supervisor"}];
 
 function rpcClient(result:{data:unknown;error:{message?:string}|null}){
   const rpc=vi.fn().mockResolvedValue(result);
