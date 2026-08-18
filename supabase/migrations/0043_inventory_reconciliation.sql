@@ -84,7 +84,11 @@ begin
   if length(btrim(reconciliation_note)) > 1000 then
     raise exception 'La observación de conciliación es demasiado larga.';
   end if;
-  if exists (select 1 from unnest(clean_evidence) value where nullif(btrim(value),'') is null) then
+  if exists (
+    select 1
+    from unnest(clean_evidence) as evidence(value)
+    where nullif(btrim(value),'') is null
+  ) then
     raise exception 'Las evidencias de conciliación no pueden contener valores vacíos.';
   end if;
   if not exists (select 1 from public.inventory_products p where p.id=target_product) then
