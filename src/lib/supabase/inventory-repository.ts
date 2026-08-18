@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { InventoryMovement, InventoryReconciliation, InventoryUnit, ProductMaster, ProductionOriginKind, ProductionRecord } from "@/lib/inventory-domain";
+import type { InventoryMovement, InventoryReconciliation, InventoryStockThresholdRevision, InventoryUnit, ProductMaster, ProductionOriginKind, ProductionRecord } from "@/lib/inventory-domain";
 import type { PlantAccess } from "@/lib/ops-data-contract";
 import { createClient } from "@/lib/supabase/client";
 
@@ -53,6 +53,17 @@ type ReconciliationRow = {
   occurred_at: string;
 };
 
+type ThresholdRow = {
+  id: string;
+  revision_no: number | string;
+  plant_id: string;
+  product_id: string;
+  minimum_quantity?: number | string | null;
+  note: string;
+  effective_at: string;
+  created_at: string;
+};
+
 export type RemoteProductionPayload = {
   plantId: string;
   productId: string;
@@ -79,6 +90,13 @@ export type RemoteReconciliationPayload = {
   countedQuantity: number;
   note: string;
   evidenceUrls?: string[];
+};
+
+export type RemoteStockThresholdPayload = {
+  plantId: string;
+  productId: string;
+  minimumQuantity?: number;
+  note: string;
 };
 
 function errorMessage(scope: string, error: { message?: string; code?: string } | null) {
@@ -113,19 +131,21 @@ function finiteNumber(value: number | string, scope: string) {
 export async function loadRemoteInventory(
   access: PlantAccess[],
   client: SupabaseClient = createClient(),
-): Promise<{ products: ProductMaster[]; productions: ProductionRecord[]; movements: InventoryMovement[]; reconciliations: InventoryReconciliation[] }> {
-  if (access.length === 0) return { products: [], productions: [], movements: [], reconciliations: [] };
+): Promise<{ products: ProductMaster[]; productions: ProductionRecord[]; movements: InventoryMovement[]; reconciliations: InventoryReconciliation[]; thresholdRevisions: InventoryStockThresholdRevision[] }> {
+  if (access.length === 0) return { products: [], productions: [], movements: [], reconciliations: [], thresholdRevisions: [] };
   const plantDbIds = access.map((plant) => plant.dbId);
-  const [productsResult, productionsResult, movementsResult, reconciliationsResult] = await Promise.all([
+  const [productsResult, productionsResult, movementsResult, reconciliationsResult, thresholdsResult] = await Promise.all([
     client.from("inventory_products").select("id,name,unit,reference_code,active,created_at").order("name"),
     client.from("production_records").select("id,plant_id,product_id,product_reference_code,quantity,lot_code,source_process,source_pile_id,origin_kind,completed_at,note").in("plant_id", plantDbIds).order("completed_at", { ascending: false }),
     client.from("inventory_movements").select("id,plant_id,product_id,lot_code,kind,quantity,occurred_at,reference_id,destination,note").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
     client.from("inventory_reconciliations").select("id,plant_id,product_id,lot_code,expected_quantity,counted_quantity,difference_quantity,note,evidence_urls,adjustment_movement_id,occurred_at").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
+    client.from("inventory_stock_threshold_revisions").select("id,revision_no,plant_id,product_id,minimum_quantity,note,effective_at,created_at").in("plant_id", plantDbIds).order("revision_no", { ascending: false }),
   ]);
   if (productsResult.error) throw new Error(errorMessage("No fue posible cargar productos", productsResult.error));
   if (productionsResult.error) throw new Error(errorMessage("No fue posible cargar producción", productionsResult.error));
   if (movementsResult.error) throw new Error(errorMessage("No fue posible cargar kardex", movementsResult.error));
   if (reconciliationsResult.error) throw new Error(errorMessage("No fue posible cargar conciliaciones", reconciliationsResult.error));
+  if (thresholdsResult.error) throw new Error(errorMessage("No fue posible cargar umbrales de inventario", thresholdsResult.error));
 
   const products = ((productsResult.data ?? []) as unknown as ProductRow[]).map((row): ProductMaster => ({
     id: row.id,
@@ -207,7 +227,27 @@ export async function loadRemoteInventory(
     };
   });
 
-  return { products, productions, movements, reconciliations };
+  const thresholdRevisions = ((thresholdsResult.data ?? []) as unknown as ThresholdRow[]).map((row): InventoryStockThresholdRevision => {
+    const plant = plantMap.get(row.plant_id);
+    const product = productMap.get(row.product_id);
+    if (!plant) throw new Error(`Umbral ${row.id} pertenece a una planta no visible.`);
+    if (!product) throw new Error(`Umbral ${row.id} referencia un producto no visible.`);
+    return {
+      id: row.id,
+      revisionNo: positiveNumber(row.revision_no, `Umbral ${row.id}`),
+      plantId: plant.plantId,
+      plant: plant.name,
+      productId: product.id,
+      productName: product.name,
+      unit: product.unit,
+      minimumQuantity: row.minimum_quantity === null || row.minimum_quantity === undefined ? undefined : positiveNumber(row.minimum_quantity, `Umbral ${row.id}`),
+      note: row.note,
+      effectiveAt: row.effective_at,
+      createdAt: row.created_at,
+    };
+  });
+
+  return { products, productions, movements, reconciliations, thresholdRevisions };
 }
 
 export async function createRemoteInventoryProduct(
@@ -237,6 +277,22 @@ export async function setRemoteInventoryProductReference(
   });
   if (error) throw new Error(errorMessage("No fue posible actualizar la referencia", error));
   if (typeof data !== "string") throw new Error("La referencia fue actualizada pero el servidor no devolvió un identificador válido.");
+  return data;
+}
+
+export async function setRemoteInventoryStockThreshold(
+  access: PlantAccess[],
+  payload: RemoteStockThresholdPayload,
+  client: SupabaseClient = createClient(),
+) {
+  const { data, error } = await client.rpc("ops_set_inventory_stock_threshold", {
+    target_plant: remotePlantId(access, payload.plantId),
+    target_product: payload.productId,
+    threshold_minimum_quantity: payload.minimumQuantity ?? null,
+    threshold_note: payload.note.trim(),
+  });
+  if (error) throw new Error(errorMessage("No fue posible actualizar el umbral de inventario", error));
+  if (typeof data !== "string") throw new Error("El umbral fue actualizado pero el servidor no devolvió un identificador válido.");
   return data;
 }
 

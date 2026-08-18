@@ -61,6 +61,24 @@ export type InventoryReconciliation = {
   occurredAt: string;
 };
 
+export type InventoryStockThresholdRevision = {
+  id: string;
+  revisionNo: number;
+  plantId: string;
+  plant: string;
+  productId: string;
+  productName: string;
+  unit: InventoryUnit;
+  minimumQuantity?: number;
+  note: string;
+  effectiveAt: string;
+  createdAt: string;
+};
+
+export type CurrentInventoryStockThreshold = InventoryStockThresholdRevision & {
+  configured: boolean;
+};
+
 export type LotStock = {
   plantId: string;
   plant: string;
@@ -79,6 +97,24 @@ export function stockForLot(movements: InventoryMovement[], plantId: string, pro
   return movements
     .filter((movement) => movement.plantId === plantId && movement.productId === productId && movement.lotCode === lotCode)
     .reduce((sum, movement) => sum + signedMovementQuantity(movement), 0);
+}
+
+export function stockForProduct(movements: InventoryMovement[], plantId: string, productId: string) {
+  return movements
+    .filter((movement) => movement.plantId === plantId && movement.productId === productId)
+    .reduce((sum, movement) => sum + signedMovementQuantity(movement), 0);
+}
+
+export function currentInventoryStockThresholds(revisions: InventoryStockThresholdRevision[]): CurrentInventoryStockThreshold[] {
+  const latest = new Map<string, InventoryStockThresholdRevision>();
+  for (const revision of revisions) {
+    const key = `${revision.plantId}|${revision.productId}`;
+    const current = latest.get(key);
+    if (!current || revision.revisionNo > current.revisionNo) latest.set(key, revision);
+  }
+  return [...latest.values()]
+    .map((revision) => ({ ...revision, configured: revision.minimumQuantity !== undefined }))
+    .sort((a,b) => a.plant.localeCompare(b.plant,"es") || a.productName.localeCompare(b.productName,"es"));
 }
 
 export function lotStocks(movements: InventoryMovement[]): LotStock[] {
