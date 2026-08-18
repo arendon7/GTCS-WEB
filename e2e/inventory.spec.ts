@@ -1,8 +1,15 @@
 import { test, expect } from "@playwright/test";
 
-test("production, dispatch and physical reconciliation preserve append-only stock traceability", async ({ page }) => {
-  await page.goto("/production/new");
+test("production, references, dispatch and reconciliation preserve append-only traceability", async ({ page }) => {
+  await page.goto("/inventory");
+  await page.getByLabel("Producto para referencia").selectOption("wondergreen-solido");
+  await page.getByLabel("Nueva referencia").fill("WG-SOL-QA-A");
+  await page.getByRole("button", { name: "Guardar referencia" }).click();
+  await expect(page.getByText(/Referencia actualizada/)).toBeVisible();
+
+  await page.getByRole("link", { name: "Registrar producción" }).first().click();
   await expect(page.getByRole("heading", { name: "Registrar producción" })).toBeVisible();
+  await expect(page.getByLabel("Producto terminado")).toContainText("WG-SOL-QA-A");
   await page.getByLabel(/Cantidad producida/).fill("250");
   await page.getByLabel("Proceso fuente").fill("Formulación QA");
   await page.getByRole("button", { name: "Guardar producción y entrar a inventario" }).click();
@@ -12,12 +19,24 @@ test("production, dispatch and physical reconciliation preserve append-only stoc
   await expect(production).toBeVisible();
   await expect(production).toContainText("TAM-PROD-");
   await expect(production).toContainText("250 kg");
+  await expect(production).toContainText("Ref. WG-SOL-QA-A");
+  await expect(production).toContainText("Proceso declarado");
 
   await page.getByRole("link", { name: "Ver inventario" }).click();
   const stockCard = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
   await expect(stockCard).toContainText("250 kg");
   await expect(page.getByText(/TAM-PROD-/).first()).toBeVisible();
 
+  await page.getByLabel("Producto para referencia").selectOption("wondergreen-solido");
+  await page.getByLabel("Nueva referencia").fill("WG-SOL-QA-B");
+  await page.getByRole("button", { name: "Guardar referencia" }).click();
+  await expect(page.getByText(/Referencia actualizada/)).toBeVisible();
+  await page.getByRole("link", { name: "Ver producción" }).click();
+  const historicalProduction = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
+  await expect(historicalProduction).toContainText("Ref. WG-SOL-QA-A");
+  await expect(historicalProduction).not.toContainText("Ref. WG-SOL-QA-B");
+
+  await page.getByRole("link", { name: "Ver inventario" }).click();
   await page.getByRole("link", { name: "Registrar salida" }).click();
   await expect(page.getByRole("heading", { name: "Registrar despacho / salida" })).toBeVisible();
   await page.getByLabel(/Cantidad de salida/).fill("300");
