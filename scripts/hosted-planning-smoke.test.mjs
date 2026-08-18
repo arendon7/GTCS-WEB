@@ -11,6 +11,11 @@ const baseEnv = {
   PILOT_OPERATOR_PASSWORD: "operator-test-password",
 };
 
+function fakeJwt(payload) {
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+  return `${encode({ alg: "HS256", typ: "JWT" })}.${encode(payload)}.sanitized-signature`;
+}
+
 describe("hosted planning smoke", () => {
   it("parses isolated hosted credentials and defaults the write smoke to TAM", () => {
     const config = parseHostedPlanningSmokeConfig(baseEnv);
@@ -25,11 +30,15 @@ describe("hosted planning smoke", () => {
     expect(config.plantCode).toBe("TAM");
   });
 
-  it("fails closed when the user-facing key is actually secret", () => {
+  it("fails closed when the user-facing key is secret or service-role", () => {
     expect(() => parseHostedPlanningSmokeConfig({
       ...baseEnv,
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_secret_should_never_be_used_as_public",
     })).toThrow(HostedPlanningSmokeError);
+    expect(() => parseHostedPlanningSmokeConfig({
+      ...baseEnv,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: fakeJwt({ role: "service_role" }),
+    })).toThrow(/service_role/);
   });
 
   it("requires distinct director and operator identities", () => {
