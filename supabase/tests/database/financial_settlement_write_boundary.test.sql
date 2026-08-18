@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(39);
+select plan(40);
 
 select ok(
   to_regprocedure('public.record_sale_collection(uuid,numeric,date,text,text,text)') is not null,
