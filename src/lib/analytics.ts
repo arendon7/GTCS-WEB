@@ -12,10 +12,12 @@ export type RankedValue = { id: string; label: string; value: number; detail?: s
 export type TrendPoint = { key: string; label: string; receivedKg: number; laborHours: number; downtimeMinutes: number };
 export type OperationalEvent = { id: string; at: string; plant: string; kind: "activity" | "reception" | "maintenance" | "compost"; title: string; detail: string };
 export type PlantComparisonRow = { plantId: string; plant: string; receivedKg: number; rejectionPct: number; laborHours: number; compliancePct: number; downtimeMinutes: number; attention: number };
+export type DataQualityAlert = { id: string; severity: "warning" | "info"; title: string; detail: string; count: number };
 
 export type DashboardAnalytics = {
   period: DashboardPeriod;
   receivedKg: number;
+  processedKg: number;
   rejectionKg: number;
   rejectionPct: number;
   rejectionCoveragePct: number;
@@ -30,6 +32,7 @@ export type DashboardAnalytics = {
   nonConformingReceipts: number;
   openIncidents: number;
   maintenanceTickets: number;
+  openMaintenanceAtPeriodEnd: number;
   activePiles: number;
   maturingPiles: number;
   closedPilesInPeriod: number;
@@ -41,6 +44,7 @@ export type DashboardAnalytics = {
   plantComparison: PlantComparisonRow[];
   events: OperationalEvent[];
   latestCompost: Array<{ pileId: string; code: string; plant: string; status: CompostPile["status"]; temperatureC?: number; humidityPct?: number; recordedAt?: string }>;
+  dataQualityAlerts: DataQualityAlert[];
   dataCounts: { activities: number; receptions: number; tickets: number; piles: number };
 };
 
@@ -82,6 +86,12 @@ function filterPlant<T extends { plantId: string }>(items: T[], plantId: PlantFi
 function pct(numerator: number, denominator: number) { return denominator > 0 ? (numerator / denominator) * 100 : 0; }
 function isNonConforming(receipt: ReceptionRecord) { return receipt.acceptance === "conditioned" || receipt.acceptance === "rejected"; }
 function hasKnownRejection(receipt: ReceptionRecord) { return receipt.rejectionKnown !== false; }
+function isMaintenanceOpenAtPeriodEnd(ticket: MaintenanceTicket, period: DashboardPeriod) {
+  const { endMs } = periodBounds(period);
+  const openedMs = new Date(ticket.openedAt).getTime();
+  const closedMs = ticket.closedAt ? new Date(ticket.closedAt).getTime() : undefined;
+  return openedMs < endMs && (closedMs === undefined || closedMs >= endMs);
+}
 function hasPlanningDeviation(activity: ActivityRecord) {
   if (activity.status === "delayed" || activity.status === "missed") return true;
   if (activity.deviationReason?.trim()) return true;
@@ -108,7 +118,7 @@ function summarizePlant(plantId: string, plantName: string, period: DashboardPer
   const rejectionKg = knownRejectionReceipts.reduce((sum, item) => sum + item.rejectionKg, 0);
   const delayed = scheduled.filter(hasPlanningDeviation).length;
   const nonConforming = receipts.filter(isNonConforming).length;
-  const activeTickets = tickets.filter((item) => item.status !== "closed" && overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso) > 0).length;
+  const activeTickets = tickets.filter((item) => isMaintenanceOpenAtPeriodEnd(item, period)).length;
   return { plantId, plant: plantName, receivedKg, rejectionPct: pct(rejectionKg, rejectionBasisKg), laborHours, compliancePct: pct(compliant.length, scheduled.length), downtimeMinutes, attention: delayed + nonConforming + incidents.length + activeTickets };
 }
 
@@ -131,6 +141,7 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   const compliantScheduled = executedScheduled.filter((item) => !hasPlanningDeviation(item));
   const delayed = scheduled.filter(hasPlanningDeviation);
   const unplanned = activities.filter((item) => item.source === "unplanned" && inPeriod(item.actualStart, period));
+  const processedKg = piles.filter((item) => inPeriod(item.startedAt, period)).reduce((sum, item) => sum + item.initialWeightKg, 0);
 
   const processMap = new Map<string, { label: string; value: number }>();
   const workerMap = new Map<string, { label: string; value: number; detail?: string }>();
@@ -161,10 +172,17 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   }
 
   const openIncidents = incidents.filter((item) => item.status === "open" && inPeriod(item.openedAt, period)).length;
-  const activeMaintenance = tickets.filter((item) => item.status !== "closed" && overlapMinutes(item.openedAt, item.closedAt, period, input.nowIso) > 0).length;
+  const openMaintenanceAtPeriodEnd = tickets.filter((item) => isMaintenanceOpenAtPeriodEnd(item, period)).length;
   const closedPiles = piles.filter((item) => item.status === "closed" && inPeriod(item.closedAt, period));
   const averageClosedYieldPct = closedPiles.length ? closedPiles.reduce((sum, item) => sum + compostYieldPct(item), 0) / closedPiles.length : 0;
   const latestCompost = piles.filter((item) => item.status !== "closed").map((pile) => { const latest = input.measurements.filter((measurement) => measurement.pileId === pile.id).sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())[0]; return { pileId: pile.id, code: pile.code, plant: pile.plant, status: pile.status, temperatureC: latest ? averageTemperature(latest) : undefined, humidityPct: latest?.humidityPct, recordedAt: latest?.recordedAt }; }).slice(0, 6);
+
+  const unknownRejectionReceipts = periodReceipts.filter((item) => !hasKnownRejection(item));
+  const unknownAcceptanceReceipts = periodReceipts.filter((item) => item.acceptance === "unknown");
+  const rejectionCoveragePct = pct(rejectionBasisKg, receivedKg);
+  const dataQualityAlerts: DataQualityAlert[] = [];
+  if (unknownRejectionReceipts.length > 0) dataQualityAlerts.push({ id: "rejection-unquantified", severity: "warning", title: "Rechazo sin cuantificar", detail: `${unknownRejectionReceipts.length} recepción${unknownRejectionReceipts.length === 1 ? "" : "es"} no permite${unknownRejectionReceipts.length === 1 ? "" : "n"} calcular masa de rechazo. Cobertura: ${rejectionCoveragePct.toFixed(1)}%.`, count: unknownRejectionReceipts.length });
+  if (unknownAcceptanceReceipts.length > 0) dataQualityAlerts.push({ id: "acceptance-unknown", severity: "info", title: "Aceptación histórica no determinada", detail: `${unknownAcceptanceReceipts.length} recepción${unknownAcceptanceReceipts.length === 1 ? "" : "es"} conserva${unknownAcceptanceReceipts.length === 1 ? "" : "n"} aceptación desconocida; no se clasifica como conformidad ni no conformidad.`, count: unknownAcceptanceReceipts.length });
 
   const trend = splitIntoBuckets(period).map((bucket) => { const bucketPeriod: DashboardPeriod = { ...period, startKey: bucket.startKey, endKey: bucket.endKey }; return { key: bucket.key, label: bucket.label, receivedKg: receptions.filter((item) => inPeriod(item.endedAt, bucketPeriod)).reduce((sum, item) => sum + item.netWeightKg, 0), laborHours: activities.reduce((sum, item) => sum + overlapMinutes(item.actualStart, item.actualEnd, bucketPeriod, input.nowIso) * item.workerIds.length / 60, 0), downtimeMinutes: tickets.reduce((sum, item) => sum + overlapMinutes(item.openedAt, item.closedAt, bucketPeriod, input.nowIso), 0) }; });
 
@@ -183,9 +201,10 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   return {
     period,
     receivedKg,
+    processedKg,
     rejectionKg,
     rejectionPct: pct(rejectionKg, rejectionBasisKg),
-    rejectionCoveragePct: pct(rejectionBasisKg, receivedKg),
+    rejectionCoveragePct,
     laborHours,
     downtimeMinutes,
     scheduledCount: scheduled.length,
@@ -193,10 +212,11 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
     delayedCount: delayed.length,
     unplannedCount: unplanned.length,
     compliancePct: pct(compliantScheduled.length, scheduled.length),
-    exceptionsCount: delayed.length + nonConformingReceipts + openIncidents + activeMaintenance,
+    exceptionsCount: delayed.length + nonConformingReceipts + openIncidents + openMaintenanceAtPeriodEnd,
     nonConformingReceipts,
     openIncidents,
     maintenanceTickets,
+    openMaintenanceAtPeriodEnd,
     activePiles: piles.filter((item) => item.status === "active").length,
     maturingPiles: piles.filter((item) => item.status === "maturing").length,
     closedPilesInPeriod: closedPiles.length,
@@ -208,12 +228,13 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
     plantComparison: [...plantNames.entries()].map(([id, name]) => summarizePlant(id, name, period, input)).sort((a, b) => a.plant.localeCompare(b.plant, "es")),
     events,
     latestCompost,
+    dataQualityAlerts,
     dataCounts: { activities: activities.filter((item) => overlapMinutes(item.actualStart, item.actualEnd, period, input.nowIso) > 0 || inPeriod(item.plannedStart, period)).length, receptions: periodReceipts.length, tickets: maintenanceTickets, piles: piles.filter((item) => inPeriod(item.startedAt, period) || inPeriod(item.closedAt, period) || item.status !== "closed").length },
   };
 }
 
 function csvCell(value: string | number) { const text = String(value); return /[;"\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text; }
 export function analyticsCsv(analytics: DashboardAnalytics) {
-  const rows: Array<Array<string | number>> = [["GREENATICS OPS", analytics.period.label], [], ["Indicador", "Valor"], ["Recibido kg", analytics.receivedKg.toFixed(2)], ["Rechazo kg cuantificado", analytics.rejectionKg.toFixed(2)], ["Rechazo % sobre masa con dato", analytics.rejectionPct.toFixed(2)], ["Cobertura rechazo %", analytics.rejectionCoveragePct.toFixed(2)], ["Horas-hombre", analytics.laborHours.toFixed(2)], ["Cumplimiento %", analytics.compliancePct.toFixed(2)], ["Parada min", analytics.downtimeMinutes.toFixed(2)], ["Excepciones", analytics.exceptionsCount], [], ["Periodo", "Recibido kg", "Horas-hombre", "Parada min"], ...analytics.trend.map((point) => [point.label, point.receivedKg.toFixed(2), point.laborHours.toFixed(2), point.downtimeMinutes.toFixed(2)])];
+  const rows: Array<Array<string | number>> = [["GREENATICS OPS", analytics.period.label], [], ["Indicador", "Valor"], ["Recibido kg", analytics.receivedKg.toFixed(2)], ["Procesado kg (peso inicial medido de pilas iniciadas)", analytics.processedKg.toFixed(2)], ["Rechazo kg cuantificado", analytics.rejectionKg.toFixed(2)], ["Rechazo % sobre masa con dato", analytics.rejectionPct.toFixed(2)], ["Cobertura rechazo %", analytics.rejectionCoveragePct.toFixed(2)], ["Horas-hombre", analytics.laborHours.toFixed(2)], ["Cumplimiento %", analytics.compliancePct.toFixed(2)], ["Parada min", analytics.downtimeMinutes.toFixed(2)], ["Mantenimientos abiertos al cierre", analytics.openMaintenanceAtPeriodEnd], ["Excepciones operativas", analytics.exceptionsCount], ["Alertas calidad de datos", analytics.dataQualityAlerts.length], [], ["Periodo", "Recibido kg", "Horas-hombre", "Parada min"], ...analytics.trend.map((point) => [point.label, point.receivedKg.toFixed(2), point.laborHours.toFixed(2), point.downtimeMinutes.toFixed(2)])];
   return `\uFEFF${rows.map((row) => row.map(csvCell).join(";")).join("\n")}`;
 }
