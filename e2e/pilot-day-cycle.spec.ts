@@ -66,6 +66,8 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await page.waitForURL((url) => url.pathname.startsWith("/compost/") && url.pathname !== "/compost/new");
   const pileId = new URL(page.url()).pathname.split("/").filter(Boolean).at(-1);
   expect(pileId).toBeTruthy();
+  const pileCode = (await page.getByRole("heading", { level: 1 }).textContent())?.trim();
+  expect(pileCode).toMatch(/^TAM-COMP-/);
 
   await page.getByLabel("Temperatura punto 1 (°C)").fill("58");
   await page.getByLabel("Temperatura punto 2 (°C)").fill("58");
@@ -89,7 +91,8 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await expect(page).toHaveURL(/\/production$/);
   const production = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
   await expect(production).toContainText("300 kg");
-  await expect(production).toContainText("Pila cerrada");
+  await expect(production).toContainText("Pila de compost");
+  await expect(production).toContainText(pileCode!);
 
   // 7) The same production is the current physical stock.
   await page.goto("/inventory");
