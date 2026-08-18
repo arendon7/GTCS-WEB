@@ -45,6 +45,7 @@ test("maintenance ticket follows stopped to repairing to available", async ({ pa
   await expect(page.getByText("En reparación", { exact: true }).first()).toBeVisible();
   await page.getByLabel("Causa encontrada").fill("QA causa verificada");
   await page.getByLabel("Acción realizada").fill("QA ajuste ejecutado");
+  await page.getByRole("group", { name: "Trabajadores de reparación" }).getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Cerrar reparación" }).click();
   await expect(page.getByText("Disponible", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Reparación cerrada y equipo disponible.")).toBeVisible();
