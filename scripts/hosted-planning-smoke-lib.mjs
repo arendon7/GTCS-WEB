@@ -92,29 +92,54 @@ async function single(query, label) {
   return data;
 }
 
+async function discoverFreeWorker(admin, plantId) {
+  const { data: workers, error: workerError } = await admin
+    .from("employees")
+    .select("id,plant_id,display_name,active")
+    .eq("plant_id", plantId)
+    .eq("active", true)
+    .order("display_name");
+  if (workerError) throw new HostedPlanningSmokeError(`No fue posible consultar trabajadores: ${workerError.message || "error remoto"}.`);
+  if (!Array.isArray(workers) || workers.length === 0) throw new HostedPlanningSmokeError("La planta no tiene trabajadores activos para certificar ejecución.");
+
+  const { data: openActivities, error: activityError } = await admin
+    .from("activities")
+    .select("id")
+    .eq("plant_id", plantId)
+    .is("ended_at", null);
+  if (activityError) throw new HostedPlanningSmokeError(`No fue posible validar actividades abiertas: ${activityError.message || "error remoto"}.`);
+  const openIds = Array.isArray(openActivities) ? openActivities.map((row) => row.id).filter(Boolean) : [];
+  if (!openIds.length) return workers[0];
+
+  const { data: busyRows, error: busyError } = await admin
+    .from("activity_workers")
+    .select("employee_id")
+    .in("activity_id", openIds);
+  if (busyError) throw new HostedPlanningSmokeError(`No fue posible validar trabajadores ocupados: ${busyError.message || "error remoto"}.`);
+  const busy = new Set((busyRows || []).map((row) => row.employee_id));
+  const worker = workers.find((row) => !busy.has(row.id));
+  if (!worker) throw new HostedPlanningSmokeError("Todos los trabajadores activos de la planta tienen una actividad real abierta; el smoke no interferirá con ellas.");
+  return worker;
+}
+
 async function discoverResources(admin, plantCode) {
   const plant = await single(admin.from("plants").select("id,code,name,active").eq("code", plantCode).eq("active", true), `Planta piloto ${plantCode}`);
   const { data: templates, error: templateError } = await admin
     .from("activity_templates")
-    .select("id,plant_id,process_id,code,name,requires_equipment,active")
+    .select("id,plant_id,process_id,code,name,requires_equipment,requires_quantity,default_unit_code,active")
     .eq("plant_id", plant.id)
     .eq("active", true)
     .order("requires_equipment", { ascending: true })
+    .order("requires_quantity", { ascending: true })
     .order("code");
   if (templateError) throw new HostedPlanningSmokeError(`No fue posible consultar plantillas: ${templateError.message || "error remoto"}.`);
   if (!Array.isArray(templates) || templates.length === 0) throw new HostedPlanningSmokeError(`La planta ${plantCode} no tiene plantillas activas para certificar planificación.`);
 
-  const { data: workers, error: workerError } = await admin
-    .from("employees")
-    .select("id,plant_id,display_name,active")
-    .eq("plant_id", plant.id)
-    .eq("active", true)
-    .order("display_name");
-  if (workerError) throw new HostedPlanningSmokeError(`No fue posible consultar trabajadores: ${workerError.message || "error remoto"}.`);
-  if (!Array.isArray(workers) || workers.length === 0) throw new HostedPlanningSmokeError(`La planta ${plantCode} no tiene trabajadores activos para certificar planificación.`);
+  const worker = await discoverFreeWorker(admin, plant.id);
 
   for (const template of templates) {
-    if (!template.requires_equipment) return Object.freeze({ plant, template, worker: workers[0], equipment: null });
+    if (template.requires_quantity && !clean(template.default_unit_code)) continue;
+    if (!template.requires_equipment) return Object.freeze({ plant, template, worker, equipment: null });
     const { data: links, error: linkError } = await admin
       .from("equipment_processes")
       .select("equipment_id,active")
@@ -131,10 +156,10 @@ async function discoverResources(admin, plantCode) {
       .in("id", equipmentIds)
       .order("code");
     if (equipmentError) throw new HostedPlanningSmokeError(`No fue posible consultar equipos: ${equipmentError.message || "error remoto"}.`);
-    if (Array.isArray(equipmentRows) && equipmentRows.length) return Object.freeze({ plant, template, worker: workers[0], equipment: equipmentRows[0] });
+    if (Array.isArray(equipmentRows) && equipmentRows.length) return Object.freeze({ plant, template, worker, equipment: equipmentRows[0] });
   }
 
-  throw new HostedPlanningSmokeError(`La planta ${plantCode} no tiene una combinación activa plantilla/equipo apta para certificar planificación.`);
+  throw new HostedPlanningSmokeError(`La planta ${plantCode} no tiene una combinación activa plantilla/trabajador/equipo apta para certificar plan vs real.`);
 }
 
 function candidateWindows(now = new Date()) {
@@ -157,7 +182,7 @@ async function createDirectorSchedule(client, resources, now) {
       ends_at: window.end,
       employee_ids: [resources.worker.id],
       target_equipment: resources.equipment?.id || null,
-      planning_note: "UAT hosted planning smoke · fila temporal",
+      planning_note: "UAT hosted plan-vs-real smoke · fila temporal",
     });
     if (!error && typeof data === "string") return Object.freeze({ id: data, ...window });
     lastError = error;
@@ -181,23 +206,74 @@ async function assertOperatorWriteDenied(client, resources, window) {
   }
 }
 
-async function assertScheduleVisible(client, scheduleId, label) {
+async function readSchedule(client, scheduleId, label, expectedStatus) {
   const { data, error } = await client
     .from("scheduled_activities")
     .select("id,plant_id,title,status,planned_start,planned_end")
     .eq("id", scheduleId)
     .maybeSingle();
   if (error) throw new HostedPlanningSmokeError(`${label} no pudo leer la programación UAT: ${error.message || "error remoto"}.`);
-  if (!data || data.id !== scheduleId || data.status !== "planned") {
-    throw new HostedPlanningSmokeError(`${label} no ve la programación UAT esperada por RLS.`);
+  if (!data || data.id !== scheduleId || data.status !== expectedStatus) {
+    throw new HostedPlanningSmokeError(`${label} no ve la programación UAT en estado ${expectedStatus}.`);
   }
   return data;
 }
 
-async function cleanup(admin, scheduleId) {
-  if (!scheduleId) return;
-  const { error } = await admin.from("scheduled_activities").delete().eq("id", scheduleId);
-  if (error) throw new HostedPlanningSmokeError(`No fue posible limpiar la programación UAT ${scheduleId}: ${error.message || "error remoto"}.`);
+async function startScheduledActivity(operator, resources, scheduleId) {
+  const { data, error } = await operator.rpc("ops_start_scheduled_activity", {
+    scheduled_id: scheduleId,
+    employee_ids: [resources.worker.id],
+  });
+  if (error) throw new HostedPlanningSmokeError(`El operario no pudo iniciar la programación UAT: ${error.message || "error remoto"}.`);
+  if (typeof data !== "string") throw new HostedPlanningSmokeError("La ejecución UAT inició sin devolver un activity_id válido.");
+  return data;
+}
+
+async function readActivity(client, activityId, scheduleId, expectedFinished) {
+  const { data, error } = await client
+    .from("activities")
+    .select("id,plant_id,scheduled_activity_id,title,started_at,ended_at,quantity,unit")
+    .eq("id", activityId)
+    .maybeSingle();
+  if (error) throw new HostedPlanningSmokeError(`No fue posible leer la ejecución UAT: ${error.message || "error remoto"}.`);
+  if (!data || data.id !== activityId || data.scheduled_activity_id !== scheduleId) {
+    throw new HostedPlanningSmokeError("La actividad real UAT perdió el vínculo exacto con su programación.");
+  }
+  if (expectedFinished ? !data.ended_at : Boolean(data.ended_at)) {
+    throw new HostedPlanningSmokeError(`La actividad UAT no refleja el cierre esperado (${expectedFinished ? "finalizada" : "en curso"}).`);
+  }
+  return data;
+}
+
+async function finishActivity(operator, resources, activityId) {
+  const quantity = resources.template.requires_quantity ? 1 : null;
+  const unit = quantity === null ? null : clean(resources.template.default_unit_code);
+  const { data, error } = await operator.rpc("ops_finish_activity_v2", {
+    target_activity: activityId,
+    result_quantity: quantity,
+    result_unit: unit,
+    novelty_kind: null,
+    novelty_notes: null,
+    open_incident: false,
+    activity_comment: "UAT hosted plan-vs-real smoke · ejecución temporal",
+    tool_ids: [],
+  });
+  if (error) throw new HostedPlanningSmokeError(`El operario no pudo finalizar la actividad UAT: ${error.message || "error remoto"}.`);
+  if (typeof data !== "string" || Number.isNaN(Date.parse(data))) {
+    throw new HostedPlanningSmokeError("La actividad UAT finalizó sin devolver una hora válida.");
+  }
+  return data;
+}
+
+async function cleanup(admin, activityId, scheduleId) {
+  if (activityId) {
+    const { error: activityError } = await admin.from("activities").delete().eq("id", activityId);
+    if (activityError) throw new HostedPlanningSmokeError(`No fue posible limpiar la actividad UAT ${activityId}: ${activityError.message || "error remoto"}.`);
+  }
+  if (scheduleId) {
+    const { error: scheduleError } = await admin.from("scheduled_activities").delete().eq("id", scheduleId);
+    if (scheduleError) throw new HostedPlanningSmokeError(`No fue posible limpiar la programación UAT ${scheduleId}: ${scheduleError.message || "error remoto"}.`);
+  }
 }
 
 export async function runHostedPlanningSmoke({ env = process.env, createClientImpl = createSupabaseClient, now = new Date() } = {}) {
@@ -208,6 +284,7 @@ export async function runHostedPlanningSmoke({ env = process.env, createClientIm
   let directorSignedIn = false;
   let operatorSignedIn = false;
   let scheduleId;
+  let activityId;
   let primaryError;
 
   try {
@@ -219,28 +296,47 @@ export async function runHostedPlanningSmoke({ env = process.env, createClientIm
 
     const schedule = await createDirectorSchedule(director, resources, now);
     scheduleId = schedule.id;
-    const directorRow = await assertScheduleVisible(director, scheduleId, "Director");
-    const operatorRow = await assertScheduleVisible(operator, scheduleId, "Operario");
+    const directorRow = await readSchedule(director, scheduleId, "Director", "planned");
+    await readSchedule(operator, scheduleId, "Operario", "planned");
     await assertOperatorWriteDenied(operator, resources, schedule);
+
+    activityId = await startScheduledActivity(operator, resources, scheduleId);
+    await readSchedule(operator, scheduleId, "Operario", "running");
+    await readActivity(operator, activityId, scheduleId, false);
+
+    await finishActivity(operator, resources, activityId);
+    await readActivity(operator, activityId, scheduleId, true);
+    await readSchedule(director, scheduleId, "Director", "done");
 
     return Object.freeze({
       plantCode: config.plantCode,
       scheduleId,
+      activityId,
       templateCode: String(resources.template.code || ""),
       workerName: String(resources.worker.display_name || ""),
       equipmentCode: resources.equipment ? String(resources.equipment.code || "") : null,
-      title: String(directorRow.title || operatorRow.title || ""),
-      checks: Object.freeze(["director-write", "director-read", "operator-read", "operator-write-denied", "cleanup"]),
+      title: String(directorRow.title || ""),
+      checks: Object.freeze([
+        "director-plan-write",
+        "operator-plan-read",
+        "operator-plan-write-denied",
+        "operator-start-real",
+        "plan-running",
+        "plan-real-link",
+        "operator-finish-real",
+        "plan-done",
+        "cleanup",
+      ]),
     });
   } catch (error) {
     primaryError = error;
     throw error;
   } finally {
     try {
-      await cleanup(admin, scheduleId);
+      await cleanup(admin, activityId, scheduleId);
     } catch (cleanupError) {
       if (!primaryError) throw cleanupError;
-      console.error(`GREENATICS hosted planning cleanup warning · ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
+      console.error(`GREENATICS hosted plan-vs-real cleanup warning · ${cleanupError instanceof Error ? cleanupError.message : String(cleanupError)}`);
     }
     if (operatorSignedIn) await safeSignOut(operator);
     if (directorSignedIn) await safeSignOut(director);
