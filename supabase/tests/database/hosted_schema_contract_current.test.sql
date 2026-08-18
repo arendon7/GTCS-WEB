@@ -7,15 +7,48 @@ select ok(
   'hosted schema contract RPC exists'
 );
 select ok(
-  has_function_privilege('service_role','public.admin_hosted_schema_contract()','EXECUTE'),
+  exists (
+    select 1
+    from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+    cross join lateral pg_catalog.aclexplode(coalesce(p.proacl, pg_catalog.acldefault('f', p.proowner))) acl
+    join pg_catalog.pg_roles r on r.oid = acl.grantee
+    where n.nspname = 'public'
+      and p.proname = 'admin_hosted_schema_contract'
+      and pg_catalog.pg_get_function_identity_arguments(p.oid) = ''
+      and r.rolname = 'service_role'
+      and acl.privilege_type = 'EXECUTE'
+  ),
   'service_role can execute hosted schema contract'
 );
 select ok(
-  not has_function_privilege('authenticated','public.admin_hosted_schema_contract()','EXECUTE'),
+  not exists (
+    select 1
+    from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+    cross join lateral pg_catalog.aclexplode(coalesce(p.proacl, pg_catalog.acldefault('f', p.proowner))) acl
+    join pg_catalog.pg_roles r on r.oid = acl.grantee
+    where n.nspname = 'public'
+      and p.proname = 'admin_hosted_schema_contract'
+      and pg_catalog.pg_get_function_identity_arguments(p.oid) = ''
+      and r.rolname = 'authenticated'
+      and acl.privilege_type = 'EXECUTE'
+  ),
   'authenticated cannot execute hosted schema contract'
 );
 select ok(
-  not has_function_privilege('anon','public.admin_hosted_schema_contract()','EXECUTE'),
+  not exists (
+    select 1
+    from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+    cross join lateral pg_catalog.aclexplode(coalesce(p.proacl, pg_catalog.acldefault('f', p.proowner))) acl
+    join pg_catalog.pg_roles r on r.oid = acl.grantee
+    where n.nspname = 'public'
+      and p.proname = 'admin_hosted_schema_contract'
+      and pg_catalog.pg_get_function_identity_arguments(p.oid) = ''
+      and r.rolname = 'anon'
+      and acl.privilege_type = 'EXECUTE'
+  ),
   'anon cannot execute hosted schema contract'
 );
 select is(
