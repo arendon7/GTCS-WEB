@@ -32,8 +32,22 @@ export async function loadRemotePurchaseRequests(access:PlantAccess[],client:Sup
 }
 
 export async function submitRemotePurchaseRequest(access:PlantAccess[],payload:NewPurchaseRequest,client:SupabaseClient=createClient()){
-  const {data,error}=await client.from("purchase_requests").insert({plant_id:remotePlantId(access,payload.plantId),requested_by_name:payload.requestedBy.trim(),needed_by:payload.neededBy||null,category:payload.category,concept:payload.concept.trim(),justification:payload.justification.trim(),estimated_amount_cop:payload.estimatedAmountCop,suggested_supplier:payload.suggestedSupplier?.trim()||null,equipment_id:payload.equipmentId||null,process_ref:payload.processRef?.trim()||null,evidence_ref:payload.evidenceRef?.trim()||null,status:"submitted"}).select("id").single();
-  if(error)throw new Error(errorMessage("No fue posible enviar la solicitud",error));if(!data||typeof data.id!=="string")throw new Error("La solicitud se registró pero el servidor no devolvió un identificador válido.");return data.id as string;
+  const {data,error}=await client.rpc("ops_submit_purchase_request",{
+    target_plant:remotePlantId(access,payload.plantId),
+    requester_name:payload.requestedBy,
+    needed_by_date:payload.neededBy||null,
+    request_category:payload.category,
+    request_concept:payload.concept,
+    request_justification:payload.justification,
+    request_estimated_amount_cop:payload.estimatedAmountCop,
+    request_suggested_supplier:payload.suggestedSupplier||null,
+    target_equipment:payload.equipmentId||null,
+    request_process_ref:payload.processRef||null,
+    request_evidence_ref:payload.evidenceRef||null,
+  });
+  if(error)throw new Error(errorMessage("No fue posible enviar la solicitud",error));
+  if(typeof data!=="string")throw new Error("La solicitud se registró pero el servidor no devolvió un identificador válido.");
+  return data;
 }
 
 export async function decideRemotePurchaseRequest(requestId:string,decision:"approved"|"rejected",actor:string,note:string|undefined,client:SupabaseClient=createClient()){
