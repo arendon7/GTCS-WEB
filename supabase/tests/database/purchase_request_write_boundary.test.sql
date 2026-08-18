@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(24);
 
 select ok(
   to_regprocedure('public.ops_submit_purchase_request(uuid,text,date,text,text,text,numeric,text,uuid,text,text)') is not null,
@@ -55,6 +55,7 @@ select is((select concept from public.purchase_requests where plant_id='a2000000
 select is((select count(*) from public.purchase_request_events where event_kind='submitted'),1::bigint,'canonical submitted event is created exactly once');
 select is((select actor_name from public.purchase_request_events where event_kind='submitted'),'Operador A','submitted event preserves normalized requester identity');
 select is((select created_by from public.purchase_requests where plant_id='a2000000-0000-4000-8000-000000000001'),'a1000000-0000-4000-8000-000000000001'::uuid,'request preserves authenticated creator provenance');
+select is((select actor_user_id from public.purchase_request_events where event_kind='submitted'),'a1000000-0000-4000-8000-000000000001'::uuid,'submitted event preserves the same authenticated actor provenance');
 
 select throws_ok($$select public.ops_submit_purchase_request(
   'a2000000-0000-4000-8000-000000000001','Operador A',null,'operations','Monto inválido','Prueba',0,null,null,null,null
