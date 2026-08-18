@@ -13,7 +13,7 @@ import {
 } from "@/lib/supabase/inventory-repository";
 import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
 
-const STORAGE_KEY = "greenatics-ops-inventory-mvp-007";
+const STORAGE_KEY = "greenatics-ops-inventory-mvp-006";
 
 const seedProducts: ProductMaster[] = [
   { id:"wondergreen-solido", name:"Wondergreen sólido", unit:"kg", active:true, createdAt:"2026-08-11T00:00:00-05:00" },
