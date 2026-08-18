@@ -16,7 +16,7 @@ select ok(exists(
 select ok(to_regprocedure('private.insert_maintenance_repair_activity(uuid,uuid[],timestamp with time zone,text,text)') is not null,'private maintenance activity bridge exists');
 select ok(not has_function_privilege('authenticated','private.insert_maintenance_repair_activity(uuid,uuid[],timestamp with time zone,text,text)','EXECUTE'),'authenticated cannot execute private maintenance bridge');
 select ok(has_function_privilege('authenticated','public.ops_close_equipment_repair_v2(uuid,timestamp with time zone,text,text,uuid[],text[],numeric[],text[],uuid[])','EXECUTE'),'authenticated can execute worker-aware repair close');
-select ok(not has_function_privilege('authenticated','public.ops_close_equipment_repair_v2(uuid,timestamp with time zone,text,text,uuid[],text[],numeric[],text[])','EXECUTE'),'legacy repair close overload cannot bypass workers');
+select ok(to_regprocedure('public.ops_close_equipment_repair_v2(uuid,timestamp with time zone,text,text,uuid[],text[],numeric[],text[])') is null,'legacy repair close overload is removed');
 
 insert into auth.users(id,email,created_at,updated_at) values
  ('c1000000-0000-4000-8000-000000000001','mnt-link-tech@greenatics.test',now(),now());
