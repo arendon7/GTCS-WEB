@@ -1,10 +1,22 @@
 import type { DashboardPeriod, PlantFilter } from "@/lib/analytics";
-import { aggregateProductStocks, lotStocks, type InventoryMovement, type InventoryUnit, type ProductionRecord } from "@/lib/inventory-domain";
+import { aggregateProductStocks, lotStocks, stockForProduct, type CurrentInventoryStockThreshold, type InventoryMovement, type InventoryUnit, type ProductMaster, type ProductionRecord } from "@/lib/inventory-domain";
 import { bogotaDateKey } from "@/lib/time";
 
 export type UnitMetric = { unit: InventoryUnit; quantity: number };
 export type ProductMetric = { productId: string; productName: string; unit: InventoryUnit; quantity: number; plant?: string; lots?: number };
 export type InventoryAnalyticsEvent = { id: string; at: string; plant: string; kind: "production" | "dispatch" | "adjustment"; title: string; detail: string };
+export type InventoryCriticalityStatus = "critical" | "ok" | "unconfigured";
+export type InventoryCriticalityRow = {
+  plantId: string;
+  plant: string;
+  productId: string;
+  productName: string;
+  unit: InventoryUnit;
+  stockQuantity: number;
+  minimumQuantity?: number;
+  status: InventoryCriticalityStatus;
+  thresholdNote?: string;
+};
 
 export type InventoryAnalytics = {
   productionByUnit: UnitMetric[];
@@ -47,6 +59,41 @@ function productMetrics(items: Array<{ productId: string; productName: string; u
     totals.set(key, current);
   }
   return [...totals.values()].sort((a,b) => b.quantity - a.quantity || a.productName.localeCompare(b.productName,"es"));
+}
+
+export function buildInventoryCriticality(input: {
+  products: ProductMaster[];
+  movements: InventoryMovement[];
+  thresholds: CurrentInventoryStockThreshold[];
+  plantId: PlantFilter;
+}): InventoryCriticalityRow[] {
+  const productMap = new Map(input.products.filter((product)=>product.active).map((product)=>[product.id,product]));
+  const thresholdMap = new Map(input.thresholds.map((threshold)=>[`${threshold.plantId}|${threshold.productId}`,threshold]));
+  const candidateMap = new Map<string,{plantId:string;plant:string;productId:string}>();
+
+  for (const movement of input.movements) {
+    if (input.plantId !== "all" && movement.plantId !== input.plantId) continue;
+    if (!productMap.has(movement.productId)) continue;
+    candidateMap.set(`${movement.plantId}|${movement.productId}`,{plantId:movement.plantId,plant:movement.plant,productId:movement.productId});
+  }
+  for (const threshold of input.thresholds) {
+    if (input.plantId !== "all" && threshold.plantId !== input.plantId) continue;
+    if (!productMap.has(threshold.productId)) continue;
+    candidateMap.set(`${threshold.plantId}|${threshold.productId}`,{plantId:threshold.plantId,plant:threshold.plant,productId:threshold.productId});
+  }
+
+  return [...candidateMap.entries()].map(([key,candidate]):InventoryCriticalityRow=>{
+    const product=productMap.get(candidate.productId)!;
+    const threshold=thresholdMap.get(key);
+    const stockQuantity=stockForProduct(input.movements,candidate.plantId,candidate.productId);
+    if (!threshold?.configured || threshold.minimumQuantity === undefined) {
+      return {plantId:candidate.plantId,plant:candidate.plant,productId:product.id,productName:product.name,unit:product.unit,stockQuantity,status:"unconfigured",thresholdNote:threshold?.note};
+    }
+    return {plantId:candidate.plantId,plant:candidate.plant,productId:product.id,productName:product.name,unit:product.unit,stockQuantity,minimumQuantity:threshold.minimumQuantity,status:stockQuantity<threshold.minimumQuantity?"critical":"ok",thresholdNote:threshold.note};
+  }).sort((a,b)=>{
+    const order={critical:0,unconfigured:1,ok:2} as const;
+    return order[a.status]-order[b.status] || a.plant.localeCompare(b.plant,"es") || a.productName.localeCompare(b.productName,"es");
+  });
 }
 
 export function buildInventoryAnalytics(input: {
