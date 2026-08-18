@@ -4,9 +4,9 @@ import { buildInventoryAnalytics } from "./inventory-analytics";
 import type { InventoryMovement, ProductionRecord } from "./inventory-domain";
 
 const productions: ProductionRecord[] = [
-  { id:"p1",plantId:"tamesis",plant:"Támesis",productId:"solid",productName:"Wondergreen sólido",unit:"kg",quantity:250,lotCode:"TAM-PROD-1",sourceProcess:"Formulación",completedAt:"2026-08-11T09:00:00-05:00" },
-  { id:"p2",plantId:"tamesis",plant:"Támesis",productId:"liquid",productName:"Wondergreen líquido",unit:"L",quantity:600,lotCode:"TAM-PROD-2",sourceProcess:"Formulación",completedAt:"2026-08-11T10:00:00-05:00" },
-  { id:"p3",plantId:"yarumal",plant:"Yarumal",productId:"solid",productName:"Wondergreen sólido",unit:"kg",quantity:100,lotCode:"YAR-PROD-1",sourceProcess:"Formulación",completedAt:"2026-08-10T10:00:00-05:00" },
+  { id:"p1",plantId:"tamesis",plant:"Támesis",productId:"solid",productName:"Wondergreen sólido",unit:"kg",quantity:250,lotCode:"TAM-PROD-1",sourceProcess:"Formulación",originKind:"process",completedAt:"2026-08-11T09:00:00-05:00" },
+  { id:"p2",plantId:"tamesis",plant:"Támesis",productId:"liquid",productName:"Wondergreen líquido",unit:"L",quantity:600,lotCode:"TAM-PROD-2",sourceProcess:"Formulación",originKind:"process",completedAt:"2026-08-11T10:00:00-05:00" },
+  { id:"p3",plantId:"yarumal",plant:"Yarumal",productId:"solid",productName:"Wondergreen sólido",unit:"kg",quantity:100,lotCode:"YAR-PROD-1",sourceProcess:"Formulación",originKind:"process",completedAt:"2026-08-10T10:00:00-05:00" },
 ];
 
 const movements: InventoryMovement[] = [

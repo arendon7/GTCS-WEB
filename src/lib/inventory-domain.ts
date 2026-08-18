@@ -1,10 +1,12 @@
 export type InventoryUnit = "kg" | "L" | "unidades";
 export type InventoryMovementKind = "production" | "dispatch" | "adjustment_in" | "adjustment_out";
+export type ProductionOriginKind = "process" | "compost_pile";
 
 export type ProductMaster = {
   id: string;
   name: string;
   unit: InventoryUnit;
+  referenceCode?: string;
   active: boolean;
   createdAt: string;
 };
@@ -15,11 +17,13 @@ export type ProductionRecord = {
   plant: string;
   productId: string;
   productName: string;
+  productReferenceCode?: string;
   unit: InventoryUnit;
   quantity: number;
   lotCode: string;
   sourceProcess: string;
   sourcePileId?: string;
+  originKind: ProductionOriginKind;
   completedAt: string;
   note?: string;
 };
