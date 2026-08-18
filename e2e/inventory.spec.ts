@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("production creates lot stock and dispatch cannot make it negative", async ({ page }) => {
+test("production, dispatch and physical reconciliation preserve append-only stock traceability", async ({ page }) => {
   await page.goto("/production/new");
   await expect(page.getByRole("heading", { name: "Registrar producción" })).toBeVisible();
   await page.getByLabel(/Cantidad producida/).fill("250");
@@ -33,4 +33,20 @@ test("production creates lot stock and dispatch cannot make it negative", async 
   const updatedStock = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
   await expect(updatedStock).toContainText("190 kg");
   await expect(page.getByText("− 60 kg", { exact: true })).toBeVisible();
+
+  await page.getByRole("link", { name: "Conciliar inventario" }).click();
+  await expect(page.getByRole("heading", { name: "Conciliar inventario" })).toBeVisible();
+  await expect(page.getByText("190 kg", { exact: true }).first()).toBeVisible();
+  await page.getByLabel("Conteo físico").fill("185");
+  await page.getByLabel("Observación del conteo").fill("Conteo físico de cierre QA");
+  await expect(page.getByText("-5 kg", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Guardar conciliación" }).click();
+
+  await expect(page).toHaveURL(/\/inventory$/);
+  const reconciledStock = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
+  await expect(reconciledStock).toContainText("185 kg");
+  const reconciliation = page.locator("article").filter({ hasText: "Conteo físico de cierre QA" }).first();
+  await expect(reconciliation).toContainText("Esperado 190 kg · físico 185 kg");
+  await expect(reconciliation).toContainText("-5 kg");
+  await expect(page.getByText("− 5 kg", { exact: true })).toBeVisible();
 });
