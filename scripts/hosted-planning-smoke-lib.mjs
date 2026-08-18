@@ -29,10 +29,25 @@ function normalizeUrl(value) {
   return url.origin;
 }
 
+function decodeJwtPayload(value) {
+  const parts = value.split(".");
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+    return payload && typeof payload === "object" && !Array.isArray(payload) ? payload : null;
+  } catch {
+    throw new HostedPlanningSmokeError("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY parece un JWT inválido.");
+  }
+}
+
 function validatePublishableKey(value) {
   const key = clean(value);
   if (!key || key.length > 8192 || key.startsWith("sb_secret_")) {
     throw new HostedPlanningSmokeError("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY falta o no es publicable.");
+  }
+  const payload = decodeJwtPayload(key);
+  if (payload?.role === "service_role") {
+    throw new HostedPlanningSmokeError("El smoke de planificación no acepta una clave service_role como clave publicable.");
   }
   return key;
 }
@@ -161,6 +176,9 @@ async function assertOperatorWriteDenied(client, resources, window) {
     planning_note: "UAT operator write must be denied",
   });
   if (!error || data) throw new HostedPlanningSmokeError("Fallo de autorización: el operario pudo crear una programación.");
+  if (!/No tienes permiso para programar actividades/i.test(error.message || "")) {
+    throw new HostedPlanningSmokeError(`La escritura del operario falló por una razón distinta al boundary de autorización: ${error.message || "error remoto"}.`);
+  }
 }
 
 async function assertScheduleVisible(client, scheduleId, label) {
