@@ -10,6 +10,7 @@ import {
   loadRemoteInventory,
   reconcileRemoteInventory,
   recordRemoteProduction,
+  setRemoteInventoryProductReference,
 } from "@/lib/supabase/inventory-repository";
 import { bogotaDateKey, compactBogotaDate } from "@/lib/time";
 
@@ -23,6 +24,7 @@ const seedProducts: ProductMaster[] = [
 
 type DispatchResult = { ok:true; movementId:string } | { ok:false; error:string };
 type CreateProductResult = { ok:true; id:string } | { ok:false; error:string };
+type ProductReferenceResult = { ok:true; id:string } | { ok:false; error:string };
 type ProductionResult = { ok:true; id:string; lotCode:string } | { ok:false; error:string };
 type ReconciliationResult = { ok:true; id:string; adjustmentMovementId?:string; expectedQuantity:number; countedQuantity:number; differenceQuantity:number } | { ok:false; error:string };
 type NewProduction = { plantId:string; productId:string; quantity:number; sourceProcess:string; sourcePileId?:string; note?:string };
@@ -38,7 +40,8 @@ type InventoryStore = {
   error?:string;
   stocks: ReturnType<typeof aggregateProductStocks>;
   lots: ReturnType<typeof lotStocks>;
-  createProduct:(name:string,unit:InventoryUnit)=>Promise<CreateProductResult>;
+  createProduct:(name:string,unit:InventoryUnit,referenceCode?:string)=>Promise<CreateProductResult>;
+  setProductReference:(productId:string,referenceCode?:string)=>Promise<ProductReferenceResult>;
   recordProduction:(payload:NewProduction)=>Promise<ProductionResult>;
   dispatch:(payload:NewDispatch)=>Promise<DispatchResult>;
   reconcile:(payload:NewReconciliation)=>Promise<ReconciliationResult>;
@@ -119,7 +122,7 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
         if(raw){
           const parsed=JSON.parse(raw) as {products?:ProductMaster[];productions?:ProductionRecord[];movements?:InventoryMovement[];reconciliations?:InventoryReconciliation[]};
           if(parsed.products?.length) setProducts(parsed.products);
-          if(parsed.productions) setProductions(parsed.productions);
+          if(parsed.productions) setProductions(parsed.productions.map((item)=>({...item,originKind:item.originKind??(item.sourcePileId?"compost_pile":"process")})));
           if(parsed.movements) setMovements(parsed.movements);
           if(parsed.reconciliations) setReconciliations(parsed.reconciliations);
         }
@@ -146,14 +149,16 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
 
   const value=useMemo<InventoryStore>(()=>({
     products,productions,movements,reconciliations,ready,error,stocks,lots,
-    async createProduct(name,unit){
+    async createProduct(name,unit,referenceCode){
       const clean=name.trim();
+      const cleanReference=referenceCode?.trim()||undefined;
       if(!clean) return {ok:false,error:"Escribe el nombre del producto."};
       if(products.some((item)=>item.name.toLocaleLowerCase("es-CO")===clean.toLocaleLowerCase("es-CO") && item.unit===unit)) return {ok:false,error:"Ya existe un producto con ese nombre y unidad."};
+      if(cleanReference&&products.some((item)=>item.referenceCode?.toLocaleLowerCase("es-CO")===cleanReference.toLocaleLowerCase("es-CO"))) return {ok:false,error:"Ya existe un producto con esa referencia."};
 
       if(remoteMode){
         try {
-          const id=await createRemoteInventoryProduct(clean,unit);
+          const id=await createRemoteInventoryProduct(clean,unit,cleanReference);
           await reloadRemote();
           return {ok:true,id};
         } catch(caught){ return failure(caught,"No fue posible crear el producto."); }
@@ -162,8 +167,22 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
       const base=slug(clean)||"producto";
       let id=base;let suffix=2;
       while(products.some((item)=>item.id===id)){id=`${base}-${suffix}`;suffix+=1;}
-      setProducts((current)=>[...current,{id,name:clean,unit,active:true,createdAt:new Date().toISOString()}]);
+      setProducts((current)=>[...current,{id,name:clean,unit,referenceCode:cleanReference,active:true,createdAt:new Date().toISOString()}]);
       return {ok:true,id};
+    },
+    async setProductReference(productId,referenceCode){
+      const cleanReference=referenceCode?.trim()||undefined;
+      if(!products.some((item)=>item.id===productId)) return {ok:false,error:"Producto no encontrado."};
+      if(cleanReference&&products.some((item)=>item.id!==productId&&item.referenceCode?.toLocaleLowerCase("es-CO")===cleanReference.toLocaleLowerCase("es-CO"))) return {ok:false,error:"Ya existe un producto con esa referencia."};
+      if(remoteMode){
+        try {
+          const id=await setRemoteInventoryProductReference(productId,cleanReference);
+          await reloadRemote();
+          return {ok:true,id};
+        }catch(caught){return failure(caught,"No fue posible actualizar la referencia.");}
+      }
+      setProducts((current)=>current.map((item)=>item.id===productId?{...item,referenceCode:cleanReference}:item));
+      return {ok:true,id:productId};
     },
     async recordProduction(payload){
       const product=products.find((item)=>item.id===payload.productId&&item.active);
@@ -187,7 +206,7 @@ export function InventoryStoreProvider({children}:{children:ReactNode}) {
       const lotCode=productionLotCode(productions,payload.plantId,completedAt);
       const id=crypto.randomUUID();
       const plant=plantName(payload.plantId);
-      const record:ProductionRecord={id,plantId:payload.plantId,plant,productId:product.id,productName:product.name,unit:product.unit,quantity:payload.quantity,lotCode,sourceProcess:payload.sourceProcess.trim(),sourcePileId:payload.sourcePileId||undefined,completedAt,note:payload.note?.trim()||undefined};
+      const record:ProductionRecord={id,plantId:payload.plantId,plant,productId:product.id,productName:product.name,productReferenceCode:product.referenceCode,unit:product.unit,quantity:payload.quantity,lotCode,sourceProcess:payload.sourceProcess.trim(),sourcePileId:payload.sourcePileId||undefined,originKind:payload.sourcePileId?"compost_pile":"process",completedAt,note:payload.note?.trim()||undefined};
       const movement:InventoryMovement={id:crypto.randomUUID(),plantId:payload.plantId,plant,productId:product.id,productName:product.name,unit:product.unit,lotCode,kind:"production",quantity:payload.quantity,occurredAt:completedAt,referenceId:id,note:payload.note?.trim()||undefined};
       setProductions((current)=>[record,...current]);
       setMovements((current)=>[movement,...current]);
