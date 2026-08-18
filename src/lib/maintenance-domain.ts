@@ -12,6 +12,12 @@ export type MaintenanceFailureType =
   | "structural"
   | "other";
 
+export type MaintenanceSpareUse = {
+  supplyId: string;
+  lotCode: string;
+  quantity: number;
+};
+
 export type EquipmentRecord = {
   id: string;
   plantId: string;
@@ -41,6 +47,7 @@ export type MaintenanceTicket = {
   resolution?: string;
   failureEvidenceRefs?: string[];
   repairEvidenceRefs?: string[];
+  repairActivityId?: string;
   status: MaintenanceStatus;
 };
 
