@@ -32,7 +32,7 @@ function UnitChips({items}:{items:Array<{unit:string;quantity:number}>}){
 }
 
 export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
-  const {activities,receptions,incidents,workers,access}=useOpsStore();
+  const {activities,receptions,incidents,workers,access,backend}=useOpsStore();
   const {tickets,equipment}=useMaintenanceStore();
   const {piles,measurements}=useCompostStore();
   const {products,productions,movements,thresholds}=useInventoryStore();
@@ -48,7 +48,7 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
     return()=>window.clearInterval(timer);
   },[]);
 
-  const plantOptions=useMemo(()=>[{id:"all",name:"Todas"},...access.map((plant)=>({id:plant.plantId,name:plant.name}))],[access]);
+  const plantOptions=useMemo(()=>[{id:"all",name:"Todas"},...(backend.mode==="supabase"?access.map((plant)=>({id:plant.plantId,name:plant.name})):[{id:"tamesis",name:"Támesis"},{id:"yarumal",name:"Yarumal"}])],[access,backend.mode]);
   const analytics=useMemo(()=>buildOperationalAnalytics({activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso}),[activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso]);
   const inventoryAnalytics=useMemo(()=>buildInventoryAnalytics({productions,movements,period:analytics.period,plantId}),[analytics.period,movements,plantId,productions]);
   const inventoryCriticality=useMemo(()=>buildInventoryCriticality({products,movements,thresholds,plantId}),[movements,plantId,products,thresholds]);
@@ -105,7 +105,7 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
     </section>
 
     <section className="grid gap-4 xl:grid-cols-2">
-      <div className="panel" aria-label="Producción del periodo"><div className="section-head"><div><p className="eyebrow">Producción terminada</p><h2>Flujo del periodo</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/production">Abrir producción</Link></div><div className="grid gap-3"><div><span className="quiet">Producción por unidad</span><div className="mt-2"><UnitChips items={inventoryAnalytics.productionByUnit}/></div></div><div><span className="quiet">Entradas al kardex</span><div className="mt-2"><UnitChips items={inventoryAnalytics.inflowByUnit}/></div></div><div><span className="quiet">Salidas del kardex</span><div className="mt-2"><UnitChips items={inventoryAnalytics.outflowByUnit}/></div></div></div></div>
+      <div className="panel" aria-label="Producción del periodo"><div className="section-head"><div><p className="eyebrow">Producción terminada</p><h2>Flujo del periodo</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/production">Abrir producción</Link></div>{inventoryAnalytics.periodProductionCount?<div className="grid gap-3"><div><span className="quiet">Producción por unidad</span><div className="mt-2"><UnitChips items={inventoryAnalytics.productionByUnit}/></div></div><div><span className="quiet">Entradas al kardex</span><div className="mt-2"><UnitChips items={inventoryAnalytics.inflowByUnit}/></div></div><div><span className="quiet">Salidas del kardex</span><div className="mt-2"><UnitChips items={inventoryAnalytics.outflowByUnit}/></div></div></div>:<p className="quiet">Sin producción terminada registrada en este periodo.</p>}</div>
       <div className="panel" aria-label="Stock actual"><div className="section-head"><div><p className="eyebrow">Stock actual</p><h2>Inventario disponible</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/inventory">Abrir inventario</Link></div><UnitChips items={inventoryAnalytics.currentStockByUnit}/><div className="mt-4 grid gap-2">{inventoryAnalytics.currentStockByProduct.slice(0,6).map((item)=><div className="flex items-center justify-between rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={item.productId}><span>{item.productName}</span><strong>{item.quantity.toLocaleString("es-CO",{maximumFractionDigits:2})} {item.unit}</strong></div>)}{!inventoryAnalytics.currentStockByProduct.length&&<p className="quiet">Sin stock registrado.</p>}</div></div>
     </section>
 
