@@ -1,9 +1,13 @@
 import { test, expect } from "@playwright/test";
 
 const routes = [
+  "/soluciones",
+  "/soluciones/diagnostico-caracterizacion",
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
+  "/proyectos",
+  "/proyectos/yarumal",
   "/impacto",
   "/biblioteca",
   "/biblioteca/guia-deficiencias",
