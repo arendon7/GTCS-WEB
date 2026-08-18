@@ -67,7 +67,7 @@ select throws_ok($$select * from public.ops_record_operational_expense(
   'c2000000-0000-4000-8000-000000000001','expense','Proveedor Gasto QA','maintenance','Equipo cruzado',1000,'2026-08-18'::date,null,'c3000000-0000-4000-8000-000000000002',null,null,null
 )$$,'El equipo relacionado no pertenece a la planta','expense cannot reference equipment from another plant');
 select throws_ok($$select * from public.ops_record_operational_expense(
-  'c2000000-0000-4000-8000-000000000002','expense','Proveedor Gasto QA','operations','Planta cruzada',1000,'2026-08-18'::date,null,null,null,null,null,null
+  'c2000000-0000-4000-8000-000000000002','expense','Proveedor Gasto QA','operations','Planta cruzada',1000,'2026-08-18'::date,null,null,null,null,null
 )$$,'Sin permiso para registrar compras o gastos en esta planta','member cannot record an expense in another plant');
 
 select lives_ok($$select public.ops_submit_purchase_request(
