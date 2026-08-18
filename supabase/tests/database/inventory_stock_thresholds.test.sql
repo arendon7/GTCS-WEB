@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(26);
 
 select has_table('public','inventory_stock_threshold_revisions','inventory threshold revision ledger exists');
 select ok(has_table_privilege('authenticated','public.inventory_stock_threshold_revisions','SELECT'),'authenticated retains threshold read access through RLS');
