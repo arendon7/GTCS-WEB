@@ -12,7 +12,7 @@ import {
   startRemoteRepair,
 } from "@/lib/supabase/maintenance-repository";
 
-const STORAGE_KEY = "greenatics-ops-maintenance-mvp-004";
+const STORAGE_KEY = "greenatics-ops-maintenance-mvp-005";
 
 type Result = { ok: true } | { ok: false; error: string };
 type CreateResult = { ok: true; id: string } | { ok: false; error: string };
@@ -25,7 +25,7 @@ type FailurePayload = {
   description: string;
   evidenceRefs: string[];
 };
-type ClosePayload = { cause: string; resolution: string; evidenceRefs: string[] };
+type ClosePayload = { cause: string; resolution: string; evidenceRefs: string[]; workerIds: string[] };
 type LegacyStoredTicket = Omit<MaintenanceTicket, "failedAt" | "failureType" | "failureEvidenceRefs" | "repairEvidenceRefs"> & {
   failedAt?: string;
   failureType?: MaintenanceFailureType;
@@ -210,6 +210,8 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       if (ticket.status !== "repairing" || !ticket.repairStartedAt) return { ok: false, error: "Debes iniciar la reparación antes de cerrarla." };
       if (!payload.cause.trim()) return { ok: false, error: "Registra la causa encontrada." };
       if (!payload.resolution.trim()) return { ok: false, error: "Registra la acción realizada." };
+      if (payload.workerIds.length === 0) return { ok: false, error: "Selecciona al menos un trabajador que ejecutó la reparación." };
+      if (new Set(payload.workerIds).size !== payload.workerIds.length) return { ok: false, error: "La lista de trabajadores contiene duplicados." };
 
       if (remoteMode) {
         try {
