@@ -3,6 +3,7 @@ import type { AlertSeverity } from "@/lib/domain";
 import type {
   EquipmentRecord,
   MaintenanceFailureType,
+  MaintenanceSpareUse,
   MaintenanceTicket,
 } from "@/lib/maintenance-domain";
 import type { PlantAccess } from "@/lib/ops-data-contract";
@@ -32,6 +33,7 @@ type TicketRow = {
   closed_at?: string | null;
   cause?: string | null;
   resolution?: string | null;
+  repair_activity_id?: string | null;
 };
 
 type EvidenceRow = {
@@ -56,6 +58,8 @@ export type RemoteMaintenanceClosePayload = {
   cause: string;
   resolution: string;
   evidenceRefs: string[];
+  workerIds: string[];
+  spares: MaintenanceSpareUse[];
 };
 
 function errorMessage(scope: string, error: { message?: string; code?: string } | null) {
@@ -76,7 +80,7 @@ export async function loadRemoteMaintenance(
   const [equipmentResult, ticketResult, evidenceResult] = await Promise.all([
     client.from("equipment").select("id,plant_id,code,name,area,status").in("plant_id", plantIds).order("code"),
     client.from("maintenance_tickets")
-      .select("id,equipment_id,plant_id,severity,failure_type,title,description,status,failed_at,opened_at,repair_started_at,closed_at,cause,resolution")
+      .select("id,equipment_id,plant_id,severity,failure_type,title,description,status,failed_at,opened_at,repair_started_at,closed_at,cause,resolution,repair_activity_id")
       .in("plant_id", plantIds)
       .order("opened_at", { ascending: false }),
     client.from("maintenance_ticket_evidence")
@@ -132,6 +136,7 @@ export async function loadRemoteMaintenance(
       resolution: row.resolution || undefined,
       failureEvidenceRefs: evidence.failure,
       repairEvidenceRefs: evidence.repair,
+      repairActivityId: row.repair_activity_id || undefined,
       status: row.status,
     };
   });
@@ -174,10 +179,11 @@ export async function closeRemoteMaintenanceTicket(
     repair_ended: new Date().toISOString(),
     root_cause: payload.cause.trim(),
     repair_action: payload.resolution.trim(),
-    spare_supply_ids: [],
-    spare_lot_codes: [],
-    spare_quantities: [],
+    spare_supply_ids: payload.spares.map((item) => item.supplyId),
+    spare_lot_codes: payload.spares.map((item) => item.lotCode),
+    spare_quantities: payload.spares.map((item) => item.quantity),
     repair_evidence_refs: payload.evidenceRefs,
+    employee_ids: payload.workerIds,
   });
   if (error) throw new Error(errorMessage("No fue posible cerrar la reparación", error));
 }

@@ -22,6 +22,12 @@ insert into public.profiles(id,display_name) values
 insert into public.plant_memberships(user_id,plant_id,role) values
  ('a1000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','operator'),
  ('a1000000-0000-4000-8000-000000000002','a2000000-0000-4000-8000-000000000001','maintenance');
+insert into public.operational_processes(id,plant_id,code,name,active) values
+ ('a7000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','MANTENIMIENTO','Mantenimiento',true);
+insert into public.activity_templates(id,plant_id,process_id,code,name,allows_unplanned,active) values
+ ('a7100000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','a7000000-0000-4000-8000-000000000001','MANTENIMIENTO_HERRAMIENTAS_EQUIPOS','Mantenimiento de herramientas o equipos',true,true);
+insert into public.employees(id,plant_id,code,display_name,active,historical,provisional) values
+ ('a7200000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','MNT_QA_01','Técnico mantenimiento QA',true,false,false);
 insert into public.equipment(id,plant_id,code,name,status,area) values
  ('a3000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000001','MNT-01','Equipo QA','available','Proceso QA'),
  ('a3000000-0000-4000-8000-000000000002','a2000000-0000-4000-8000-000000000001','MNT-02','Equipo sin programación','available','Proceso QA');
@@ -47,9 +53,9 @@ select lives_ok($$select public.ops_start_equipment_repair_v2((select id from pu
 select is((select status from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),'repairing'::text,'ticket moves to repairing');
 select is((select status from public.equipment where id='a3000000-0000-4000-8000-000000000001'),'maintenance'::text,'equipment moves to maintenance');
 select throws_like($$select public.consume_supply('a2000000-0000-4000-8000-000000000001','a5000000-0000-4000-8000-000000000001','LOT-MNT-QA',1,current_date,'Atajo mantenimiento','a3000000-0000-4000-8000-000000000001','maintenance:manual','No debe permitirse')$$,'%Sin permiso para registrar consumo%','maintenance cannot bypass repair lifecycle with generic supply consumption');
-select throws_like($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[6::numeric],array[]::text[])$$,'%Stock insuficiente%','close rolls back when spare stock is insufficient');
+select throws_like($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[6::numeric],array[]::text[],array['a7200000-0000-4000-8000-000000000001'::uuid])$$,'%Stock insuficiente%','close rolls back when spare stock is insufficient');
 select is((select coalesce(sum(case when kind in ('receipt','adjustment_in') then quantity else -quantity end),0) from public.supply_movements where supply_id='a5000000-0000-4000-8000-000000000001' and lot_code='LOT-MNT-QA'),5::numeric,'failed close does not consume physical stock');
-select lives_ok($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento y prueba funcional',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[2::numeric],array['evidencia://reparacion-qa'])$$,'repair closes atomically with physical spare consumption');
+select lives_ok($$select public.ops_close_equipment_repair_v2((select id from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),now()-interval '1 hour','Rodamiento fatigado','Cambio de rodamiento y prueba funcional',array['a5000000-0000-4000-8000-000000000001'::uuid],array['LOT-MNT-QA'],array[2::numeric],array['evidencia://reparacion-qa'],array['a7200000-0000-4000-8000-000000000001'::uuid])$$,'repair closes atomically with physical spare consumption');
 select is((select status from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),'closed'::text,'ticket closes after repair');
 select is((select cause from public.maintenance_tickets where equipment_id='a3000000-0000-4000-8000-000000000001'),'Rodamiento fatigado'::text,'root cause is persisted');
 select is((select status from public.equipment where id='a3000000-0000-4000-8000-000000000001'),'available'::text,'closed repair returns equipment to available');
