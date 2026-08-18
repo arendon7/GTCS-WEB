@@ -36,18 +36,26 @@ set local role authenticated;
 set local request.jwt.claim.sub = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc';
 
 select lives_ok(
-  $$insert into public.purchase_requests(
-      plant_id,requested_by_name,category,concept,justification,estimated_amount_cop
-    )
-    select id,'Operador Trigger CI','input','Solicitud trigger CI','Validar trigger endurecido',150000
-    from public.plants where code='TAM'$$,
-  'authenticated insert still fires purchase request trigger after EXECUTE revoke'
+  $$select public.ops_submit_purchase_request(
+      (select id from public.plants where code='TAM'),
+      'Operador Trigger CI',
+      null,
+      'input',
+      'Solicitud trigger CI',
+      'Validar trigger endurecido',
+      150000,
+      null,
+      null,
+      null,
+      null
+    )$$,
+  'governed purchase request still fires submitted trigger after trigger EXECUTE revoke'
 );
 
 select is(
   (select count(*) from public.purchase_request_events e join public.purchase_requests r on r.id=e.request_id where r.concept='Solicitud trigger CI' and e.event_kind='submitted'),
   1::bigint,
-  'purchase request trigger still creates its submitted event'
+  'purchase request trigger still creates its submitted event through the governed RPC'
 );
 
 select lives_ok(
