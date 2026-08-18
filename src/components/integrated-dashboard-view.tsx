@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useOpsStore } from "@/components/ops-store";
 import { useMaintenanceStore } from "@/components/maintenance-store";
 import { useCompostStore } from "@/components/compost-store";
@@ -12,7 +12,7 @@ import { buildOperationalAnalytics, analyticsCsv, type DashboardPreset } from "@
 import { buildInventoryAnalytics, buildInventoryCriticality, inventoryAnalyticsCsvSection } from "@/lib/inventory-analytics";
 import { buildCommercialAnalytics, commercialAnalyticsCsvSection } from "@/lib/commercial-analytics";
 import { buildExpenseAnalytics, expenseAnalyticsCsvSection } from "@/lib/expense-analytics";
-import { bogotaTodayKey } from "@/lib/time";
+import { bogotaDateKey } from "@/lib/time";
 
 const KPI_GRID_CLASS = "grid gap-3 md:grid-cols-3 2xl:grid-cols-6";
 
@@ -31,24 +31,31 @@ function UnitChips({items}:{items:Array<{unit:string;quantity:number}>}){
   return <div className="flex flex-wrap gap-2">{items.map((item)=><span className="rounded-full bg-[var(--surface-soft)] px-3 py-1 text-xs font-semibold" key={item.unit}>{item.quantity.toLocaleString("es-CO",{maximumFractionDigits:2})} {item.unit}</span>)}</div>;
 }
 
-export function IntegratedDashboardView(){
+export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
   const {activities,receptions,incidents,workers,access}=useOpsStore();
   const {tickets,equipment}=useMaintenanceStore();
   const {piles,measurements}=useCompostStore();
   const {products,productions,movements,thresholds}=useInventoryStore();
   const {sales}=useCommercialStore();
   const {expenses}=useExpenseStore();
+  const [nowIso,setNowIso]=useState(initialNowIso);
   const [preset,setPreset]=useState<DashboardPreset>("day");
-  const [anchorKey,setAnchorKey]=useState(()=>bogotaTodayKey());
+  const [anchorKey,setAnchorKey]=useState(()=>bogotaDateKey(initialNowIso));
   const [plantId,setPlantId]=useState("all");
+
+  useEffect(()=>{
+    const timer=window.setInterval(()=>setNowIso(new Date().toISOString()),60_000);
+    return()=>window.clearInterval(timer);
+  },[]);
+
   const plantOptions=useMemo(()=>[{id:"all",name:"Todas"},...access.map((plant)=>({id:plant.plantId,name:plant.name}))],[access]);
-  const analytics=useMemo(()=>buildOperationalAnalytics({activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso:new Date().toISOString()}),[activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId]);
+  const analytics=useMemo(()=>buildOperationalAnalytics({activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso}),[activities,receptions,incidents,tickets,equipment,piles,measurements,workers,preset,anchorKey,plantId,nowIso]);
   const inventoryAnalytics=useMemo(()=>buildInventoryAnalytics({productions,movements,period:analytics.period,plantId}),[analytics.period,movements,plantId,productions]);
   const inventoryCriticality=useMemo(()=>buildInventoryCriticality({products,movements,thresholds,plantId}),[movements,plantId,products,thresholds]);
   const criticalInventory=inventoryCriticality.filter((item)=>item.status==="critical");
   const unconfiguredInventory=inventoryCriticality.filter((item)=>item.status==="unconfigured");
   const commercialAnalytics=useMemo(()=>buildCommercialAnalytics({sales,period:analytics.period,plantId}),[analytics.period,plantId,sales]);
-  const expenseAnalytics=useMemo(()=>buildExpenseAnalytics({expenses,period:analytics.period,plantId}),[analytics.period,expenses,plantId]);
+  const expenseAnalytics=useMemo(()=>buildExpenseAnalytics({records:expenses,period:analytics.period,plantId}),[analytics.period,expenses,plantId]);
   const combinedEvents=useMemo(()=>[
     ...analytics.events,
     ...inventoryAnalytics.events.map((event)=>({id:event.id,at:event.at,plant:event.plant,kind:"inventory" as const,title:event.title,detail:event.detail})),
@@ -77,7 +84,7 @@ export function IntegratedDashboardView(){
   return <>
     <header className="page-header"><div><p className="eyebrow">Dirección · una sola verdad</p><h1>Dashboard integrado</h1><p className="lede">Operación, producción, inventario, comercial y economía comparten el mismo corte temporal y de planta sin mezclar hechos distintos.</p></div><div className="header-actions"><button className="button secondary" type="button" onClick={exportCsv}>Exportar CSV</button><Link className="button primary" href="/activity/new">Nueva actividad</Link></div></header>
 
-    <section className="panel mb-4"><div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-end"><div><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Periodo<div className="flex flex-wrap gap-2">{(["day","week","month","history"] as DashboardPreset[]).map((item)=><button className={`rounded-full px-3 py-2 text-xs font-semibold ${preset===item?"bg-[var(--green)] text-white":"bg-[var(--surface-soft)] text-[var(--ink)]"}`} type="button" key={item} onClick={()=>setPreset(item)}>{item==="day"?"Día":item==="week"?"Semana":item==="month"?"Mes":"Histórico"}</button>)}</div></label></div><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Fecha de referencia<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" type="date" value={anchorKey} onChange={(event)=>setAnchorKey(event.target.value)} /></label><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={plantId} onChange={(event)=>setPlantId(event.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label></div><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]"><span className="status-pill status-normal">{analytics.period.label}</span><span>{analytics.dataCounts.activities} actividades · {analytics.dataCounts.receptions} recepciones · {inventoryAnalytics.periodProductionCount} producciones · {commercialAnalytics.salesCount} ventas · {expenseAnalytics.expenseCount} compras/gastos</span></div></section>
+    <section className="panel mb-4"><div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-end"><div><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Periodo<div className="flex flex-wrap gap-2">{(["day","week","month","history"] as DashboardPreset[]).map((item)=><button className={`rounded-full px-3 py-2 text-xs font-semibold ${preset===item?"bg-[var(--green)] text-white":"bg-[var(--surface-soft)] text-[var(--ink)]"}`} type="button" key={item} onClick={()=>setPreset(item)}>{item==="day"?"Día":item==="week"?"Semana":item==="month"?"Mes":"Histórico"}</button>)}</div></label></div><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Fecha de referencia<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" type="date" value={anchorKey} onChange={(event)=>setAnchorKey(event.target.value)} /></label><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={plantId} onChange={(event)=>setPlantId(event.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label></div><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]"><span className="status-pill status-normal">{analytics.period.label}</span><span>{analytics.dataCounts.activities} actividades · {analytics.dataCounts.receptions} recepciones · {inventoryAnalytics.periodProductionCount} producciones · {commercialAnalytics.salesCount} ventas · {expenseAnalytics.recordsCount} compras/gastos</span></div></section>
 
     <section className={KPI_GRID_CLASS}>{kpis.map((kpi)=><KpiCard key={kpi.label} {...kpi}/>)}</section>
 
@@ -103,8 +110,8 @@ export function IntegratedDashboardView(){
     </section>
 
     <section className="grid gap-4 xl:grid-cols-2">
-      <div className="panel"><div className="section-head"><div><p className="eyebrow">Comercial</p><h2>Facturación bruta registrada</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/commercial">Abrir comercial</Link></div><strong className="text-3xl">{formatMoney(commercialAnalytics.grossRevenue)}</strong><p className="quiet mt-1">{commercialAnalytics.salesCount} ventas · no equivale a recaudo ni margen</p><div className="mt-4"><span className="quiet">Cantidad vendida por unidad</span><div className="mt-2"><UnitChips items={commercialAnalytics.soldByUnit}/></div></div></div>
-      <div className="panel"><div className="section-head"><div><p className="eyebrow">Compras y gastos</p><h2>Gasto registrado</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/expenses">Abrir gastos</Link></div><strong className="text-3xl">{formatMoney(expenseAnalytics.registeredExpense)}</strong><p className="quiet mt-1">{expenseAnalytics.expenseCount} registros · no implica pago ni costo asignado a producto</p><div className="mt-4 grid gap-2">{expenseAnalytics.byCategory.slice(0,5).map((item)=><div className="flex items-center justify-between rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={item.category}><span>{item.category}</span><strong>{formatMoney(item.amount)}</strong></div>)}</div></div>
+      <div className="panel"><div className="section-head"><div><p className="eyebrow">Comercial</p><h2>Facturación bruta registrada</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/sales">Abrir comercial</Link></div><strong className="text-3xl">{formatMoney(commercialAnalytics.grossBillingCop)}</strong><p className="quiet mt-1">{commercialAnalytics.salesCount} ventas · no equivale a recaudo ni margen</p><div className="mt-4"><span className="quiet">Cantidad vendida por unidad</span><div className="mt-2"><UnitChips items={commercialAnalytics.soldByUnit}/></div></div></div>
+      <div className="panel"><div className="section-head"><div><p className="eyebrow">Compras y gastos</p><h2>Gasto registrado</h2></div><Link className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" href="/expenses">Abrir gastos</Link></div><strong className="text-3xl">{formatMoney(expenseAnalytics.totalRegisteredCop)}</strong><p className="quiet mt-1">{expenseAnalytics.recordsCount} registros · no implica pago ni costo asignado a producto</p><div className="mt-4 grid gap-2">{expenseAnalytics.categories.slice(0,5).map((item)=><div className="flex items-center justify-between rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={item.id}><span>{item.label}</span><strong>{formatMoney(item.amountCop)}</strong></div>)}</div></div>
     </section>
 
     <section className="grid gap-4 xl:grid-cols-[1fr_1fr]">
