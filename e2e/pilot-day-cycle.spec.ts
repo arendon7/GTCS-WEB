@@ -63,7 +63,7 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await page.getByLabel("Volumen conformado (m³)").fill("8");
   await page.getByRole("group", { name: "Trabajadores de conformación" }).getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Conformar pila" }).click();
-  await expect(page).toHaveURL(/\/compost\/[^/]+$/);
+  await page.waitForURL((url) => url.pathname.startsWith("/compost/") && url.pathname !== "/compost/new");
   const pileId = new URL(page.url()).pathname.split("/").filter(Boolean).at(-1);
   expect(pileId).toBeTruthy();
 
