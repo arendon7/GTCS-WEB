@@ -20,7 +20,7 @@ function EvidenceList({ refs }: { refs: string[] }) {
 
 export function EquipmentDetail({ equipmentId }: { equipmentId: string }) {
   const { equipment, tickets, startRepair, closeTicket } = useMaintenanceStore();
-  const { workers, activities, refresh: refreshOps } = useOpsStore();
+  const { workers, activities, backend, refresh: refreshOps } = useOpsStore();
   const { lots, movements, refreshSupplies } = useSupplyStore();
   const asset = equipment.find((item) => item.id === equipmentId);
   const assetTickets = useMemo(() => tickets.filter((ticket) => ticket.equipmentId === equipmentId).sort((a,b)=>new Date(b.openedAt).getTime()-new Date(a.openedAt).getTime()), [tickets, equipmentId]);
@@ -90,7 +90,9 @@ export function EquipmentDetail({ equipmentId }: { equipmentId: string }) {
       setSpares([]);
       setSelectedSpareKey("");
       setSpareQuantity("");
-      setFeedback("Reparación cerrada, equipo disponible y actividad registrada en Bitácora.");
+      setFeedback(backend.mode === "supabase"
+        ? "Reparación cerrada, equipo disponible y actividad registrada en Bitácora."
+        : "Reparación cerrada y equipo disponible.");
     } finally {
       setBusy(false);
     }
