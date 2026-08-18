@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { InventoryMovement, InventoryReconciliation, InventoryUnit, ProductMaster, ProductionRecord } from "@/lib/inventory-domain";
+import type { InventoryMovement, InventoryReconciliation, InventoryUnit, ProductMaster, ProductionOriginKind, ProductionRecord } from "@/lib/inventory-domain";
 import type { PlantAccess } from "@/lib/ops-data-contract";
 import { createClient } from "@/lib/supabase/client";
 
@@ -7,6 +7,7 @@ type ProductRow = {
   id: string;
   name: string;
   unit: InventoryUnit;
+  reference_code?: string | null;
   active: boolean;
   created_at: string;
 };
@@ -15,10 +16,12 @@ type ProductionRow = {
   id: string;
   plant_id: string;
   product_id: string;
+  product_reference_code?: string | null;
   quantity: number | string;
   lot_code: string;
   source_process: string;
   source_pile_id?: string | null;
+  origin_kind: ProductionOriginKind;
   completed_at: string;
   note?: string | null;
 };
@@ -114,8 +117,8 @@ export async function loadRemoteInventory(
   if (access.length === 0) return { products: [], productions: [], movements: [], reconciliations: [] };
   const plantDbIds = access.map((plant) => plant.dbId);
   const [productsResult, productionsResult, movementsResult, reconciliationsResult] = await Promise.all([
-    client.from("inventory_products").select("id,name,unit,active,created_at").order("name"),
-    client.from("production_records").select("id,plant_id,product_id,quantity,lot_code,source_process,source_pile_id,completed_at,note").in("plant_id", plantDbIds).order("completed_at", { ascending: false }),
+    client.from("inventory_products").select("id,name,unit,reference_code,active,created_at").order("name"),
+    client.from("production_records").select("id,plant_id,product_id,product_reference_code,quantity,lot_code,source_process,source_pile_id,origin_kind,completed_at,note").in("plant_id", plantDbIds).order("completed_at", { ascending: false }),
     client.from("inventory_movements").select("id,plant_id,product_id,lot_code,kind,quantity,occurred_at,reference_id,destination,note").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
     client.from("inventory_reconciliations").select("id,plant_id,product_id,lot_code,expected_quantity,counted_quantity,difference_quantity,note,evidence_urls,adjustment_movement_id,occurred_at").in("plant_id", plantDbIds).order("occurred_at", { ascending: false }),
   ]);
@@ -128,6 +131,7 @@ export async function loadRemoteInventory(
     id: row.id,
     name: row.name,
     unit: row.unit,
+    referenceCode: row.reference_code || undefined,
     active: row.active,
     createdAt: row.created_at,
   }));
@@ -139,17 +143,20 @@ export async function loadRemoteInventory(
     const product = productMap.get(row.product_id);
     if (!plant) throw new Error(`Producción ${row.id} pertenece a una planta no visible.`);
     if (!product) throw new Error(`Producción ${row.id} referencia un producto no visible.`);
+    if (row.origin_kind !== "process" && row.origin_kind !== "compost_pile") throw new Error(`Producción ${row.id} contiene un origen no reconocido.`);
     return {
       id: row.id,
       plantId: plant.plantId,
       plant: plant.name,
       productId: product.id,
       productName: product.name,
+      productReferenceCode: row.product_reference_code || undefined,
       unit: product.unit,
       quantity: positiveNumber(row.quantity, `Producción ${row.id}`),
       lotCode: row.lot_code,
       sourceProcess: row.source_process,
       sourcePileId: row.source_pile_id || undefined,
+      originKind: row.origin_kind,
       completedAt: row.completed_at,
       note: row.note || undefined,
     };
@@ -206,18 +213,31 @@ export async function loadRemoteInventory(
 export async function createRemoteInventoryProduct(
   name: string,
   unit: InventoryUnit,
+  referenceCode?: string,
   client: SupabaseClient = createClient(),
 ) {
-  const { data, error } = await client.from("inventory_products")
-    .insert({ name: name.trim(), unit, active: true })
-    .select("id")
-    .single();
-  if (error) {
-    if (error.code === "23505") throw new Error("Ya existe un producto con ese nombre y unidad.");
-    throw new Error(errorMessage("No fue posible crear el producto", error));
-  }
-  if (!data?.id) throw new Error("El producto fue creado pero el servidor no devolvió un identificador válido.");
-  return data.id as string;
+  const { data, error } = await client.rpc("ops_create_inventory_product", {
+    product_name: name.trim(),
+    product_unit: unit,
+    product_reference_code: referenceCode?.trim() || null,
+  });
+  if (error) throw new Error(errorMessage("No fue posible crear el producto", error));
+  if (typeof data !== "string") throw new Error("El producto fue creado pero el servidor no devolvió un identificador válido.");
+  return data;
+}
+
+export async function setRemoteInventoryProductReference(
+  productId: string,
+  referenceCode?: string,
+  client: SupabaseClient = createClient(),
+) {
+  const { data, error } = await client.rpc("ops_set_inventory_product_reference", {
+    target_product: productId,
+    product_reference_code: referenceCode?.trim() || null,
+  });
+  if (error) throw new Error(errorMessage("No fue posible actualizar la referencia", error));
+  if (typeof data !== "string") throw new Error("La referencia fue actualizada pero el servidor no devolvió un identificador válido.");
+  return data;
 }
 
 export async function recordRemoteProduction(
