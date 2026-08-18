@@ -30,9 +30,9 @@ insert into public.operational_processes(id,plant_id,code,name,active) values
  ('c3000000-0000-4000-8000-000000000001','c2000000-0000-4000-8000-000000000001','MANTENIMIENTO','Mantenimiento',true);
 insert into public.activity_templates(id,plant_id,process_id,code,name,allows_unplanned,active) values
  ('c4000000-0000-4000-8000-000000000001','c2000000-0000-4000-8000-000000000001','c3000000-0000-4000-8000-000000000001','MANTENIMIENTO_HERRAMIENTAS_EQUIPOS','Mantenimiento de herramientas o equipos',true,true);
-insert into public.employees(id,plant_id,code,full_name,active) values
- ('c5000000-0000-4000-8000-000000000001','c2000000-0000-4000-8000-000000000001','MNT-01','Técnico QA',true),
- ('c5000000-0000-4000-8000-000000000002','c2000000-0000-4000-8000-000000000001','MNT-02','Auxiliar QA',true);
+insert into public.employees(id,plant_id,code,display_name,active,historical,provisional) values
+ ('c5000000-0000-4000-8000-000000000001','c2000000-0000-4000-8000-000000000001','MNT_01','Técnico QA',true,false,false),
+ ('c5000000-0000-4000-8000-000000000002','c2000000-0000-4000-8000-000000000001','MNT_02','Auxiliar QA',true,false,false);
 insert into public.equipment(id,plant_id,code,name,status,area) values
  ('c6000000-0000-4000-8000-000000000001','c2000000-0000-4000-8000-000000000001','MNT-EQ-01','Equipo mantenimiento QA','available','QA');
 
