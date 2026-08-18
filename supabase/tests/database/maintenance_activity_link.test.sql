@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(17);
+select plan(20);
 
 select has_column('public','maintenance_tickets','repair_activity_id','maintenance ticket exposes canonical repair activity link');
 select ok(exists(
@@ -63,7 +63,6 @@ select is((select count(*) from public.activity_workers aw join public.activitie
 select is((select a.equipment_id from public.activities a where a.plant_id='c2000000-0000-4000-8000-000000000001'),'c6000000-0000-4000-8000-000000000001'::uuid,'canonical activity links the repaired equipment');
 select is((select t.repair_activity_id from public.maintenance_tickets t where t.equipment_id='c6000000-0000-4000-8000-000000000001'),(select a.id from public.activities a where a.plant_id='c2000000-0000-4000-8000-000000000001'),'ticket links exactly that canonical activity');
 
--- Create an overlapping canonical activity before a second repair closes; close must fail atomically.
 reset role;
 insert into public.equipment(id,plant_id,code,name,status,area) values
  ('c6000000-0000-4000-8000-000000000002','c2000000-0000-4000-8000-000000000001','MNT-EQ-02','Equipo overlap QA','maintenance','QA');
