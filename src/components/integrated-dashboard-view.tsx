@@ -14,7 +14,7 @@ import { buildCommercialAnalytics, commercialAnalyticsCsvSection } from "@/lib/c
 import { buildExpenseAnalytics, expenseAnalyticsCsvSection } from "@/lib/expense-analytics";
 import { bogotaDateKey } from "@/lib/time";
 
-const KPI_GRID_CLASS = "grid gap-3 md:grid-cols-3 2xl:grid-cols-6";
+const KPI_GROUP_GRID_CLASS = "grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5";
 
 function formatMass(kg:number){return kg>=1000?`${(kg/1000).toFixed(2)} t`:`${kg.toLocaleString("es-CO",{maximumFractionDigits:0})} kg`;}
 function formatHours(hours:number){return `${hours.toLocaleString("es-CO",{maximumFractionDigits:1})} h`;}
@@ -62,12 +62,16 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
     ...commercialAnalytics.events.map((event)=>({id:event.id,at:event.at,plant:event.plant,kind:"sale" as const,title:event.title,detail:event.detail})),
     ...expenseAnalytics.events.map((event)=>({id:event.id,at:event.at,plant:event.plant,kind:"expense" as const,title:event.title,detail:event.detail})),
   ].sort((a,b)=>new Date(b.at).getTime()-new Date(a.at).getTime()).slice(0,36),[analytics.events,commercialAnalytics.events,expenseAnalytics.events,inventoryAnalytics.events]);
-  const kpis=[
+
+  const resultKpis=[
     {label:"Recibido",value:formatMass(analytics.receivedKg),meta:`${analytics.dataCounts.receptions} recepciones`,intent:"neutral" as const},
     {label:"Procesado",value:formatMass(analytics.processedKg),meta:"peso inicial medido de pilas",intent:"neutral" as const},
     {label:"Rechazo",value:`${analytics.rejectionPct.toFixed(1)}%`,meta:`${formatMass(analytics.rejectionKg)} · cobertura ${analytics.rejectionCoveragePct.toFixed(0)}%`,intent:analytics.rejectionPct>10?"warning" as const:"neutral" as const},
     {label:"Horas-hombre",value:formatHours(analytics.laborHours),meta:`${analytics.dataCounts.activities} actividades`,intent:"neutral" as const},
     {label:"Cumplimiento plan",value:`${analytics.compliancePct.toFixed(0)}%`,meta:`${analytics.executedScheduledCount}/${analytics.scheduledCount} programadas`,intent:analytics.compliancePct<80&&analytics.scheduledCount>0?"warning" as const:"neutral" as const},
+  ];
+
+  const attentionKpis=[
     {label:"Mantenimiento abierto",value:String(analytics.openMaintenanceAtPeriodEnd),meta:"al cierre del periodo",intent:analytics.openMaintenanceAtPeriodEnd>0?"warning" as const:"neutral" as const},
     {label:"Parada mantenimiento",value:formatMinutes(analytics.downtimeMinutes),meta:`${analytics.maintenanceTickets} tickets con impacto`,intent:analytics.downtimeMinutes>0?"warning" as const:"neutral" as const},
     {label:"Inventario crítico",value:String(criticalInventory.length),meta:`${unconfiguredInventory.length} sin umbral`,intent:criticalInventory.length>0?"danger" as const:"neutral" as const},
@@ -86,7 +90,15 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
 
     <section className="panel mb-4"><div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] lg:items-end"><div><span className="mb-1 block text-xs font-bold text-[var(--muted)]">Periodo</span><div className="segmented" aria-label="Horizonte del dashboard">{(["day","week","month","history"] as DashboardPreset[]).map((item)=><button className={preset===item?"active":""} type="button" key={item} onClick={()=>setPreset(item)}>{item==="day"?"Día":item==="week"?"Semana":item==="month"?"Mes":"Histórico"}</button>)}</div></div><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Fecha<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" type="date" value={anchorKey} onChange={(event)=>setAnchorKey(event.target.value)} /></label><label className="grid gap-1 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={plantId} onChange={(event)=>setPlantId(event.target.value)}>{plantOptions.map((plant)=><option key={plant.id} value={plant.id}>{plant.name}</option>)}</select></label></div><div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[var(--muted)]"><span className="status-pill status-normal">{analytics.period.label}</span><span>{analytics.dataCounts.activities} actividades · {analytics.dataCounts.receptions} recepciones · {inventoryAnalytics.periodProductionCount} producciones · {commercialAnalytics.salesCount} ventas · {expenseAnalytics.recordsCount} compras/gastos</span></div></section>
 
-    <section className={KPI_GRID_CLASS} aria-label="Indicadores operativos">{kpis.map((kpi)=><KpiCard key={kpi.label} {...kpi}/>)}</section>
+    <section className="grid gap-3" aria-labelledby="dashboard-results-heading">
+      <div className="section-head"><div><p className="eyebrow">Desempeño observado</p><h2 id="dashboard-results-heading">Resultado del periodo</h2></div><span className="quiet">hechos del corte seleccionado</span></div>
+      <div className={KPI_GROUP_GRID_CLASS} aria-label="Indicadores operativos">{resultKpis.map((kpi)=><KpiCard key={kpi.label} {...kpi}/>)}</div>
+    </section>
+
+    <section className="grid gap-3" aria-labelledby="dashboard-attention-heading">
+      <div className="section-head"><div><p className="eyebrow">Control y riesgo operacional</p><h2 id="dashboard-attention-heading">Atención requerida</h2></div><span className="quiet">señales verificables; no constituyen un score global</span></div>
+      <div className={KPI_GROUP_GRID_CLASS} aria-label="Indicadores de atención">{attentionKpis.map((kpi)=><KpiCard key={kpi.label} {...kpi}/>)}</div>
+    </section>
 
     <section className="grid gap-4 xl:grid-cols-2">
       <div className="panel">
