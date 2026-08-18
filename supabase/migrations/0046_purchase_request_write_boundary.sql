@@ -32,10 +32,21 @@ set search_path = ''
 as $$
 declare
   request_id uuid;
+  actor_user uuid := (select auth.uid());
 begin
-  if not private.has_plant_role(
-    target_plant,
-    array['operator','supervisor','technical','admin','director']
+  -- Resolve caller identity once. The same authenticated subject that authorizes the
+  -- transaction is frozen as provenance on the request and its submitted event.
+  if actor_user is null then
+    raise exception 'La sesión autenticada no tiene un usuario válido.';
+  end if;
+
+  if not exists (
+    select 1
+    from public.plant_memberships pm
+    where pm.user_id = actor_user
+      and pm.plant_id = target_plant
+      and pm.active
+      and pm.role = any(array['operator','supervisor','technical','admin','director'])
   ) then
     raise exception 'No tienes permiso para solicitar compras en esta planta.';
   end if;
@@ -94,11 +105,12 @@ begin
     nullif(btrim(coalesce(request_process_ref,'')),''),
     nullif(btrim(coalesce(request_evidence_ref,'')),''),
     'submitted',
-    auth.uid()
+    actor_user
   )
   returning id into request_id;
 
-  -- The existing AFTER INSERT trigger records the canonical submitted event atomically.
+  -- The existing AFTER INSERT trigger records the canonical submitted event atomically
+  -- and copies request.created_by into purchase_request_events.actor_user_id.
   return request_id;
 end;
 $$;
@@ -109,4 +121,4 @@ grant execute on function public.ops_submit_purchase_request(uuid,text,date,text
 comment on table public.purchase_requests is
 'Purchase authorization ledger. Authenticated clients read through plant RLS; new submissions are RPC-only through ops_submit_purchase_request and decisions/fulfillment remain guarded RPC transitions.';
 comment on function public.ops_submit_purchase_request(uuid,text,date,text,text,text,numeric,text,uuid,text,text) is
-'Governed purchase-request submission. Enforces plant role, submitted initial state, positive estimate and same-plant equipment integrity; the submitted event is created atomically by the canonical trigger.';
+'Governed purchase-request submission. Freezes the authenticated caller once, enforces plant role, submitted initial state, positive estimate and same-plant equipment integrity; the submitted event is created atomically by the canonical trigger.';
