@@ -168,10 +168,10 @@ begin
 end;
 $$;
 
--- Remove execute on the previous 8-argument overload so clients cannot close without workers.
-revoke all on function public.ops_close_equipment_repair_v2(uuid,timestamptz,text,text,uuid[],text[],numeric[],text[]) from public,anon,authenticated;
-grant execute on function public.ops_close_equipment_repair_v2(uuid,timestamptz,text,text,uuid[],text[],numeric[],text[],uuid[]) to authenticated;
+-- Remove the previous overload entirely: there is no supported close path without actual workers.
+drop function if exists public.ops_close_equipment_repair_v2(uuid,timestamptz,text,text,uuid[],text[],numeric[],text[]);
 revoke all on function public.ops_close_equipment_repair_v2(uuid,timestamptz,text,text,uuid[],text[],numeric[],text[],uuid[]) from public,anon;
+grant execute on function public.ops_close_equipment_repair_v2(uuid,timestamptz,text,text,uuid[],text[],numeric[],text[],uuid[]) to authenticated;
 
 comment on column public.maintenance_tickets.repair_activity_id is
 'Canonical activity created atomically when a new Maintenance V2 repair closes; null is reserved for historical/pre-link tickets.';
