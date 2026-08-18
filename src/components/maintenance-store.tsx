@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useOpsStore } from "@/components/ops-store";
 import type { AlertSeverity } from "@/lib/domain";
-import type { EquipmentRecord, MaintenanceFailureType, MaintenanceTicket } from "@/lib/maintenance-domain";
+import type { EquipmentRecord, MaintenanceFailureType, MaintenanceSpareUse, MaintenanceTicket } from "@/lib/maintenance-domain";
 import { seedEquipment, seedMaintenanceTickets } from "@/lib/maintenance-data";
 import {
   closeRemoteMaintenanceTicket,
@@ -12,7 +12,7 @@ import {
   startRemoteRepair,
 } from "@/lib/supabase/maintenance-repository";
 
-const STORAGE_KEY = "greenatics-ops-maintenance-mvp-004";
+const STORAGE_KEY = "greenatics-ops-maintenance-mvp-005";
 
 type Result = { ok: true } | { ok: false; error: string };
 type CreateResult = { ok: true; id: string } | { ok: false; error: string };
@@ -25,7 +25,13 @@ type FailurePayload = {
   description: string;
   evidenceRefs: string[];
 };
-type ClosePayload = { cause: string; resolution: string; evidenceRefs: string[] };
+type ClosePayload = {
+  cause: string;
+  resolution: string;
+  evidenceRefs: string[];
+  workerIds: string[];
+  spares: MaintenanceSpareUse[];
+};
 type LegacyStoredTicket = Omit<MaintenanceTicket, "failedAt" | "failureType" | "failureEvidenceRefs" | "repairEvidenceRefs"> & {
   failedAt?: string;
   failureType?: MaintenanceFailureType;
@@ -62,7 +68,7 @@ function normalizeStoredTicket(ticket: LegacyStoredTicket): MaintenanceTicket {
 }
 
 export function MaintenanceStoreProvider({ children }: { children: ReactNode }) {
-  const { backend, access } = useOpsStore();
+  const { backend, access, workers } = useOpsStore();
   const remoteMode = backend.mode === "supabase";
   const [equipment, setEquipment] = useState<EquipmentRecord[]>(() => remoteMode ? [] : seedEquipment);
   const [tickets, setTickets] = useState<MaintenanceTicket[]>(() => remoteMode ? [] : seedMaintenanceTickets);
@@ -210,6 +216,11 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       if (ticket.status !== "repairing" || !ticket.repairStartedAt) return { ok: false, error: "Debes iniciar la reparación antes de cerrarla." };
       if (!payload.cause.trim()) return { ok: false, error: "Registra la causa encontrada." };
       if (!payload.resolution.trim()) return { ok: false, error: "Registra la acción realizada." };
+      if (payload.workerIds.length === 0) return { ok: false, error: "Selecciona al menos un trabajador para cerrar la reparación." };
+      if (new Set(payload.workerIds).size !== payload.workerIds.length) return { ok: false, error: "La lista de trabajadores contiene duplicados." };
+      const activeWorkers = new Set(workers.filter((worker) => worker.plantId === ticket.plantId && !worker.historical).map((worker) => worker.id));
+      if (payload.workerIds.some((id) => !activeWorkers.has(id))) return { ok: false, error: "Uno o más trabajadores no pertenecen a la planta o están inactivos." };
+      if (payload.spares.some((spare) => !spare.supplyId || !spare.lotCode.trim() || !Number.isFinite(spare.quantity) || spare.quantity <= 0)) return { ok: false, error: "Cada repuesto debe incluir insumo, lote y una cantidad mayor que cero." };
 
       if (remoteMode) {
         try {
@@ -244,7 +255,7 @@ export function MaintenanceStoreProvider({ children }: { children: ReactNode }) 
       setError(undefined);
       window.localStorage.removeItem(STORAGE_KEY);
     },
-  }), [equipment, error, ready, refreshMaintenance, reloadRemote, remoteMode, tickets]);
+  }), [equipment, error, ready, refreshMaintenance, reloadRemote, remoteMode, tickets, workers]);
 
   return <MaintenanceContext.Provider value={value}>{children}</MaintenanceContext.Provider>;
 }
