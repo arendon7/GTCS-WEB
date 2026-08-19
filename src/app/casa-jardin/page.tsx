@@ -7,10 +7,14 @@ import {
   homeGardenGuides,
   homeGardenMethod,
   homeGardenProducts,
-  homeGardenRelease,
   homeGardenTrafficLight,
   visibleHomeGardenKits,
 } from "@/data/home-garden";
+import {
+  blockedHomeGardenLaunchItems,
+  pendingHomeGardenLaunchItems,
+  readyHomeGardenLaunchItems,
+} from "@/data/home-garden-readiness";
 import styles from "./casa-jardin.module.css";
 
 export const metadata: Metadata = {
@@ -192,11 +196,29 @@ export default function CasaJardinPage() {
 
         <section className={`${styles.section} ${styles.release}`}>
           <div className={`${styles.container} ${styles.releaseGrid}`}>
-            <div><span className={styles.eyebrow}>Estado de lanzamiento</span><h2>El catálogo puede recorrerse. La tienda todavía no.</h2><p className={styles.lead}>Productos, formatos propuestos, kits, diagnóstico y guías ya tienen arquitectura navegable. La compra y los precios se habilitan únicamente cuando sus dependencias estén reconciliadas.</p></div>
             <div>
-              <strong>Bloqueos antes de activar ecommerce</strong>
-              <ul>{homeGardenRelease.blockedReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
-              <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/wondergreen">Ver Wondergreen técnico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/contacto">Hablar con Greenatics</Link></div>
+              <span className={styles.eyebrow}>Estado de lanzamiento</span>
+              <h2>El catálogo puede recorrerse. La tienda todavía no.</h2>
+              <p className={styles.lead}>Productos, formatos propuestos, kits, diagnóstico y guías ya tienen arquitectura navegable. La compra y los precios se habilitan únicamente cuando sus dependencias estén reconciliadas.</p>
+            </div>
+            <div>
+              <strong>Ya está gobernado</strong>
+              <ul>{readyHomeGardenLaunchItems.map((item) => <li key={item.id}><strong>{item.publicLabel}.</strong> {item.publicCopy}</li>)}</ul>
+
+              <strong>Falta cerrar antes de activar ecommerce</strong>
+              <ul>{pendingHomeGardenLaunchItems.map((item) => <li key={item.id}><strong>{item.publicLabel}.</strong> {item.publicCopy}</li>)}</ul>
+
+              {blockedHomeGardenLaunchItems.map((item) => (
+                <div className={styles.guardrail} key={item.id}>
+                  <strong>{item.publicLabel} · bloqueado</strong>
+                  <p>{item.publicCopy}</p>
+                </div>
+              ))}
+
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen">Ver Wondergreen técnico</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/contacto">Hablar con Greenatics</Link>
+              </div>
             </div>
           </div>
         </section>
