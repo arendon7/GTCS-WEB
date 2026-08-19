@@ -1,7 +1,7 @@
 .site {
   min-height: 100vh;
-  background: #fbfaf5;
-  color: #18241f;
+  background: #f7faf8;
+  color: #42584e;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -11,7 +11,7 @@
   top: -80px;
   z-index: 1000;
   border-radius: 4px;
-  background: #0b241c;
+  background: #043022;
   color: #fff;
   padding: 10px 16px;
   text-decoration: none;
@@ -26,9 +26,9 @@
   position: sticky;
   top: 0;
   z-index: 80;
-  border-top: 4px solid #b8d65f;
-  border-bottom: 1px solid rgba(24, 36, 31, 0.15);
-  background: rgba(251, 250, 245, 0.96);
+  border-top: 4px solid #7db43c;
+  border-bottom: 1px solid rgba(66, 88, 78, 0.16);
+  background: rgba(247, 250, 248, 0.96);
   backdrop-filter: blur(14px);
 }
 
@@ -101,7 +101,7 @@
 .actions a:focus-visible,
 .brand:focus-visible,
 .footer a:focus-visible {
-  outline: 3px solid #ddc952;
+  outline: 3px solid #f4d944;
   outline-offset: 4px;
 }
 
@@ -132,11 +132,11 @@
 }
 
 .contact {
-  border: 1px solid rgba(24, 36, 31, 0.2);
+  border: 1px solid rgba(66, 88, 78, 0.22);
 }
 
 .ops {
-  background: #12372c;
+  background: #063d2c;
   color: #fff !important;
 }
 
@@ -146,9 +146,9 @@
 
 .footer {
   margin-top: 0;
-  border-top: 8px solid #b8d65f;
-  background: #0b241c;
-  color: rgba(255, 255, 255, 0.82);
+  border-top: 8px solid #7db43c;
+  background: #043022;
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .footerGrid {
@@ -172,7 +172,7 @@
 .footerBrand address {
   font-style: normal;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .footerLinks {
@@ -183,7 +183,7 @@
 
 .footerLinks strong {
   margin-bottom: 8px;
-  color: #d8ed9c;
+  color: #eaf4e4;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.09em;
@@ -194,7 +194,7 @@
   min-height: 40px;
   display: inline-flex;
   align-items: center;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.74);
   font-size: 0.88rem;
 }
 
@@ -204,7 +204,7 @@
   gap: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   padding: 20px 0 26px;
-  color: rgba(255, 255, 255, 0.54);
+  color: rgba(255, 255, 255, 0.56);
   font-size: 0.76rem;
   letter-spacing: 0.04em;
 }
