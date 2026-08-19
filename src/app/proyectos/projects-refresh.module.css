@@ -1,0 +1,13 @@
+.page {
+  --forest: #063d2c;
+  --forest-deep: #043022;
+  --green: #2f7d32;
+  --lime: #7db43c;
+  --sun: #f4d944;
+  --ink: #263b32;
+  --muted: #65776e;
+  --paper: #f7faf8;
+  --cream: #eaf4e4;
+  --line: rgba(6, 61, 44, 0.15);
+  --line-dark: rgba(255, 255, 255, 0.18);
+}
