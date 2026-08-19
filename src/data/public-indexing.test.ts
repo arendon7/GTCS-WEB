@@ -2,20 +2,20 @@ import { describe, expect, it } from "vitest";
 import sitemap from "../app/sitemap";
 import robots from "../app/robots";
 import { protectedOpsRoutePrefixes } from "../lib/ops-access-policy";
-import { publicNav, publicSite, publicStaticRoutes } from "./public-site";
+import { publicNav, publicReservedRoutes, publicSite, publicStaticRoutes } from "./public-site";
 import { services } from "./services";
 import { publicProjects } from "./projects-public";
 import { wondergreenCrops } from "./wondergreen-crops";
 import { wondergreenReferences } from "./wondergreen-public";
 
 describe("public navigation and indexing contract", () => {
-  it("keeps primary navigation on real public routes", () => {
-    const staticSet = new Set<string>(publicStaticRoutes);
+  it("keeps primary navigation on governed public routes", () => {
+    const governedSet = new Set<string>([...publicStaticRoutes, ...publicReservedRoutes]);
     expect(publicNav.map((item) => item.href)).toHaveLength(new Set(publicNav.map((item) => item.href)).size);
-    for (const item of publicNav) expect(staticSet.has(item.href)).toBe(true);
+    for (const item of publicNav) expect(governedSet.has(item.href)).toBe(true);
   });
 
-  it("builds a sitemap from governed public data only", () => {
+  it("builds a sitemap from governed indexed public data only", () => {
     const entries = sitemap();
     const urls = entries.map((item) => item.url);
     const expectedCount = publicStaticRoutes.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
@@ -26,6 +26,7 @@ describe("public navigation and indexing contract", () => {
     expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/cultivos/cafe`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/2grow-solido-15-3-3`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/extracto-neem`);
+    for (const path of publicReservedRoutes) expect(urls).not.toContain(`${publicSite.publicDomainTarget}${path}`);
     expect(urls.some((url) => url.includes("/app"))).toBe(false);
     expect(urls.some((url) => url.includes("/dashboard"))).toBe(false);
   });
@@ -39,6 +40,7 @@ describe("public navigation and indexing contract", () => {
       expect(disallow).toContain(path);
     }
     for (const path of publicStaticRoutes) expect(disallow).not.toContain(path);
+    for (const path of publicReservedRoutes) expect(disallow).not.toContain(path);
     for (const stalePath of ["/maintenance", "/purchase-requests", "/settlements", "/suppliers"]) {
       expect(disallow).not.toContain(stalePath);
     }
