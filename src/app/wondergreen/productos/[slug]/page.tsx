@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getWondergreenReference, wondergreenReferences } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
+import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "./product.module.css";
 
 export function generateStaticParams() {
@@ -48,9 +49,10 @@ export default async function WondergreenProductPage({ params }: { params: Promi
   const crops = relatedCrops(reference.family);
   const isCommercial = reference.truthStatus === "commercial-reconciled";
   const contactHref = `/contacto?producto=${encodeURIComponent(reference.slug)}#wondergreen`;
+  const visualTone = getWondergreenVisualTone(reference);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-tone={visualTone}>
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
