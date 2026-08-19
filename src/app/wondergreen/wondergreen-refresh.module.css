@@ -1,12 +1,13 @@
 .page {
-  --forest: #14352c;
-  --forest-deep: #0d2b24;
-  --green: #008b4c;
-  --green-soft: #48a942;
-  --lime: #98cf4f;
+  --forest: #063d2c;
+  --forest-deep: #043022;
+  --green: #2f7d32;
+  --green-soft: #5d9c3a;
+  --lime: #7db43c;
   --sun: #f4d944;
-  --paper: #f7f8f3;
-  --cream: #edf4e9;
+  --paper: #f7faf8;
+  --cream: #eaf4e4;
+  --ink: #42584e;
 }
 
 .outlineLight {
@@ -20,9 +21,15 @@
 
 .productRow:hover {
   padding-left: 10px;
-  background: rgba(152, 207, 79, 0.08);
+  background: rgba(125, 180, 60, 0.1);
 }
 
 .productRow:focus-visible {
   background: rgba(244, 217, 68, 0.08);
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  .page nav[aria-label="Navegación Wondergreen"] {
+    top: 121px;
+  }
 }
