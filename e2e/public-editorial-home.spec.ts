@@ -12,6 +12,21 @@ test("public HOME presents the editorial hierarchy and governed Yarumal evidence
   await expect(page.getByText(/Product Truth vigente/i)).toBeVisible();
 });
 
+test("public HOME exposes the three Greenatics pillars and commercial doors before Wondergreen depth", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "Biotecnología aplicada" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Economía circular" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Operación y acompañamiento" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Empieza por el problema que necesitas resolver." })).toBeVisible();
+
+  const levelTwoHeadings = await page.getByRole("heading", { level: 2 }).allTextContents();
+  const doorsIndex = levelTwoHeadings.indexOf("Empieza por el problema que necesitas resolver.");
+  const wondergreenIndex = levelTwoHeadings.indexOf("Más que NPK.");
+  expect(doorsIndex).toBeGreaterThanOrEqual(0);
+  expect(wondergreenIndex).toBeGreaterThan(doorsIndex);
+});
+
 test("public HOME exposes all five governed crop programs", async ({ page }) => {
   await page.goto("/");
 

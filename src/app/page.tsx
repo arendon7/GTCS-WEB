@@ -4,6 +4,7 @@ import Link from "next/link";
 import { HomeCropPrograms, HomeProjectEvidence } from "@/components/public-home-evidence-crops";
 import { PublicShell } from "@/components/public-shell";
 import styles from "./public-home.module.css";
+import refresh from "./public-home-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Greenatics | Transformamos residuos en vida",
@@ -45,6 +46,24 @@ const entryPoints = [
     href: "/#tecnologia",
     cta: "Entender la tecnología",
   },
+];
+
+const identityPillars = [
+  [
+    "01",
+    "Biotecnología aplicada",
+    "Compostaje, digestión anaerobia, formulación organomineral y desarrollos biológicos se integran según el problema y la evidencia disponible.",
+  ],
+  [
+    "02",
+    "Economía circular",
+    "La biomasa residual se entiende como un flujo que puede volver al territorio, al suelo y a sistemas productivos cuando existe una ruta técnica viable.",
+  ],
+  [
+    "03",
+    "Operación y acompañamiento",
+    "Diagnóstico, diseño, puesta en marcha, operación, mantenimiento, seguimiento y datos conectan la solución con la ejecución real.",
+  ],
 ];
 
 const cycleMarks = [
@@ -89,8 +108,8 @@ const knowledge = [
 export default function Home() {
   return (
     <PublicShell>
-      <div className={styles.publicSite}>
-        <section className={styles.hero}>
+      <div className={`${styles.publicSite} ${refresh.page}`}>
+        <section className={`${styles.hero} ${refresh.hero}`}>
           <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
@@ -154,6 +173,59 @@ export default function Home() {
           </div>
         </section>
 
+        <section className={refresh.identity} aria-labelledby="home-identity-title">
+          <div className={styles.container}>
+            <div className={refresh.identityHead}>
+              <div>
+                <span className={styles.eyebrow}>Tres pilares Greenatics</span>
+                <h2 id="home-identity-title">Tecnología, circularidad y operación deben funcionar juntas.</h2>
+              </div>
+              <p>
+                El material comercial y la experiencia operativa convergen en una misma idea: una solución vale cuando puede entenderse, implementarse, operarse y seguirse en el tiempo.
+              </p>
+            </div>
+            <div className={refresh.identityGrid}>
+              {identityPillars.map(([number, title, copy]) => (
+                <article className={refresh.identityCard} key={number}>
+                  <span>{number}</span>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.paths} id="soluciones">
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <span className={styles.eyebrow}>Cuatro puertas de entrada</span>
+              <h2>Empieza por el problema que necesitas resolver.</h2>
+              <p>La ruta cambia según el residuo, el cultivo, el territorio y la infraestructura existente.</p>
+            </div>
+            <div className={styles.pathGrid}>
+              {entryPoints.map((item) => (
+                <article className={`${styles.pathItem} ${refresh.pathItem}`} key={item.title}>
+                  <div className={styles.pathTop}>
+                    <span>{item.number}</span>
+                    <small>{item.kicker}</small>
+                  </div>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  <Link href={item.href}>{item.cta} →</Link>
+                </article>
+              ))}
+            </div>
+            <div className={styles.router}>
+              <div>
+                <strong>¿Tienes un residuo, un cultivo o un proyecto por resolver?</strong>
+                <span>Primero entendemos el caso; luego definimos producto, servicio o infraestructura.</span>
+              </div>
+              <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con Greenatics</Link>
+            </div>
+          </div>
+        </section>
+
         <section className={styles.wondergreen} id="wondergreen">
           <div className={styles.container}>
             <div className={styles.wgHeader}>
@@ -194,36 +266,6 @@ export default function Home() {
         </section>
 
         <HomeCropPrograms />
-
-        <section className={styles.paths} id="soluciones">
-          <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Cuatro puertas de entrada</span>
-              <h2>Empieza por el problema que necesitas resolver.</h2>
-              <p>La ruta cambia según el residuo, el cultivo, el territorio y la infraestructura existente.</p>
-            </div>
-            <div className={styles.pathGrid}>
-              {entryPoints.map((item) => (
-                <article className={styles.pathItem} key={item.title}>
-                  <div className={styles.pathTop}>
-                    <span>{item.number}</span>
-                    <small>{item.kicker}</small>
-                  </div>
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
-                  <Link href={item.href}>{item.cta} →</Link>
-                </article>
-              ))}
-            </div>
-            <div className={styles.router}>
-              <div>
-                <strong>¿Tienes un residuo, un cultivo o un proyecto por resolver?</strong>
-                <span>Primero entendemos el caso; luego definimos producto, servicio o infraestructura.</span>
-              </div>
-              <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con Greenatics</Link>
-            </div>
-          </div>
-        </section>
 
         <HomeProjectEvidence />
 
