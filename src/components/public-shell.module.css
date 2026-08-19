@@ -67,7 +67,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   min-width: 0;
 }
 
@@ -209,7 +209,7 @@
   letter-spacing: 0.04em;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .headerInner {
     grid-template-columns: auto auto;
   }
