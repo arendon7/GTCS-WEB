@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { publicResources, type PublicResource } from "@/data/public-resources";
 import styles from "./library.module.css";
+import refresh from "./library-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Biblioteca | Greenatics",
@@ -69,7 +70,7 @@ function getDeliveryLabel(resource: PublicResource) {
 
 export default function LibraryPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
