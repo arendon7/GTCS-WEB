@@ -29,6 +29,9 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await expect(page).toHaveURL(/\/receptions$/);
   const reception = page.locator("article").filter({ hasText: "PILOTO Integrado" });
   await expect(reception).toContainText("TAM-FORSU-");
+  const receptionText = await reception.textContent();
+  const lotCode = receptionText?.match(/TAM-FORSU-[A-Z0-9-]+/)?.[0];
+  expect(lotCode).toBeTruthy();
 
   await page.goto("/app");
   await expect(page.getByLabel("Indicadores de hoy").locator(".metric-block").filter({ hasText: "Recibido" })).toContainText("1.50 t");
@@ -54,12 +57,14 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await page.getByRole("button", { name: "Cerrar reparación" }).click();
   await expect(page.getByText("Disponible", { exact: true }).first()).toBeVisible();
 
-  // 5) The measured reception is physically assigned to a compost pile and closed.
+  // 5) The exact lot created by the measured reception is assigned to the compost pile and closed.
   await page.goto("/compost/new");
   await page.getByLabel("Ubicación").fill("Zona piloto integrada");
   const sourceGroup = page.getByRole("group", { name: "Lotes físicos y masa asignada" });
-  await sourceGroup.getByRole("checkbox").first().check();
-  await page.getByLabel("Asignar (kg)").fill("1500");
+  const sourceRow = sourceGroup.locator("div").filter({ has: page.getByText(lotCode!, { exact: true }) }).first();
+  await expect(sourceRow).toContainText(lotCode!);
+  await sourceRow.getByRole("checkbox").check();
+  await sourceRow.getByLabel("Asignar (kg)").fill("1500");
   await page.getByLabel("Volumen conformado (m³)").fill("8");
   await page.getByRole("group", { name: "Trabajadores de conformación" }).getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Conformar pila" }).click();
