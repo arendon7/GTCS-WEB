@@ -4,6 +4,7 @@ import Link from "next/link";
 import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
 import styles from "./wondergreen.module.css";
+import refresh from "./wondergreen-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Wondergreen | Suelo, nutrición y biología",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 const entryPaths = [
   ["01", "Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "/wondergreen/cultivos"],
   ["02", "Tengo una necesidad", "Nutrición, suelo, floración, producción, raíz, plagas o enfermedades.", "#finder"],
-  ["03", "Sé qué producto busco", "Entra al mapa del portafolio por familia y formato.", "#portafolio"],
+  ["03", "Sé qué producto busco", "Entra al Product Master público y revisa familia, formato y condición comercial.", "/wondergreen/productos"],
 ];
 
 const system = [
@@ -35,11 +36,11 @@ const tech = [
 ];
 
 const finderSteps = [
-  ["01", "Selecciona cultivo", "Café, cacao, aguacate, cítricos, pastos y más."],
-  ["02", "Ubica la etapa", "Establecimiento, crecimiento, floración, producción o recuperación."],
-  ["03", "Define la necesidad", "Nutrición, suelo, raíz, plaga, enfermedad o estrés."],
-  ["04", "Completa el contexto", "Análisis de suelo/foliar, manejo previo y condición del lote."],
-  ["05", "Recibe una ruta", "Fertilizante, bioinsumo, protocolo o asesoría potencialmente relevante."],
+  ["01", "Cultivo y contexto", "Especie, etapa, objetivo, historial, suelo, agua y condición actual del lote."],
+  ["02", "Diagnóstico y análisis", "Síntomas, antecedentes y análisis disponibles antes de seleccionar una referencia."],
+  ["03", "Programa técnico", "Se organiza una ruta potencial por etapa, necesidad y condición del cultivo."],
+  ["04", "Implementación", "Producto, formato, vía y momento deben seguir la ficha y recomendación vigentes."],
+  ["05", "Seguimiento y ajuste", "La respuesta del cultivo y los nuevos datos permiten revisar la ruta técnica."],
 ];
 
 const bioFamilies = [
@@ -56,15 +57,16 @@ const audiences = [
 
 export default function WondergreenPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <nav className={styles.subnav} aria-label="Navegación Wondergreen">
         <div className={styles.container}>
           <span>Wondergreen</span>
           <div>
-            <a href="#portafolio">Portafolio</a>
+            <Link href="/wondergreen/productos">Productos</Link>
+            <Link href="/wondergreen/cultivos">Cultivos</Link>
             <a href="#tecnologia">Tecnología</a>
             <a href="#bioinsumos">Bioinsumos</a>
-            <Link href="/wondergreen/cultivos">Cultivos</Link>
+            <Link href="/biblioteca">Guías</Link>
           </div>
         </div>
       </nav>
@@ -90,7 +92,7 @@ export default function WondergreenPage() {
               </p>
               <div className={styles.buttonRow}>
                 <a className={`${styles.button} ${styles.primary}`} href="#finder">Encontrar mi solución</a>
-                <a className={`${styles.button} ${styles.ghost}`} href="#portafolio">Ver portafolio</a>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/productos">Ver productos</Link>
               </div>
             </div>
 
@@ -163,9 +165,9 @@ export default function WondergreenPage() {
                 </div>
               </div>
               <div className={styles.productTable}>
-                {compostReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
-                {solidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
-                {liquidFertilizers.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus}</small></div>)}
+                {compostReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {solidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {liquidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
             </div>
 
@@ -176,8 +178,13 @@ export default function WondergreenPage() {
                 <p>Microorganismos, inoculantes y extractos botánicos se seleccionan según cultivo, problema, contexto técnico y estado regulatorio/comercial.</p>
               </div>
               <div className={styles.productTable}>
-                {bioinputReferences.map((item) => <div className={styles.productRow} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus}</small></div>)}
+                {bioinputReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
+            </div>
+
+            <div className={styles.buttonRow}>
+              <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/productos">Abrir catálogo completo</Link>
+              <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
             </div>
           </div>
         </section>
@@ -218,9 +225,12 @@ export default function WondergreenPage() {
           <div className={`${styles.container} ${styles.finderGrid}`}>
             <div className={styles.finderIntro}>
               <span className={`${styles.eyebrow} ${styles.lightEyebrow}`}>Wondergreen Finder</span>
-              <h2>Cultivo + etapa + necesidad + problema.</h2>
-              <p>El resultado será una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor.</p>
-              <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+              <h2>Del contexto al seguimiento.</h2>
+              <p>La ruta es una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor antes de cerrar una recomendación.</p>
+              <div className={styles.buttonRow}>
+                <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+                <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Consultar guías</Link>
+              </div>
             </div>
             <div className={styles.finderSteps}>
               {finderSteps.map(([number, title, copy]) => (
@@ -246,7 +256,10 @@ export default function WondergreenPage() {
                 </article>
               ))}
             </div>
-            <div className={styles.buttonRow}><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/cultivos">Ver biblioteca por cultivo</Link></div>
+            <div className={styles.buttonRow}>
+              <Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/cultivos">Ver cultivos</Link>
+              <Link className={`${styles.button} ${styles.ghost}`} href="/biblioteca">Explorar Biblioteca</Link>
+            </div>
           </div>
         </section>
 
