@@ -1,9 +1,10 @@
 import Link from "next/link";
 import styles from "../company-public.module.css";
+import refresh from "../company-public-v9.module.css";
 
 export default function CasaJardinPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
