@@ -11,34 +11,10 @@ export const metadata: Metadata = {
 };
 
 const guideContent = {
-  "casa-jardin": [
-    "Identifica primero la etapa: suelo, crecimiento, mantenimiento, floración o producción.",
-    "Usa el método OBSERVA → IDENTIFICA → ELIGE → APLICA → REVISA.",
-    "No conviertas un síntoma aislado en una receta nutricional.",
-    "Trabaja con humedad adecuada y no acumules pellets contra el tallo.",
-    "Detén la fertilización si hay encharcamiento, pudrición, raíces comprometidas o marchitez severa.",
-  ],
-  "mi-huerta": [
-    "PREPARA: materia orgánica y condición del sustrato antes de exigir producción.",
-    "CRECE: etapa vegetativa y desarrollo de hojas/brotes.",
-    "FLORECE: cambia de lógica cuando aparecen botones y flores.",
-    "FRUCTIFICA: acompaña la etapa productiva sin prometer rendimiento o cosecha.",
-    "La secuencia es por etapas; no significa aplicar todos los productos al mismo tiempo.",
-  ],
-  "etapas": [
-    "CRECE = 2Grow Sólido 15-3-3.",
-    "EQUILIBRA = 2Balance Sólido 7-7-7.",
-    "FLORECE = 2Bloom Sólido 3-8-3.",
-    "FRUCTIFICA = 2Fruit Sólido 3-3-8.",
-    "COMPOST = materia orgánica y acondicionamiento del sustrato.",
-  ],
-  "trasplante": [
-    "Prioriza drenaje y estructura del sustrato.",
-    "Manipula raíces con cuidado y evita sobrecompactar.",
-    "Mantén humedad adecuada sin encharcar.",
-    "Espera señales de estabilidad y nueva actividad antes de escoger una etapa nutricional.",
-    "La guía de trasplante es educativa; no habilita el Kit Trasplanta & Arranca bloqueado.",
-  ],
+  "casa-jardin": ["Identifica primero la etapa: suelo, crecimiento, mantenimiento, floración o producción.", "Usa OBSERVA → IDENTIFICA → ELIGE → APLICA → REVISA.", "No conviertas un síntoma aislado en una receta nutricional.", "Trabaja con humedad adecuada y no acumules pellets contra el tallo.", "Detén la fertilización si hay encharcamiento, raíces comprometidas o marchitez severa."],
+  "mi-huerta": ["PREPARA: condición del sustrato antes de exigir producción.", "CRECE: etapa vegetativa.", "FLORECE: cambia de lógica cuando aparecen botones y flores.", "FRUCTIFICA: acompaña la etapa productiva sin prometer rendimiento.", "La secuencia es por etapas; no significa aplicar todo al mismo tiempo."],
+  etapas: ["CRECE = 2Grow Sólido 15-3-3.", "EQUILIBRA = 2Balance Sólido 7-7-7.", "FLORECE = 2Bloom Sólido 3-8-3.", "FRUCTIFICA = 2Fruit Sólido 3-3-8.", "COMPOST = materia orgánica y acondicionamiento del sustrato."],
+  trasplante: ["Prioriza drenaje y estructura del sustrato.", "Manipula raíces con cuidado y evita sobrecompactar.", "Mantén humedad adecuada sin encharcar.", "Espera estabilidad antes de escoger una etapa nutricional.", "La guía es educativa; no habilita el Kit Trasplanta & Arranca bloqueado."],
 } as const;
 
 export default function CasaJardinGuiasPage() {
@@ -50,13 +26,10 @@ export default function CasaJardinGuiasPage() {
             <div>
               <span className={styles.eyebrow}>Wondergreen Casa & Jardín · biblioteca</span>
               <h1>Guías para observar antes de aplicar.</h1>
-              <p className={styles.lead}>El handoff de MKTG Studio incluye cuatro guías útiles para la primera versión web. Su contenido se vuelve navegable aquí y los PDFs se conservan como material descargable de apoyo.</p>
+              <p className={styles.lead}>El handoff de MKTG Studio incluye cuatro guías útiles para esta primera versión. Su conocimiento ya vive de forma navegable aquí; los binarios PDF se mantienen separados hasta completar su incorporación técnica al repositorio.</p>
               <div className={styles.actions}><Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin">← Volver a Casa, Jardín y Vivero</Link></div>
             </div>
-            <aside className={styles.heroVisual}>
-              <p className={styles.heroNote}>DEL PDF A CONTENIDO NAVEGABLE</p>
-              <strong style={{ color: "white", fontFamily: "var(--display)", fontSize: "3rem", lineHeight: 1 }}>Conocimiento que acompaña la decisión.</strong>
-            </aside>
+            <aside className={styles.heroVisual}><p className={styles.heroNote}>DEL PDF A CONTENIDO NAVEGABLE</p><strong style={{ color: "white", fontFamily: "var(--display)", fontSize: "3rem", lineHeight: 1 }}>Conocimiento que acompaña la decisión.</strong></aside>
           </div>
         </section>
 
@@ -68,28 +41,17 @@ export default function CasaJardinGuiasPage() {
                 <p>{guide.summary}</p>
               </div>
               <div className={styles.decisionGrid}>
-                {guideContent[guide.id as keyof typeof guideContent].map((item, itemIndex) => (
-                  <article className={styles.decisionCard} key={item}>
-                    <span className={styles.eyebrow}>{String(itemIndex + 1).padStart(2, "0")}</span>
-                    <p><strong>{item}</strong></p>
-                  </article>
-                ))}
+                {guideContent[guide.id as keyof typeof guideContent].map((item, itemIndex) => <article className={styles.decisionCard} key={item}><span className={styles.eyebrow}>{String(itemIndex + 1).padStart(2, "0")}</span><p><strong>{item}</strong></p></article>)}
               </div>
-              <div className={styles.actions}>
-                <a className={`${styles.button} ${styles.primary}`} href={guide.file}>Descargar PDF optimizado</a>
+              <div className={styles.guardrail}>
+                <strong>PDF fuente validado en el handoff.</strong>
+                <p>{guide.sourceFile} · El archivo optimizado ya fue extraído y revisado, pero la descarga web permanece deshabilitada hasta que el binario quede incorporado y verificado dentro del deploy.</p>
               </div>
             </div>
           </section>
         ))}
 
-        <section className={`${styles.section} ${styles.release}`}>
-          <div className={styles.container}>
-            <div className={styles.guardrail}>
-              <strong>Las guías no reemplazan diagnóstico ni Product Truth.</strong>
-              <p>Dosis domésticas, frecuencia, equivalencias del dosificador, presentaciones B2C y claims finales siguen subordinados a la validación técnica y comercial. Ante estrés severo, exceso de agua, daño sanitario o problemas radiculares, no empieces fertilizando.</p>
-            </div>
-          </div>
-        </section>
+        <section className={`${styles.section} ${styles.release}`}><div className={styles.container}><div className={styles.guardrail}><strong>Las guías no reemplazan diagnóstico ni Product Truth.</strong><p>Dosis domésticas, frecuencia, equivalencias del dosificador, presentaciones B2C y claims finales siguen subordinados a validación técnica y comercial.</p></div></div></section>
       </main>
     </div>
   );
