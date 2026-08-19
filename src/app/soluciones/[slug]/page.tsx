@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { getService, services } from "@/data/services";
 import styles from "../solutions.module.css";
+import refresh from "../solutions-refresh.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,7 +29,7 @@ export default async function SolutionDetailPage({ params }: Props) {
   if (!service) notFound();
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <BreadcrumbJsonLd items={[
         { name: "Greenatics", path: "/" },
         { name: "Soluciones", path: "/soluciones" },
