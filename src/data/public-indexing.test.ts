@@ -23,6 +23,7 @@ describe("public navigation and indexing contract", () => {
 
     expect(entries).toHaveLength(expectedCount);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/esp-ready`);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/greenatics-base`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/pmirs-red`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/diagnostico-caracterizacion`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/proyectos/yarumal`);
