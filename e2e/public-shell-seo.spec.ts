@@ -7,6 +7,8 @@ const shellRoutes = [
   "/wondergreen/cultivos/cafe",
   "/casa-jardin",
   "/soluciones",
+  "/soluciones/esp-municipios",
+  "/soluciones/empresas-grandes-generadores",
   "/soluciones/diagnostico-caracterizacion",
   "/proyectos",
   "/proyectos/yarumal",
@@ -65,6 +67,8 @@ test("sitemap exposes public routes and robots blocks OPS", async ({ request }) 
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.ok()).toBe(true);
   const sitemapText = await sitemap.text();
+  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/esp-municipios");
+  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/empresas-grandes-generadores");
   expect(sitemapText).toContain("https://greenatics.com.co/soluciones/diagnostico-caracterizacion");
   expect(sitemapText).toContain("https://greenatics.com.co/proyectos/yarumal");
   expect(sitemapText).toContain("https://greenatics.com.co/wondergreen/cultivos/cafe");
