@@ -21,7 +21,7 @@ test("Casa Jardín and Vivero exposes stage system without price or checkout", a
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
-  await expect(page.getByText(/Kit Trasplanta & Arranca no aparece como kit disponible/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kit Trasplanta & Arranca", exact: true })).toHaveCount(0);
 });
 
 test("Casa diagnostic stops fertilizer-first response on safety conditions", async ({ page }) => {
