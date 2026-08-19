@@ -1,0 +1,124 @@
+.modules {
+  padding: 112px 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.moduleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.moduleCard {
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+  padding: 34px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.moduleCard > span {
+  color: var(--green);
+  font-size: .69rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.moduleCard h3 {
+  max-width: 580px;
+  margin-top: 16px;
+}
+
+.moduleCard > p {
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.decision {
+  margin-top: 26px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.decision small {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--green);
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.decision strong {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.signals span {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.guardrail {
+  margin-top: 20px !important;
+  padding-left: 16px;
+  border-left: 3px solid var(--sun);
+  font-size: .82rem;
+}
+
+.moduleLinks {
+  display: grid;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.moduleLinks small {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: .67rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.moduleLinks a {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--green);
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .moduleGrid { grid-template-columns: 1fr; }
+  .moduleCard { min-height: auto; }
+}
+
+@media (max-width: 760px) {
+  .modules { padding: 78px 0; }
+  .moduleCard { padding: 28px 24px; }
+}
