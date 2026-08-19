@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProjectEvidenceCard } from "@/components/project-evidence-card";
 import { publicProjects } from "@/data/projects-public";
 import styles from "./projects.module.css";
+import refresh from "./projects-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Proyectos | Greenatics",
@@ -29,7 +30,7 @@ const publicationFlow = [
 
 export default function ProjectsPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={styles.heroAccent} aria-hidden="true" />
