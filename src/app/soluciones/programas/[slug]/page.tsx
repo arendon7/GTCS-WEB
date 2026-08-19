@@ -118,7 +118,7 @@ export default async function StrategicProgramPage({ params }: Props) {
         <section className={styles.guardrail}>
           <div className={`${styles.container} ${styles.guardrailGrid}`}>
             <div><span className={styles.eyebrow}>Siguiente paso</span><h2>{program.cta}</h2></div>
-            <div><p>La metodología se adapta al estado real del cliente. No presupone que todas las brechas existan ni convierte una capacidad general de Greenatics en obligación contractual automática.</p><Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link></div>
+            <div><p>La metodología se adapta al estado real del cliente. No presupone que todas las brechas existan ni convierte una capacidad general de Greenatics en obligación contractual automática.</p><Link className={styles.button} href="/contacto">Hablar con Greenatics</Link></div>
           </div>
         </section>
       </main>
