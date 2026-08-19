@@ -57,8 +57,9 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await page.getByRole("button", { name: "Cerrar reparación" }).click();
   await expect(page.getByText("Disponible", { exact: true }).first()).toBeVisible();
 
-  // 5) The exact lot created by the measured reception is assigned to the compost pile and closed.
+  // 5) The exact Tamesis lot created by the measured reception is assigned to the compost pile and closed.
   await page.goto("/compost/new");
+  await page.getByLabel("Planta").selectOption("tamesis");
   await page.getByLabel("Ubicación").fill("Zona piloto integrada");
   const sourceGroup = page.getByRole("group", { name: "Lotes físicos y masa asignada" });
   const sourceRow = sourceGroup.locator("div").filter({ has: page.getByText(lotCode!, { exact: true }) }).first();
