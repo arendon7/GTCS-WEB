@@ -6,15 +6,16 @@ import { homeGardenDiagnostic, homeGardenProducts, visibleHomeGardenKits } from 
 import styles from "../casa-jardin.module.css";
 
 type StageKey = keyof typeof homeGardenDiagnostic.stages | "";
-type ConditionKey = "healthy" | "stressed" | "very-wilted" | "waterlogged" | "pest-damage" | "root-problem" | "unknown" | "";
-
+type ConditionKey = "healthy" | "stressed" | "very-wilted" | "waterlogged" | "extremely-dry" | "pest-damage" | "root-problem" | "unknown" | "";
 type PlantType = "green" | "flower" | "garden" | "fruit" | "mixed" | "new-transplant" | "unsure" | "";
+type PotSize = (typeof homeGardenDiagnostic.potSizes)[number];
 
 const conditionOptions: readonly [ConditionKey, string][] = [
   ["healthy", "Activa / aparentemente sana"],
   ["stressed", "Estresada, pero sin daño severo evidente"],
   ["very-wilted", "Muy marchita"],
   ["waterlogged", "Encharcada o con exceso de agua"],
+  ["extremely-dry", "Sustrato extremadamente seco"],
   ["pest-damage", "Con manchas, plaga o daño sanitario"],
   ["root-problem", "Con señales de problema radicular"],
   ["unknown", "No estoy seguro"],
@@ -34,6 +35,7 @@ export function HomeGardenDiagnostic() {
   const [stage, setStage] = useState<StageKey>("");
   const [condition, setCondition] = useState<ConditionKey>("");
   const [plantCount, setPlantCount] = useState("");
+  const [potSizes, setPotSizes] = useState<PotSize[]>([]);
 
   const result = useMemo(() => {
     if (!condition || !stage) return null;
@@ -43,13 +45,16 @@ export function HomeGardenDiagnostic() {
     if (plantType === "new-transplant") {
       return { type: "safety" as const, title: "Trasplante reciente: estabiliza antes de decidir nutrición.", copy: "Revisa drenaje, raíces, humedad y establecimiento. Cuando la planta retome actividad, vuelve a identificar su etapa." };
     }
+    if (condition === "extremely-dry") {
+      return { type: "review" as const, title: "Primero recupera una humedad adecuada.", copy: "El sustrato extremadamente seco queda en semáforo amarillo: corrige la condición y vuelve a observar antes de decidir una aplicación." };
+    }
 
     const destination = homeGardenDiagnostic.stages[stage as keyof typeof homeGardenDiagnostic.stages];
     if (!destination) return { type: "review" as const, title: "Todavía falta contexto.", copy: "No identificamos una etapa con suficiente claridad. Usa el semáforo, revisa agua, drenaje, raíces y sanidad, o solicita orientación antes de aplicar." };
 
     if (destination === "casa-completa") {
       const kit = visibleHomeGardenKits.find((item) => item.id === "casa-completa");
-      return { type: "kit" as const, title: kit?.name ?? "Casa Completa", copy: "Tienes varias plantas en etapas distintas. La lógica es identificar cada planta y usar una sola etapa por necesidad, no aplicar todo simultáneamente.", href: "/casa-jardin#kits" };
+      return { type: "kit" as const, title: kit?.name ?? "Casa Completa", copy: "Tienes varias plantas en etapas distintas. La lógica es identificar cada planta y usar una sola etapa por necesidad, no aplicar todo simultáneamente.", href: "/casa-jardin/kits/casa-completa" };
     }
 
     const product = homeGardenProducts.find((item) => item.id === destination);
@@ -58,9 +63,13 @@ export function HomeGardenDiagnostic() {
       type: "stage" as const,
       title: `${product.consumerName} · ${product.formula ?? "Compost"}`,
       copy: `${product.role} ${product.householdFormatStatus}`,
-      href: `/wondergreen/productos/${product.technicalSlug}`,
+      href: `/casa-jardin/productos/${product.id}`,
     };
   }, [condition, plantType, stage]);
+
+  function togglePotSize(size: PotSize) {
+    setPotSizes((current) => current.includes(size) ? current.filter((item) => item !== size) : [...current, size]);
+  }
 
   return (
     <div>
@@ -111,6 +120,20 @@ export function HomeGardenDiagnostic() {
           </select>
           <p>Este dato prepara una futura recomendación de tamaño. <strong>No calcula dosis ni cobertura todavía.</strong></p>
         </label>
+
+        <fieldset className={styles.decisionCard}>
+          <span className={styles.eyebrow}>05 · Materas</span>
+          <h3>¿Qué tamaños tienes?</h3>
+          <div>
+            {homeGardenDiagnostic.potSizes.map((size) => (
+              <label key={size} style={{ display: "inline-flex", gap: ".45rem", marginRight: "1rem", alignItems: "center" }}>
+                <input type="checkbox" checked={potSizes.includes(size)} onChange={() => togglePotSize(size)} aria-label={`Matera ${size}`} />
+                {size}
+              </label>
+            ))}
+          </div>
+          <p>S/M/L/XL proviene del flujo del handoff. <strong>Aún no tiene equivalencia pública a volumen ni gramos.</strong></p>
+        </fieldset>
       </div>
 
       <div className={styles.guardrail} aria-live="polite">
@@ -128,7 +151,7 @@ export function HomeGardenDiagnostic() {
 
       <div className={styles.guardrail}>
         <strong>Calculadora de dosis: deshabilitada.</strong>
-        <p>El handoff exige validar dosis domésticas por formulación y calibrar el dosificador antes de convertir este diagnóstico en gramos, medidas, frecuencia o cobertura.</p>
+        <p>El handoff exige validar dosis domésticas por formulación, tamaño/volumen de sustrato y calibrar el dosificador antes de convertir este diagnóstico en gramos, medidas, frecuencia o cobertura.</p>
       </div>
     </div>
   );

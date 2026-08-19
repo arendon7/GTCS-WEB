@@ -26,7 +26,7 @@ export const homeGardenAssets: readonly HomeGardenAsset[] = [
     ["packshot-equilibra", "packshot_equilibra.png", "EQUILIBRA / 2Balance 7-7-7"],
     ["packshot-florece", "packshot_florece.png", "FLORECE / 2Bloom 3-8-3"],
     ["packshot-fructifica", "packshot_fructifica.png", "FRUCTIFICA / 2Fruit 3-3-8"],
-    ["packshot-compost", "packshot_compost.png", "COMPOST"],
+    ["packshot-compost", "packshot_compost.png", "COMPOST 2 kg"],
   ].map(([id, sourceFile, use]) => ({
     id,
     sourceFile,
@@ -38,7 +38,6 @@ export const homeGardenAssets: readonly HomeGardenAsset[] = [
   ...[
     ["kit-plantas-verdes", "kit_plantas_verdes.png", "Kit Plantas Verdes"],
     ["kit-plantas-flor", "kit_plantas_con_flor.png", "Kit Plantas con Flor"],
-    ["kit-mi-huerta", "kit_mi_huerta.png", "Kit Mi Huerta"],
     ["kit-casa-completa", "kit_casa_completa.png", "Kit Casa Completa"],
     ["kit-casa-completa-xl", "kit_casa_completa_xl.png", "Casa Completa XL"],
   ].map(([id, sourceFile, use]) => ({
@@ -47,8 +46,16 @@ export const homeGardenAssets: readonly HomeGardenAsset[] = [
     kind: "kit" as const,
     status: "candidate-web" as const,
     use,
-    guardrail: "Concept/prelaunch visual only. Do not infer price, exact household net content, savings, stock or checkout availability from the image.",
+    guardrail: "Concept/prelaunch visual only. Visible weights were checked against the structured V1 composition, but the artwork is not a final commercial label. Do not infer price, savings, stock or checkout availability.",
   })),
+  {
+    id: "kit-mi-huerta",
+    sourceFile: "kit_mi_huerta.png",
+    kind: "kit",
+    status: "blocked",
+    use: "Aesthetic reference pending regeneration.",
+    guardrail: "Structured Kit Mi Huerta V1 requires COMPOST 2 kg, while this artwork visibly shows COMPOST 1 kg. Product Truth wins: do not publish this image until corrected.",
+  },
   {
     id: "education-pot-size",
     sourceFile: "C5_tamanos_matera.png",
@@ -76,7 +83,7 @@ export const homeGardenAssets: readonly HomeGardenAsset[] = [
     kind: "pdf" as const,
     status: "source-guide" as const,
     use,
-    guardrail: "Web content and structured Product Truth override generated-image text. Remove/replace any nonfunctional QR before public binary deployment.",
+    guardrail: "Web content and structured Product Truth override generated-image text. Remove/replace any nonfunctional QR and reconcile visible weights before public binary deployment.",
   })),
   {
     id: "kit-transplant-source",

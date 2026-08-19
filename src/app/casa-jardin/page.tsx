@@ -60,7 +60,7 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>4 etapas + suelo</span><h2>No necesita más. Necesita lo correcto.</h2></div>
-              <p>CRECE, EQUILIBRA, FLORECE y FRUCTIFICA son nombres de uso doméstico para referencias sólidas Wondergreen ya existentes. COMPOST prepara y acondiciona el sistema de suelo. Las presentaciones B2C siguen en cierre y no se muestran como SKUs comprables todavía.</p>
+              <p>CRECE, EQUILIBRA, FLORECE y FRUCTIFICA son nombres de uso doméstico para referencias sólidas Wondergreen ya existentes. COMPOST prepara y acondiciona el sistema de suelo. Los formatos B2C del handoff se muestran como propuestas, no como inventario comprable.</p>
             </div>
             <div className={styles.productGrid}>
               {homeGardenProducts.map((product) => (
@@ -71,7 +71,7 @@ export default function CasaJardinPage() {
                   <span className={styles.formula}>{product.formula ?? "Compost"}</span>
                   <p>{product.role}</p>
                   <p><strong>{product.prompt}</strong></p>
-                  <Link href={`/wondergreen/productos/${product.technicalSlug}`}>Ver Product Truth técnico →</Link>
+                  <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
                 </article>
               ))}
             </div>
@@ -105,7 +105,7 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Kits Casa & Jardín · pre-lanzamiento</span><h2>Compra la lógica del sistema, no una mezcla de productos.</h2></div>
-              <p>Los cinco kits visibles provienen del handoff comercial validado como arquitectura. Aún no tienen checkout ni PVP público: faltan cerrar formatos domésticos, dosificador, empaque, etiquetas, stock y logística.</p>
+              <p>Los cinco kits visibles conservan la composición V1 del handoff. Aún no tienen checkout ni PVP público: faltan cerrar dosificador, empaque, etiquetas, stock, logística y condición regulatoria de las presentaciones domésticas.</p>
             </div>
             <div className={styles.kitGrid}>
               {visibleHomeGardenKits.map((kit) => (
@@ -115,6 +115,7 @@ export default function CasaJardinPage() {
                   <p><strong>{kit.promise}</strong></p>
                   <ul>{kit.contents.map((content) => <li key={content}>{content}</li>)}</ul>
                   <p>{kit.guardrail}</p>
+                  <Link href={`/casa-jardin/kits/${kit.id}`}>Ver composición y ruta →</Link>
                   <div className={styles.status}>Pre-lanzamiento · compra deshabilitada</div>
                 </article>
               ))}
@@ -173,7 +174,7 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Diagnóstico orientativo</span><h2>Deja de fertilizar a ciegas.</h2></div>
-              <p>El diagnóstico pregunta tipo de planta, etapa y condición. Si detecta una señal de seguridad, detiene la recomendación. Si el contexto es claro, orienta hacia una etapa o kit sin calcular gramos todavía.</p>
+              <p>El diagnóstico pregunta tipo de planta, etapa, condición, cantidad y tamaños de matera. Si detecta una señal de seguridad, detiene la recomendación. El tamaño se captura para una futura recomendación de formato, pero todavía no se convierte en dosis.</p>
             </div>
             <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Iniciar diagnóstico</Link></div>
           </div>
@@ -191,7 +192,7 @@ export default function CasaJardinPage() {
 
         <section className={`${styles.section} ${styles.release}`}>
           <div className={`${styles.container} ${styles.releaseGrid}`}>
-            <div><span className={styles.eyebrow}>Estado de lanzamiento</span><h2>La experiencia ya puede construirse. La tienda todavía no.</h2><p className={styles.lead}>Este primer release queda deliberadamente sin indexar y sin checkout. La arquitectura, el contenido y el diagnóstico sí se prueban dentro de la web; compra y precios se habilitan únicamente cuando sus dependencias estén reconciliadas.</p></div>
+            <div><span className={styles.eyebrow}>Estado de lanzamiento</span><h2>El catálogo puede recorrerse. La tienda todavía no.</h2><p className={styles.lead}>Productos, formatos propuestos, kits, diagnóstico y guías ya tienen arquitectura navegable. La compra y los precios se habilitan únicamente cuando sus dependencias estén reconciliadas.</p></div>
             <div>
               <strong>Bloqueos antes de activar ecommerce</strong>
               <ul>{homeGardenRelease.blockedReasons.map((reason) => <li key={reason}>{reason}</li>)}</ul>
