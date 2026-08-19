@@ -8,6 +8,12 @@ test("Wondergreen product catalog exposes governed references", async ({ page })
   await expect(page.getByRole("link", { name: /Extracto de Neem/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Buscar por cultivo →" }).first()).toHaveAttribute("href", "/wondergreen/cultivos");
   await expect(page.getByText("17 referencias", { exact: true })).toBeVisible();
+
+  await expect(page.getByRole("link", { name: /2Grow Sólido/ }).first()).toHaveAttribute("data-tone", "grow");
+  await expect(page.getByRole("link", { name: /2Balance Sólido/ }).first()).toHaveAttribute("data-tone", "balance");
+  await expect(page.getByRole("link", { name: /2Bloom Sólido/ }).first()).toHaveAttribute("data-tone", "bloom");
+  await expect(page.getByRole("link", { name: /2Fruit Sólido/ }).first()).toHaveAttribute("data-tone", "fruit");
+  await expect(page.getByRole("link", { name: /Extracto de Neem/ }).first()).toHaveAttribute("data-tone", "botanical");
 });
 
 test("catalog browser filters by search, commercial truth and format without changing Product Master", async ({ page }) => {
@@ -32,6 +38,7 @@ test("catalog browser filters by search, commercial truth and format without cha
 test("commercial product page shows reconciled state without inventing a packshot", async ({ page }) => {
   await page.goto("/wondergreen/productos/2grow-solido-15-3-3");
 
+  await expect(page.locator('div[data-tone="grow"]').first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /2Grow Sólido/ })).toBeVisible();
   await expect(page.getByText("Referencia comercial reconciliada").first()).toBeVisible();
   await expect(page.getByText("Reconciliada", { exact: true })).toBeVisible();
@@ -62,6 +69,7 @@ test("unknown product context is ignored instead of fabricating a reference", as
 test("technical bioinput page does not pretend to be commercially available", async ({ page }) => {
   await page.goto("/wondergreen/productos/extracto-neem");
 
+  await expect(page.locator('div[data-tone="botanical"]').first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Extracto de Neem/ })).toBeVisible();
   await expect(page.getByText(/Portafolio técnico · ficha\/registro por reconciliar/).first()).toBeVisible();
   await expect(page.getByText("Requiere confirmación", { exact: true })).toBeVisible();
