@@ -48,7 +48,7 @@ test("Casa kit detail preserves exact sourced composition without checkout or sa
     await expect(page.getByRole("heading", { name: component, exact: true })).toBeVisible();
   }
   await expect(page.getByText(/hipótesis comercial de precios/i)).toBeVisible();
-  await expect(page.getByText(/no se anuncia ahorro/i)).toBeVisible();
+  await expect(page.getByText(/Tampoco se anuncia ahorro/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
