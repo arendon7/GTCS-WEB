@@ -35,7 +35,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/cultivos/cafe",
     cta: "Abrir guía de café",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Crop Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Café · 20 páginas",
   },
   {
@@ -47,7 +47,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/cultivos/cacao",
     cta: "Abrir guía de cacao",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Crop Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cacao · 20 páginas",
   },
   {
@@ -59,7 +59,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/cultivos/aguacate",
     cta: "Abrir guía de aguacate",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Crop Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Aguacate V2 · 20 páginas",
   },
   {
@@ -71,7 +71,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/cultivos/limon-tahiti",
     cta: "Abrir guía de limón Tahití",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Crop Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cítricos · 20 páginas",
   },
   {
@@ -83,7 +83,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/cultivos/pastos-gramineas",
     cta: "Abrir guía de pastos",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Crop Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Pastos y Praderas · 20 páginas",
   },
   {
@@ -128,7 +128,7 @@ export const publicResources: PublicResource[] = [
     href: "/wondergreen/productos",
     cta: "Ver productos",
     delivery: "web-native-master-pending",
-    sourceAuthority: "Wondergreen Product Truth · maestro comercial reconciliado",
+    sourceAuthority: "Wondergreen Product Truth · maestro comercial localizado",
     masterLabel: "Catálogo Wondergreen optimizado · 10 páginas",
   },
   {
