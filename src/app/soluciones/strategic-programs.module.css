@@ -5,8 +5,8 @@
   border-bottom: 1px solid var(--line-dark);
 }
 
-.programs .sectionHead p { color: #b8c8bf; }
-.programs .eyebrow { color: #d8ed9c; }
+.programs p { color: #b8c8bf; }
+.eyebrow { color: #d8ed9c !important; }
 
 .programGrid {
   display: grid;
@@ -125,7 +125,7 @@
   line-height: 1.7;
 }
 .relatedLinks { display: grid; margin-top: 32px; border-top: 1px solid var(--line); }
-.relatedLinks a { min-height: 54px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: var(--green); font-weight: 800; }
+.relatedLinks a { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 22px; border-bottom: 1px solid var(--line); color: var(--green); font-weight: 800; }
 
 @media (max-width: 900px) {
   .programGrid, .detailIntroGrid { grid-template-columns: 1fr; }
@@ -136,4 +136,5 @@
   .programs, .programSection { padding: 78px 0; }
   .programCard { min-height: auto; padding: 28px 24px; }
   .itemGrid, .programOutputs { grid-template-columns: 1fr; }
+  .relatedLinks a { align-items: flex-start; flex-direction: column; padding: 14px 0; }
 }
