@@ -1,13 +1,19 @@
 import { test, expect } from "@playwright/test";
 
-test("public library exposes live Wondergreen knowledge resources", async ({ page }) => {
+test("public library exposes live Wondergreen knowledge resources and governed source masters", async ({ page }) => {
   await page.goto("/biblioteca");
 
   await expect(page.getByRole("heading", { name: /La biblioteca no es un archivo/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Programas Wondergreen por cultivo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Guía Wondergreen para café" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Guía Wondergreen para cacao" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Guía Wondergreen para aguacate" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Guía Wondergreen para limón Tahití" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Guía Wondergreen para pastos y gramíneas" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Abrir guía/i })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
-  await expect(page.getByText("Lectura web disponible · descarga pública en preparación", { exact: true })).toBeVisible();
+  await expect(page.getByText("Lectura web disponible · PDF maestro identificado · descarga pública en preparación", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
 });
 
 test("public library routes by user intent before product selection", async ({ page }) => {
