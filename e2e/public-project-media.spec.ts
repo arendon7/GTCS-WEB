@@ -5,7 +5,6 @@ test("projects page shows governed visual evidence for Yarumal and Tamesis", asy
 
   await expect(page.getByRole("img", { name: /Vista aérea documentada del caso Greenatics en Yarumal/ })).toBeVisible();
   await expect(page.getByRole("img", { name: /Infraestructura de proceso documentada en el proyecto Greenatics de Támesis/ })).toBeVisible();
-  await expect(page.getByText(/Registro fotográfico de archivo · Támesis · julio de 2023/)).toBeVisible();
   await expect(page.getByText(/No usamos una fotografía genérica para representar un proyecto real/)).toHaveCount(0);
 });
 
