@@ -51,7 +51,7 @@ export default async function StrategicProgramPage({ params }: Props) {
               </div>
               <aside className={styles.detailAside}>
                 <span>Producto consultivo</span>
-                <strong>Primero claridad para decidir.</strong>
+                <strong>{program.slug === "greenatics-base" ? "Empezar ya, pero con método." : "Primero claridad para decidir."}</strong>
                 <p>{program.summary}</p>
               </aside>
             </div>
@@ -75,7 +75,7 @@ export default async function StrategicProgramPage({ params }: Props) {
         <section className={programStyles.programSection}>
           <div className={styles.container}>
             <span className={styles.eyebrow}>{program.primaryLabel}</span>
-            <h2>{program.slug === "esp-ready" ? "La preparación se revisa como un sistema." : "Cada unidad conserva su propio plan."}</h2>
+            <h2>{program.primaryHeading}</h2>
             <div className={programStyles.itemGrid}>
               {program.primaryItems.map((item, index) => <div className={programStyles.item} key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>)}
             </div>
@@ -86,7 +86,7 @@ export default async function StrategicProgramPage({ params }: Props) {
           <section className={programStyles.programSection}>
             <div className={styles.container}>
               <span className={styles.eyebrow}>{program.secondaryLabel}</span>
-              <h2>La red transforma planes separados en información comparable.</h2>
+              <h2>{program.secondaryHeading}</h2>
               <div className={programStyles.itemGrid}>
                 {program.secondaryItems.map((item, index) => <div className={programStyles.item} key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>)}
               </div>
