@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import type { AudienceLanding } from "@/data/audience-landings";
 import { commercialModules } from "@/data/commercial-modules";
+import type { IntentLanding } from "@/data/intent-landings";
 import { getService } from "@/data/services";
 import { strategicPrograms } from "@/data/strategic-programs";
 import styles from "@/app/soluciones/solutions.module.css";
@@ -9,7 +10,9 @@ import refresh from "@/app/soluciones/solutions-refresh.module.css";
 import programStyles from "@/app/soluciones/strategic-programs.module.css";
 import moduleStyles from "@/app/soluciones/commercial-modules.module.css";
 
-export function AudienceSolutionLanding({ landing }: { landing: AudienceLanding }) {
+type GuidedSolutionLanding = AudienceLanding | IntentLanding;
+
+export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLanding }) {
   const programs = landing.programSlugs
     .map((slug) => strategicPrograms.find((program) => program.slug === slug))
     .filter(Boolean);
@@ -105,7 +108,7 @@ export function AudienceSolutionLanding({ landing }: { landing: AudienceLanding 
             <div className={styles.sectionHead}>
               <span className={styles.eyebrow}>Decisiones frecuentes</span>
               <h2>Módulos para resolver preguntas concretas sin inventar servicios nuevos.</h2>
-              <p>Seleccionamos únicamente los módulos útiles para esta audiencia y los conectamos con los servicios técnicos que realmente los soportan.</p>
+              <p>Seleccionamos únicamente los módulos útiles para este contexto y los conectamos con los servicios técnicos que realmente los soportan.</p>
             </div>
             <div className={moduleStyles.moduleGrid}>
               {modules.map((commercialModule) => {
