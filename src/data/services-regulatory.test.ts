@@ -38,7 +38,7 @@ describe("public services regulatory and commercial boundaries", () => {
     expect(getService("rutas-selectivas")?.scopeNote).toMatch(/no transfiere por sí solo la calidad de prestador/i);
     expect(getService("direccion-operacion")?.scopeNote).toMatch(/no transfiere por sí sola a Greenatics la condición de prestador/i);
     expect(getService("operacion-integral")?.scopeNote).toMatch(/No significa, por sí mismo, que Greenatics asuma integralmente el servicio público de aseo/i);
-    expect(getService("recoleccion-tratamiento")?.scopeNote).toMatch(/no convierte automáticamente a Greenatics en prestador frente al usuario/i);
+    expect(getService("recoleccion-tratamiento")?.scopeNote).toMatch(/ni convierte automáticamente a Greenatics en prestador frente al usuario/i);
   });
 
   it("keeps digital traceability supportive rather than regulatory by default", () => {
