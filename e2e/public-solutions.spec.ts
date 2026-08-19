@@ -7,10 +7,17 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub exposes the governed service architecture", async ({ page }) => {
+test("solutions hub exposes the governed service architecture and four commercial journeys", async ({ page }) => {
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: /El proyecto no empieza en la planta/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "No necesitas conocer el nombre del servicio." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Diagnosticar y planear" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Separar y recolectar" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Construir o recuperar capacidad" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Operar, controlar y medir" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Diagnóstico y caracterización/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: /Trazabilidad y datos/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
   await expect(page.getByRole("heading", { name: /Del PGIRS a una operación sostenible/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /De residuo operativo a flujo gestionado/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();

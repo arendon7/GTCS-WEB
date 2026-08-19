@@ -91,6 +91,23 @@
 .pathGrid span { display: block; margin-bottom: 15px; color: #d8ed9c; font-size: 0.7rem; font-weight: 800; }
 .pathGrid strong { font-family: var(--display); font-size: 1.25rem; font-weight: 600; }
 
+.journeys { padding: 112px 0; background: var(--white); border-bottom: 1px solid var(--line); }
+.journeyGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.journeyCard {
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  padding: 34px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+.journeyNumber { color: var(--green); font-size: 0.72rem; font-weight: 800; }
+.journeyCard > small { margin: 24px 0 10px; color: #8b7928; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.journeyCard p { margin: 18px 0 24px; color: var(--muted); line-height: 1.7; }
+.journeyLinks { display: grid; margin-top: auto; border-top: 1px solid var(--line); }
+.journeyLinks a { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); color: var(--green); font-size: 0.82rem; font-weight: 800; }
+
 .audience { padding: 112px 0; background: var(--paper); }
 .sectionHead { max-width: 930px; margin-bottom: 52px; }
 .sectionHead p { max-width: 760px; margin: 22px 0 0; color: var(--muted); font-size: 1.04rem; line-height: 1.7; }
@@ -191,7 +208,9 @@
   .pathGrid div:nth-child(3) { border-right: 1px solid var(--line-dark); }
   .pathGrid div:nth-child(even) { border-right: 0; }
   .pathGrid div:nth-child(n+3) { border-top: 1px solid var(--line-dark); }
-  .audience, .category, .detailBody { padding: 82px 0; }
+  .journeys, .audience, .category, .detailBody { padding: 82px 0; }
+  .journeyGrid { grid-template-columns: 1fr; }
+  .journeyCard { min-height: auto; padding: 28px 24px; }
   .audienceCard, .card { grid-template-columns: 42px 1fr; gap: 18px; }
   .categoryHead { grid-template-columns: 42px 1fr; gap: 18px; }
   .categoryHead > strong { grid-column: 2; }

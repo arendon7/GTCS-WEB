@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { serviceJourneys } from "@/data/service-journeys";
 import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
 import styles from "./solutions.module.css";
 
@@ -31,6 +32,7 @@ export default function SolutionsPage() {
               <h1>El proyecto no empieza en la planta ni termina cuando se entrega un equipo.</h1>
               <p className={styles.lead}>Greenatics trabaja sobre toda la cadena: diagnosticar, planear, recolectar, transformar, operar, medir y devolver valor. Cada servicio puede contratarse como una fase independiente o integrarse dentro de un sistema territorial o empresarial.</p>
               <div className={styles.heroLinks}>
+                <a href="#recorridos">Encontrar mi punto de entrada →</a>
                 <a href="#municipios">Municipios y ESP →</a>
                 <a href="#empresas">Empresas →</a>
               </div>
@@ -49,10 +51,35 @@ export default function SolutionsPage() {
           </div>
         </section>
 
+        <section className={styles.journeys} id="recorridos">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>Empieza por lo que necesitas resolver</span>
+              <h2>No necesitas conocer el nombre del servicio.</h2>
+              <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estos cuatro recorridos solo simplifican la entrada según el estado real del proyecto.</p>
+            </div>
+            <div className={styles.journeyGrid}>
+              {serviceJourneys.map((journey) => (
+                <article className={styles.journeyCard} key={journey.number}>
+                  <span className={styles.journeyNumber}>{journey.number}</span>
+                  <small>{journey.kicker}</small>
+                  <h3>{journey.title}</h3>
+                  <p>{journey.copy}</p>
+                  <div className={styles.journeyLinks}>
+                    {journey.services.map((service) => (
+                      <Link href={`/soluciones/${service.slug}`} key={service.slug}>{service.label} →</Link>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className={styles.audience}>
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Empieza por tu contexto</span>
+              <span className={styles.eyebrow}>Ahora ubica tu contexto</span>
               <h2>La misma corriente orgánica exige decisiones distintas según quién la genera y quién la opera.</h2>
               <p>Por eso el portafolio distingue rutas para territorios y prestadores, y rutas para empresas o grandes generadores.</p>
             </div>
