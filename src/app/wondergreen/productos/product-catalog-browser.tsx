@@ -11,6 +11,7 @@ import {
   type WondergreenReference,
   type WondergreenTruthStatus,
 } from "@/data/wondergreen-public";
+import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "./catalog.module.css";
 
 type StatusFilter = "all" | WondergreenTruthStatus;
@@ -156,15 +157,18 @@ export function ProductCatalogBrowser() {
               <div><h2>{group.title}</h2><p>{group.copy}</p></div>
             </div>
             <div className={styles.productGrid}>
-              {group.items.map((item) => (
-                <Link className={styles.productCard} href={`/wondergreen/productos/${item.slug}`} key={item.slug}>
-                  <div className={styles.cardTop}><span>{item.publicStatus}</span><small>{item.format}</small></div>
-                  <div className={styles.identity}><strong>{item.family}</strong>{item.formula ? <em>{item.formula}</em> : null}</div>
-                  <h3>{item.name}</h3>
-                  <p>{item.role}</p>
-                  <div className={styles.cardBottom}><span>{item.stage}</span><strong>Ver ficha →</strong></div>
-                </Link>
-              ))}
+              {group.items.map((item) => {
+                const tone = getWondergreenVisualTone(item);
+                return (
+                  <Link className={styles.productCard} data-tone={tone} href={`/wondergreen/productos/${item.slug}`} key={item.slug}>
+                    <div className={styles.cardTop}><span>{item.publicStatus}</span><small>{item.format}</small></div>
+                    <div className={styles.identity}><strong>{item.family}</strong>{item.formula ? <em>{item.formula}</em> : null}</div>
+                    <h3>{item.name}</h3>
+                    <p>{item.role}</p>
+                    <div className={styles.cardBottom}><span>{item.stage}</span><strong>Ver ficha →</strong></div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
