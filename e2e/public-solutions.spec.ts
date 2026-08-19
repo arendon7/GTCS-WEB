@@ -23,7 +23,7 @@ test("solutions hub exposes strategic programs, decision modules, six commercial
   await expect(page.getByRole("link", { name: /Conocer PMIRS RED/ })).toHaveAttribute("href", "/soluciones/programas/pmirs-red");
 
   await expect(page.getByRole("heading", { name: "No todo problema necesita convertirse en un servicio nuevo." })).toBeVisible();
-  for (const module of [
+  for (const moduleTitle of [
     "Puesta en marcha de operación de aseo",
     "Rutas, flota y continuidad operativa",
     "Programa de orgánicos: captura real y piloto",
@@ -31,7 +31,7 @@ test("solutions hub exposes strategic programs, decision modules, six commercial
     "Screening técnico de predios",
     "Acompañamiento por etapas",
   ]) {
-    await expect(page.getByRole("heading", { name: module, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: moduleTitle, exact: true })).toBeVisible();
   }
   await expect(page.getByText(/no presupone una planta ni una tecnología/i)).toBeVisible();
   await expect(page.getByText(/no sustituye concepto de uso del suelo/i)).toBeVisible();
