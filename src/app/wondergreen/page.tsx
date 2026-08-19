@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
-import refresh from "./wondergreen-refresh.module.css";
 import styles from "./wondergreen.module.css";
+import refresh from "./wondergreen-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Wondergreen | Suelo, nutrición y biología",
@@ -165,9 +165,9 @@ export default function WondergreenPage() {
                 </div>
               </div>
               <div className={styles.productTable}>
-                {compostReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
-                {solidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
-                {liquidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {compostReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {solidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {liquidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
             </div>
 
@@ -178,13 +178,13 @@ export default function WondergreenPage() {
                 <p>Microorganismos, inoculantes y extractos botánicos se seleccionan según cultivo, problema, contexto técnico y estado regulatorio/comercial.</p>
               </div>
               <div className={styles.productTable}>
-                {bioinputReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {bioinputReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
             </div>
 
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/productos">Abrir catálogo completo</Link>
-              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
+              <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
             </div>
           </div>
         </section>
@@ -229,7 +229,7 @@ export default function WondergreenPage() {
               <p>La ruta es una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor antes de cerrar una recomendación.</p>
               <div className={styles.buttonRow}>
                 <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
-                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Consultar guías</Link>
+                <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Consultar guías</Link>
               </div>
             </div>
             <div className={styles.finderSteps}>
