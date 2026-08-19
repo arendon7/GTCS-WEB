@@ -1,23 +1,25 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { commercialModules } from "@/data/commercial-modules";
 import { serviceJourneys } from "@/data/service-journeys";
 import { getPrimaryProjectMedia } from "@/data/public-media";
-import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
+import { companyServices, getService, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
 import { strategicPrograms } from "@/data/strategic-programs";
 import styles from "./solutions.module.css";
 import refresh from "./solutions-refresh.module.css";
 import programStyles from "./strategic-programs.module.css";
+import moduleStyles from "./commercial-modules.module.css";
 
 export const metadata: Metadata = {
   title: "Soluciones | Greenatics",
-  description: "Estructuración, planeación, operación de aseo, circularidad, infraestructura, trazabilidad y acompañamiento para municipios, ESP, empresas y grandes generadores.",
+  description: "Estructuración, línea base, planeación, operación de aseo, gestión de residuos, infraestructura, trazabilidad y acompañamiento para municipios, ESP, empresas y grandes generadores.",
   alternates: { canonical: "/soluciones" },
 };
 
 const categoryIntro: Record<ServiceCategory, string> = {
   Planeación: "Entender el problema y madurar el proyecto antes de comprometer inversión.",
-  Recolección: "Conectar al generador con el aprovechamiento mediante logística, separación y datos.",
+  Recolección: "Conectar al generador con el destino previsto mediante logística, separación y datos.",
   Infraestructura: "Diseñar, construir o recuperar sistemas alrededor del residuo y de la operación real.",
   Operación: "Convertir infraestructura en rutina, control, mantenimiento, producto y mejora continua.",
   Datos: "Hacer que cada actividad deje evidencia y alimente decisiones, indicadores y trazabilidad.",
@@ -40,6 +42,7 @@ export default function SolutionsPage() {
               <p className={styles.lead}>Greenatics acompaña sistemas de gestión de residuos desde la comprensión del problema hasta la operación, la medición, la optimización, la valorización y el escalamiento. No partimos de una planta, un vehículo o un documento predeterminado: partimos de las decisiones que el sistema realmente necesita.</p>
               <div className={styles.heroLinks}>
                 <a href="#programas">Ver programas de entrada →</a>
+                <a href="#modulos">Resolver una decisión concreta →</a>
                 <a href="#recorridos">Explorar líneas de solución →</a>
                 <a href="#municipios">Municipios y ESP →</a>
                 <a href="#empresas">Empresas →</a>
@@ -71,8 +74,8 @@ export default function SolutionsPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas estratégicos de entrada</span>
-              <h2>Dos formas de ordenar primero las decisiones.</h2>
-              <p>Estos programas no sustituyen los servicios técnicos. Organizan el punto de partida y ayudan a decidir qué capacidades conviene activar después.</p>
+              <h2>Tres formas de empezar con una base más clara.</h2>
+              <p>ESP READY ordena la preparación de una operación; GREENATICS BASE permite producir una línea base técnica desde campo; PMIRS RED convierte planes por unidad en una arquitectura común de información. Ninguno sustituye el catálogo técnico.</p>
             </div>
             <div className={programStyles.programGrid}>
               {strategicPrograms.map((program) => (
@@ -87,6 +90,35 @@ export default function SolutionsPage() {
                   <Link href={`/soluciones/programas/${program.slug}`}>Conocer {program.name} →</Link>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={moduleStyles.modules} id="modulos">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>Módulos de decisión e implementación</span>
+              <h2>No todo problema necesita convertirse en un servicio nuevo.</h2>
+              <p>Estos módulos empaquetan decisiones frecuentes y conectan capacidades ya gobernadas. Sirven para entrar por una pregunta concreta sin duplicar los 13 servicios técnicos ni prometer resultados antes de contar con evidencia.</p>
+            </div>
+            <div className={moduleStyles.moduleGrid}>
+              {commercialModules.map((module) => {
+                const relatedServices = module.relatedServiceSlugs.map((slug) => getService(slug)).filter(Boolean);
+                return (
+                  <article className={moduleStyles.moduleCard} key={module.id}>
+                    <span>{module.kicker}</span>
+                    <h3>{module.title}</h3>
+                    <p>{module.summary}</p>
+                    <div className={moduleStyles.decision}><small>Decisión que organiza</small><strong>{module.decision}</strong></div>
+                    <div className={moduleStyles.signals}>{module.signals.map((signal) => <span key={signal}>{signal}</span>)}</div>
+                    <p className={moduleStyles.guardrail}>{module.guardrail}</p>
+                    <div className={moduleStyles.moduleLinks}>
+                      <small>Servicios técnicos relacionados</small>
+                      {relatedServices.slice(0, 3).map((service) => service ? <Link href={`/soluciones/${service.slug}`} key={service.slug}><span>{service.name}</span><span>→</span></Link> : null)}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -172,7 +204,7 @@ export default function SolutionsPage() {
         <section className={styles.guardrail}>
           <div className={`${styles.container} ${styles.guardrailGrid}`}>
             <div><span className={styles.eyebrow}>Alcance responsable</span><h2>La arquitectura orienta; el alcance contractual manda.</h2></div>
-            <p>Los programas y líneas comerciales ayudan a ordenar la conversación. Las fichas técnicas describen capacidades y entregables posibles. Cada proyecto define expresamente estudios, ingeniería, construcción, permisos, operación, personal, certificaciones, informes y responsabilidades incluidas.</p>
+            <p>Los programas y módulos comerciales ayudan a ordenar la conversación. Las fichas técnicas describen capacidades y entregables posibles. Cada proyecto define expresamente estudios, ingeniería, construcción, permisos, operación, personal, certificaciones, informes y responsabilidades incluidas.</p>
           </div>
         </section>
       </main>
