@@ -19,6 +19,54 @@ const categoryIntro: Record<ServiceCategory, string> = {
 
 const path = ["Entender", "Recolectar", "Transformar", "Operar", "Medir", "Devolver valor"];
 
+const solutionJourneys = [
+  {
+    number: "01",
+    kicker: "Necesito entender y decidir",
+    title: "Diagnosticar y planear",
+    copy: "Para proyectos que todavía necesitan una línea base, un instrumento de planeación o una decisión de prefactibilidad antes de invertir.",
+    services: [
+      ["Diagnóstico y caracterización", "/soluciones/diagnostico-caracterizacion"],
+      ["PGIRS", "/soluciones/pgirs"],
+      ["PMIRS", "/soluciones/pmirs"],
+      ["Prefactibilidad", "/soluciones/prefactibilidad"],
+    ],
+  },
+  {
+    number: "02",
+    kicker: "Necesito mover material separado",
+    title: "Separar y recolectar",
+    copy: "Para conectar generadores, frecuencias, microrrutas y criterios de aceptación con un destino real de aprovechamiento.",
+    services: [
+      ["Rutas selectivas", "/soluciones/rutas-selectivas"],
+      ["Motocarguero / piloto", "/soluciones/motocarguero"],
+      ["Recolección y tratamiento", "/soluciones/recoleccion-tratamiento"],
+    ],
+  },
+  {
+    number: "03",
+    kicker: "Necesito infraestructura",
+    title: "Construir o recuperar capacidad",
+    copy: "Para madurar ingeniería, construir una planta nueva o recuperar infraestructura existente antes de reemplazarla.",
+    services: [
+      ["Factibilidad e ingeniería", "/soluciones/factibilidad-ingenieria"],
+      ["Plantas nuevas", "/soluciones/plantas-nuevas"],
+      ["Rehabilitación", "/soluciones/rehabilitacion"],
+    ],
+  },
+  {
+    number: "04",
+    kicker: "Necesito que funcione y se pueda demostrar",
+    title: "Operar, controlar y medir",
+    copy: "Para convertir infraestructura y procesos en una operación disciplinada con mantenimiento, inventarios, evidencia y trazabilidad.",
+    services: [
+      ["Dirección de operación", "/soluciones/direccion-operacion"],
+      ["Operación integral", "/soluciones/operacion-integral"],
+      ["Trazabilidad y datos", "/soluciones/trazabilidad-datos"],
+    ],
+  },
+] as const;
+
 export default function SolutionsPage() {
   return (
     <div className={styles.page}>
@@ -31,6 +79,7 @@ export default function SolutionsPage() {
               <h1>El proyecto no empieza en la planta ni termina cuando se entrega un equipo.</h1>
               <p className={styles.lead}>Greenatics trabaja sobre toda la cadena: diagnosticar, planear, recolectar, transformar, operar, medir y devolver valor. Cada servicio puede contratarse como una fase independiente o integrarse dentro de un sistema territorial o empresarial.</p>
               <div className={styles.heroLinks}>
+                <a href="#recorridos">Encontrar mi punto de entrada →</a>
                 <a href="#municipios">Municipios y ESP →</a>
                 <a href="#empresas">Empresas →</a>
               </div>
@@ -49,10 +98,35 @@ export default function SolutionsPage() {
           </div>
         </section>
 
+        <section className={styles.journeys} id="recorridos">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>Empieza por lo que necesitas resolver</span>
+              <h2>No necesitas conocer el nombre del servicio.</h2>
+              <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estos cuatro recorridos solo simplifican la entrada según el estado real del proyecto.</p>
+            </div>
+            <div className={styles.journeyGrid}>
+              {solutionJourneys.map((journey) => (
+                <article className={styles.journeyCard} key={journey.number}>
+                  <span className={styles.journeyNumber}>{journey.number}</span>
+                  <small>{journey.kicker}</small>
+                  <h3>{journey.title}</h3>
+                  <p>{journey.copy}</p>
+                  <div className={styles.journeyLinks}>
+                    {journey.services.map(([label, href]) => (
+                      <Link href={href} key={href}>{label} →</Link>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className={styles.audience}>
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Empieza por tu contexto</span>
+              <span className={styles.eyebrow}>Ahora ubica tu contexto</span>
               <h2>La misma corriente orgánica exige decisiones distintas según quién la genera y quién la opera.</h2>
               <p>Por eso el portafolio distingue rutas para territorios y prestadores, y rutas para empresas o grandes generadores.</p>
             </div>
