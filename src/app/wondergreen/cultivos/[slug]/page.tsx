@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fieldApplicationRules, fieldChecklist, getWondergreenCrop, wondergreenCrops } from "@/data/wondergreen-crops";
 import { wondergreenReferences } from "@/data/wondergreen-public";
+import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "../crops.module.css";
+import refresh from "../crops-refresh.module.css";
 
 export function generateStaticParams() {
   return wondergreenCrops.map((crop) => ({ slug: crop.slug }));
@@ -33,7 +35,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
   const references = relatedReferences(programFamilies);
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
@@ -108,17 +110,21 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Product Master relacionado</span>
               <h2>Referencias que aparecen en este programa.</h2>
-              <p>El estado comercial se muestra de forma explícita para no confundir una referencia técnica con un SKU confirmado para compra.</p>
+              <p>El estado comercial se muestra de forma explícita para no confundir una referencia técnica con un SKU confirmado para compra. Cada tarjeta abre la ficha gobernada de la referencia exacta.</p>
             </div>
             <div className={styles.referenceGrid}>
-              {references.map((reference) => (
-                <article className={styles.referenceCard} key={reference.slug}>
-                  <span>{reference.publicStatus}</span>
-                  <h3>{reference.name}{reference.formula ? ` · ${reference.formula}` : ""}</h3>
-                  <p>{reference.role}</p>
-                  <small>{reference.stage}</small>
-                </article>
-              ))}
+              {references.map((reference) => {
+                const tone = getWondergreenVisualTone(reference);
+                return (
+                  <Link className={`${styles.referenceCard} ${refresh.referenceCard}`} data-tone={tone} href={`/wondergreen/productos/${reference.slug}`} key={reference.slug}>
+                    <span>{reference.publicStatus}</span>
+                    <h3>{reference.name}{reference.formula ? ` · ${reference.formula}` : ""}</h3>
+                    <p>{reference.role}</p>
+                    <small>{reference.stage}</small>
+                    <strong>Ver ficha →</strong>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
