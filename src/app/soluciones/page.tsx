@@ -44,8 +44,8 @@ export default function SolutionsPage() {
                 <a href="#programas">Ver programas de entrada →</a>
                 <a href="#modulos">Resolver una decisión concreta →</a>
                 <a href="#recorridos">Explorar líneas de solución →</a>
-                <a href="#municipios">Municipios y ESP →</a>
-                <a href="#empresas">Empresas →</a>
+                <Link href="/soluciones/esp-municipios">Municipios y ESP →</Link>
+                <Link href="/soluciones/empresas-grandes-generadores">Empresas →</Link>
               </div>
             </div>
             <aside className={styles.heroProof}>
@@ -160,13 +160,13 @@ export default function SolutionsPage() {
                 <div className={styles.audienceIndex}>01</div>
                 <div><span className={styles.eyebrow}>Municipios y ESP</span><h3>De la planeación a una operación preparada para crecer.</h3><p>Diagnóstico, PGIRS, rutas, operación, datos, infraestructura y valorización para convertir metas o nuevas oportunidades en capacidad real.</p></div>
                 <div className={styles.audienceFacts}><strong>{municipalServices.length}</strong><span>servicios aplicables</span><small>Primero claridad de modelo · luego operación e inversión.</small></div>
-                <a href="#planeación">Ver catálogo técnico →</a>
+                <Link href="/soluciones/esp-municipios">Ver ruta para ESP y municipios →</Link>
               </article>
               <article className={styles.audienceCard} id="empresas">
                 <div className={styles.audienceIndex}>02</div>
                 <div><span className={styles.eyebrow}>Empresas y grandes generadores</span><h3>De cumplimiento aislado a gestión medible y circular.</h3><p>Caracterización, PMIRS, redes multiunidad, separación, recolección, tratamiento, infraestructura y evidencia de gestión según cada corriente.</p></div>
                 <div className={styles.audienceFacts}><strong>{companyServices.length}</strong><span>servicios aplicables</span><small>Información una vez · gestión y seguimiento sobre la misma base.</small></div>
-                <a href="#planeación">Ver catálogo técnico →</a>
+                <Link href="/soluciones/empresas-grandes-generadores">Ver ruta para empresas →</Link>
               </article>
             </div>
           </div>
