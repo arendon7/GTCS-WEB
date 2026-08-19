@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../company-public.module.css";
+import refresh from "../company-public-v9.module.css";
 
 export const metadata: Metadata = {
   title: "Nosotros | Greenatics",
@@ -43,7 +44,7 @@ const ecosystem = [
 
 export default function AboutPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}><div className={`${styles.container} ${styles.heroGrid}`}><div><span className={styles.eyebrow}>Greenatics</span><h1>No somos solo una planta, una consultora ni una marca de fertilizantes.</h1><p className={styles.lead}>Greenatics construye sistemas de economía circular para residuos orgánicos. Conectamos gestión en la fuente, logística, tratamiento biológico, ingeniería, operación, productos agrícolas y datos para que el ciclo pueda funcionar de extremo a extremo.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Ver lo que hacemos</Link><Link className={`${styles.button} ${styles.ghost}`} href="/proyectos">Ver experiencia</Link></div></div><div className={styles.mark}><Image src="/brand/greenatics-symbol.svg" alt="Símbolo Greenatics" width={180} height={180} /></div></div></section>
 
