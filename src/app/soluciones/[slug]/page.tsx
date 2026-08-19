@@ -68,8 +68,9 @@ export default async function SolutionDetailPage({ params }: Props) {
               </article>
             </div>
             {service.scopeNote ? (
-              <aside className={styles.scopeNote}>
-                <span className={styles.eyebrow}>Alcance y precisión</span>
+              <aside className={styles.detailAside}>
+                <span>Alcance y precisión</span>
+                <strong>La capacidad técnica no amplía automáticamente el alcance contractual.</strong>
                 <p>{service.scopeNote}</p>
               </aside>
             ) : null}
