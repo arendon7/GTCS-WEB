@@ -6,6 +6,7 @@ export type ServiceJourney = {
   services: readonly { slug: string; label: string }[];
 };
 
+// UX grouping only: the governed service registry remains the source of contractual scope.
 export const serviceJourneys: readonly ServiceJourney[] = [
   {
     number: "01",
