@@ -48,6 +48,7 @@
   }
 
   .businessPath > div:nth-child(4) {
+    border-top: 0;
     border-right: 0;
   }
 
@@ -70,6 +71,7 @@
   }
 
   .businessPath > div:nth-child(4) {
+    border-top: 1px solid var(--line-dark);
     border-right: 0;
   }
 
