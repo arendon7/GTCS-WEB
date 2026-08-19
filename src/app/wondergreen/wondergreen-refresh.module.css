@@ -27,3 +27,9 @@
 .productRow:focus-visible {
   background: rgba(244, 217, 68, 0.08);
 }
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  .page nav[aria-label="Navegación Wondergreen"] {
+    top: 121px;
+  }
+}
