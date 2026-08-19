@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
 import styles from "./crops.module.css";
+import refresh from "./crops-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Cultivos | Wondergreen",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function WondergreenCropsPage() {
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>

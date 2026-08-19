@@ -25,14 +25,21 @@ test("crop library exposes the five initial programs", async ({ page }) => {
   }
 });
 
-test("cacao program connects stage guidance to the product master and canonical breadcrumb", async ({ page }) => {
+test("cacao program connects stage guidance to exact Product Master references and canonical breadcrumb", async ({ page }) => {
   await page.goto("/wondergreen/cultivos/cacao");
 
   await expect(page.getByText(/01 · Establecimiento/)).toBeVisible();
   await expect(page.getByText("Compost", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("2Grow", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Referencias que aparecen en este programa/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /2Grow Sólido · 15-3-3/i })).toBeVisible();
+
+  const grow = page.getByRole("link", { name: /2Grow Sólido · 15-3-3/i }).first();
+  await expect(grow).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
+  await expect(grow).toHaveAttribute("data-tone", "grow");
+
+  const balance = page.getByRole("link", { name: /2Balance Sólido · 7-7-7/i }).first();
+  await expect(balance).toHaveAttribute("href", "/wondergreen/productos/2balance-solido-7-7-7");
+  await expect(balance).toHaveAttribute("data-tone", "balance");
 
   const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
   expect(breadcrumbs).toHaveLength(1);

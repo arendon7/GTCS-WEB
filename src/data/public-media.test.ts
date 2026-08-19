@@ -30,7 +30,7 @@ describe("public media registry", () => {
 
   it("exposes real project evidence only where registered", () => {
     expect(getProjectMedia("yarumal")).toHaveLength(2);
-    expect(getProjectMedia("tamesis")).toHaveLength(0);
+    expect(getProjectMedia("tamesis")).toHaveLength(1);
     expect(getProjectMedia("proyecto-no-registrado")).toHaveLength(0);
   });
 });

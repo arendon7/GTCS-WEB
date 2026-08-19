@@ -1,0 +1,53 @@
+.page {
+  --green950: #063d2c;
+  --green800: #2f7d32;
+  --green700: #2f7d32;
+  --lime400: #7db43c;
+  --yellow400: #f4d944;
+  --ink: #263b32;
+  --muted: #65776e;
+  --paper: #f7faf8;
+  --line: rgba(6, 61, 44, 0.15);
+  --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+}
+
+.page h1,
+.page h2,
+.page h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -.035em;
+}
+
+.page h1 { line-height: .98; }
+.page h2 { line-height: 1; }
+
+.page section:first-child {
+  background: linear-gradient(135deg, #eaf4e4, #f7faf8);
+}
+
+.referenceCard {
+  --product-accent: #2f7d32;
+  --product-wash: rgba(47, 125, 50, .05);
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
+  border-top: 4px solid var(--product-accent) !important;
+  background: linear-gradient(180deg, var(--product-wash), #fff 42%) !important;
+  transition: transform 160ms ease;
+}
+
+.referenceCard:hover { transform: translateY(-3px); }
+.referenceCard strong { margin-top: auto; padding-top: 18px; color: var(--product-accent); font-size: .82rem; }
+.referenceCard > span { color: var(--product-accent) !important; }
+
+.referenceCard[data-tone="grow"] { --product-accent: #d95f02; --product-wash: rgba(217, 95, 2, .06); }
+.referenceCard[data-tone="balance"] { --product-accent: #5b2c83; --product-wash: rgba(91, 44, 131, .055); }
+.referenceCard[data-tone="bloom"] { --product-accent: #125a93; --product-wash: rgba(18, 90, 147, .055); }
+.referenceCard[data-tone="fruit"] { --product-accent: #d94035; --product-wash: rgba(217, 64, 53, .055); }
+.referenceCard[data-tone="compost"] { --product-accent: #557a36; --product-wash: rgba(85, 122, 54, .055); }
+
+.page a:focus-visible {
+  outline: 3px solid #f4d944;
+  outline-offset: 4px;
+}
