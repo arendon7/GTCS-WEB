@@ -1,30 +1,16 @@
 import { test, expect } from "@playwright/test";
 
 const shellRoutes = [
-  "/",
-  "/wondergreen",
-  "/wondergreen/cultivos",
-  "/wondergreen/cultivos/cafe",
-  "/casa-jardin",
-  "/soluciones",
-  "/soluciones/esp-municipios",
-  "/soluciones/empresas-grandes-generadores",
-  "/soluciones/residuos-organicos",
-  "/soluciones/infraestructura-plantas",
-  "/soluciones/propiedad-horizontal-redes",
-  "/soluciones/diagnostico-caracterizacion",
-  "/proyectos",
-  "/proyectos/yarumal",
-  "/impacto",
-  "/biblioteca",
-  "/biblioteca/guia-deficiencias",
-  "/nosotros",
-  "/contacto",
+  "/", "/wondergreen", "/wondergreen/cultivos", "/wondergreen/cultivos/cafe",
+  "/casa-jardin", "/casa-jardin/diagnostico", "/casa-jardin/guias",
+  "/soluciones", "/soluciones/esp-municipios", "/soluciones/empresas-grandes-generadores",
+  "/soluciones/residuos-organicos", "/soluciones/infraestructura-plantas", "/soluciones/propiedad-horizontal-redes",
+  "/soluciones/diagnostico-caracterizacion", "/proyectos", "/proyectos/yarumal", "/impacto",
+  "/biblioteca", "/biblioteca/guia-deficiencias", "/nosotros", "/contacto",
 ];
 
 test("public home uses the shared navigation and real routes", async ({ page }) => {
   await page.goto("/");
-
   const header = page.getByRole("banner");
   const nav = header.getByRole("navigation", { name: "Navegación pública" });
   await expect(nav).toBeVisible();
@@ -37,17 +23,18 @@ test("public home uses the shared navigation and real routes", async ({ page }) 
   await expect(header.getByRole("link", { name: "Acceder a Greenatics" })).toHaveAttribute("href", "/app");
 });
 
-test("Casa y Jardín stays a real but non-indexed placeholder until its catalog is defined", async ({ page }) => {
+test("Casa y Jardín is functional but remains non-indexed until B2C validation closes", async ({ page }) => {
   await page.goto("/casa-jardin");
-
-  await expect(page.getByRole("heading", { name: "Casa y Jardín." })).toBeVisible();
-  await expect(page.getByText("Próximamente", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición por etapas para tus plantas." })).toBeVisible();
+  await expect(page.getByText("CRECE", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Kit Casa Completa" })).toBeVisible();
+  await expect(page.getByText(/compra deshabilitada/i).first()).toBeVisible();
+  await expect(page.getByText(/Trasplanta & Arranca no aparece como kit disponible/i)).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
 
 test("nested public routes inherit the same shell", async ({ page }) => {
   await page.goto("/soluciones/diagnostico-caracterizacion");
-
   const header = page.getByRole("banner");
   const footer = page.getByRole("contentinfo");
   await expect(header.getByRole("navigation", { name: "Navegación pública" })).toBeVisible();
@@ -66,7 +53,7 @@ test("every governed public route renders exactly one shared shell", async ({ pa
   }
 });
 
-test("sitemap exposes public routes and robots blocks OPS", async ({ request }) => {
+test("sitemap exposes indexed routes while Casa and Jardín remains reserved", async ({ request }) => {
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.ok()).toBe(true);
   const sitemapText = await sitemap.text();
@@ -84,11 +71,6 @@ test("sitemap exposes public routes and robots blocks OPS", async ({ request }) 
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
   const robotsText = await robots.text();
-  expect(robotsText).toContain("Disallow: /app");
-  expect(robotsText).toContain("Disallow: /dashboard");
-  expect(robotsText).toContain("Disallow: /login");
-  expect(robotsText).toContain("Disallow: /receptions");
-  expect(robotsText).toContain("Disallow: /sales");
-  expect(robotsText).toContain("Disallow: /supplies");
+  for (const path of ["/app", "/dashboard", "/login", "/receptions", "/sales", "/supplies"]) expect(robotsText).toContain(`Disallow: ${path}`);
   expect(robotsText).toContain("Sitemap: https://greenatics.com.co/sitemap.xml");
 });
