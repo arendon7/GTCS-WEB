@@ -32,6 +32,10 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   const receptionText = await reception.textContent();
   const lotCode = receptionText?.match(/TAM-FORSU-[A-Z0-9-]+/)?.[0];
   expect(lotCode).toBeTruthy();
+  await expect.poll(async () => page.evaluate(({ key, code }) => window.localStorage.getItem(key)?.includes(code) ?? false, {
+    key: "greenatics-ops-mvp-001",
+    code: lotCode!,
+  })).toBe(true);
 
   await page.goto("/app");
   await expect(page.getByLabel("Indicadores de hoy").locator(".metric-block").filter({ hasText: "Recibido" })).toContainText("1.50 t");
