@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { commercialModules } from "@/data/commercial-modules";
+import { intentLandings } from "@/data/intent-landings";
 import { serviceJourneys } from "@/data/service-journeys";
 import { getPrimaryProjectMedia } from "@/data/public-media";
 import { companyServices, getService, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
@@ -43,7 +44,7 @@ export default function SolutionsPage() {
               <div className={styles.heroLinks}>
                 <a href="#programas">Ver programas de entrada →</a>
                 <a href="#modulos">Resolver una decisión concreta →</a>
-                <a href="#recorridos">Explorar líneas de solución →</a>
+                <a href="#retos">Explorar por reto específico →</a>
                 <Link href="/soluciones/esp-municipios">Municipios y ESP →</Link>
                 <Link href="/soluciones/empresas-grandes-generadores">Empresas →</Link>
               </div>
@@ -168,6 +169,26 @@ export default function SolutionsPage() {
                 <div className={styles.audienceFacts}><strong>{companyServices.length}</strong><span>servicios aplicables</span><small>Información una vez · gestión y seguimiento sobre la misma base.</small></div>
                 <Link href="/soluciones/empresas-grandes-generadores">Ver ruta para empresas →</Link>
               </article>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.audience} id="retos">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>Explora por reto específico</span>
+              <h2>Tres problemas que suelen atravesar varias líneas de servicio.</h2>
+              <p>Estas rutas no agregan servicios al catálogo. Reordenan capacidades existentes alrededor de una intención concreta para que sea más fácil encontrar el punto de entrada correcto.</p>
+            </div>
+            <div className={styles.audienceGrid}>
+              {intentLandings.map((landing, index) => (
+                <article className={styles.audienceCard} key={landing.slug}>
+                  <div className={styles.audienceIndex}>{String(index + 1).padStart(2, "0")}</div>
+                  <div><span className={styles.eyebrow}>{landing.audience}</span><h3>{landing.title}</h3><p>{landing.lead}</p></div>
+                  <div className={styles.audienceFacts}><strong>{landing.decisions.length}</strong><span>puntos de entrada</span><small>{landing.path.join(" · ")}</small></div>
+                  <Link href={`/soluciones/${landing.slug}`}>Explorar este reto →</Link>
+                </article>
+              ))}
             </div>
           </div>
         </section>
