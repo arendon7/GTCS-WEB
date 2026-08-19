@@ -1,0 +1,28 @@
+.page {
+  --forest: #14352c;
+  --forest-deep: #0d2b24;
+  --green: #008b4c;
+  --green-soft: #48a942;
+  --lime: #98cf4f;
+  --sun: #f4d944;
+  --paper: #f7f8f3;
+  --cream: #edf4e9;
+}
+
+.outlineLight {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.productRow {
+  transition: background-color 160ms ease, padding-left 160ms ease;
+}
+
+.productRow:hover {
+  padding-left: 10px;
+  background: rgba(152, 207, 79, 0.08);
+}
+
+.productRow:focus-visible {
+  background: rgba(244, 217, 68, 0.08);
+}
