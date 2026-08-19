@@ -1,18 +1,19 @@
 .page {
-  --forest: #14352c;
-  --forest-deep: #0d2b24;
-  --green: #008b4c;
-  --green-soft: #48a942;
-  --lime: #98cf4f;
+  --forest: #063d2c;
+  --forest-deep: #043022;
+  --green: #2f7d32;
+  --green-soft: #5d9c3a;
+  --lime: #7db43c;
   --sun: #f4d944;
-  --paper: #f7f8f3;
-  --cream: #edf4e9;
+  --paper: #f7faf8;
+  --cream: #eaf4e4;
+  --ink: #42584e;
 }
 
 .hero {
   background:
-    radial-gradient(circle at 76% 18%, rgba(152, 207, 79, 0.2), transparent 28%),
-    linear-gradient(135deg, #fbfcf8 0%, var(--cream) 100%);
+    radial-gradient(circle at 76% 18%, rgba(125, 180, 60, 0.18), transparent 28%),
+    linear-gradient(135deg, #fbfcfa 0%, var(--cream) 100%);
 }
 
 .identity {
@@ -27,7 +28,7 @@
   align-items: end;
   margin-bottom: 36px;
   padding-top: 12px;
-  border-top: 1px solid rgba(24, 36, 31, 0.16);
+  border-top: 1px solid rgba(66, 88, 78, 0.16);
 }
 
 .identityHead h2 {
@@ -53,11 +54,11 @@
   display: flex;
   flex-direction: column;
   padding: 26px;
-  border: 1px solid rgba(24, 36, 31, 0.14);
+  border: 1px solid rgba(66, 88, 78, 0.14);
   border-top: 5px solid var(--lime);
   border-radius: 18px;
   background: #ffffff;
-  box-shadow: 0 16px 42px rgba(20, 53, 44, 0.06);
+  box-shadow: 0 16px 42px rgba(6, 61, 44, 0.06);
 }
 
 .identityCard:nth-child(2) {
@@ -89,7 +90,7 @@
 .pathItem {
   border-radius: 18px;
   background: #ffffff;
-  box-shadow: 0 14px 34px rgba(20, 53, 44, 0.05);
+  box-shadow: 0 14px 34px rgba(6, 61, 44, 0.05);
 }
 
 @media (max-width: 900px) {
