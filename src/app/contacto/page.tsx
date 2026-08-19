@@ -3,6 +3,7 @@ import Link from "next/link";
 import { publicSite } from "@/data/public-site";
 import { getWondergreenReference } from "@/data/wondergreen-public";
 import styles from "../company-public.module.css";
+import refresh from "../company-public-v9.module.css";
 
 export const metadata: Metadata = {
   title: "Contacto | Greenatics",
@@ -47,9 +48,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const product = productSlug ? getWondergreenReference(productSlug) : undefined;
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
-        <section className={styles.contactHero}><div className={`${styles.container} ${styles.contactGrid}`}><div><span className={styles.eyebrow} style={{color:"#c8f5ad"}}>Contacto Greenatics</span><h1>Cuéntanos qué quieres transformar.</h1><p className={styles.lead}>Podemos hablar de Wondergreen, gestión de residuos, proyectos municipales, plantas, rehabilitación, operación o soluciones para grandes generadores.</p></div><aside className={styles.contactPanel}><span>Reunión técnica</span><h2>Agenda directamente con el equipo.</h2><p>La conversación funciona mejor cuando llegamos con contexto mínimo. Usa la guía inferior y trae lo que ya tengas; no necesitas tener toda la información resuelta.</p><a className={`${styles.button} ${styles.primary}`} href={publicSite.bookingUrl} target="_blank" rel="noreferrer">Agendar reunión</a></aside></div></section>
+        <section className={styles.contactHero}><div className={`${styles.container} ${styles.contactGrid}`}><div><span className={`${styles.eyebrow} ${refresh.contactEyebrow}`}>Contacto Greenatics</span><h1>Cuéntanos qué quieres transformar.</h1><p className={styles.lead}>Podemos hablar de Wondergreen, gestión de residuos, proyectos municipales, plantas, rehabilitación, operación o soluciones para grandes generadores.</p></div><aside className={styles.contactPanel}><span>Reunión técnica</span><h2>Agenda directamente con el equipo.</h2><p>La conversación funciona mejor cuando llegamos con contexto mínimo. Usa la guía inferior y trae lo que ya tengas; no necesitas tener toda la información resuelta.</p><a className={`${styles.button} ${styles.primary}`} href={publicSite.bookingUrl} target="_blank" rel="noreferrer">Agendar reunión</a></aside></div></section>
 
         {product ? (
           <section className={`${styles.section} ${styles.soft}`} aria-label="Contexto de la consulta Wondergreen">
