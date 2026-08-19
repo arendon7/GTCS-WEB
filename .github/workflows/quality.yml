@@ -92,8 +92,8 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-chromium-1.62.0
       - name: Install Chromium
-        timeout-minutes: 8
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 4
+        run: npx playwright install chromium
       - name: Browser gates
         timeout-minutes: 8
         run: npx playwright test --project=${{ matrix.project }}
