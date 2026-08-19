@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { publicNav, publicSite, publicStaticRoutes } from "./public-site";
+import { publicNav, publicReservedRoutes, publicSite, publicStaticRoutes } from "./public-site";
 
 describe("public site contact configuration", () => {
   it("keeps corporate location centralized", () => {
@@ -18,6 +18,7 @@ describe("public site contact configuration", () => {
 
   it("reserves Casa y Jardín in the primary navigation without promoting the placeholder to the sitemap", () => {
     expect(publicNav).toContainEqual({ href: "/casa-jardin", label: "Casa y Jardín" });
+    expect(publicReservedRoutes).toContain("/casa-jardin");
     expect([...publicStaticRoutes]).not.toContain("/casa-jardin");
   });
 });
