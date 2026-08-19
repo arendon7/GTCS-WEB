@@ -142,7 +142,7 @@ test("PGIRS and plant operation expose their responsibility boundaries", async (
 test("specialized organics service does not present Greenatics as public-service provider by default", async ({ page }) => {
   await page.goto("/soluciones/recoleccion-tratamiento");
   await expect(page.getByRole("heading", { name: "Gestión, recolección y tratamiento de residuos orgánicos para generadores" })).toBeVisible();
-  await expect(page.getByText(/no convierte automáticamente a Greenatics en prestador frente al usuario/i)).toBeVisible();
+  await expect(page.getByText(/ni convierte automáticamente a Greenatics en prestador frente al usuario/i)).toBeVisible();
 });
 
 test("public solutions route keeps the bridge to OPS", async ({ page }) => {
