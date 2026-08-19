@@ -71,6 +71,10 @@ export const publicStaticRoutes = [
   "/contacto",
 ] as const;
 
+export const publicReservedRoutes = [
+  "/casa-jardin",
+] as const;
+
 export const internalRoutePrefixes = [
   ...protectedOpsRoutePrefixes,
   "/login",
