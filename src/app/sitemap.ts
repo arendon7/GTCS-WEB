@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { audienceSolutionPaths } from "@/data/audience-landings";
 import { publicProjects } from "@/data/projects-public";
 import { publicSite, publicStaticRoutes } from "@/data/public-site";
 import { services } from "@/data/services";
@@ -25,6 +26,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry(path, path === "/" ? 1 : 0.8, path === "/" ? "weekly" : "monthly"),
   );
 
+  const audienceEntries = audienceSolutionPaths.map((path) =>
+    entry(path, 0.82, "monthly"),
+  );
+
   const strategicProgramEntries = strategicPrograms.map((program) =>
     entry(`/soluciones/programas/${program.slug}`, 0.78, "monthly"),
   );
@@ -45,5 +50,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry(`/wondergreen/productos/${reference.slug}`, reference.truthStatus === "commercial-reconciled" ? 0.76 : 0.64, "monthly"),
   );
 
-  return [...staticEntries, ...strategicProgramEntries, ...serviceEntries, ...projectEntries, ...cropEntries, ...productEntries];
+  return [...staticEntries, ...audienceEntries, ...strategicProgramEntries, ...serviceEntries, ...projectEntries, ...cropEntries, ...productEntries];
 }
