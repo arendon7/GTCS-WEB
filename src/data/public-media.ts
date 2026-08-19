@@ -56,6 +56,17 @@ export const publicMediaAssets: PublicMediaAsset[] = [
     source: "Archivo de proyecto reconciliado en GTCS-WEB",
     projectSlug: "yarumal",
   },
+  {
+    id: "project-tamesis-process-2023",
+    src: "/projects/tamesis/process-2023.webp",
+    kind: "project-photo",
+    subject: "Planta Támesis",
+    alt: "Infraestructura de proceso documentada en el proyecto Greenatics de Támesis",
+    caption: "Registro fotográfico de archivo · Támesis · julio de 2023. La imagen documenta infraestructura del proyecto en ese periodo y no representa por sí sola el estado operativo actual.",
+    status: "approved-public",
+    source: "Registro fotográfico del proyecto Támesis · 2023 · reconciliado para publicación",
+    projectSlug: "tamesis",
+  },
 ];
 
 export function getProjectMedia(projectSlug: string) {

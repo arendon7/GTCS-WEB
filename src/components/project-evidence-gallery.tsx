@@ -6,7 +6,11 @@ export function ProjectEvidenceGallery({ slug }: { slug: string }) {
   const evidence = getProjectMedia(slug);
   if (evidence.length === 0) return null;
 
-  const title = slug === "yarumal" ? "Un registro real del caso Yarumal." : "Registro documental del proyecto.";
+  const title = slug === "yarumal"
+    ? "Un registro real del caso Yarumal."
+    : slug === "tamesis"
+      ? "Un registro real del caso Támesis."
+      : "Registro documental del proyecto.";
 
   return (
     <section className={styles.section} aria-labelledby={`${slug}-evidence-title`}>
