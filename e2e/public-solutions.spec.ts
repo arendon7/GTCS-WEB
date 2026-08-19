@@ -11,6 +11,8 @@ test("solutions hub exposes the governed service architecture and four commercia
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: /El proyecto no empieza en la planta/i })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
+  await expect(page.getByText(/Vista aérea de archivo · Yarumal/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "No necesitas conocer el nombre del servicio." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Diagnosticar y planear" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Separar y recolectar" })).toBeVisible();
