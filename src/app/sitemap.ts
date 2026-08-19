@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { publicProjects } from "@/data/projects-public";
 import { publicSite, publicStaticRoutes } from "@/data/public-site";
 import { services } from "@/data/services";
+import { strategicPrograms } from "@/data/strategic-programs";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
 import { wondergreenReferences } from "@/data/wondergreen-public";
 
@@ -24,6 +25,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry(path, path === "/" ? 1 : 0.8, path === "/" ? "weekly" : "monthly"),
   );
 
+  const strategicProgramEntries = strategicPrograms.map((program) =>
+    entry(`/soluciones/programas/${program.slug}`, 0.78, "monthly"),
+  );
+
   const serviceEntries = services.map((service) =>
     entry(`/soluciones/${service.slug}`, 0.72, "monthly"),
   );
@@ -40,5 +45,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry(`/wondergreen/productos/${reference.slug}`, reference.truthStatus === "commercial-reconciled" ? 0.76 : 0.64, "monthly"),
   );
 
-  return [...staticEntries, ...serviceEntries, ...projectEntries, ...cropEntries, ...productEntries];
+  return [...staticEntries, ...strategicProgramEntries, ...serviceEntries, ...projectEntries, ...cropEntries, ...productEntries];
 }

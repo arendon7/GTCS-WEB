@@ -3,10 +3,10 @@ import { serviceJourneys } from "./service-journeys";
 import { services } from "./services";
 
 describe("public commercial service journeys", () => {
-  it("keeps four distinct commercial entry journeys", () => {
-    expect(serviceJourneys).toHaveLength(4);
-    expect(new Set(serviceJourneys.map((journey) => journey.number)).size).toBe(4);
-    expect(new Set(serviceJourneys.map((journey) => journey.title)).size).toBe(4);
+  it("keeps six distinct commercial solution lines", () => {
+    expect(serviceJourneys).toHaveLength(6);
+    expect(new Set(serviceJourneys.map((journey) => journey.number)).size).toBe(6);
+    expect(new Set(serviceJourneys.map((journey) => journey.title)).size).toBe(6);
   });
 
   it("references only governed service slugs", () => {

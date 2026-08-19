@@ -4,6 +4,7 @@ import robots from "../app/robots";
 import { protectedOpsRoutePrefixes } from "../lib/ops-access-policy";
 import { publicNav, publicReservedRoutes, publicSite, publicStaticRoutes } from "./public-site";
 import { services } from "./services";
+import { strategicPrograms } from "./strategic-programs";
 import { publicProjects } from "./projects-public";
 import { wondergreenCrops } from "./wondergreen-crops";
 import { wondergreenReferences } from "./wondergreen-public";
@@ -18,9 +19,11 @@ describe("public navigation and indexing contract", () => {
   it("builds a sitemap from governed indexed public data only", () => {
     const entries = sitemap();
     const urls = entries.map((item) => item.url);
-    const expectedCount = publicStaticRoutes.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
+    const expectedCount = publicStaticRoutes.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
 
     expect(entries).toHaveLength(expectedCount);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/esp-ready`);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/pmirs-red`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/diagnostico-caracterizacion`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/proyectos/yarumal`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/cultivos/cafe`);

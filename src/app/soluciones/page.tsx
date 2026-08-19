@@ -4,12 +4,14 @@ import Link from "next/link";
 import { serviceJourneys } from "@/data/service-journeys";
 import { getPrimaryProjectMedia } from "@/data/public-media";
 import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
+import { strategicPrograms } from "@/data/strategic-programs";
 import styles from "./solutions.module.css";
 import refresh from "./solutions-refresh.module.css";
+import programStyles from "./strategic-programs.module.css";
 
 export const metadata: Metadata = {
   title: "Soluciones | Greenatics",
-  description: "Diagnóstico, planeación, rutas selectivas, plantas, operación y trazabilidad para municipios, ESP, empresas y grandes generadores.",
+  description: "Estructuración, planeación, operación de aseo, circularidad, infraestructura, trazabilidad y acompañamiento para municipios, ESP, empresas y grandes generadores.",
   alternates: { canonical: "/soluciones" },
 };
 
@@ -21,7 +23,7 @@ const categoryIntro: Record<ServiceCategory, string> = {
   Datos: "Hacer que cada actividad deje evidencia y alimente decisiones, indicadores y trazabilidad.",
 };
 
-const path = ["Entender", "Recolectar", "Transformar", "Operar", "Medir", "Devolver valor"];
+const path = ["Entender", "Estructurar", "Operar", "Medir", "Optimizar", "Valorizar", "Escalar"];
 
 export default function SolutionsPage() {
   const yarumalEvidence = getPrimaryProjectMedia("yarumal");
@@ -33,11 +35,12 @@ export default function SolutionsPage() {
           <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Soluciones Greenatics · Del diagnóstico a la operación</span>
-              <h1>El proyecto no empieza en la planta ni termina cuando se entrega un equipo.</h1>
-              <p className={styles.lead}>Greenatics trabaja sobre toda la cadena: diagnosticar, planear, recolectar, transformar, operar, medir y devolver valor. Cada servicio puede contratarse como una fase independiente o integrarse dentro de un sistema territorial o empresarial.</p>
+              <span className={styles.eyebrow}>Soluciones Greenatics · Estructuración técnica de sistemas de residuos</span>
+              <h1>Primero estructurar. Luego operar. Después valorizar.</h1>
+              <p className={styles.lead}>Greenatics acompaña sistemas de gestión de residuos desde la comprensión del problema hasta la operación, la medición, la optimización, la valorización y el escalamiento. No partimos de una planta, un vehículo o un documento predeterminado: partimos de las decisiones que el sistema realmente necesita.</p>
               <div className={styles.heroLinks}>
-                <a href="#recorridos">Encontrar mi punto de entrada →</a>
+                <a href="#programas">Ver programas de entrada →</a>
+                <a href="#recorridos">Explorar líneas de solución →</a>
                 <a href="#municipios">Municipios y ESP →</a>
                 <a href="#empresas">Empresas →</a>
               </div>
@@ -51,25 +54,49 @@ export default function SolutionsPage() {
                   <figcaption>{yarumalEvidence.caption}</figcaption>
                 </figure>
               ) : null}
-              <span>Principio de diseño</span>
-              <strong>Residuo → operación → producto → dato.</strong>
-              <p>No partimos de una máquina predeterminada. Partimos del origen, volumen, composición, logística, infraestructura, actores, destino de productos y capacidad real de gestión.</p>
+              <span>Principio de trabajo</span>
+              <strong>Método + evidencia antes de inversión.</strong>
+              <p>El residuo, los usuarios, la logística, la operación, los datos y el destino deben entenderse como un sistema. La infraestructura y la tecnología se deciden después, no al revés.</p>
             </aside>
           </div>
         </section>
 
-        <section className={styles.path} aria-label="Ruta de solución Greenatics">
-          <div className={`${styles.container} ${styles.pathGrid}`}>
+        <section className={styles.path} aria-label="Ruta Greenatics de estructuración y crecimiento">
+          <div className={`${styles.container} ${styles.pathGrid} ${refresh.businessPath}`}>
             {path.map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>)}
+          </div>
+        </section>
+
+        <section className={programStyles.programs} id="programas">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas estratégicos de entrada</span>
+              <h2>Dos formas de ordenar primero las decisiones.</h2>
+              <p>Estos programas no sustituyen los servicios técnicos. Organizan el punto de partida y ayudan a decidir qué capacidades conviene activar después.</p>
+            </div>
+            <div className={programStyles.programGrid}>
+              {strategicPrograms.map((program) => (
+                <article className={programStyles.programCard} key={program.slug}>
+                  <span>{program.audience}</span>
+                  <h3>{program.name}</h3>
+                  <strong>{program.headline}</strong>
+                  <p>{program.summary}</p>
+                  <div className={programStyles.outputFlow}>
+                    {program.outputs.map((output) => <span key={output}>{output}</span>)}
+                  </div>
+                  <Link href={`/soluciones/programas/${program.slug}`}>Conocer {program.name} →</Link>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
         <section className={styles.journeys} id="recorridos">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Empieza por lo que necesitas resolver</span>
-              <h2>No necesitas conocer el nombre del servicio.</h2>
-              <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estos cuatro recorridos solo simplifican la entrada según el estado real del proyecto.</p>
+              <span className={styles.eyebrow}>Seis líneas de solución</span>
+              <h2>Primero ubica el problema; luego elegimos el servicio.</h2>
+              <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estas seis líneas son la arquitectura comercial que conecta necesidades reales con el catálogo técnico sin duplicarlo.</p>
             </div>
             <div className={styles.journeyGrid}>
               {serviceJourneys.map((journey) => (
@@ -93,21 +120,21 @@ export default function SolutionsPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <span className={styles.eyebrow}>Ahora ubica tu contexto</span>
-              <h2>La misma corriente orgánica exige decisiones distintas según quién la genera y quién la opera.</h2>
+              <h2>Un sistema de residuos cambia según quién lo planea, quién lo opera y dónde se genera.</h2>
               <p>Por eso el portafolio distingue rutas para territorios y prestadores, y rutas para empresas o grandes generadores.</p>
             </div>
             <div className={styles.audienceGrid}>
               <article className={styles.audienceCard} id="municipios">
                 <div className={styles.audienceIndex}>01</div>
-                <div><span className={styles.eyebrow}>Municipios y ESP</span><h3>Del PGIRS a una operación sostenible.</h3><p>Planeación, rutas selectivas, infraestructura, rehabilitación, operación y trazabilidad para convertir metas territoriales en capacidad real.</p></div>
-                <div className={styles.audienceFacts}><strong>{municipalServices.length}</strong><span>servicios aplicables</span><small>Diagnóstico antes de dimensionar · operación y datos dentro del sistema.</small></div>
-                <a href="#planeación">Ver ruta →</a>
+                <div><span className={styles.eyebrow}>Municipios y ESP</span><h3>De la planeación a una operación preparada para crecer.</h3><p>Diagnóstico, PGIRS, rutas, operación, datos, infraestructura y valorización para convertir metas o nuevas oportunidades en capacidad real.</p></div>
+                <div className={styles.audienceFacts}><strong>{municipalServices.length}</strong><span>servicios aplicables</span><small>Primero claridad de modelo · luego operación e inversión.</small></div>
+                <a href="#planeación">Ver catálogo técnico →</a>
               </article>
               <article className={styles.audienceCard} id="empresas">
                 <div className={styles.audienceIndex}>02</div>
-                <div><span className={styles.eyebrow}>Empresas y grandes generadores</span><h3>De residuo operativo a flujo gestionado y trazable.</h3><p>Caracterización, PMIRS, separación, recolección, tratamiento, infraestructura y evidencia de gestión según el tipo de corriente.</p></div>
-                <div className={styles.audienceFacts}><strong>{companyServices.length}</strong><span>servicios aplicables</span><small>Logística desde el origen · tratamiento y evidencia conectados.</small></div>
-                <a href="#planeación">Ver ruta →</a>
+                <div><span className={styles.eyebrow}>Empresas y grandes generadores</span><h3>De cumplimiento aislado a gestión medible y circular.</h3><p>Caracterización, PMIRS, redes multiunidad, separación, recolección, tratamiento, infraestructura y evidencia de gestión según cada corriente.</p></div>
+                <div className={styles.audienceFacts}><strong>{companyServices.length}</strong><span>servicios aplicables</span><small>Información una vez · gestión y seguimiento sobre la misma base.</small></div>
+                <a href="#planeación">Ver catálogo técnico →</a>
               </article>
             </div>
           </div>
@@ -144,8 +171,8 @@ export default function SolutionsPage() {
 
         <section className={styles.guardrail}>
           <div className={`${styles.container} ${styles.guardrailGrid}`}>
-            <div><span className={styles.eyebrow}>Alcance responsable</span><h2>El portafolio es modular; el alcance contractual manda.</h2></div>
-            <p>Estas fichas describen capacidades y entregables posibles. Cada proyecto define expresamente estudios, ingeniería, construcción, permisos, operación, personal, certificaciones, informes y responsabilidades incluidas. La web no convierte una capacidad general en una obligación contractual automática.</p>
+            <div><span className={styles.eyebrow}>Alcance responsable</span><h2>La arquitectura orienta; el alcance contractual manda.</h2></div>
+            <p>Los programas y líneas comerciales ayudan a ordenar la conversación. Las fichas técnicas describen capacidades y entregables posibles. Cada proyecto define expresamente estudios, ingeniería, construcción, permisos, operación, personal, certificaciones, informes y responsabilidades incluidas.</p>
           </div>
         </section>
       </main>
