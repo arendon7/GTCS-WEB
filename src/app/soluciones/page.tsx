@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { serviceJourneys } from "@/data/service-journeys";
 import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
 import styles from "./solutions.module.css";
 
@@ -18,54 +19,6 @@ const categoryIntro: Record<ServiceCategory, string> = {
 };
 
 const path = ["Entender", "Recolectar", "Transformar", "Operar", "Medir", "Devolver valor"];
-
-const solutionJourneys = [
-  {
-    number: "01",
-    kicker: "Necesito entender y decidir",
-    title: "Diagnosticar y planear",
-    copy: "Para proyectos que todavía necesitan una línea base, un instrumento de planeación o una decisión de prefactibilidad antes de invertir.",
-    services: [
-      ["Diagnóstico y caracterización", "/soluciones/diagnostico-caracterizacion"],
-      ["PGIRS", "/soluciones/pgirs"],
-      ["PMIRS", "/soluciones/pmirs"],
-      ["Prefactibilidad", "/soluciones/prefactibilidad"],
-    ],
-  },
-  {
-    number: "02",
-    kicker: "Necesito mover material separado",
-    title: "Separar y recolectar",
-    copy: "Para conectar generadores, frecuencias, microrrutas y criterios de aceptación con un destino real de aprovechamiento.",
-    services: [
-      ["Rutas selectivas", "/soluciones/rutas-selectivas"],
-      ["Motocarguero / piloto", "/soluciones/motocarguero"],
-      ["Recolección y tratamiento", "/soluciones/recoleccion-tratamiento"],
-    ],
-  },
-  {
-    number: "03",
-    kicker: "Necesito infraestructura",
-    title: "Construir o recuperar capacidad",
-    copy: "Para madurar ingeniería, construir una planta nueva o recuperar infraestructura existente antes de reemplazarla.",
-    services: [
-      ["Factibilidad e ingeniería", "/soluciones/factibilidad-ingenieria"],
-      ["Plantas nuevas", "/soluciones/plantas-nuevas"],
-      ["Rehabilitación", "/soluciones/rehabilitacion"],
-    ],
-  },
-  {
-    number: "04",
-    kicker: "Necesito que funcione y se pueda demostrar",
-    title: "Operar, controlar y medir",
-    copy: "Para convertir infraestructura y procesos en una operación disciplinada con mantenimiento, inventarios, evidencia y trazabilidad.",
-    services: [
-      ["Dirección de operación", "/soluciones/direccion-operacion"],
-      ["Operación integral", "/soluciones/operacion-integral"],
-      ["Trazabilidad y datos", "/soluciones/trazabilidad-datos"],
-    ],
-  },
-] as const;
 
 export default function SolutionsPage() {
   return (
@@ -106,15 +59,15 @@ export default function SolutionsPage() {
               <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estos cuatro recorridos solo simplifican la entrada según el estado real del proyecto.</p>
             </div>
             <div className={styles.journeyGrid}>
-              {solutionJourneys.map((journey) => (
+              {serviceJourneys.map((journey) => (
                 <article className={styles.journeyCard} key={journey.number}>
                   <span className={styles.journeyNumber}>{journey.number}</span>
                   <small>{journey.kicker}</small>
                   <h3>{journey.title}</h3>
                   <p>{journey.copy}</p>
                   <div className={styles.journeyLinks}>
-                    {journey.services.map(([label, href]) => (
-                      <Link href={href} key={href}>{label} →</Link>
+                    {journey.services.map((service) => (
+                      <Link href={`/soluciones/${service.slug}`} key={service.slug}>{service.label} →</Link>
                     ))}
                   </div>
                 </article>
