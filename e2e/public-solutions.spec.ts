@@ -7,23 +7,66 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub exposes the governed service architecture and four commercial journeys", async ({ page }) => {
+test("solutions hub exposes strategic programs, six commercial lines and the governed service catalog", async ({ page }) => {
   await page.goto("/soluciones");
 
-  await expect(page.getByRole("heading", { name: /El proyecto no empieza en la planta/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Primero estructurar. Luego operar. Después valorizar./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
   await expect(page.getByText(/Vista aérea de archivo · Yarumal/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: "No necesitas conocer el nombre del servicio." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Diagnosticar y planear" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Separar y recolectar" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Construir o recuperar capacidad" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Operar, controlar y medir" })).toBeVisible();
+
+  await expect(page.getByRole("heading", { name: "Dos formas de ordenar primero las decisiones." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ESP READY", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PMIRS RED", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Conocer ESP READY/ })).toHaveAttribute("href", "/soluciones/programas/esp-ready");
+  await expect(page.getByRole("link", { name: /Conocer PMIRS RED/ })).toHaveAttribute("href", "/soluciones/programas/pmirs-red");
+
+  for (const line of [
+    "Diagnóstico y datos",
+    "Planeación y gestión",
+    "Operación de aseo y logística",
+    "Circularidad y valorización",
+    "Infraestructura y proyectos",
+    "Acompañamiento y operación",
+  ]) {
+    await expect(page.getByRole("heading", { name: line, exact: true })).toBeVisible();
+  }
+
   await expect(page.getByRole("link", { name: /Diagnóstico y caracterización/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
-  await expect(page.getByRole("link", { name: /Trazabilidad y datos/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
-  await expect(page.getByRole("heading", { name: /Del PGIRS a una operación sostenible/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /De residuo operativo a flujo gestionado/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Trazabilidad, indicadores y datos/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
+  await expect(page.getByRole("heading", { name: /De la planeación a una operación preparada para crecer/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /De cumplimiento aislado a gestión medible y circular/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver solución en profundidad/i }).first()).toHaveAttribute("href", /\/soluciones\//);
+});
+
+test("ESP READY keeps the ten sourced preparation dimensions and decision outputs", async ({ page }) => {
+  await page.goto("/soluciones/programas/esp-ready");
+
+  await expect(page.getByRole("heading", { name: "ESP READY", exact: true })).toBeVisible();
+  await expect(page.getByText(/¿Qué tan preparada está la empresa para iniciar y crecer?/)).toBeVisible();
+
+  for (const dimension of ["Regulación", "Clientes", "Operación", "Tarifa", "Facturación", "Rutas", "Flota", "Datos", "Contingencias", "Infraestructura futura"]) {
+    await expect(page.getByText(dimension, { exact: true })).toBeVisible();
+  }
+  for (const output of ["Estado actual", "Brechas", "Prioridades", "Hoja de ruta"]) {
+    await expect(page.getByText(output, { exact: true })).toBeVisible();
+  }
+
+  const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
+  expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/programas/esp-ready");
+});
+
+test("PMIRS RED separates unit-level implementation from network intelligence", async ({ page }) => {
+  await page.goto("/soluciones/programas/pmirs-red");
+
+  await expect(page.getByRole("heading", { name: "PMIRS RED", exact: true })).toBeVisible();
+  for (const item of ["Diagnóstico", "Caracterización", "Programas", "Implementación", "Indicadores", "Seguimiento"]) {
+    await expect(page.getByText(item, { exact: true })).toBeVisible();
+  }
+  for (const item of ["Demanda", "Ubicación", "Composición", "Accesos", "Horarios", "Orgánicos", "Aprovechables", "Oportunidades"]) {
+    await expect(page.getByText(item, { exact: true })).toBeVisible();
+  }
+  await expect(page.getByText(/24 no es un mínimo ni una promesa universal/i)).toBeVisible();
 });
 
 test("solution detail preserves problem, scope, deliverables and breadcrumb semantics", async ({ page }) => {
