@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import sitemap from "../app/sitemap";
 import robots from "../app/robots";
 import { protectedOpsRoutePrefixes } from "../lib/ops-access-policy";
+import { audienceSolutionPaths } from "./audience-landings";
 import { publicNav, publicReservedRoutes, publicSite, publicStaticRoutes } from "./public-site";
 import { services } from "./services";
 import { strategicPrograms } from "./strategic-programs";
@@ -19,9 +20,11 @@ describe("public navigation and indexing contract", () => {
   it("builds a sitemap from governed indexed public data only", () => {
     const entries = sitemap();
     const urls = entries.map((item) => item.url);
-    const expectedCount = publicStaticRoutes.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
+    const expectedCount = publicStaticRoutes.length + audienceSolutionPaths.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
 
     expect(entries).toHaveLength(expectedCount);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/esp-municipios`);
+    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/empresas-grandes-generadores`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/esp-ready`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/greenatics-base`);
     expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/pmirs-red`);
