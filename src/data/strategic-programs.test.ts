@@ -3,8 +3,8 @@ import { services } from "./services";
 import { getStrategicProgram, strategicPrograms } from "./strategic-programs";
 
 describe("strategic public programs", () => {
-  it("publishes only ESP READY and PMIRS RED in this wave", () => {
-    expect(strategicPrograms.map((program) => program.slug)).toEqual(["esp-ready", "pmirs-red"]);
+  it("publishes ESP READY, GREENATICS BASE and PMIRS RED as distinct entry products", () => {
+    expect(strategicPrograms.map((program) => program.slug)).toEqual(["esp-ready", "greenatics-base", "pmirs-red"]);
   });
 
   it("keeps every related service grounded in the governed registry", () => {
@@ -30,6 +30,21 @@ describe("strategic public programs", () => {
       "Infraestructura futura",
     ]);
     expect(program?.outputs).toEqual(["Estado actual", "Brechas", "Prioridades", "Hoja de ruta"]);
+  });
+
+  it("keeps GREENATICS BASE as technical baseline rather than regulatory aforo or PMIRS", () => {
+    const program = getStrategicProgram("greenatics-base");
+    expect(program?.primaryItems).toEqual([
+      "Línea base de generación",
+      "Caracterización de residuos",
+      "Diagnóstico de infraestructura",
+      "Lectura operativa del proyecto",
+      "Captura digital y evidencia",
+      "Consolidación y análisis",
+    ]);
+    expect(program?.secondaryItems).toContain("Aforo regulatorio");
+    expect(program?.secondaryItems).toContain("PMIRS completo");
+    expect(program?.sourceNote).toMatch(/alcance independiente conforme al procedimiento aplicable/i);
   });
 
   it("keeps PMIRS RED unit and network layers separate", () => {
