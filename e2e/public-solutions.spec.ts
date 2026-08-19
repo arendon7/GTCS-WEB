@@ -52,6 +52,8 @@ test("solutions hub exposes strategic programs, decision modules, six commercial
   await expect(page.getByRole("heading", { name: /De la planeación a una operación preparada para crecer/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /De cumplimiento aislado a gestión medible y circular/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "PMIRS y planes internos de gestión de residuos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Operación integral de plantas de tratamiento y valorización" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver solución en profundidad/i }).first()).toHaveAttribute("href", /\/soluciones\//);
 });
 
@@ -109,19 +111,38 @@ test("PMIRS RED separates unit-level implementation from network intelligence", 
   await expect(page.getByText(/24 no es un mínimo ni una promesa universal/i)).toBeVisible();
 });
 
-test("solution detail preserves problem, scope, deliverables and breadcrumb semantics", async ({ page }) => {
+test("diagnostic service separates technical measurement from regulatory aforo", async ({ page }) => {
   await page.goto("/soluciones/diagnostico-caracterizacion");
 
   await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();
   await expect(page.getByText("Qué problema busca resolver", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Qué puede incluir" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Entregables típicos" })).toBeVisible();
-  await expect(page.getByText("línea base", { exact: true })).toBeVisible();
+  await expect(page.getByText("mediciones de generación y caracterización", { exact: true })).toBeVisible();
+  await expect(page.getByText("aforos y caracterización", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Alcance y precisión", { exact: true })).toBeVisible();
+  await expect(page.getByText(/no constituyen por sí solas un aforo regulatorio/i)).toBeVisible();
 
   const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
   expect(breadcrumbs).toHaveLength(1);
   expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/diagnostico-caracterizacion");
   expect(JSON.stringify(breadcrumbs[0])).toContain("Diagnóstico y caracterización de residuos orgánicos");
+});
+
+test("PGIRS and plant operation expose their responsibility boundaries", async ({ page }) => {
+  await page.goto("/soluciones/pgirs");
+  await expect(page.getByText(/corresponde al municipio o distrito/i)).toBeVisible();
+  await expect(page.getByText(/Greenatics presta apoyo técnico/i)).toBeVisible();
+
+  await page.goto("/soluciones/operacion-integral");
+  await expect(page.getByRole("heading", { name: "Operación integral de plantas de tratamiento y valorización" })).toBeVisible();
+  await expect(page.getByText(/no significa, por sí mismo, que Greenatics asuma integralmente el servicio público de aseo/i)).toBeVisible();
+});
+
+test("specialized organics service does not present Greenatics as public-service provider by default", async ({ page }) => {
+  await page.goto("/soluciones/recoleccion-tratamiento");
+  await expect(page.getByRole("heading", { name: "Gestión, recolección y tratamiento de residuos orgánicos para generadores" })).toBeVisible();
+  await expect(page.getByText(/ni convierte automáticamente a Greenatics en prestador frente al usuario/i)).toBeVisible();
 });
 
 test("public solutions route keeps the bridge to OPS", async ({ page }) => {

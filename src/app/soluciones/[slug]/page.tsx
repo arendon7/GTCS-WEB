@@ -67,6 +67,13 @@ export default async function SolutionDetailPage({ params }: Props) {
                 <div><span className={styles.eyebrow}>Salida esperada</span><h2>Entregables típicos</h2><ul>{service.deliverables.map((item) => <li key={item}>{item}</li>)}</ul></div>
               </article>
             </div>
+            {service.scopeNote ? (
+              <aside className={styles.detailAside}>
+                <span>Alcance y precisión</span>
+                <strong>La capacidad técnica no amplía automáticamente el alcance contractual.</strong>
+                <p>{service.scopeNote}</p>
+              </aside>
+            ) : null}
             <div className={styles.detailCta}>
               <div><span className={styles.eyebrow}>Siguiente paso</span><h3>{service.cta}</h3><p>El alcance final depende del diagnóstico, la información disponible y las responsabilidades acordadas para el proyecto.</p></div>
               <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link>

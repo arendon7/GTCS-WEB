@@ -21,12 +21,12 @@ export const serviceJourneys: readonly ServiceJourney[] = [
   },
   {
     number: "02",
-    kicker: "Necesito convertir obligaciones en gestión",
+    kicker: "Necesito convertir requisitos y metas en gestión",
     title: "Planeación y gestión",
-    copy: "Para llevar PGIRS y PMIRS desde el documento hacia programas, responsables, indicadores, implementación y seguimiento.",
+    copy: "Para llevar PGIRS, PMIRS o planes internos desde el documento hacia programas, responsables, indicadores, implementación y seguimiento según el marco aplicable.",
     services: [
       { slug: "pgirs", label: "PGIRS" },
-      { slug: "pmirs", label: "PMIRS" },
+      { slug: "pmirs", label: "PMIRS y planes internos" },
     ],
   },
   {
@@ -36,16 +36,16 @@ export const serviceJourneys: readonly ServiceJourney[] = [
     copy: "Para conectar generadores, rutas, frecuencias, vehículos, tiempos y evidencia operacional antes de ampliar cobertura o capacidad.",
     services: [
       { slug: "rutas-selectivas", label: "Rutas selectivas y microrrutas" },
-      { slug: "motocarguero", label: "Pilotos de recolección y toma de datos" },
+      { slug: "motocarguero", label: "Pilotos logísticos y toma de datos" },
     ],
   },
   {
     number: "04",
-    kicker: "Necesito aprovechar mejor las corrientes",
+    kicker: "Necesito gestionar y valorizar mejor las corrientes",
     title: "Circularidad y valorización",
-    copy: "Para integrar separación, recolección, trazabilidad y tratamiento de orgánicos de modo que la gestión no termine en una simple entrega sin evidencia de destino.",
+    copy: "Para integrar separación, logística, trazabilidad y tratamiento de orgánicos de modo que la gestión no termine en una simple entrega sin evidencia de destino.",
     services: [
-      { slug: "recoleccion-tratamiento", label: "Recolección, trazabilidad y tratamiento" },
+      { slug: "recoleccion-tratamiento", label: "Gestión, recolección y tratamiento" },
     ],
   },
   {
@@ -67,7 +67,7 @@ export const serviceJourneys: readonly ServiceJourney[] = [
     copy: "Para convertir infraestructura y procesos en una operación disciplinada, medible y mejorable con responsabilidades, mantenimiento, calidad y seguimiento.",
     services: [
       { slug: "direccion-operacion", label: "Dirección técnica y coordinación" },
-      { slug: "operacion-integral", label: "Operación integral" },
+      { slug: "operacion-integral", label: "Operación integral de plantas" },
     ],
   },
 ] as const;
