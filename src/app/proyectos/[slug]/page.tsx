@@ -5,6 +5,7 @@ import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { ProjectEvidenceGallery } from "@/components/project-evidence-gallery";
 import { getPublicProject, publicProjects } from "@/data/projects-public";
 import styles from "../projects.module.css";
+import refresh from "../projects-refresh.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -44,7 +45,7 @@ export default async function ProjectCasePage({ params }: Props) {
   const solutionLabel = project.slug === "tamesis" ? "Ver solución de rehabilitación" : "Conocer trazabilidad y GREENATICS OPS";
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <BreadcrumbJsonLd items={[{ name: "Greenatics", path: "/" }, { name: "Proyectos", path: "/proyectos" }, { name: project.name, path: `/proyectos/${project.slug}` as `/${string}` }]} />
       <main>
         <section className={styles.detailHero}>
