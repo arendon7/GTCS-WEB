@@ -34,6 +34,28 @@
   line-height: 1.45;
 }
 
+.businessPath {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+@media (max-width: 1060px) {
+  .businessPath {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .businessPath > div:nth-child(3) {
+    border-right: 1px solid var(--line-dark);
+  }
+
+  .businessPath > div:nth-child(4) {
+    border-right: 0;
+  }
+
+  .businessPath > div:nth-child(n+5) {
+    border-top: 1px solid var(--line-dark);
+  }
+}
+
 @media (max-width: 760px) {
   .proofFigure {
     margin: -24px -24px 24px;
@@ -41,5 +63,37 @@
 
   .proofFigure figcaption {
     padding: 10px 24px 0;
+  }
+
+  .businessPath {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .businessPath > div:nth-child(4) {
+    border-right: 0;
+  }
+
+  .businessPath > div:nth-child(odd) {
+    border-right: 1px solid var(--line-dark);
+  }
+
+  .businessPath > div:nth-child(even) {
+    border-right: 0;
+  }
+
+  .businessPath > div:nth-child(n+3) {
+    border-top: 1px solid var(--line-dark);
+  }
+}
+
+@media (max-width: 480px) {
+  .businessPath {
+    grid-template-columns: 1fr;
+  }
+
+  .businessPath > div,
+  .businessPath > div:nth-child(odd),
+  .businessPath > div:nth-child(even) {
+    border-right: 0;
   }
 }
