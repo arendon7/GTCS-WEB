@@ -5,6 +5,7 @@ const shellRoutes = [
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
+  "/casa-jardin",
   "/soluciones",
   "/soluciones/diagnostico-caracterizacion",
   "/proyectos",
@@ -24,10 +25,19 @@ test("public home uses the shared navigation and real routes", async ({ page }) 
   await expect(nav).toBeVisible();
   await expect(nav.getByRole("link", { name: "Soluciones" })).toHaveAttribute("href", "/soluciones");
   await expect(nav.getByRole("link", { name: "Wondergreen" })).toHaveAttribute("href", "/wondergreen");
+  await expect(nav.getByRole("link", { name: "Casa y Jardín" })).toHaveAttribute("href", "/casa-jardin");
   await expect(nav.getByRole("link", { name: "Proyectos" })).toHaveAttribute("href", "/proyectos");
   await expect(nav.getByRole("link", { name: "Impacto" })).toHaveAttribute("href", "/impacto");
   await expect(header.getByRole("link", { name: "Contacto" })).toHaveAttribute("href", "/contacto");
   await expect(header.getByRole("link", { name: "Acceder a Greenatics" })).toHaveAttribute("href", "/app");
+});
+
+test("Casa y Jardín stays a real but non-indexed placeholder until its catalog is defined", async ({ page }) => {
+  await page.goto("/casa-jardin");
+
+  await expect(page.getByRole("heading", { name: "Casa y Jardín." })).toBeVisible();
+  await expect(page.getByText("Próximamente", { exact: true })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
 
 test("nested public routes inherit the same shell", async ({ page }) => {
@@ -58,6 +68,7 @@ test("sitemap exposes public routes and robots blocks OPS", async ({ request }) 
   expect(sitemapText).toContain("https://greenatics.com.co/soluciones/diagnostico-caracterizacion");
   expect(sitemapText).toContain("https://greenatics.com.co/proyectos/yarumal");
   expect(sitemapText).toContain("https://greenatics.com.co/wondergreen/cultivos/cafe");
+  expect(sitemapText).not.toContain("https://greenatics.com.co/casa-jardin");
   expect(sitemapText).not.toContain("https://greenatics.com.co/app");
 
   const robots = await request.get("/robots.txt");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { publicSite } from "./public-site";
+import { publicNav, publicReservedRoutes, publicSite, publicStaticRoutes } from "./public-site";
 
 describe("public site contact configuration", () => {
   it("keeps corporate location centralized", () => {
@@ -14,5 +14,11 @@ describe("public site contact configuration", () => {
   it("distinguishes target and legacy indexed domains", () => {
     expect(publicSite.publicDomainTarget).toBe("https://greenatics.com.co");
     expect(publicSite.legacyIndexedDomain).toBe("https://greenatics.org");
+  });
+
+  it("reserves Casa y Jardín in the primary navigation without promoting the placeholder to the sitemap", () => {
+    expect(publicNav).toContainEqual({ href: "/casa-jardin", label: "Casa y Jardín" });
+    expect(publicReservedRoutes).toContain("/casa-jardin");
+    expect([...publicStaticRoutes]).not.toContain("/casa-jardin");
   });
 });

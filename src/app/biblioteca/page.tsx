@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { publicResources } from "@/data/public-resources";
+import { publicResources, type PublicResource } from "@/data/public-resources";
 import styles from "./library.module.css";
 
 export const metadata: Metadata = {
@@ -59,6 +59,14 @@ const intentRoutes = [
   },
 ] as const;
 
+function getDeliveryLabel(resource: PublicResource) {
+  if (resource.delivery === "web-native") return "Lectura web disponible";
+  if (resource.delivery === "web-native-master-pending") {
+    return "Lectura web disponible · PDF maestro identificado · descarga pública en preparación";
+  }
+  return "Lectura web disponible · descarga pública en preparación";
+}
+
 export default function LibraryPage() {
   return (
     <div className={styles.page}>
@@ -110,10 +118,11 @@ export default function LibraryPage() {
                 <article className={styles.libraryCard} key={resource.id}>
                   <div className={styles.resourceMeta}>
                     <span className={styles.status}>{resource.statusLabel}</span>
-                    <small className={styles.delivery}>{resource.delivery === "web-native" ? "Lectura web disponible" : "Lectura web disponible · descarga pública en preparación"}</small>
+                    <small className={styles.delivery}>{getDeliveryLabel(resource)}</small>
                   </div>
                   <h3>{resource.title}</h3>
                   <p>{resource.copy}</p>
+                  {resource.masterLabel ? <small className={styles.delivery}>Maestro: {resource.masterLabel}</small> : null}
                   <Link href={resource.href}>{resource.cta} →</Link>
                 </article>
               ))}

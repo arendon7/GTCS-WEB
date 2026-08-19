@@ -18,6 +18,7 @@ export const publicSite = {
 export const publicNav = [
   { href: "/soluciones", label: "Soluciones" },
   { href: "/wondergreen", label: "Wondergreen" },
+  { href: "/casa-jardin", label: "Casa y Jardín" },
   { href: "/proyectos", label: "Proyectos" },
   { href: "/impacto", label: "Impacto" },
   { href: "/biblioteca", label: "Conocimiento" },
@@ -68,6 +69,10 @@ export const publicStaticRoutes = [
   "/biblioteca/criterios-nutricionales",
   "/nosotros",
   "/contacto",
+] as const;
+
+export const publicReservedRoutes = [
+  "/casa-jardin",
 ] as const;
 
 export const internalRoutePrefixes = [

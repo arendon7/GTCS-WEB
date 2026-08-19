@@ -1,5 +1,5 @@
 export type PublicResourceKind = "crop-library" | "manual" | "guide" | "catalog" | "technology" | "finder";
-export type PublicResourceDelivery = "web-native" | "public-download-pending";
+export type PublicResourceDelivery = "web-native" | "web-native-master-pending" | "public-download-pending";
 
 export type PublicResource = {
   id: string;
@@ -11,6 +11,7 @@ export type PublicResource = {
   cta: string;
   delivery: PublicResourceDelivery;
   sourceAuthority: string;
+  masterLabel?: string;
 };
 
 export const publicResources: PublicResource[] = [
@@ -24,6 +25,66 @@ export const publicResources: PublicResource[] = [
     cta: "Explorar cultivos",
     delivery: "web-native",
     sourceAuthority: "Wondergreen Crop Truth",
+  },
+  {
+    id: "wondergreen-guide-cafe",
+    kind: "guide",
+    statusLabel: "Guía por cultivo",
+    title: "Guía Wondergreen para café",
+    copy: "Programa navegable para café conectado con etapa, contexto de lote, familias Wondergreen y seguimiento. El maestro editorial de 20 páginas ya fue localizado para su futura descarga pública.",
+    href: "/wondergreen/cultivos/cafe",
+    cta: "Abrir guía de café",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
+    masterLabel: "Guía Wondergreen Café · 20 páginas",
+  },
+  {
+    id: "wondergreen-guide-cacao",
+    kind: "guide",
+    statusLabel: "Guía por cultivo",
+    title: "Guía Wondergreen para cacao",
+    copy: "Programa navegable para cacao con establecimiento, formación, transición reproductiva, llenado, recuperación, alertas y seguimiento. El maestro editorial de 20 páginas ya fue localizado.",
+    href: "/wondergreen/cultivos/cacao",
+    cta: "Abrir guía de cacao",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
+    masterLabel: "Guía Wondergreen Cacao · 20 páginas",
+  },
+  {
+    id: "wondergreen-guide-aguacate",
+    kind: "guide",
+    statusLabel: "Guía por cultivo",
+    title: "Guía Wondergreen para aguacate",
+    copy: "Programa navegable para aguacate con formación, mantenimiento, prefloración, cuajado, llenado y recuperación. El maestro editorial V2 de 20 páginas ya fue localizado.",
+    href: "/wondergreen/cultivos/aguacate",
+    cta: "Abrir guía de aguacate",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
+    masterLabel: "Guía Wondergreen Aguacate V2 · 20 páginas",
+  },
+  {
+    id: "wondergreen-guide-limon-tahiti",
+    kind: "guide",
+    statusLabel: "Guía por cultivo",
+    title: "Guía Wondergreen para limón Tahití",
+    copy: "Programa navegable para limón Tahití organizado alrededor de flujos vegetativos y reproductivos, contexto radicular y seguimiento. El maestro editorial de cítricos de 20 páginas ya fue localizado.",
+    href: "/wondergreen/cultivos/limon-tahiti",
+    cta: "Abrir guía de limón Tahití",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
+    masterLabel: "Guía Wondergreen Cítricos · 20 páginas",
+  },
+  {
+    id: "wondergreen-guide-pastos",
+    kind: "guide",
+    statusLabel: "Guía por cultivo",
+    title: "Guía Wondergreen para pastos y gramíneas",
+    copy: "Programa navegable para suelo, crecimiento activo, sostenimiento y rebrote por hectárea y manejo del potrero. El maestro editorial de pastos y praderas de 20 páginas ya fue localizado.",
+    href: "/wondergreen/cultivos/pastos-gramineas",
+    cta: "Abrir guía de pastos",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
+    masterLabel: "Guía Wondergreen Pastos y Praderas · 20 páginas",
   },
   {
     id: "wondergreen-use-manual",
@@ -62,12 +123,13 @@ export const publicResources: PublicResource[] = [
     id: "wondergreen-product-master",
     kind: "catalog",
     statusLabel: "Product Master público",
-    title: "Catálogo técnico gobernado",
-    copy: "Familias, fórmulas, formatos y estado público de cada referencia conectados con el sistema Wondergreen y su versión técnica.",
+    title: "Catálogo técnico-comercial Wondergreen",
+    copy: "Familias, formulaciones, formatos, precios reconciliados y estado público se consultan desde el Product Master navegable. El catálogo comercial optimizado de 10 páginas ya fue localizado como candidato de descarga pública.",
     href: "/wondergreen/productos",
     cta: "Ver productos",
-    delivery: "public-download-pending",
-    sourceAuthority: "Wondergreen Product Truth",
+    delivery: "web-native-master-pending",
+    sourceAuthority: "Wondergreen Product Truth · maestro comercial localizado",
+    masterLabel: "Catálogo Wondergreen optimizado · 10 páginas",
   },
   {
     id: "wondergreen-more-than-npk",
