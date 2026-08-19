@@ -7,18 +7,34 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub exposes strategic programs, six commercial lines and the governed service catalog", async ({ page }) => {
+test("solutions hub exposes strategic programs, decision modules, six commercial lines and governed services", async ({ page }) => {
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: /Primero estructurar. Luego operar. Después valorizar./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
   await expect(page.getByText(/Vista aérea de archivo · Yarumal/)).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: "Dos formas de ordenar primero las decisiones." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "ESP READY", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "PMIRS RED", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Tres formas de empezar con una base más clara." })).toBeVisible();
+  for (const program of ["ESP READY", "GREENATICS BASE", "PMIRS RED"]) {
+    await expect(page.getByRole("heading", { name: program, exact: true })).toBeVisible();
+  }
   await expect(page.getByRole("link", { name: /Conocer ESP READY/ })).toHaveAttribute("href", "/soluciones/programas/esp-ready");
+  await expect(page.getByRole("link", { name: /Conocer GREENATICS BASE/ })).toHaveAttribute("href", "/soluciones/programas/greenatics-base");
   await expect(page.getByRole("link", { name: /Conocer PMIRS RED/ })).toHaveAttribute("href", "/soluciones/programas/pmirs-red");
+
+  await expect(page.getByRole("heading", { name: "No todo problema necesita convertirse en un servicio nuevo." })).toBeVisible();
+  for (const module of [
+    "Puesta en marcha de operación de aseo",
+    "Rutas, flota y continuidad operativa",
+    "Programa de orgánicos: captura real y piloto",
+    "Prefactibilidad de decisiones de infraestructura",
+    "Screening técnico de predios",
+    "Acompañamiento por etapas",
+  ]) {
+    await expect(page.getByRole("heading", { name: module, exact: true })).toBeVisible();
+  }
+  await expect(page.getByText(/no presupone una planta ni una tecnología/i)).toBeVisible();
+  await expect(page.getByText(/no sustituye concepto de uso del suelo/i)).toBeVisible();
 
   for (const line of [
     "Diagnóstico y datos",
@@ -31,7 +47,7 @@ test("solutions hub exposes strategic programs, six commercial lines and the gov
     await expect(page.getByRole("heading", { name: line, exact: true })).toBeVisible();
   }
 
-  await expect(page.getByRole("link", { name: /Diagnóstico y caracterización/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: /Diagnóstico y caracterización/ }).first()).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
   await expect(page.getByRole("link", { name: /Trazabilidad, indicadores y datos/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
   await expect(page.getByRole("heading", { name: /De la planeación a una operación preparada para crecer/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /De cumplimiento aislado a gestión medible y circular/i })).toBeVisible();
@@ -54,6 +70,30 @@ test("ESP READY keeps the ten sourced preparation dimensions and decision output
 
   const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
   expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/programas/esp-ready");
+});
+
+test("GREENATICS BASE keeps technical baseline separate from PMIRS and regulatory aforo", async ({ page }) => {
+  await page.goto("/soluciones/programas/greenatics-base");
+
+  await expect(page.getByRole("heading", { name: "GREENATICS BASE", exact: true })).toBeVisible();
+  await expect(page.getByText(/Empieza a producir información real mientras estructuras lo que sigue/i)).toBeVisible();
+  for (const item of [
+    "Línea base de generación",
+    "Caracterización de residuos",
+    "Diagnóstico de infraestructura",
+    "Lectura operativa del proyecto",
+    "Captura digital y evidencia",
+    "Consolidación y análisis",
+  ]) {
+    await expect(page.getByText(item, { exact: true })).toBeVisible();
+  }
+  for (const excluded of ["PMIRS completo", "Aforo regulatorio", "Estudio tarifario", "Diseño final de rutas", "Ingeniería", "Permisos"]) {
+    await expect(page.getByText(excluded, { exact: true })).toBeVisible();
+  }
+  await expect(page.getByText(/alcance independiente conforme al procedimiento aplicable/i)).toBeVisible();
+
+  const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
+  expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/programas/greenatics-base");
 });
 
 test("PMIRS RED separates unit-level implementation from network intelligence", async ({ page }) => {
