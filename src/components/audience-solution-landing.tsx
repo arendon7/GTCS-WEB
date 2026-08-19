@@ -22,7 +22,7 @@ export function AudienceSolutionLanding({ landing }: { landing: AudienceLanding 
       <BreadcrumbJsonLd items={[
         { name: "Greenatics", path: "/" },
         { name: "Soluciones", path: "/soluciones" },
-        { name: landing.audience, path: `/soluciones/${landing.slug}` },
+        { name: landing.audience, path: `/soluciones/${landing.slug}` as `/${string}` },
       ]} />
       <main>
         <section className={styles.hero}>
