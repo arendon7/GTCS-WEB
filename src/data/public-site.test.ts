@@ -18,6 +18,6 @@ describe("public site contact configuration", () => {
 
   it("reserves Casa y Jardín in the primary navigation without promoting the placeholder to the sitemap", () => {
     expect(publicNav).toContainEqual({ href: "/casa-jardin", label: "Casa y Jardín" });
-    expect(publicStaticRoutes).not.toContain("/casa-jardin");
+    expect(publicStaticRoutes.some((route) => route === ("/casa-jardin" as never))).toBe(false);
   });
 });
