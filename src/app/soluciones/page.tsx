@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { serviceJourneys } from "@/data/service-journeys";
+import { getPrimaryProjectMedia } from "@/data/public-media";
 import { companyServices, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
 import styles from "./solutions.module.css";
+import refresh from "./solutions-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Soluciones | Greenatics",
@@ -21,8 +24,10 @@ const categoryIntro: Record<ServiceCategory, string> = {
 const path = ["Entender", "Recolectar", "Transformar", "Operar", "Medir", "Devolver valor"];
 
 export default function SolutionsPage() {
+  const yarumalEvidence = getPrimaryProjectMedia("yarumal");
+
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${refresh.page}`}>
       <main>
         <section className={styles.hero}>
           <div className={styles.heroAccent} aria-hidden="true" />
@@ -38,6 +43,14 @@ export default function SolutionsPage() {
               </div>
             </div>
             <aside className={styles.heroProof}>
+              {yarumalEvidence ? (
+                <figure className={refresh.proofFigure}>
+                  <div className={refresh.proofImage}>
+                    <Image src={yarumalEvidence.src} alt={yarumalEvidence.alt} fill sizes="(max-width: 1060px) 100vw, 36vw" priority />
+                  </div>
+                  <figcaption>{yarumalEvidence.caption}</figcaption>
+                </figure>
+              ) : null}
               <span>Principio de diseño</span>
               <strong>Residuo → operación → producto → dato.</strong>
               <p>No partimos de una máquina predeterminada. Partimos del origen, volumen, composición, logística, infraestructura, actores, destino de productos y capacidad real de gestión.</p>
