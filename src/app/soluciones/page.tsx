@@ -102,16 +102,16 @@ export default function SolutionsPage() {
               <p>Estos módulos empaquetan decisiones frecuentes y conectan capacidades ya gobernadas. Sirven para entrar por una pregunta concreta sin duplicar los 13 servicios técnicos ni prometer resultados antes de contar con evidencia.</p>
             </div>
             <div className={moduleStyles.moduleGrid}>
-              {commercialModules.map((module) => {
-                const relatedServices = module.relatedServiceSlugs.map((slug) => getService(slug)).filter(Boolean);
+              {commercialModules.map((commercialModule) => {
+                const relatedServices = commercialModule.relatedServiceSlugs.map((slug) => getService(slug)).filter(Boolean);
                 return (
-                  <article className={moduleStyles.moduleCard} key={module.id}>
-                    <span>{module.kicker}</span>
-                    <h3>{module.title}</h3>
-                    <p>{module.summary}</p>
-                    <div className={moduleStyles.decision}><small>Decisión que organiza</small><strong>{module.decision}</strong></div>
-                    <div className={moduleStyles.signals}>{module.signals.map((signal) => <span key={signal}>{signal}</span>)}</div>
-                    <p className={moduleStyles.guardrail}>{module.guardrail}</p>
+                  <article className={moduleStyles.moduleCard} key={commercialModule.id}>
+                    <span>{commercialModule.kicker}</span>
+                    <h3>{commercialModule.title}</h3>
+                    <p>{commercialModule.summary}</p>
+                    <div className={moduleStyles.decision}><small>Decisión que organiza</small><strong>{commercialModule.decision}</strong></div>
+                    <div className={moduleStyles.signals}>{commercialModule.signals.map((signal) => <span key={signal}>{signal}</span>)}</div>
+                    <p className={moduleStyles.guardrail}>{commercialModule.guardrail}</p>
                     <div className={moduleStyles.moduleLinks}>
                       <small>Servicios técnicos relacionados</small>
                       {relatedServices.slice(0, 3).map((service) => service ? <Link href={`/soluciones/${service.slug}`} key={service.slug}><span>{service.name}</span><span>→</span></Link> : null)}
