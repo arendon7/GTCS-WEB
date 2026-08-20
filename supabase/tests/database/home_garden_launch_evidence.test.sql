@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(26);
 
 select has_table('public','home_garden_launch_evidence_revisions','home garden evidence revision ledger exists');
 select ok(has_table_privilege('authenticated','public.home_garden_launch_evidence_revisions','SELECT'),'authenticated keeps governed read privilege through RLS');
@@ -30,7 +30,7 @@ set local request.jwt.claim.sub='e1000000-0000-4000-8000-000000000001';
 
 select lives_ok($$select public.admin_append_home_garden_launch_evidence(
  'crece-500-g','approved-label','verified','Etiqueta CRECE 500 g','SharePoint/Wondergreen/Etiquetas/CRECE_500G.pdf','2026-08-20',true,true,true,'Arte y presentación conciliados para revisión QA.'
-)$$,'technical can append a governed evidence revision');
+)$$,'technical can append governed technical evidence');
 select is((select count(*) from public.home_garden_launch_evidence_revisions),1::bigint,'first evidence revision is stored once');
 select is((select evidence_kind from public.home_garden_launch_evidence_revisions limit 1),'approved-label','evidence kind is preserved');
 select is((select disposition from public.home_garden_launch_evidence_revisions limit 1),'verified','evidence disposition is preserved');
@@ -52,17 +52,26 @@ select throws_ok($$select public.admin_append_home_garden_launch_evidence(
 select throws_ok($$select public.admin_append_home_garden_launch_evidence(
  'crece-500-g','price-sheet','draft','Invalid kind','SharePoint/Invalid.pdf',null,true,true,false,'Tipo inválido.'
 )$$,'Tipo de evidencia inválido.','unknown evidence kinds cannot enter the governed ledger');
+select throws_ok($$select public.admin_append_home_garden_launch_evidence(
+ 'crece-500-g','product-truth','verified','Attempted Product Truth override','Internal/ProductTruth.txt',null,true,true,true,'No debe poder sustituir Product Truth canónico.'
+)$$,'Product Truth se gobierna en código y no se administra desde este registro.','Product Truth cannot be authored from the operational ledger');
+select throws_ok($$select public.admin_append_home_garden_launch_evidence(
+ 'crece-500-g','approved-label','draft','Incomplete review','Internal/DraftLabel.pdf',null,true,true,true,'Un borrador no puede cerrar el gate.'
+)$$,'Solo evidencia verificada puede declararse completa para un gate.','draft evidence cannot masquerade as gate-complete');
+select throws_ok($$select public.admin_append_home_garden_launch_evidence(
+ 'crece-500-g','cost-model','verified','Technical cost attempt','Finanzas/Costos.xlsx',null,true,true,true,'Technical no debe autorizar costo comercial.'
+)$$,'Este tipo de evidencia requiere rol admin o director.','technical role cannot author commercial or financial evidence');
 
 set local request.jwt.claim.sub='e1000000-0000-4000-8000-000000000002';
 select throws_ok($$select public.admin_append_home_garden_launch_evidence(
  'crece-500-g','laboratory-report','verified','Supervisor attempt','SharePoint/Lab.pdf','2026-08-20',true,true,true,'Supervisor no autorizado.'
-)$$,'No tienes permiso para administrar evidencia de lanzamiento.','supervisor cannot append company launch evidence');
+)$$,'No tienes permiso para administrar evidencia técnica de lanzamiento.','supervisor cannot append company launch evidence');
 select is((select count(*) from public.home_garden_launch_evidence_revisions),0::bigint,'RLS hides company launch evidence from supervisor-only users');
 
 set local request.jwt.claim.sub='e1000000-0000-4000-8000-000000000003';
 select lives_ok($$select public.admin_append_home_garden_launch_evidence(
  'equilibra-1-kg','cost-model','draft','Costo B2C en construcción','Finanzas/Modelo B2C interno.xlsx','2026-08-20',true,true,false,'El modelo todavía no cubre el checklist all-in completo.'
-)$$,'admin can append company launch evidence from another plant membership');
+)$$,'admin can append commercial or financial launch evidence from another plant membership');
 select is((select count(*) from public.home_garden_launch_evidence_revisions),3::bigint,'authorized company role sees the complete governed evidence history');
 select is((select max(revision_no)>min(revision_no) from public.home_garden_launch_evidence_revisions),true,'global revision sequence preserves deterministic history ordering');
 
