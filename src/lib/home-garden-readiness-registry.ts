@@ -10,12 +10,31 @@ import {
 } from "@/data/home-garden-sku-launch-matrix";
 
 export type HomeGardenEvidenceDisposition = "draft" | "verified" | "rejected" | "superseded";
+export type HomeGardenLaunchEvidenceKind = Exclude<HomeGardenEvidenceKind, "product-truth">;
+
+export const homeGardenLaunchEvidenceKinds = [
+  "laboratory-report",
+  "regulatory-registration",
+  "approved-label",
+  "sku-master",
+  "dose-validation",
+  "cost-model",
+  "fulfillment-record",
+  "public-asset",
+] as const satisfies readonly HomeGardenLaunchEvidenceKind[];
+
+const technicalEvidenceKinds = new Set<HomeGardenLaunchEvidenceKind>([
+  "laboratory-report",
+  "regulatory-registration",
+  "approved-label",
+  "dose-validation",
+]);
 
 export type HomeGardenLaunchEvidenceRevision = {
   id: string;
   revisionNo: number;
   candidateId: string;
-  evidenceKind: HomeGardenEvidenceKind;
+  evidenceKind: HomeGardenLaunchEvidenceKind;
   disposition: HomeGardenEvidenceDisposition;
   title: string;
   sourceReference: string;
@@ -57,6 +76,11 @@ export const homeGardenGateLabels: Record<HomeGardenEvidenceGateId, string> = {
 
 export function canManageHomeGardenReadiness(role: string) {
   return role === "technical" || role === "admin" || role === "director";
+}
+
+export function canAppendHomeGardenEvidence(role: string, kind: HomeGardenLaunchEvidenceKind) {
+  if (role === "admin" || role === "director") return true;
+  return role === "technical" && technicalEvidenceKinds.has(kind);
 }
 
 function latestRevisionKey(revision: HomeGardenLaunchEvidenceRevision) {
