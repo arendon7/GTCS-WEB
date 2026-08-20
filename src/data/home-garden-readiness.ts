@@ -1,3 +1,5 @@
+import type { HomeGardenEvidenceGateId } from "./home-garden-evidence";
+
 export type HomeGardenReadinessStatus = "ready" | "pending" | "blocked";
 
 export type HomeGardenReadinessItem = {
@@ -7,6 +9,7 @@ export type HomeGardenReadinessItem = {
   publicLabel: string;
   publicCopy: string;
   gate: string;
+  evidenceGate?: HomeGardenEvidenceGateId;
 };
 
 export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
@@ -17,6 +20,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Referencias y fórmulas",
     publicCopy: "Las cinco etapas visibles están conectadas con referencias Wondergreen ya gobernadas; el nombre doméstico no reemplaza la referencia técnica.",
     gate: "Conservar correspondencia con Product Truth y no derivar nuevos claims desde el arte.",
+    evidenceGate: "technical-product-truth",
   },
   {
     id: "kit-composition-v1",
@@ -41,6 +45,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Presentaciones domésticas como SKUs comerciales",
     publicCopy: "Los tamaños 500 g, 1 kg, 2 kg y 5 kg son propuestas de la línea B2C; todavía no equivalen a inventario vendible reconciliado.",
     gate: "Cerrar SKU, stock, empaque, etiqueta y trazabilidad por presentación.",
+    evidenceGate: "household-skus",
   },
   {
     id: "regulatory",
@@ -49,6 +54,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Cobertura regulatoria de cada presentación",
     publicCopy: "Antes de vender una nueva presentación debe verificarse que registro de venta, etiquetado y condición aplicable de envasado/empacado la cubran.",
     gate: "Verificación documental ICA por referencia y presentación antes de activar compra.",
+    evidenceGate: "regulatory",
   },
   {
     id: "dose-and-dosifier",
@@ -57,6 +63,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Dosis doméstica y dosificador",
     publicCopy: "S/M/L/XL ya se capturan como tamaños de matera, pero todavía no se convierten a gramos ni frecuencia universal.",
     gate: "Validar tabla por formulación, tamaño de planta/contenedor y equivalencia real del dosificador.",
+    evidenceGate: "dose-and-dosifier",
   },
   {
     id: "all-in-cost",
@@ -65,6 +72,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Costo total y PVP gobernado",
     publicCopy: "El costo de producto es solo una parte. El PVP se publicará únicamente cuando exista costo total puesto a venta y una política de margen verificable.",
     gate: "Cerrar el checklist all-in completo antes de calcular margen, ahorro, descuento o precio público.",
+    evidenceGate: "all-in-cost",
   },
   {
     id: "fulfillment",
@@ -73,6 +81,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Armado, inventario y logística",
     publicCopy: "La tienda requiere una promesa operativa real: disponibilidad, armado, embalaje, despacho y tratamiento del flete.",
     gate: "Definir stock vendible, punto de armado, tiempos, cobertura logística y manejo de incidencias.",
+    evidenceGate: "fulfillment",
   },
   {
     id: "public-assets",
@@ -81,6 +90,7 @@ export const homeGardenLaunchReadiness: readonly HomeGardenReadinessItem[] = [
     publicLabel: "Packshots, guías y QR finales",
     publicCopy: "Hay activos candidatos y guías fuente, pero el arte no puede sustituir Product Truth ni usar QR o pesos inconsistentes.",
     gate: "Publicar solo binarios auditados contra fórmula, peso, composición, etiqueta y destino QR final.",
+    evidenceGate: "public-assets",
   },
   {
     id: "transplant-kit",
@@ -119,5 +129,5 @@ export const homeGardenCommerceGate = {
   priceEnabled: false,
   canPublishPrice: false,
   canClaimMargin: false,
-  rule: "No activar indexación comercial, precio, checkout, margen, ahorro o descuento hasta que los gates regulatorios, de dosificación, SKU, costo all-in, operación y activos estén reconciliados.",
+  rule: "No activar indexación comercial, precio, checkout, margen, ahorro o descuento hasta que los gates regulatorios, de dosificación, SKU, costo all-in, operación y activos estén reconciliados con la evidencia exigida para la misma referencia y presentación.",
 } as const;
