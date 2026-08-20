@@ -68,13 +68,34 @@ describe("home garden readiness registry", () => {
     expect(selected.find((item) => item.candidateId === "crece-500-g")?.disposition).toBe("rejected");
   });
 
-  it("builds all 18 candidates and keeps them pending without full evidence", () => {
+  it("builds all 18 candidates and a seven-front operational blocker summary", () => {
     const registry = buildHomeGardenReadinessRegistry([]);
     expect(registry.summary.total).toBe(18);
     expect(registry.summary.commerceReady).toBe(0);
     expect(registry.summary.pending).toBe(18);
+    expect(registry.summary.openGateInstances).toBe(108);
     expect(registry.items.every((item) => item.gates["technical-product-truth"])).toBe(true);
     expect(registry.items.every((item) => item.commerceReady === false)).toBe(true);
+    expect(registry.workstreams).toHaveLength(7);
+
+    const productTruth = registry.workstreams.find((item) => item.gate === "technical-product-truth");
+    expect(productTruth).toMatchObject({ lane: "canonical", total: 18, closedCount: 18, openCount: 0 });
+
+    const regulatory = registry.workstreams.find((item) => item.gate === "regulatory");
+    expect(regulatory).toMatchObject({ lane: "technical", total: 18, closedCount: 0, openCount: 18 });
+
+    const cost = registry.workstreams.find((item) => item.gate === "all-in-cost");
+    expect(cost).toMatchObject({ lane: "admin-director", total: 18, closedCount: 0, openCount: 18 });
+  });
+
+  it("reduces a workstream blocker count only for the exact presentation whose gate closes", () => {
+    const registry = buildHomeGardenReadinessRegistry([revision()]);
+    const skuWorkstream = registry.workstreams.find((item) => item.gate === "household-skus");
+
+    expect(skuWorkstream).toMatchObject({ total: 18, closedCount: 1, openCount: 17 });
+    expect(skuWorkstream?.openCandidateIds).not.toContain("crece-500-g");
+    expect(skuWorkstream?.openCandidateIds).toHaveLength(17);
+    expect(registry.summary.openGateInstances).toBe(107);
   });
 
   it("reopens a gate when the latest revision supersedes an older verified record", () => {
@@ -86,6 +107,7 @@ describe("home garden readiness registry", () => {
     expect(item?.gates["household-skus"]).toBe(false);
     expect(item?.latestEvidence).toHaveLength(1);
     expect(item?.latestEvidence[0]?.revisionNo).toBe(2);
+    expect(registry.workstreams.find((workstream) => workstream.gate === "household-skus")?.openCount).toBe(18);
   });
 
   it("flags evidence for candidate ids that no longer exist instead of silently applying it", () => {
