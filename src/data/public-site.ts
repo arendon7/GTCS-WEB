@@ -39,6 +39,7 @@ export const publicFooterNav = [
     title: "Agro",
     links: [
       { href: "/wondergreen", label: "Wondergreen" },
+      { href: "/casa-jardin", label: "Casa y Jardín" },
       { href: "/wondergreen/productos", label: "Productos" },
       { href: "/wondergreen/cultivos", label: "Cultivos" },
       { href: "/biblioteca/manual-uso-wondergreen", label: "Manual de uso" },
