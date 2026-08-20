@@ -57,6 +57,10 @@ export function HomeGardenReadinessAdminView() {
   const [completeForGate, setCompleteForGate] = useState(false);
   const [note, setNote] = useState("");
 
+  const effectiveEvidenceKind = allowedEvidenceKinds.includes(evidenceKind)
+    ? evidenceKind
+    : allowedEvidenceKinds[0] ?? "laboratory-report";
+
   const load = useCallback(async () => {
     if (backend.mode !== "supabase" || !authorized) {
       setRevisions([]);
@@ -78,22 +82,16 @@ export function HomeGardenReadinessAdminView() {
     return () => window.clearTimeout(timer);
   }, [load]);
 
-  useEffect(() => {
-    if (allowedEvidenceKinds.includes(evidenceKind)) return;
-    const firstAllowed = allowedEvidenceKinds[0];
-    if (firstAllowed) setEvidenceKind(firstAllowed);
-  }, [allowedEvidenceKinds, evidenceKind]);
-
   const registry = useMemo(() => buildHomeGardenReadinessRegistry(revisions), [revisions]);
   const visibleItems = useMemo(() => registry.items.filter((item) => {
     if (filter === "ready") return item.commerceReady;
     if (filter === "pending") return !item.commerceReady;
     return true;
   }), [filter, registry.items]);
-  const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === evidenceKind);
+  const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === effectiveEvidenceKind);
 
   async function saveEvidence() {
-    if (!access.some((item) => canAppendHomeGardenEvidence(item.role, evidenceKind))) {
+    if (!access.some((item) => canAppendHomeGardenEvidence(item.role, effectiveEvidenceKind))) {
       setFeedback({ kind: "error", text: "Tu rol no puede registrar este tipo de evidencia." });
       return;
     }
@@ -109,7 +107,7 @@ export function HomeGardenReadinessAdminView() {
     try {
       await appendHomeGardenLaunchEvidence({
         candidateId,
-        evidenceKind,
+        evidenceKind: effectiveEvidenceKind,
         disposition,
         title: title.trim(),
         sourceReference: sourceReference.trim(),
@@ -168,7 +166,7 @@ export function HomeGardenReadinessAdminView() {
       <div className="section-head"><div><p className="eyebrow">Nueva revisión</p><h2>Anexar evidencia gobernada</h2><p className="quiet mt-1">Guarda una referencia interna al documento; no pegues enlaces firmados, tokens ni credenciales. Los tipos disponibles dependen de tu rol.</p></div></div>
       <div className="grid gap-3 lg:grid-cols-3">
         <label className="grid gap-1 text-xs font-semibold">Presentación<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={candidateId} onChange={(event) => setCandidateId(event.target.value)}>{homeGardenPlannedSkuCandidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.consumerName} · {candidate.plannedVariant} · {candidate.id}</option>)}</select></label>
-        <label className="grid gap-1 text-xs font-semibold">Tipo de evidencia<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={evidenceKind} onChange={(event) => setEvidenceKind(event.target.value as HomeGardenLaunchEvidenceKind)}>{allowedEvidenceKinds.map((kind) => { const rule = homeGardenEvidenceRules.find((item) => item.kind === kind); return <option key={kind} value={kind}>{rule?.label ?? kind}</option>; })}</select></label>
+        <label className="grid gap-1 text-xs font-semibold">Tipo de evidencia<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={effectiveEvidenceKind} onChange={(event) => setEvidenceKind(event.target.value as HomeGardenLaunchEvidenceKind)}>{allowedEvidenceKinds.map((kind) => { const rule = homeGardenEvidenceRules.find((item) => item.kind === kind); return <option key={kind} value={kind}>{rule?.label ?? kind}</option>; })}</select></label>
         <label className="grid gap-1 text-xs font-semibold">Estado<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={disposition} onChange={(event) => { const next = event.target.value as HomeGardenEvidenceDisposition; setDisposition(next); if (next !== "verified") setCompleteForGate(false); }}>{Object.entries(dispositionLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <label className="grid gap-1 text-xs font-semibold lg:col-span-2">Título<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Ej. Registro/etiqueta CRECE 500 g · revisión agosto" /></label>
         <label className="grid gap-1 text-xs font-semibold">Fecha fuente<input type="date" className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={sourceDate} onChange={(event) => setSourceDate(event.target.value)} /></label>
