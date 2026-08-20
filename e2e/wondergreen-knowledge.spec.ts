@@ -18,8 +18,12 @@ test("public library exposes live Wondergreen knowledge resources and governed s
   await expect(deficiencyCard.getByRole("link", { name: "Abrir guía →", exact: true })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
 
   await expect(page.getByText("Lectura web disponible · PDF maestro identificado · auditoría pública pendiente", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Lectura web disponible · PDF maestro retenido por auditoría", { exact: true })).toBeVisible();
-  await expect(page.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
+
+  const catalogCard = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Catálogo técnico-comercial Wondergreen", exact: true }),
+  });
+  await expect(catalogCard.getByText("Lectura web disponible · PDF maestro retenido por auditoría", { exact: true })).toBeVisible();
+  await expect(catalogCard.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
 });
 
 test("public library routes by user intent before product selection", async ({ page }) => {
