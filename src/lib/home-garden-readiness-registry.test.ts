@@ -4,6 +4,7 @@ import {
   buildHomeGardenReadinessRegistry,
   canAppendHomeGardenEvidence,
   canManageHomeGardenReadiness,
+  getNextHomeGardenEvidenceKind,
   homeGardenLaunchEvidenceKinds,
   selectLatestHomeGardenEvidence,
 } from "./home-garden-readiness-registry";
@@ -88,6 +89,76 @@ describe("home garden readiness registry", () => {
     expect(cost).toMatchObject({ lane: "admin-director", total: 18, closedCount: 0, openCount: 18 });
   });
 
+  it("derives the exact missing evidence for a multi-document regulatory gate", () => {
+    const registry = buildHomeGardenReadinessRegistry([]);
+    const item = registry.items.find((candidate) => candidate.id === "crece-500-g");
+    const regulatory = item?.gateEvidence.regulatory;
+
+    expect(regulatory).toHaveLength(2);
+    expect(regulatory?.map((state) => [state.kind, state.status])).toEqual([
+      ["regulatory-registration", "missing"],
+      ["approved-label", "missing"],
+    ]);
+    expect(item && getNextHomeGardenEvidenceKind(item, "regulatory")).toBe("regulatory-registration");
+  });
+
+  it("advances to the second regulatory requirement when the first is ready", () => {
+    const registry = buildHomeGardenReadinessRegistry([
+      revision({
+        id: "reg-1",
+        evidenceKind: "regulatory-registration",
+        title: "Cobertura regulatoria CRECE 500 g",
+      }),
+    ]);
+    const item = registry.items.find((candidate) => candidate.id === "crece-500-g");
+    const regulatory = item?.gateEvidence.regulatory;
+
+    expect(regulatory?.find((state) => state.kind === "regulatory-registration")?.status).toBe("ready");
+    expect(regulatory?.find((state) => state.kind === "approved-label")?.status).toBe("missing");
+    expect(item && getNextHomeGardenEvidenceKind(item, "regulatory")).toBe("approved-label");
+    expect(item?.gates.regulatory).toBe(false);
+  });
+
+  it("marks a non-verified latest revision as needs-review instead of treating it as missing", () => {
+    const registry = buildHomeGardenReadinessRegistry([
+      revision({
+        id: "label-draft",
+        evidenceKind: "approved-label",
+        disposition: "draft",
+        completeForGate: false,
+        title: "Etiqueta CRECE 500 g en revisión",
+      }),
+    ]);
+    const item = registry.items.find((candidate) => candidate.id === "crece-500-g");
+    const labelState = item?.gateEvidence.regulatory.find((state) => state.kind === "approved-label");
+
+    expect(labelState?.status).toBe("needs-review");
+    expect(labelState?.latestRevision?.id).toBe("label-draft");
+    expect(labelState?.reason).toMatch(/borrador/i);
+  });
+
+  it("has no next regulatory evidence once both required revisions satisfy the gate", () => {
+    const registry = buildHomeGardenReadinessRegistry([
+      revision({
+        id: "reg-1",
+        revisionNo: 1,
+        evidenceKind: "regulatory-registration",
+        title: "Cobertura regulatoria CRECE 500 g",
+      }),
+      revision({
+        id: "label-2",
+        revisionNo: 2,
+        evidenceKind: "approved-label",
+        title: "Etiqueta conciliada CRECE 500 g",
+      }),
+    ]);
+    const item = registry.items.find((candidate) => candidate.id === "crece-500-g");
+
+    expect(item?.gates.regulatory).toBe(true);
+    expect(item?.gateEvidence.regulatory.every((state) => state.status === "ready")).toBe(true);
+    expect(item && getNextHomeGardenEvidenceKind(item, "regulatory")).toBeUndefined();
+  });
+
   it("reduces a workstream blocker count only for the exact presentation whose gate closes", () => {
     const registry = buildHomeGardenReadinessRegistry([revision()]);
     const skuWorkstream = registry.workstreams.find((item) => item.gate === "household-skus");
@@ -107,6 +178,7 @@ describe("home garden readiness registry", () => {
     expect(item?.gates["household-skus"]).toBe(false);
     expect(item?.latestEvidence).toHaveLength(1);
     expect(item?.latestEvidence[0]?.revisionNo).toBe(2);
+    expect(item?.gateEvidence["household-skus"][0]?.status).toBe("needs-review");
     expect(registry.workstreams.find((workstream) => workstream.gate === "household-skus")?.openCount).toBe(18);
   });
 
