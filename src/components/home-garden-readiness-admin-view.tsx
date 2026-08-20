@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOpsStore } from "@/components/ops-store";
-import { homeGardenEvidenceRules } from "@/data/home-garden-evidence";
+import { homeGardenEvidenceRules, type HomeGardenEvidenceGateId } from "@/data/home-garden-evidence";
 import { homeGardenPlannedSkuCandidates } from "@/data/home-garden-sku-launch-matrix";
 import {
   buildHomeGardenReadinessRegistry,
   canAppendHomeGardenEvidence,
   canManageHomeGardenReadiness,
   homeGardenGateLabels,
+  homeGardenLaneLabels,
   homeGardenLaunchEvidenceKinds,
   type HomeGardenEvidenceDisposition,
   type HomeGardenLaunchEvidenceKind,
@@ -21,6 +22,7 @@ import {
 
 type Feedback = { kind: "ok" | "error"; text: string } | null;
 type RegistryFilter = "all" | "pending" | "ready";
+type GateFilter = "all" | HomeGardenEvidenceGateId;
 
 const dispositionLabels: Record<HomeGardenEvidenceDisposition, string> = {
   draft: "Borrador / por revisar",
@@ -45,6 +47,7 @@ export function HomeGardenReadinessAdminView() {
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [filter, setFilter] = useState<RegistryFilter>("all");
+  const [gateFilter, setGateFilter] = useState<GateFilter>("all");
 
   const [candidateId, setCandidateId] = useState(homeGardenPlannedSkuCandidates[0]?.id ?? "");
   const [evidenceKind, setEvidenceKind] = useState<HomeGardenLaunchEvidenceKind>("laboratory-report");
@@ -84,10 +87,11 @@ export function HomeGardenReadinessAdminView() {
 
   const registry = useMemo(() => buildHomeGardenReadinessRegistry(revisions), [revisions]);
   const visibleItems = useMemo(() => registry.items.filter((item) => {
-    if (filter === "ready") return item.commerceReady;
-    if (filter === "pending") return !item.commerceReady;
+    if (filter === "ready" && !item.commerceReady) return false;
+    if (filter === "pending" && item.commerceReady) return false;
+    if (gateFilter !== "all" && item.gates[gateFilter]) return false;
     return true;
-  }), [filter, registry.items]);
+  }), [filter, gateFilter, registry.items]);
   const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === effectiveEvidenceKind);
 
   async function saveEvidence() {
@@ -147,17 +151,32 @@ export function HomeGardenReadinessAdminView() {
         <select aria-label="Filtro readiness" className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={filter} onChange={(event) => setFilter(event.target.value as RegistryFilter)}>
           <option value="all">Todas</option><option value="pending">Pendientes</option><option value="ready">Listas para comercio</option>
         </select>
+        <select aria-label="Filtro por gate" className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={gateFilter} onChange={(event) => setGateFilter(event.target.value as GateFilter)}>
+          <option value="all">Todos los frentes</option>{registry.workstreams.map((workstream) => <option key={workstream.gate} value={workstream.gate}>{workstream.label} · {workstream.openCount} abiertas</option>)}
+        </select>
         <button className="button secondary" type="button" disabled={loading} onClick={() => void load()}>{loading ? "Actualizando…" : "Actualizar"}</button>
       </div>
     </header>
 
     {feedback ? <p role="status" className={`rounded-xl p-4 text-sm font-semibold ${feedback.kind === "error" ? "bg-[var(--red-soft)] text-[var(--red)]" : "bg-[var(--surface-soft)] text-[var(--green)]"}`}>{feedback.text}</p> : null}
 
-    <section className="grid gap-3 md:grid-cols-4">
+    <section className="grid gap-3 md:grid-cols-5">
       <article className="panel"><span className="quiet text-xs">Presentaciones propuestas</span><strong className="mt-2 block text-3xl">{registry.summary.total}</strong></article>
       <article className="panel"><span className="quiet text-xs">Commerce ready</span><strong className="mt-2 block text-3xl">{registry.summary.commerceReady}</strong></article>
       <article className="panel"><span className="quiet text-xs">Pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.pending}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Gate-instancias abiertas</span><strong className="mt-2 block text-3xl">{registry.summary.openGateInstances}</strong></article>
       <article className="panel"><span className="quiet text-xs">Evidencia huérfana</span><strong className="mt-2 block text-3xl">{registry.summary.orphanEvidence}</strong></article>
+    </section>
+
+    <section className="panel">
+      <div className="section-head"><div><p className="eyebrow">Priorización</p><h2>Bloqueadores por frente</h2><p className="quiet mt-1">Cada cifra representa presentaciones con ese gate abierto. El carril indica la función responsable del tipo de cierre, no una persona asignada.</p></div><span className="quiet">{registry.summary.openGateInstances} pendientes acumulados</span></div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {registry.workstreams.map((workstream) => <article className="rounded-xl border border-[var(--line)] p-4" key={workstream.gate}>
+          <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{workstream.label}</strong><span className="quiet mt-1 block text-xs">Carril: {homeGardenLaneLabels[workstream.lane]}</span></div><span className={`status-pill ${workstream.openCount === 0 ? "status-normal" : "status-planned"}`}>{workstream.openCount === 0 ? "CERRADO" : `${workstream.openCount} ABIERTAS`}</span></div>
+          <div className="mt-3 flex gap-4 text-xs"><span><b>{workstream.closedCount}</b> cerradas</span><span><b>{workstream.openCount}</b> pendientes</span><span><b>{workstream.total}</b> total</span></div>
+          {workstream.openCount > 0 ? <button className="button secondary mt-3" type="button" onClick={() => { setGateFilter(workstream.gate); setFilter("pending"); }}>Ver presentaciones afectadas</button> : <p className="quiet mt-3 text-xs">No bloquea ninguna presentación.</p>}
+        </article>)}
+      </div>
     </section>
 
     {registry.orphanEvidence.length ? <section className="panel border border-[var(--red)]"><p className="eyebrow">Deriva detectada</p><h2>Evidencia sin candidato vigente</h2><p className="quiet mt-1">No se aplica silenciosamente a otra presentación. Debe reconciliarse.</p><ul className="mt-3 grid gap-2 text-sm">{registry.orphanEvidence.map((item) => <li key={item.id}><strong>{item.candidateId}</strong> · {item.evidenceKind} · rev. {item.revisionNo}</li>)}</ul></section> : null}
@@ -183,6 +202,7 @@ export function HomeGardenReadinessAdminView() {
     </section>
 
     <section className="grid gap-3">
+      <div className="section-head"><div><p className="eyebrow">Presentaciones</p><h2>{gateFilter === "all" ? "Matriz por presentación" : `Pendientes · ${homeGardenGateLabels[gateFilter]}`}</h2><p className="quiet mt-1">Mostrando {visibleItems.length} de {registry.items.length} presentaciones.</p></div>{gateFilter !== "all" ? <button className="button secondary" type="button" onClick={() => setGateFilter("all")}>Quitar filtro de gate</button> : null}</div>
       {visibleItems.map((item) => <article className="panel" key={item.id}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div><p className="eyebrow">{item.consumerName} · {item.plannedVariant}</p><h2>{item.technicalName}{item.formula ? ` · ${item.formula}` : ""}</h2><p className="quiet mt-1 text-xs">{item.id} · Product Truth: {item.technicalSlug}</p></div>
@@ -194,6 +214,7 @@ export function HomeGardenReadinessAdminView() {
           {item.latestEvidence.length ? <div className="mt-2 grid gap-2">{item.latestEvidence.map((evidence) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={evidence.id}><div className="flex flex-wrap justify-between gap-2"><strong>{homeGardenEvidenceRules.find((rule) => rule.kind === evidence.evidenceKind)?.label ?? evidence.evidenceKind} · {dispositionLabels[evidence.disposition]}</strong><span>rev. {evidence.revisionNo}</span></div><p className="mt-1">{evidence.title}</p><p className="quiet mt-1 break-all">Fuente interna: {evidence.sourceReference}</p><p className="mt-1">{evidence.note}</p></div>)}</div> : <p className="quiet mt-2 text-xs">Sin evidencia registrada para esta presentación.</p>}
         </div>
       </article>)}
+      {!visibleItems.length ? <section className="panel"><p className="quiet">No hay presentaciones que coincidan con los filtros actuales.</p></section> : null}
     </section>
   </div>;
 }
