@@ -28,6 +28,20 @@ describe("Casa, Jardín y Vivero commercial readiness", () => {
     expect(blockedHomeGardenLaunchItems.map((item) => item.id)).toEqual(["transplant-kit"]);
   });
 
+  it("binds launch dependencies to explicit evidence gates", () => {
+    expect(pendingHomeGardenLaunchItems.map((item) => [item.id, item.evidenceGate])).toEqual([
+      ["household-skus", "household-skus"],
+      ["regulatory", "regulatory"],
+      ["dose-and-dosifier", "dose-and-dosifier"],
+      ["all-in-cost", "all-in-cost"],
+      ["fulfillment", "fulfillment"],
+      ["public-assets", "public-assets"],
+    ]);
+
+    expect(readyHomeGardenLaunchItems.find((item) => item.id === "technical-product-truth")?.evidenceGate)
+      .toBe("technical-product-truth");
+  });
+
   it("keeps ecommerce, price and margin claims fail-closed", () => {
     expect(homeGardenCommerceGate).toMatchObject({
       indexable: false,
@@ -38,6 +52,7 @@ describe("Casa, Jardín y Vivero commercial readiness", () => {
     });
     expect(homeGardenCommerceGate.rule).toMatch(/regulatorios/i);
     expect(homeGardenCommerceGate.rule).toMatch(/costo all-in/i);
+    expect(homeGardenCommerceGate.rule).toMatch(/misma referencia y presentación/i);
   });
 
   it("requires an all-in cost instead of deriving margin from fertilizer content alone", () => {
