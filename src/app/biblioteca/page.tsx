@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { publicResources, type PublicResource } from "@/data/public-resources";
+import { getPublicResourceMasterAudit } from "@/data/public-resource-master-audits";
+import { publicResourceHostingGate, publicResources, type PublicResource } from "@/data/public-resources";
 import styles from "./library.module.css";
 import refresh from "./library-refresh.module.css";
 
@@ -70,10 +71,26 @@ const intentRoutes = [
 
 function getDeliveryLabel(resource: PublicResource) {
   if (resource.delivery === "web-native") return "Lectura web disponible";
-  if (resource.delivery === "web-native-master-pending") {
-    return "Lectura web disponible · PDF maestro identificado · descarga pública en preparación";
+  const audit = getPublicResourceMasterAudit(resource.id);
+  if (audit?.status === "blocked") return "Lectura web disponible · PDF maestro retenido por auditoría";
+  if (audit?.status === "approved" && !publicResourceHostingGate.publicDownloadEnabled) {
+    return "Lectura web disponible · PDF maestro aprobado · hosting público pendiente";
   }
-  return "Lectura web disponible · descarga pública en preparación";
+  if (resource.delivery === "web-native-master-pending") {
+    return "Lectura web disponible · PDF maestro identificado · auditoría pública pendiente";
+  }
+  return "Lectura web disponible · descarga pública pendiente";
+}
+
+function getMasterNotice(resource: PublicResource) {
+  const audit = getPublicResourceMasterAudit(resource.id);
+  if (audit?.status === "blocked") {
+    return "El PDF maestro no se publica todavía porque requiere conciliación técnica/comercial. La lectura web gobernada sigue disponible.";
+  }
+  if (audit?.status === "pending") {
+    return "El maestro fue identificado, pero todavía debe pasar auditoría de contenido antes de habilitar una descarga pública.";
+  }
+  return null;
 }
 
 export default function LibraryPage() {
@@ -123,18 +140,22 @@ export default function LibraryPage() {
               <p>Cada recurso se conecta con el Product Master, una ruta agronómica, Casa & Jardín o una decisión concreta. El estado visible evita presentar como definitivo lo que todavía requiere validación o hosting público.</p>
             </div>
             <div className={styles.libraryGrid}>
-              {publicResources.map((resource) => (
-                <article className={styles.libraryCard} key={resource.id}>
-                  <div className={styles.resourceMeta}>
-                    <span className={styles.status}>{resource.statusLabel}</span>
-                    <small className={styles.delivery}>{getDeliveryLabel(resource)}</small>
-                  </div>
-                  <h3>{resource.title}</h3>
-                  <p>{resource.copy}</p>
-                  {resource.masterLabel ? <small className={styles.delivery}>Maestro: {resource.masterLabel}</small> : null}
-                  <Link href={resource.href}>{resource.cta} →</Link>
-                </article>
-              ))}
+              {publicResources.map((resource) => {
+                const masterNotice = getMasterNotice(resource);
+                return (
+                  <article className={styles.libraryCard} key={resource.id}>
+                    <div className={styles.resourceMeta}>
+                      <span className={styles.status}>{resource.statusLabel}</span>
+                      <small className={styles.delivery}>{getDeliveryLabel(resource)}</small>
+                    </div>
+                    <h3>{resource.title}</h3>
+                    <p>{resource.copy}</p>
+                    {resource.masterLabel ? <small className={styles.delivery}>Maestro: {resource.masterLabel}</small> : null}
+                    {masterNotice ? <small className={styles.delivery}>{masterNotice}</small> : null}
+                    <Link href={resource.href}>{resource.cta} →</Link>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
