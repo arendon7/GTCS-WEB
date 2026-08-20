@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import type { HomeGardenLaunchEvidenceRevision } from "./home-garden-readiness-registry";
 import {
   buildHomeGardenReadinessRegistry,
+  canAppendHomeGardenEvidence,
   canManageHomeGardenReadiness,
+  homeGardenLaunchEvidenceKinds,
   selectLatestHomeGardenEvidence,
 } from "./home-garden-readiness-registry";
 
@@ -27,12 +29,31 @@ const revision = (
 });
 
 describe("home garden readiness registry", () => {
-  it("allows only technical, admin and director roles to manage company launch evidence", () => {
+  it("allows only technical, admin and director roles to view company launch readiness", () => {
     expect(canManageHomeGardenReadiness("technical")).toBe(true);
     expect(canManageHomeGardenReadiness("admin")).toBe(true);
     expect(canManageHomeGardenReadiness("director")).toBe(true);
     expect(canManageHomeGardenReadiness("supervisor")).toBe(false);
     expect(canManageHomeGardenReadiness("operator")).toBe(false);
+  });
+
+  it("keeps Product Truth outside the operational evidence ledger", () => {
+    expect(homeGardenLaunchEvidenceKinds).not.toContain("product-truth");
+    expect(homeGardenLaunchEvidenceKinds).toHaveLength(8);
+  });
+
+  it("separates technical evidence authorship from commercial and financial evidence", () => {
+    expect(canAppendHomeGardenEvidence("technical", "laboratory-report")).toBe(true);
+    expect(canAppendHomeGardenEvidence("technical", "regulatory-registration")).toBe(true);
+    expect(canAppendHomeGardenEvidence("technical", "approved-label")).toBe(true);
+    expect(canAppendHomeGardenEvidence("technical", "dose-validation")).toBe(true);
+    expect(canAppendHomeGardenEvidence("technical", "sku-master")).toBe(false);
+    expect(canAppendHomeGardenEvidence("technical", "cost-model")).toBe(false);
+    expect(canAppendHomeGardenEvidence("technical", "fulfillment-record")).toBe(false);
+    expect(canAppendHomeGardenEvidence("technical", "public-asset")).toBe(false);
+    expect(canAppendHomeGardenEvidence("admin", "cost-model")).toBe(true);
+    expect(canAppendHomeGardenEvidence("director", "public-asset")).toBe(true);
+    expect(canAppendHomeGardenEvidence("supervisor", "approved-label")).toBe(false);
   });
 
   it("uses only the latest revision per candidate and evidence kind", () => {
