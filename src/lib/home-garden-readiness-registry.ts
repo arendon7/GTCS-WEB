@@ -4,6 +4,10 @@ import type {
   HomeGardenEvidenceRecord,
 } from "@/data/home-garden-evidence";
 import {
+  getHomeGardenEvidenceRule,
+  getHomeGardenGateEvidenceRequirement,
+} from "@/data/home-garden-evidence";
+import {
   buildHomeGardenSkuLaunchMatrix,
   homeGardenPlannedSkuCandidates,
   type HomeGardenSkuLaunchEvaluation,
@@ -12,6 +16,7 @@ import {
 export type HomeGardenEvidenceDisposition = "draft" | "verified" | "rejected" | "superseded";
 export type HomeGardenLaunchEvidenceKind = Exclude<HomeGardenEvidenceKind, "product-truth">;
 export type HomeGardenReadinessLane = "canonical" | "technical" | "admin-director";
+export type HomeGardenRequirementStatus = "ready" | "missing" | "needs-review";
 
 export const homeGardenLaunchEvidenceKinds = [
   "laboratory-report",
@@ -59,9 +64,19 @@ export type HomeGardenLaunchEvidenceRevision = {
   createdBy: string;
 };
 
+export type HomeGardenGateEvidenceState = {
+  kind: HomeGardenEvidenceKind;
+  label: string;
+  status: HomeGardenRequirementStatus;
+  registrable: boolean;
+  reason: string;
+  latestRevision?: HomeGardenLaunchEvidenceRevision;
+};
+
 export type HomeGardenReadinessRegistryItem = HomeGardenSkuLaunchEvaluation & {
   latestEvidence: readonly HomeGardenLaunchEvidenceRevision[];
   missingGates: readonly HomeGardenEvidenceGateId[];
+  gateEvidence: Readonly<Record<HomeGardenEvidenceGateId, readonly HomeGardenGateEvidenceState[]>>;
 };
 
 export type HomeGardenGateWorkstream = {
@@ -151,6 +166,93 @@ export function toHomeGardenEvidenceRecord(
   };
 }
 
+function evidenceStateReason(
+  revision: HomeGardenLaunchEvidenceRevision,
+  gate: HomeGardenEvidenceGateId,
+) {
+  const requirement = getHomeGardenGateEvidenceRequirement(gate);
+  if (revision.disposition === "draft") return "La revisión vigente sigue en borrador o pendiente de verificación.";
+  if (revision.disposition === "rejected") return "La revisión vigente fue rechazada y mantiene el criterio abierto.";
+  if (revision.disposition === "superseded") return "La revisión vigente está superada; se requiere una evidencia sustituta.";
+  if (!revision.completeForGate) return "La revisión está verificada, pero no está completa para este criterio.";
+  if (requirement?.requireSameReference && !revision.sameReference) return "La evidencia no está conciliada con la misma referencia técnica.";
+  if (requirement?.requireSamePresentation && !revision.samePresentation) return "La evidencia no está conciliada con la misma presentación.";
+  return "La revisión vigente no satisface todavía todas las condiciones de este criterio.";
+}
+
+function buildGateEvidenceState(
+  gate: HomeGardenEvidenceGateId,
+  gateClosed: boolean,
+  latestEvidence: readonly HomeGardenLaunchEvidenceRevision[],
+): readonly HomeGardenGateEvidenceState[] {
+  const requirement = getHomeGardenGateEvidenceRequirement(gate);
+  if (!requirement) return [];
+
+  return requirement.requiredEvidence.map((kind): HomeGardenGateEvidenceState => {
+    const rule = getHomeGardenEvidenceRule(kind);
+    const label = rule?.label ?? kind;
+
+    if (kind === "product-truth") {
+      return {
+        kind,
+        label,
+        registrable: false,
+        status: gateClosed ? "ready" : "needs-review",
+        reason: gateClosed
+          ? "Se resuelve desde Product Truth canónico en código; no requiere ni admite una revisión en este ledger."
+          : "Product Truth canónico debe reconciliarse en código antes de continuar.",
+      };
+    }
+
+    const latestRevision = latestEvidence.find((revision) => revision.evidenceKind === kind);
+    if (!latestRevision) {
+      return {
+        kind,
+        label,
+        registrable: true,
+        status: "missing",
+        reason: "No hay una revisión registrada para esta presentación.",
+      };
+    }
+
+    const eligibleForGate = Boolean(rule?.eligibleToClose.includes(gate));
+    const ready = latestRevision.disposition === "verified"
+      && latestRevision.completeForGate
+      && (!requirement.requireSameReference || latestRevision.sameReference)
+      && (!requirement.requireSamePresentation || latestRevision.samePresentation)
+      && eligibleForGate;
+
+    return {
+      kind,
+      label,
+      registrable: true,
+      status: ready ? "ready" : "needs-review",
+      reason: ready
+        ? "Revisión vigente verificada, completa y conciliada para este criterio."
+        : evidenceStateReason(latestRevision, gate),
+      latestRevision,
+    };
+  });
+}
+
+function buildGateEvidenceMap(
+  evaluation: HomeGardenSkuLaunchEvaluation,
+  latestEvidence: readonly HomeGardenLaunchEvidenceRevision[],
+): Readonly<Record<HomeGardenEvidenceGateId, readonly HomeGardenGateEvidenceState[]>> {
+  return Object.fromEntries(homeGardenGateOrder.map((gate) => [
+    gate,
+    buildGateEvidenceState(gate, evaluation.gates[gate], latestEvidence),
+  ])) as Record<HomeGardenEvidenceGateId, readonly HomeGardenGateEvidenceState[]>;
+}
+
+export function getNextHomeGardenEvidenceKind(
+  item: HomeGardenReadinessRegistryItem,
+  gate: HomeGardenEvidenceGateId,
+): HomeGardenLaunchEvidenceKind | undefined {
+  const pending = item.gateEvidence[gate].find((state) => state.status !== "ready" && state.registrable);
+  return pending && pending.kind !== "product-truth" ? pending.kind : undefined;
+}
+
 function buildGateWorkstreams(items: readonly HomeGardenReadinessRegistryItem[]): readonly HomeGardenGateWorkstream[] {
   return homeGardenGateOrder.map((gate) => {
     const openCandidateIds = items.filter((item) => !item.gates[gate]).map((item) => item.id);
@@ -181,11 +283,15 @@ export function buildHomeGardenReadinessRegistry(
     (latestByCandidate[revision.candidateId] ??= []).push(revision);
   }
 
-  const items = buildHomeGardenSkuLaunchMatrix(evidenceByCandidate).map((evaluation): HomeGardenReadinessRegistryItem => ({
-    ...evaluation,
-    latestEvidence: latestByCandidate[evaluation.id] ?? [],
-    missingGates: homeGardenGateOrder.filter((gate) => !evaluation.gates[gate]),
-  }));
+  const items = buildHomeGardenSkuLaunchMatrix(evidenceByCandidate).map((evaluation): HomeGardenReadinessRegistryItem => {
+    const latestEvidence = latestByCandidate[evaluation.id] ?? [];
+    return {
+      ...evaluation,
+      latestEvidence,
+      missingGates: homeGardenGateOrder.filter((gate) => !evaluation.gates[gate]),
+      gateEvidence: buildGateEvidenceMap(evaluation, latestEvidence),
+    };
+  });
 
   const workstreams = buildGateWorkstreams(items);
   const commerceReady = items.filter((item) => item.commerceReady).length;
