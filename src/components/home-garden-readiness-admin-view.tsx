@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useOpsStore } from "@/components/ops-store";
-import { homeGardenEvidenceRules, type HomeGardenEvidenceKind } from "@/data/home-garden-evidence";
+import { homeGardenEvidenceRules } from "@/data/home-garden-evidence";
 import { homeGardenPlannedSkuCandidates } from "@/data/home-garden-sku-launch-matrix";
 import {
   buildHomeGardenReadinessRegistry,
+  canAppendHomeGardenEvidence,
   canManageHomeGardenReadiness,
   homeGardenGateLabels,
+  homeGardenLaunchEvidenceKinds,
   type HomeGardenEvidenceDisposition,
+  type HomeGardenLaunchEvidenceKind,
   type HomeGardenLaunchEvidenceRevision,
 } from "@/lib/home-garden-readiness-registry";
 import {
@@ -33,6 +36,10 @@ function GatePill({ closed, label }: { closed: boolean; label: string }) {
 export function HomeGardenReadinessAdminView() {
   const { backend, access } = useOpsStore();
   const authorized = useMemo(() => access.some((item) => canManageHomeGardenReadiness(item.role)), [access]);
+  const allowedEvidenceKinds = useMemo(
+    () => homeGardenLaunchEvidenceKinds.filter((kind) => access.some((item) => canAppendHomeGardenEvidence(item.role, kind))),
+    [access],
+  );
   const [revisions, setRevisions] = useState<HomeGardenLaunchEvidenceRevision[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -40,7 +47,7 @@ export function HomeGardenReadinessAdminView() {
   const [filter, setFilter] = useState<RegistryFilter>("all");
 
   const [candidateId, setCandidateId] = useState(homeGardenPlannedSkuCandidates[0]?.id ?? "");
-  const [evidenceKind, setEvidenceKind] = useState<HomeGardenEvidenceKind>("sku-master");
+  const [evidenceKind, setEvidenceKind] = useState<HomeGardenLaunchEvidenceKind>("laboratory-report");
   const [disposition, setDisposition] = useState<HomeGardenEvidenceDisposition>("draft");
   const [title, setTitle] = useState("");
   const [sourceReference, setSourceReference] = useState("");
@@ -71,6 +78,12 @@ export function HomeGardenReadinessAdminView() {
     return () => window.clearTimeout(timer);
   }, [load]);
 
+  useEffect(() => {
+    if (allowedEvidenceKinds.includes(evidenceKind)) return;
+    const firstAllowed = allowedEvidenceKinds[0];
+    if (firstAllowed) setEvidenceKind(firstAllowed);
+  }, [allowedEvidenceKinds, evidenceKind]);
+
   const registry = useMemo(() => buildHomeGardenReadinessRegistry(revisions), [revisions]);
   const visibleItems = useMemo(() => registry.items.filter((item) => {
     if (filter === "ready") return item.commerceReady;
@@ -80,6 +93,14 @@ export function HomeGardenReadinessAdminView() {
   const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === evidenceKind);
 
   async function saveEvidence() {
+    if (!access.some((item) => canAppendHomeGardenEvidence(item.role, evidenceKind))) {
+      setFeedback({ kind: "error", text: "Tu rol no puede registrar este tipo de evidencia." });
+      return;
+    }
+    if (disposition !== "verified" && completeForGate) {
+      setFeedback({ kind: "error", text: "Solo una revisión verificada puede declararse completa para un gate." });
+      return;
+    }
     if (!candidateId || !title.trim() || !sourceReference.trim() || !note.trim()) {
       setFeedback({ kind: "error", text: "Completa presentación, título, referencia fuente y criterio de evaluación." });
       return;
@@ -122,7 +143,7 @@ export function HomeGardenReadinessAdminView() {
       <div>
         <p className="eyebrow">Wondergreen · Casa, Jardín y Vivero</p>
         <h1>Readiness de lanzamiento B2C</h1>
-        <p className="lede">Registro interno por presentación. La evidencia se conserva como revisiones append-only y nunca se publica directamente en la web.</p>
+        <p className="lede">Registro interno por presentación. Product Truth permanece canónico en código; aquí solo se registra evidencia secundaria de lanzamiento mediante revisiones append-only.</p>
       </div>
       <div className="header-actions">
         <select aria-label="Filtro readiness" className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={filter} onChange={(event) => setFilter(event.target.value as RegistryFilter)}>
@@ -144,11 +165,11 @@ export function HomeGardenReadinessAdminView() {
     {registry.orphanEvidence.length ? <section className="panel border border-[var(--red)]"><p className="eyebrow">Deriva detectada</p><h2>Evidencia sin candidato vigente</h2><p className="quiet mt-1">No se aplica silenciosamente a otra presentación. Debe reconciliarse.</p><ul className="mt-3 grid gap-2 text-sm">{registry.orphanEvidence.map((item) => <li key={item.id}><strong>{item.candidateId}</strong> · {item.evidenceKind} · rev. {item.revisionNo}</li>)}</ul></section> : null}
 
     <section className="panel">
-      <div className="section-head"><div><p className="eyebrow">Nueva revisión</p><h2>Anexar evidencia gobernada</h2><p className="quiet mt-1">Guarda una referencia interna al documento; no pegues enlaces firmados, tokens ni credenciales.</p></div></div>
+      <div className="section-head"><div><p className="eyebrow">Nueva revisión</p><h2>Anexar evidencia gobernada</h2><p className="quiet mt-1">Guarda una referencia interna al documento; no pegues enlaces firmados, tokens ni credenciales. Los tipos disponibles dependen de tu rol.</p></div></div>
       <div className="grid gap-3 lg:grid-cols-3">
         <label className="grid gap-1 text-xs font-semibold">Presentación<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={candidateId} onChange={(event) => setCandidateId(event.target.value)}>{homeGardenPlannedSkuCandidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.consumerName} · {candidate.plannedVariant} · {candidate.id}</option>)}</select></label>
-        <label className="grid gap-1 text-xs font-semibold">Tipo de evidencia<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={evidenceKind} onChange={(event) => setEvidenceKind(event.target.value as HomeGardenEvidenceKind)}>{homeGardenEvidenceRules.map((rule) => <option key={rule.kind} value={rule.kind}>{rule.label}</option>)}</select></label>
-        <label className="grid gap-1 text-xs font-semibold">Estado<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={disposition} onChange={(event) => setDisposition(event.target.value as HomeGardenEvidenceDisposition)}>{Object.entries(dispositionLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label className="grid gap-1 text-xs font-semibold">Tipo de evidencia<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={evidenceKind} onChange={(event) => setEvidenceKind(event.target.value as HomeGardenLaunchEvidenceKind)}>{allowedEvidenceKinds.map((kind) => { const rule = homeGardenEvidenceRules.find((item) => item.kind === kind); return <option key={kind} value={kind}>{rule?.label ?? kind}</option>; })}</select></label>
+        <label className="grid gap-1 text-xs font-semibold">Estado<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={disposition} onChange={(event) => { const next = event.target.value as HomeGardenEvidenceDisposition; setDisposition(next); if (next !== "verified") setCompleteForGate(false); }}>{Object.entries(dispositionLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <label className="grid gap-1 text-xs font-semibold lg:col-span-2">Título<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Ej. Registro/etiqueta CRECE 500 g · revisión agosto" /></label>
         <label className="grid gap-1 text-xs font-semibold">Fecha fuente<input type="date" className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={sourceDate} onChange={(event) => setSourceDate(event.target.value)} /></label>
         <label className="grid gap-1 text-xs font-semibold lg:col-span-3">Referencia fuente<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={sourceReference} onChange={(event) => setSourceReference(event.target.value)} placeholder="Nombre de archivo, ruta interna o URL privada estable sin tokens" /></label>
@@ -158,9 +179,9 @@ export function HomeGardenReadinessAdminView() {
       <div className="mt-4 flex flex-wrap gap-4 text-xs">
         <label className="flex items-center gap-2"><input type="checkbox" checked={sameReference} onChange={(event) => setSameReference(event.target.checked)} />Misma referencia técnica</label>
         <label className="flex items-center gap-2"><input type="checkbox" checked={samePresentation} onChange={(event) => setSamePresentation(event.target.checked)} />Misma presentación</label>
-        <label className="flex items-center gap-2"><input type="checkbox" checked={completeForGate} onChange={(event) => setCompleteForGate(event.target.checked)} />Completa para el gate evaluado</label>
+        <label className="flex items-center gap-2"><input type="checkbox" checked={completeForGate} disabled={disposition !== "verified"} onChange={(event) => setCompleteForGate(event.target.checked)} />Completa para el gate evaluado {disposition !== "verified" ? "(requiere estado Verificada)" : ""}</label>
       </div>
-      <button className="button primary mt-4" type="button" disabled={saving} onClick={() => void saveEvidence()}>{saving ? "Registrando…" : "Registrar nueva revisión"}</button>
+      <button className="button primary mt-4" type="button" disabled={saving || !allowedEvidenceKinds.length} onClick={() => void saveEvidence()}>{saving ? "Registrando…" : "Registrar nueva revisión"}</button>
     </section>
 
     <section className="grid gap-3">
