@@ -9,7 +9,7 @@ import refresh from "./wondergreen-refresh.module.css";
 export const metadata: Metadata = {
   title: "Wondergreen | Suelo, nutrición y biología",
   description:
-    "Wondergreen integra fertilizantes sólidos y líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico.",
+    "Wondergreen integra fertilizantes sólidos y líquidos, compost, bioinsumos, guías por cultivo, Casa & Jardín y acompañamiento técnico.",
   alternates: { canonical: "/wondergreen" },
 };
 
@@ -17,6 +17,7 @@ const entryPaths = [
   ["01", "Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "/wondergreen/cultivos"],
   ["02", "Tengo una necesidad", "Nutrición, suelo, floración, producción, raíz, plagas o enfermedades.", "#finder"],
   ["03", "Sé qué producto busco", "Entra al Product Master público y revisa familia, formato y condición comercial.", "/wondergreen/productos"],
+  ["04", "Tengo plantas en casa", "Entra a Casa, Jardín y Vivero para observar la etapa, usar el diagnóstico orientativo y recorrer kits y guías de pre-lanzamiento.", "/casa-jardin"],
 ];
 
 const system = [
@@ -50,9 +51,10 @@ const bioFamilies = [
 ];
 
 const audiences = [
-  ["01", "Productor", "Encuentra una ruta técnica para tu cultivo.", "Encontrar solución"],
-  ["02", "Agrotienda / distribuidor", "Conoce familias, formatos y oportunidad comercial.", "Quiero vender Wondergreen"],
-  ["03", "Agrónomo / técnico", "Accede a portafolio, guías y soporte técnico.", "Conocer portafolio técnico"],
+  ["01", "Productor", "Encuentra una ruta técnica para tu cultivo.", "Empezar por cultivo", "/wondergreen/cultivos"],
+  ["02", "Hogar / jardín", "Observa la etapa de tus plantas y entra al sistema doméstico sin dosificar a ciegas.", "Explorar Casa & Jardín", "/casa-jardin"],
+  ["03", "Agrotienda / distribuidor", "Conoce familias, formatos y oportunidad comercial.", "Quiero vender Wondergreen", "/contacto"],
+  ["04", "Agrónomo / técnico", "Accede a portafolio, guías y criterios técnicos navegables.", "Abrir biblioteca técnica", "/biblioteca"],
 ];
 
 export default function WondergreenPage() {
@@ -64,6 +66,7 @@ export default function WondergreenPage() {
           <div>
             <Link href="/wondergreen/productos">Productos</Link>
             <Link href="/wondergreen/cultivos">Cultivos</Link>
+            <Link href="/casa-jardin">Casa & Jardín</Link>
             <a href="#tecnologia">Tecnología</a>
             <a href="#bioinsumos">Bioinsumos</a>
             <Link href="/biblioteca">Guías</Link>
@@ -114,8 +117,8 @@ export default function WondergreenPage() {
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Empieza por tu contexto</span>
-              <h2>No empieces por el producto. Empieza por lo que tu cultivo necesita.</h2>
-              <p>La selección cambia con cultivo, suelo, etapa, problema y objetivo. Wondergreen organiza el portafolio para hacer esa ruta más clara.</p>
+              <h2>No empieces por el producto. Empieza por lo que necesitas resolver.</h2>
+              <p>La selección cambia con cultivo, planta, suelo o sustrato, etapa, problema y objetivo. Wondergreen organiza distintas rutas para hacer esa decisión más clara.</p>
             </div>
             <div className={styles.entryList}>
               {entryPaths.map(([number, title, copy, href]) => (
@@ -185,6 +188,7 @@ export default function WondergreenPage() {
             <div className={styles.buttonRow}>
               <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/productos">Abrir catálogo completo</Link>
               <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
+              <Link className={`${styles.button} ${refresh.outlineLight}`} href="/casa-jardin">Casa & Jardín</Link>
             </div>
           </div>
         </section>
@@ -266,12 +270,12 @@ export default function WondergreenPage() {
         <section className={styles.commercial} id="acompanamiento">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Tres rutas comerciales</span>
-              <h2>El mismo portafolio, distintas preguntas.</h2>
+              <span className={styles.eyebrow}>Cuatro rutas de entrada</span>
+              <h2>El mismo sistema, distintas preguntas.</h2>
             </div>
             <div className={styles.commercialList}>
-              {audiences.map(([number, title, copy, cta]) => (
-                <article key={title}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div><Link href="/contacto">{cta} →</Link></article>
+              {audiences.map(([number, title, copy, cta, href]) => (
+                <article key={title}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div><Link href={href}>{cta} →</Link></article>
               ))}
             </div>
           </div>
@@ -279,7 +283,7 @@ export default function WondergreenPage() {
 
         <section className={styles.closing} id="contacto">
           <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Wondergreen</span><h2>¿Tienes un cultivo, una necesidad o un problema por resolver?</h2><p>Cuéntanos el contexto. El siguiente paso puede ser una guía, un producto, un análisis o acompañamiento técnico.</p></div>
+            <div><span className={styles.eyebrow}>Wondergreen</span><h2>¿Tienes un cultivo, plantas en casa, una necesidad o un problema por resolver?</h2><p>Empieza por el contexto. El siguiente paso puede ser Casa & Jardín, una guía, un producto, un análisis o acompañamiento técnico.</p></div>
             <div className={styles.buttonRow}><Link className={`${styles.button} ${styles.dark}`} href="/contacto">Hablar con equipo técnico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/">Volver a Greenatics</Link></div>
           </div>
         </section>

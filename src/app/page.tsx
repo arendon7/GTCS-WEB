@@ -9,7 +9,7 @@ import refresh from "./public-home-refresh.module.css";
 export const metadata: Metadata = {
   title: "Greenatics | Transformamos residuos en vida",
   description:
-    "Greenatics integra aprovechamiento de residuos orgánicos, tecnología, operación, Wondergreen y conocimiento para devolver valor al territorio y al suelo.",
+    "Greenatics integra aprovechamiento de residuos orgánicos, tecnología, operación, Wondergreen, Casa & Jardín y conocimiento para devolver valor al territorio y al suelo.",
   alternates: { canonical: "/" },
 };
 
@@ -24,6 +24,14 @@ const entryPoints = [
   },
   {
     number: "02",
+    kicker: "Hogar · jardín · vivero",
+    title: "Casa & Jardín",
+    copy: "Nutrición por etapas, diagnóstico orientativo, kits de pre-lanzamiento y guías para plantas, huertas, jardines y viveros.",
+    href: "/casa-jardin",
+    cta: "Explorar Casa & Jardín",
+  },
+  {
+    number: "03",
     kicker: "Territorios",
     title: "Municipios y ESP",
     copy: "Diagnóstico, rutas selectivas, plantas, rehabilitación, operación y trazabilidad para convertir planeación en capacidad real.",
@@ -31,7 +39,7 @@ const entryPoints = [
     cta: "Explorar soluciones",
   },
   {
-    number: "03",
+    number: "04",
     kicker: "Generadores",
     title: "Empresas",
     copy: "Caracterización, separación, recolección, tratamiento, infraestructura y evidencia para corrientes orgánicas empresariales.",
@@ -39,12 +47,20 @@ const entryPoints = [
     cta: "Explorar soluciones",
   },
   {
-    number: "04",
+    number: "05",
     kicker: "Ingeniería + biología",
     title: "Plantas y tecnología",
     copy: "Compostaje, digestión anaerobia, biogás, biol, fertilizantes y operación basada en parámetros, mantenimiento y datos.",
     href: "/#tecnologia",
     cta: "Entender la tecnología",
+  },
+  {
+    number: "06",
+    kicker: "Guías + decisión",
+    title: "Conocimiento",
+    copy: "Programas por cultivo, Casa & Jardín, deficiencias, criterios nutricionales y manuales convertidos en rutas navegables.",
+    href: "/biblioteca",
+    cta: "Abrir biblioteca",
   },
 ];
 
@@ -199,9 +215,9 @@ export default function Home() {
         <section className={styles.paths} id="soluciones">
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Cuatro puertas de entrada</span>
+              <span className={styles.eyebrow}>Seis puertas de entrada</span>
               <h2>Empieza por el problema que necesitas resolver.</h2>
-              <p>La ruta cambia según el residuo, el cultivo, el territorio y la infraestructura existente.</p>
+              <p>La ruta cambia según el residuo, el cultivo, las plantas en casa, el territorio, la infraestructura o la información que necesitas.</p>
             </div>
             <div className={styles.pathGrid}>
               {entryPoints.map((item) => (
@@ -218,8 +234,8 @@ export default function Home() {
             </div>
             <div className={styles.router}>
               <div>
-                <strong>¿Tienes un residuo, un cultivo o un proyecto por resolver?</strong>
-                <span>Primero entendemos el caso; luego definimos producto, servicio o infraestructura.</span>
+                <strong>¿Tienes un residuo, un cultivo, una planta o un proyecto por resolver?</strong>
+                <span>Primero entendemos el caso; luego definimos producto, servicio, conocimiento o infraestructura.</span>
               </div>
               <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con Greenatics</Link>
             </div>
@@ -241,6 +257,7 @@ export default function Home() {
                 <div className={styles.buttonRow}>
                   <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/productos">Ver productos</Link>
                   <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/wondergreen/cultivos">Buscar por cultivo</Link>
+                  <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/casa-jardin">Casa & Jardín</Link>
                 </div>
               </div>
             </div>

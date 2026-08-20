@@ -19,6 +19,10 @@ test("public HOME exposes the three Greenatics pillars and commercial doors befo
   await expect(page.getByRole("heading", { name: "Economía circular" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Operación y acompañamiento" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Empieza por el problema que necesitas resolver." })).toBeVisible();
+  await expect(page.getByText("Seis puertas de entrada", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Casa & Jardín", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Explorar Casa & Jardín →", exact: true })).toHaveAttribute("href", "/casa-jardin");
+  await expect(page.getByRole("link", { name: "Abrir biblioteca →", exact: true })).toHaveAttribute("href", "/biblioteca");
 
   const levelTwoHeadings = await page.getByRole("heading", { level: 2 }).allTextContents();
   const doorsIndex = levelTwoHeadings.indexOf("Empieza por el problema que necesitas resolver.");
@@ -45,6 +49,7 @@ test("public HOME keeps its primary routes explicit and separate from OPS", asyn
 
   await expect(page.getByRole("link", { name: "Descubrir Wondergreen" })).toHaveAttribute("href", "/wondergreen");
   await expect(page.getByRole("link", { name: "Explorar soluciones", exact: true }).first()).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
   await expect(page.getByRole("link", { name: "Contactar a Greenatics" })).toHaveAttribute("href", "/contacto");
   await expect(page.getByRole("link", { name: "Acceder a la app interna" })).toHaveAttribute("href", "/app");
 });
