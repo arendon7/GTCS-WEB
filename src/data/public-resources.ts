@@ -1,5 +1,8 @@
+import { homeGardenGuides } from "./home-garden";
+
 export type PublicResourceKind = "crop-library" | "manual" | "guide" | "catalog" | "technology" | "finder";
 export type PublicResourceDelivery = "web-native" | "web-native-master-pending" | "public-download-pending";
+export type PublicResourceMasterSource = "internal-document-library" | "validated-handoff";
 
 export type PublicResource = {
   id: string;
@@ -12,7 +15,22 @@ export type PublicResource = {
   delivery: PublicResourceDelivery;
   sourceAuthority: string;
   masterLabel?: string;
+  masterSource?: PublicResourceMasterSource;
 };
+
+const homeGardenPublicResources: PublicResource[] = homeGardenGuides.map((guide) => ({
+  id: `home-garden-guide-${guide.id}`,
+  kind: "guide",
+  statusLabel: "Casa & Jardín",
+  title: guide.title,
+  copy: `${guide.summary} La lectura web está disponible dentro de Casa, Jardín y Vivero; el PDF maestro del handoff se conserva como fuente y todavía no se expone como descarga pública.`,
+  href: `/casa-jardin/guias#${guide.id}`,
+  cta: "Abrir guía",
+  delivery: "web-native-master-pending",
+  sourceAuthority: "Wondergreen Casa & Jardín Truth · handoff validado",
+  masterLabel: `${guide.title} · PDF maestro validado`,
+  masterSource: "validated-handoff",
+}));
 
 export const publicResources: PublicResource[] = [
   {
@@ -37,6 +55,7 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Café · 20 páginas",
+    masterSource: "internal-document-library",
   },
   {
     id: "wondergreen-guide-cacao",
@@ -49,6 +68,7 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cacao · 20 páginas",
+    masterSource: "internal-document-library",
   },
   {
     id: "wondergreen-guide-aguacate",
@@ -61,6 +81,7 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Aguacate V2 · 20 páginas",
+    masterSource: "internal-document-library",
   },
   {
     id: "wondergreen-guide-limon-tahiti",
@@ -73,6 +94,7 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cítricos · 20 páginas",
+    masterSource: "internal-document-library",
   },
   {
     id: "wondergreen-guide-pastos",
@@ -85,7 +107,9 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Pastos y Praderas · 20 páginas",
+    masterSource: "internal-document-library",
   },
+  ...homeGardenPublicResources,
   {
     id: "wondergreen-use-manual",
     kind: "manual",
@@ -130,6 +154,7 @@ export const publicResources: PublicResource[] = [
     delivery: "web-native-master-pending",
     sourceAuthority: "Wondergreen Product Truth · maestro comercial localizado",
     masterLabel: "Catálogo Wondergreen optimizado · 10 páginas",
+    masterSource: "internal-document-library",
   },
   {
     id: "wondergreen-more-than-npk",
@@ -154,3 +179,10 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth",
   },
 ];
+
+export const publicResourceHostingGate = {
+  privateSourceLinksAllowed: false,
+  publicDownloadEnabled: false,
+  requiredPublicHost: "same-origin-or-approved-public-cdn",
+  rule: "Un maestro interno o de handoff puede sustentar contenido web, pero no se convierte en enlace de descarga hasta existir un binario auditado en un host público estable y gobernado.",
+} as const;
