@@ -18,14 +18,48 @@ describe("public resource master audits", () => {
     const audit = getPublicResourceMasterAudit("wondergreen-product-master");
     expect(audit?.status).toBe("blocked");
     expect(audit?.auditedAt).toBe("2026-08-20");
+    expect(audit?.blockers).toEqual(expect.arrayContaining(["bioinput-claims", "commercial-publication"]));
     expect(audit?.findings.join(" ")).toMatch(/Neem/i);
     expect(audit?.findings.join(" ")).toMatch(/Beauveria/i);
     expect(audit?.findings.join(" ")).toMatch(/precios|descuentos/i);
   });
 
-  it("keeps crop and Casa Jardin masters pending until each PDF is audited", () => {
-    for (const audit of publicResourceMasterAudits.filter((item) => item.resourceId !== "wondergreen-product-master")) {
+  it("records all five governed crop masters as blocked after visual audit", () => {
+    const cropIds = [
+      "wondergreen-guide-cafe",
+      "wondergreen-guide-cacao",
+      "wondergreen-guide-aguacate",
+      "wondergreen-guide-limon-tahiti",
+      "wondergreen-guide-pastos",
+    ];
+
+    for (const resourceId of cropIds) {
+      const audit = getPublicResourceMasterAudit(resourceId);
+      expect(audit?.status).toBe("blocked");
+      expect(audit?.auditedAt).toBe("2026-08-20");
+      expect(audit?.blockers).toContain("dose-validation");
+      expect(audit?.findings.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("preserves the extra claim reconciliation blockers found in audited crop PDFs", () => {
+    expect(getPublicResourceMasterAudit("wondergreen-guide-cafe")?.blockers).toContain("bioinput-claims");
+
+    for (const resourceId of ["wondergreen-guide-cacao", "wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
+      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("crop-content-reconciliation");
+    }
+
+    for (const resourceId of ["wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
+      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("legacy-public-origin");
+    }
+  });
+
+  it("leaves unaudited Casa Jardin masters pending rather than treating discovery as approval", () => {
+    const homeGardenAudits = publicResourceMasterAudits.filter((item) => item.resourceId.startsWith("home-garden-guide-"));
+    expect(homeGardenAudits).toHaveLength(4);
+    for (const audit of homeGardenAudits) {
       expect(audit.status).toBe("pending");
+      expect(audit.blockers).toEqual([]);
       expect(audit.findings.length).toBeGreaterThan(0);
     }
   });
