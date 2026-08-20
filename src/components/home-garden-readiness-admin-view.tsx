@@ -160,16 +160,16 @@ export function HomeGardenReadinessAdminView() {
 
     {feedback ? <p role="status" className={`rounded-xl p-4 text-sm font-semibold ${feedback.kind === "error" ? "bg-[var(--red-soft)] text-[var(--red)]" : "bg-[var(--surface-soft)] text-[var(--green)]"}`}>{feedback.text}</p> : null}
 
-    <section className="grid gap-3 md:grid-cols-5">
+    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
       <article className="panel"><span className="quiet text-xs">Presentaciones propuestas</span><strong className="mt-2 block text-3xl">{registry.summary.total}</strong></article>
-      <article className="panel"><span className="quiet text-xs">Commerce ready</span><strong className="mt-2 block text-3xl">{registry.summary.commerceReady}</strong></article>
-      <article className="panel"><span className="quiet text-xs">Pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.pending}</strong></article>
-      <article className="panel"><span className="quiet text-xs">Gate-instancias abiertas</span><strong className="mt-2 block text-3xl">{registry.summary.openGateInstances}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Listas para comercio</span><strong className="mt-2 block text-3xl">{registry.summary.commerceReady}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Presentaciones pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.pending}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Cierres pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.openGateInstances}</strong></article>
       <article className="panel"><span className="quiet text-xs">Evidencia huérfana</span><strong className="mt-2 block text-3xl">{registry.summary.orphanEvidence}</strong></article>
     </section>
 
     <section className="panel">
-      <div className="section-head"><div><p className="eyebrow">Priorización</p><h2>Bloqueadores por frente</h2><p className="quiet mt-1">Cada cifra representa presentaciones con ese gate abierto. El carril indica la función responsable del tipo de cierre, no una persona asignada.</p></div><span className="quiet">{registry.summary.openGateInstances} pendientes acumulados</span></div>
+      <div className="section-head"><div><p className="eyebrow">Priorización</p><h2>Bloqueadores por frente</h2><p className="quiet mt-1">Cada cifra representa presentaciones con ese criterio de lanzamiento abierto. El carril indica la función responsable del tipo de cierre, no una persona asignada.</p></div><span className="quiet">{registry.summary.openGateInstances} cierres pendientes</span></div>
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {registry.workstreams.map((workstream) => <article className="rounded-xl border border-[var(--line)] p-4" key={workstream.gate}>
           <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{workstream.label}</strong><span className="quiet mt-1 block text-xs">Carril: {homeGardenLaneLabels[workstream.lane]}</span></div><span className={`status-pill ${workstream.openCount === 0 ? "status-normal" : "status-planned"}`}>{workstream.openCount === 0 ? "CERRADO" : `${workstream.openCount} ABIERTAS`}</span></div>
@@ -202,7 +202,7 @@ export function HomeGardenReadinessAdminView() {
     </section>
 
     <section className="grid gap-3">
-      <div className="section-head"><div><p className="eyebrow">Presentaciones</p><h2>{gateFilter === "all" ? "Matriz por presentación" : `Pendientes · ${homeGardenGateLabels[gateFilter]}`}</h2><p className="quiet mt-1">Mostrando {visibleItems.length} de {registry.items.length} presentaciones.</p></div>{gateFilter !== "all" ? <button className="button secondary" type="button" onClick={() => setGateFilter("all")}>Quitar filtro de gate</button> : null}</div>
+      <div className="section-head"><div><p className="eyebrow">Presentaciones</p><h2>{gateFilter === "all" ? "Matriz por presentación" : `Pendientes · ${homeGardenGateLabels[gateFilter]}`}</h2><p className="quiet mt-1">Mostrando {visibleItems.length} de {registry.items.length} presentaciones.</p></div>{gateFilter !== "all" ? <button className="button secondary" type="button" onClick={() => setGateFilter("all")}>Quitar filtro de frente</button> : null}</div>
       {visibleItems.map((item) => <article className="panel" key={item.id}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div><p className="eyebrow">{item.consumerName} · {item.plannedVariant}</p><h2>{item.technicalName}{item.formula ? ` · ${item.formula}` : ""}</h2><p className="quiet mt-1 text-xs">{item.id} · Product Truth: {item.technicalSlug}</p></div>
