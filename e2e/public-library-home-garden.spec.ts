@@ -19,5 +19,5 @@ test("central public library integrates Casa Jardin without exposing private doc
   expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
   expect(hrefs.filter((href) => /\.pdf(?:$|\?)/i.test(href))).toHaveLength(0);
 
-  await expect(page.getByText(/PDF maestro identificado · descarga pública en preparación/i).first()).toBeVisible();
+  await expect(page.getByText(/PDF maestro identificado · auditoría pública pendiente/i).first()).toBeVisible();
 });
