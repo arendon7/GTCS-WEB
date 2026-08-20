@@ -11,7 +11,12 @@ test("public library exposes live Wondergreen knowledge resources and governed s
   await expect(page.getByRole("heading", { name: "Guía Wondergreen para limón Tahití" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guía Wondergreen para pastos y gramíneas" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Abrir guía →", exact: true })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
+
+  const deficiencyCard = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" }),
+  });
+  await expect(deficiencyCard.getByRole("link", { name: "Abrir guía →", exact: true })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
+
   await expect(page.getByText("Lectura web disponible · PDF maestro identificado · descarga pública en preparación", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
 });

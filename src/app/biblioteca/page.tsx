@@ -6,7 +6,7 @@ import refresh from "./library-refresh.module.css";
 
 export const metadata: Metadata = {
   title: "Biblioteca | Greenatics",
-  description: "Guías, programas por cultivo, manuales y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
+  description: "Guías, programas por cultivo, Casa & Jardín, manuales y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
 };
 
 const intentRoutes = [
@@ -20,6 +20,14 @@ const intentRoutes = [
   },
   {
     number: "02",
+    kicker: "Tengo plantas en casa",
+    title: "Quiero entender qué etapa necesita mi planta.",
+    copy: "Casa, Jardín y Vivero organiza suelo, crecimiento, equilibrio, floración y fructificación con diagnóstico orientativo y guías prácticas.",
+    href: "/casa-jardin",
+    cta: "Abrir Casa & Jardín",
+  },
+  {
+    number: "03",
     kicker: "Veo síntomas",
     title: "Quiero entender una posible deficiencia.",
     copy: "Empieza por tejido afectado, patrón del lote y posibles confundidores antes de asumir que el problema se resuelve con fertilización.",
@@ -27,7 +35,7 @@ const intentRoutes = [
     cta: "Revisar síntomas",
   },
   {
-    number: "03",
+    number: "04",
     kicker: "Estoy revisando una recomendación",
     title: "Quiero comprobar si tengo suficiente contexto.",
     copy: "Revisa suelo, etapa, densidad, historial de fertilización y objetivo productivo antes de cerrar una decisión nutricional.",
@@ -35,7 +43,7 @@ const intentRoutes = [
     cta: "Comprobar criterios",
   },
   {
-    number: "04",
+    number: "05",
     kicker: "Voy a aplicar Wondergreen",
     title: "Necesito preparar y registrar bien la aplicación.",
     copy: "Confirma referencia, condiciones, equipo, vía de aplicación, registro y seguimiento sin convertir el manual en una receta universal.",
@@ -43,7 +51,7 @@ const intentRoutes = [
     cta: "Abrir manual de uso",
   },
   {
-    number: "05",
+    number: "06",
     kicker: "Quiero comparar referencias",
     title: "Necesito ver el Product Master público.",
     copy: "Consulta familias, fórmulas, formatos, estado público y relación con el sistema Wondergreen desde la fuente gobernada.",
@@ -51,7 +59,7 @@ const intentRoutes = [
     cta: "Ver Product Master",
   },
   {
-    number: "06",
+    number: "07",
     kicker: "La información no alcanza",
     title: "Necesito escalar a una conversación técnica.",
     copy: "Cuando faltan análisis, contexto del lote o una referencia clara, la salida correcta es pedir soporte antes de improvisar una recomendación.",
@@ -77,7 +85,7 @@ export default function LibraryPage() {
             <div>
               <span className={styles.eyebrow}>Greenatics · conocimiento aplicado</span>
               <h1>La biblioteca no es un archivo. Es parte de la decisión.</h1>
-              <p className={styles.lead}>Guías, manuales y conocimiento técnico se convierten en rutas web conectadas con cultivos, productos, síntomas, evidencia y acompañamiento.</p>
+              <p className={styles.lead}>Guías, manuales y conocimiento técnico se convierten en rutas web conectadas con cultivos, productos, Casa & Jardín, síntomas, evidencia y acompañamiento.</p>
             </div>
             <aside className={styles.warning}>
               <strong>Conocimiento antes que recomendación.</strong>
@@ -112,7 +120,7 @@ export default function LibraryPage() {
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Recursos disponibles</span>
               <h2>De documentos aislados a un sistema de conocimiento.</h2>
-              <p>Cada recurso se conecta con el Product Master, una ruta agronómica o una decisión concreta. El estado visible evita presentar como definitivo lo que todavía requiere validación.</p>
+              <p>Cada recurso se conecta con el Product Master, una ruta agronómica, Casa & Jardín o una decisión concreta. El estado visible evita presentar como definitivo lo que todavía requiere validación o hosting público.</p>
             </div>
             <div className={styles.libraryGrid}>
               {publicResources.map((resource) => (
@@ -139,9 +147,9 @@ export default function LibraryPage() {
               <p>La navegación debe acompañar la decisión, no obligar al usuario a conocer de antemano el nombre del producto.</p>
             </div>
             <div className={styles.ruleGrid}>
-              <article className={styles.ruleCard}><span>01</span><h3>Diagnosticar</h3><p>Revisa síntomas, lote, suelo y posibles confundidores.</p></article>
-              <article className={styles.ruleCard}><span>02</span><h3>Entender etapa</h3><p>Ubica el momento fisiológico y el objetivo productivo.</p></article>
-              <article className={styles.ruleCard}><span>03</span><h3>Aplicar con criterio</h3><p>Confirma referencia, vía, equipo, condiciones y registro.</p></article>
+              <article className={styles.ruleCard}><span>01</span><h3>Diagnosticar</h3><p>Revisa síntomas, lote, planta, suelo o sustrato y posibles confundidores.</p></article>
+              <article className={styles.ruleCard}><span>02</span><h3>Entender etapa</h3><p>Ubica el momento fisiológico, la condición y el objetivo antes de elegir una ruta.</p></article>
+              <article className={styles.ruleCard}><span>03</span><h3>Aplicar con criterio</h3><p>Confirma referencia, vía, equipo, condiciones y registro; en hogar, evita dosificar a ojo.</p></article>
               <article className={styles.ruleCard}><span>04</span><h3>Medir y ajustar</h3><p>Observa respuesta y usa evidencia para decidir el siguiente evento.</p></article>
             </div>
           </div>
@@ -149,10 +157,10 @@ export default function LibraryPage() {
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Biblioteca Greenatics</span><h2>¿Buscas una guía para un cultivo específico?</h2></div>
+            <div><span className={styles.eyebrow}>Biblioteca Greenatics</span><h2>¿Buscas una guía para cultivo o para tus plantas en casa?</h2></div>
             <div className={styles.closingActions}>
               <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/cultivos">Ver cultivos</Link>
-              <Link className={`${styles.button} ${styles.secondary}`} href="/contacto#wondergreen">Hablar con un asesor</Link>
+              <Link className={`${styles.button} ${styles.secondary}`} href="/casa-jardin">Casa & Jardín</Link>
             </div>
           </div>
         </section>
