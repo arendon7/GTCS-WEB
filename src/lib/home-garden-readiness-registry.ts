@@ -11,6 +11,7 @@ import {
 
 export type HomeGardenEvidenceDisposition = "draft" | "verified" | "rejected" | "superseded";
 export type HomeGardenLaunchEvidenceKind = Exclude<HomeGardenEvidenceKind, "product-truth">;
+export type HomeGardenReadinessLane = "canonical" | "technical" | "admin-director";
 
 export const homeGardenLaunchEvidenceKinds = [
   "laboratory-report",
@@ -29,6 +30,16 @@ const technicalEvidenceKinds = new Set<HomeGardenLaunchEvidenceKind>([
   "approved-label",
   "dose-validation",
 ]);
+
+export const homeGardenGateOrder = [
+  "technical-product-truth",
+  "household-skus",
+  "regulatory",
+  "dose-and-dosifier",
+  "all-in-cost",
+  "fulfillment",
+  "public-assets",
+] as const satisfies readonly HomeGardenEvidenceGateId[];
 
 export type HomeGardenLaunchEvidenceRevision = {
   id: string;
@@ -53,13 +64,25 @@ export type HomeGardenReadinessRegistryItem = HomeGardenSkuLaunchEvaluation & {
   missingGates: readonly HomeGardenEvidenceGateId[];
 };
 
+export type HomeGardenGateWorkstream = {
+  gate: HomeGardenEvidenceGateId;
+  label: string;
+  lane: HomeGardenReadinessLane;
+  total: number;
+  closedCount: number;
+  openCount: number;
+  openCandidateIds: readonly string[];
+};
+
 export type HomeGardenReadinessRegistry = {
   items: readonly HomeGardenReadinessRegistryItem[];
+  workstreams: readonly HomeGardenGateWorkstream[];
   orphanEvidence: readonly HomeGardenLaunchEvidenceRevision[];
   summary: {
     total: number;
     commerceReady: number;
     pending: number;
+    openGateInstances: number;
     orphanEvidence: number;
   };
 };
@@ -72,6 +95,22 @@ export const homeGardenGateLabels: Record<HomeGardenEvidenceGateId, string> = {
   "all-in-cost": "Costo all-in",
   fulfillment: "Fulfillment",
   "public-assets": "Activos públicos",
+};
+
+export const homeGardenGateLanes: Record<HomeGardenEvidenceGateId, HomeGardenReadinessLane> = {
+  "technical-product-truth": "canonical",
+  "household-skus": "admin-director",
+  regulatory: "technical",
+  "dose-and-dosifier": "technical",
+  "all-in-cost": "admin-director",
+  fulfillment: "admin-director",
+  "public-assets": "admin-director",
+};
+
+export const homeGardenLaneLabels: Record<HomeGardenReadinessLane, string> = {
+  canonical: "Canónico · código",
+  technical: "Técnico",
+  "admin-director": "Admin / Dirección",
 };
 
 export function canManageHomeGardenReadiness(role: string) {
@@ -112,6 +151,21 @@ export function toHomeGardenEvidenceRecord(
   };
 }
 
+function buildGateWorkstreams(items: readonly HomeGardenReadinessRegistryItem[]): readonly HomeGardenGateWorkstream[] {
+  return homeGardenGateOrder.map((gate) => {
+    const openCandidateIds = items.filter((item) => !item.gates[gate]).map((item) => item.id);
+    return {
+      gate,
+      label: homeGardenGateLabels[gate],
+      lane: homeGardenGateLanes[gate],
+      total: items.length,
+      closedCount: items.length - openCandidateIds.length,
+      openCount: openCandidateIds.length,
+      openCandidateIds,
+    };
+  });
+}
+
 export function buildHomeGardenReadinessRegistry(
   revisions: readonly HomeGardenLaunchEvidenceRevision[],
 ): HomeGardenReadinessRegistry {
@@ -130,19 +184,20 @@ export function buildHomeGardenReadinessRegistry(
   const items = buildHomeGardenSkuLaunchMatrix(evidenceByCandidate).map((evaluation): HomeGardenReadinessRegistryItem => ({
     ...evaluation,
     latestEvidence: latestByCandidate[evaluation.id] ?? [],
-    missingGates: (Object.entries(evaluation.gates) as Array<[HomeGardenEvidenceGateId, boolean]>)
-      .filter(([, closed]) => !closed)
-      .map(([gate]) => gate),
+    missingGates: homeGardenGateOrder.filter((gate) => !evaluation.gates[gate]),
   }));
 
+  const workstreams = buildGateWorkstreams(items);
   const commerceReady = items.filter((item) => item.commerceReady).length;
   return {
     items,
+    workstreams,
     orphanEvidence,
     summary: {
       total: items.length,
       commerceReady,
       pending: items.length - commerceReady,
+      openGateInstances: workstreams.reduce((total, workstream) => total + workstream.openCount, 0),
       orphanEvidence: orphanEvidence.length,
     },
   };
