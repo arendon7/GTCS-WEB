@@ -1,22 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { HomeGardenEvidenceKind } from "@/data/home-garden-evidence";
 import type {
   HomeGardenEvidenceDisposition,
+  HomeGardenLaunchEvidenceKind,
   HomeGardenLaunchEvidenceRevision,
 } from "@/lib/home-garden-readiness-registry";
+import { homeGardenLaunchEvidenceKinds } from "@/lib/home-garden-readiness-registry";
 import { createClient } from "@/lib/supabase/client";
 
-const evidenceKinds = new Set<HomeGardenEvidenceKind>([
-  "product-truth",
-  "laboratory-report",
-  "regulatory-registration",
-  "approved-label",
-  "sku-master",
-  "dose-validation",
-  "cost-model",
-  "fulfillment-record",
-  "public-asset",
-]);
+const evidenceKinds = new Set<HomeGardenLaunchEvidenceKind>(homeGardenLaunchEvidenceKinds);
 const dispositions = new Set<HomeGardenEvidenceDisposition>(["draft", "verified", "rejected", "superseded"]);
 
 type EvidenceRow = {
@@ -39,7 +30,7 @@ type EvidenceRow = {
 
 export type AppendHomeGardenEvidencePayload = {
   candidateId: string;
-  evidenceKind: HomeGardenEvidenceKind;
+  evidenceKind: HomeGardenLaunchEvidenceKind;
   disposition: HomeGardenEvidenceDisposition;
   title: string;
   sourceReference: string;
@@ -57,13 +48,13 @@ function errorMessage(scope: string, error: { message?: string } | null) {
 function parseEvidenceRow(row: EvidenceRow): HomeGardenLaunchEvidenceRevision {
   const revisionNo = Number(row.revision_no);
   if (!Number.isSafeInteger(revisionNo) || revisionNo <= 0) throw new Error(`Revisión inválida para ${row.id}.`);
-  if (!evidenceKinds.has(row.evidence_kind as HomeGardenEvidenceKind)) throw new Error(`Tipo de evidencia desconocido: ${row.evidence_kind}.`);
+  if (!evidenceKinds.has(row.evidence_kind as HomeGardenLaunchEvidenceKind)) throw new Error(`Tipo de evidencia operativa desconocido: ${row.evidence_kind}.`);
   if (!dispositions.has(row.disposition as HomeGardenEvidenceDisposition)) throw new Error(`Estado de evidencia desconocido: ${row.disposition}.`);
   return {
     id: row.id,
     revisionNo,
     candidateId: row.candidate_id,
-    evidenceKind: row.evidence_kind as HomeGardenEvidenceKind,
+    evidenceKind: row.evidence_kind as HomeGardenLaunchEvidenceKind,
     disposition: row.disposition as HomeGardenEvidenceDisposition,
     title: row.title,
     sourceReference: row.source_reference,
