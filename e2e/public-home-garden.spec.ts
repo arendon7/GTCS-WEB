@@ -18,6 +18,11 @@ test("Casa Jardín and Vivero exposes stage system without price or checkout", a
     await expect(page.getByRole("heading", { name: kit, exact: true })).toBeVisible();
   }
 
+  await expect(page.getByText("Ya está gobernado", { exact: true })).toBeVisible();
+  await expect(page.getByText("Falta cerrar antes de activar ecommerce", { exact: true })).toBeVisible();
+  await expect(page.getByText(/Costo total y PVP gobernado/i)).toBeVisible();
+  await expect(page.getByText(/Kit Trasplanta & Arranca · bloqueado/i)).toBeVisible();
+
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
