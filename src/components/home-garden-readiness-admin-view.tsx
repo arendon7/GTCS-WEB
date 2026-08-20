@@ -8,12 +8,14 @@ import {
   buildHomeGardenReadinessRegistry,
   canAppendHomeGardenEvidence,
   canManageHomeGardenReadiness,
+  getNextHomeGardenEvidenceKind,
   homeGardenGateLabels,
   homeGardenLaneLabels,
   homeGardenLaunchEvidenceKinds,
   type HomeGardenEvidenceDisposition,
   type HomeGardenLaunchEvidenceKind,
   type HomeGardenLaunchEvidenceRevision,
+  type HomeGardenReadinessRegistryItem,
 } from "@/lib/home-garden-readiness-registry";
 import {
   appendHomeGardenLaunchEvidence,
@@ -30,6 +32,12 @@ const dispositionLabels: Record<HomeGardenEvidenceDisposition, string> = {
   rejected: "Rechazada / reabre gate",
   superseded: "Superada",
 };
+
+const requirementStatusLabels = {
+  ready: "LISTA",
+  missing: "FALTA",
+  "needs-review": "REVISAR",
+} as const;
 
 function GatePill({ closed, label }: { closed: boolean; label: string }) {
   return <span className={`status-pill ${closed ? "status-normal" : "status-planned"}`}>{closed ? "✓" : "○"} {label}</span>;
@@ -93,6 +101,31 @@ export function HomeGardenReadinessAdminView() {
     return true;
   }), [filter, gateFilter, registry.items]);
   const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === effectiveEvidenceKind);
+
+  function prepareNextEvidence(item: HomeGardenReadinessRegistryItem, gate: HomeGardenEvidenceGateId) {
+    const nextKind = getNextHomeGardenEvidenceKind(item, gate);
+    if (!nextKind) {
+      setFeedback({ kind: "error", text: "Este criterio no tiene una siguiente evidencia registrable pendiente." });
+      return;
+    }
+    if (!access.some((entry) => canAppendHomeGardenEvidence(entry.role, nextKind))) {
+      setFeedback({ kind: "error", text: `Tu rol puede consultar ${homeGardenGateLabels[gate]}, pero no registrar la evidencia pendiente.` });
+      return;
+    }
+
+    setCandidateId(item.id);
+    setEvidenceKind(nextKind);
+    setDisposition("draft");
+    setTitle("");
+    setSourceReference("");
+    setSourceDate("");
+    setSameReference(false);
+    setSamePresentation(false);
+    setCompleteForGate(false);
+    setNote("");
+    setFeedback(null);
+    window.requestAnimationFrame(() => document.getElementById("home-garden-evidence-form")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
 
   async function saveEvidence() {
     if (!access.some((item) => canAppendHomeGardenEvidence(item.role, effectiveEvidenceKind))) {
@@ -181,7 +214,7 @@ export function HomeGardenReadinessAdminView() {
 
     {registry.orphanEvidence.length ? <section className="panel border border-[var(--red)]"><p className="eyebrow">Deriva detectada</p><h2>Evidencia sin candidato vigente</h2><p className="quiet mt-1">No se aplica silenciosamente a otra presentación. Debe reconciliarse.</p><ul className="mt-3 grid gap-2 text-sm">{registry.orphanEvidence.map((item) => <li key={item.id}><strong>{item.candidateId}</strong> · {item.evidenceKind} · rev. {item.revisionNo}</li>)}</ul></section> : null}
 
-    <section className="panel">
+    <section className="panel scroll-mt-4" id="home-garden-evidence-form">
       <div className="section-head"><div><p className="eyebrow">Nueva revisión</p><h2>Anexar evidencia gobernada</h2><p className="quiet mt-1">Guarda una referencia interna al documento; no pegues enlaces firmados, tokens ni credenciales. Los tipos disponibles dependen de tu rol.</p></div></div>
       <div className="grid gap-3 lg:grid-cols-3">
         <label className="grid gap-1 text-xs font-semibold">Presentación<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={candidateId} onChange={(event) => setCandidateId(event.target.value)}>{homeGardenPlannedSkuCandidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.consumerName} · {candidate.plannedVariant} · {candidate.id}</option>)}</select></label>
@@ -203,17 +236,37 @@ export function HomeGardenReadinessAdminView() {
 
     <section className="grid gap-3">
       <div className="section-head"><div><p className="eyebrow">Presentaciones</p><h2>{gateFilter === "all" ? "Matriz por presentación" : `Pendientes · ${homeGardenGateLabels[gateFilter]}`}</h2><p className="quiet mt-1">Mostrando {visibleItems.length} de {registry.items.length} presentaciones.</p></div>{gateFilter !== "all" ? <button className="button secondary" type="button" onClick={() => setGateFilter("all")}>Quitar filtro de frente</button> : null}</div>
-      {visibleItems.map((item) => <article className="panel" key={item.id}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div><p className="eyebrow">{item.consumerName} · {item.plannedVariant}</p><h2>{item.technicalName}{item.formula ? ` · ${item.formula}` : ""}</h2><p className="quiet mt-1 text-xs">{item.id} · Product Truth: {item.technicalSlug}</p></div>
-          <span className={`status-pill ${item.commerceReady ? "status-normal" : "status-planned"}`}>{item.commerceReady ? "LISTO PARA COMERCIO" : `${item.missingGates.length} GATES ABIERTOS`}</span>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2">{(Object.entries(item.gates) as Array<[keyof typeof item.gates, boolean]>).map(([gate, closed]) => <GatePill key={gate} closed={closed} label={homeGardenGateLabels[gate]} />)}</div>
-        <div className="mt-4 border-t border-[var(--line)] pt-4">
-          <strong className="text-sm">Evidencia vigente</strong>
-          {item.latestEvidence.length ? <div className="mt-2 grid gap-2">{item.latestEvidence.map((evidence) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={evidence.id}><div className="flex flex-wrap justify-between gap-2"><strong>{homeGardenEvidenceRules.find((rule) => rule.kind === evidence.evidenceKind)?.label ?? evidence.evidenceKind} · {dispositionLabels[evidence.disposition]}</strong><span>rev. {evidence.revisionNo}</span></div><p className="mt-1">{evidence.title}</p><p className="quiet mt-1 break-all">Fuente interna: {evidence.sourceReference}</p><p className="mt-1">{evidence.note}</p></div>)}</div> : <p className="quiet mt-2 text-xs">Sin evidencia registrada para esta presentación.</p>}
-        </div>
-      </article>)}
+      {visibleItems.map((item) => {
+        const nextKind = gateFilter === "all" ? undefined : getNextHomeGardenEvidenceKind(item, gateFilter);
+        const canPrepare = nextKind ? access.some((entry) => canAppendHomeGardenEvidence(entry.role, nextKind)) : false;
+        const nextRule = nextKind ? homeGardenEvidenceRules.find((rule) => rule.kind === nextKind) : undefined;
+        return <article className="panel" key={item.id}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div><p className="eyebrow">{item.consumerName} · {item.plannedVariant}</p><h2>{item.technicalName}{item.formula ? ` · ${item.formula}` : ""}</h2><p className="quiet mt-1 text-xs">{item.id} · Product Truth: {item.technicalSlug}</p></div>
+            <span className={`status-pill ${item.commerceReady ? "status-normal" : "status-planned"}`}>{item.commerceReady ? "LISTO PARA COMERCIO" : `${item.missingGates.length} GATES ABIERTOS`}</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">{(Object.entries(item.gates) as Array<[keyof typeof item.gates, boolean]>).map(([gate, closed]) => <GatePill key={gate} closed={closed} label={homeGardenGateLabels[gate]} />)}</div>
+
+          {gateFilter !== "all" ? <div className="mt-4 rounded-xl border border-[var(--line)] p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3"><div><strong className="text-sm">Qué falta · {homeGardenGateLabels[gateFilter]}</strong><p className="quiet mt-1 text-xs">El estado se deriva exclusivamente de la última revisión vigente por tipo de evidencia.</p></div>{nextKind ? <span className="quiet text-xs">Siguiente: {nextRule?.label ?? nextKind}</span> : null}</div>
+            <div className="mt-3 grid gap-2">
+              {item.gateEvidence[gateFilter].map((state) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={state.kind}>
+                <div className="flex flex-wrap items-center justify-between gap-2"><strong>{state.label}</strong><span className={`status-pill ${state.status === "ready" ? "status-normal" : "status-planned"}`}>{requirementStatusLabels[state.status]}</span></div>
+                <p className="mt-1">{state.reason}</p>
+                {state.latestRevision ? <p className="quiet mt-1">Rev. {state.latestRevision.revisionNo} · {dispositionLabels[state.latestRevision.disposition]}</p> : null}
+              </div>)}
+            </div>
+            {nextKind && canPrepare ? <button className="button secondary mt-3" type="button" onClick={() => prepareNextEvidence(item, gateFilter)}>Preparar registro · {nextRule?.label ?? nextKind}</button> : null}
+            {nextKind && !canPrepare ? <p className="quiet mt-3 text-xs">Tu rol puede consultar este bloqueo, pero el siguiente registro corresponde al carril {homeGardenLaneLabels[registry.workstreams.find((workstream) => workstream.gate === gateFilter)?.lane ?? "admin-director"]}.</p> : null}
+            {!nextKind ? <p className="quiet mt-3 text-xs">No hay otra evidencia registrable pendiente para este criterio.</p> : null}
+          </div> : null}
+
+          <div className="mt-4 border-t border-[var(--line)] pt-4">
+            <strong className="text-sm">Evidencia vigente</strong>
+            {item.latestEvidence.length ? <div className="mt-2 grid gap-2">{item.latestEvidence.map((evidence) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={evidence.id}><div className="flex flex-wrap justify-between gap-2"><strong>{homeGardenEvidenceRules.find((rule) => rule.kind === evidence.evidenceKind)?.label ?? evidence.evidenceKind} · {dispositionLabels[evidence.disposition]}</strong><span>rev. {evidence.revisionNo}</span></div><p className="mt-1">{evidence.title}</p><p className="quiet mt-1 break-all">Fuente interna: {evidence.sourceReference}</p><p className="mt-1">{evidence.note}</p></div>)}</div> : <p className="quiet mt-2 text-xs">Sin evidencia registrada para esta presentación.</p>}
+          </div>
+        </article>;
+      })}
       {!visibleItems.length ? <section className="panel"><p className="quiet">No hay presentaciones que coincidan con los filtros actuales.</p></section> : null}
     </section>
   </div>;
