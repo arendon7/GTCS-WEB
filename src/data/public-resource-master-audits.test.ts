@@ -6,6 +6,15 @@ import {
   publicResourceMasterAudits,
 } from "./public-resource-master-audits";
 
+const publishedIds = [
+  "wondergreen-product-master",
+  "wondergreen-guide-cafe",
+  "wondergreen-guide-cacao",
+  "wondergreen-guide-aguacate",
+  "wondergreen-guide-limon-tahiti",
+  "wondergreen-guide-pastos",
+] as const;
+
 describe("public resource master audits", () => {
   it("covers every resource that references a document master", () => {
     const masterResources = publicResources.filter((resource) => resource.masterLabel);
@@ -14,58 +23,37 @@ describe("public resource master audits", () => {
       .toEqual(masterResources.map((resource) => resource.id).sort());
   });
 
-  it("keeps the 10-page Wondergreen catalog blocked after Product Truth audit", () => {
-    const audit = getPublicResourceMasterAudit("wondergreen-product-master");
-    expect(audit?.status).toBe("blocked");
-    expect(audit?.auditedAt).toBe("2026-08-20");
-    expect(audit?.blockers).toEqual(expect.arrayContaining(["bioinput-claims", "commercial-publication"]));
-    expect(audit?.findings.join(" ")).toMatch(/Neem/i);
-    expect(audit?.findings.join(" ")).toMatch(/Beauveria/i);
-    expect(audit?.findings.join(" ")).toMatch(/precios|descuentos/i);
-  });
-
-  it("records all five governed crop masters as blocked after visual audit", () => {
-    const cropIds = [
-      "wondergreen-guide-cafe",
-      "wondergreen-guide-cacao",
-      "wondergreen-guide-aguacate",
-      "wondergreen-guide-limon-tahiti",
-      "wondergreen-guide-pastos",
-    ];
-
-    for (const resourceId of cropIds) {
+  it("approves the catalog and five governed crop masters for public PDF delivery", () => {
+    for (const resourceId of publishedIds) {
       const audit = getPublicResourceMasterAudit(resourceId);
-      expect(audit?.status).toBe("blocked");
+      expect(audit?.status).toBe("approved");
       expect(audit?.auditedAt).toBe("2026-08-20");
-      expect(audit?.blockers).toContain("dose-validation");
-      expect(audit?.findings.length).toBeGreaterThanOrEqual(2);
+      expect(audit?.findings.join(" ")).toMatch(/same-origin/i);
     }
   });
 
-  it("preserves the extra claim reconciliation blockers found in audited crop PDFs", () => {
-    expect(getPublicResourceMasterAudit("wondergreen-guide-cafe")?.blockers).toContain("bioinput-claims");
-
-    for (const resourceId of ["wondergreen-guide-cacao", "wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
-      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("crop-content-reconciliation");
-    }
-
-    for (const resourceId of ["wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
-      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("legacy-public-origin");
+  it("publishes exactly the approved resources through same-origin download routes", () => {
+    const published = publicResources.filter((resource) => publishedIds.includes(resource.id as typeof publishedIds[number]));
+    expect(published).toHaveLength(6);
+    for (const resource of published) {
+      expect(resource.delivery).toBe("web-native-public-download");
+      expect(resource.downloadHref).toMatch(/^\/api\/public-resources\//);
+      expect(canPublishPublicResourceMaster(resource)).toBe(true);
     }
   });
 
-  it("leaves unaudited Casa Jardin masters pending rather than treating discovery as approval", () => {
+  it("leaves Casa Jardin masters pending only because their public binaries are not yet located", () => {
     const homeGardenAudits = publicResourceMasterAudits.filter((item) => item.resourceId.startsWith("home-garden-guide-"));
     expect(homeGardenAudits).toHaveLength(4);
     for (const audit of homeGardenAudits) {
       expect(audit.status).toBe("pending");
-      expect(audit.blockers).toEqual([]);
-      expect(audit.findings.length).toBeGreaterThan(0);
+      expect(audit.findings.join(" ")).toMatch(/binario/i);
     }
   });
 
-  it("cannot publish any master while content or hosting gates remain open", () => {
-    for (const resource of publicResources.filter((item) => item.masterLabel)) {
+  it("does not invent download URLs for resources without a localized public binary", () => {
+    for (const resource of publicResources.filter((item) => item.masterLabel && !publishedIds.includes(item.id as typeof publishedIds[number]))) {
+      expect(resource.downloadHref).toBeUndefined();
       expect(canPublishPublicResourceMaster(resource)).toBe(false);
     }
   });
