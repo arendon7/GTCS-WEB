@@ -12,7 +12,7 @@ describe("public knowledge resource registry", () => {
     }
   });
 
-  it("registers the five governed crop masters already represented by public crop routes", () => {
+  it("publishes the five crop masters already represented by public crop routes", () => {
     const cropMasters = publicResources.filter((resource) => resource.id.startsWith("wondergreen-guide-"));
     expect(cropMasters).toHaveLength(5);
     expect(cropMasters.map((resource) => resource.href).sort()).toEqual([
@@ -23,13 +23,15 @@ describe("public knowledge resource registry", () => {
       "/wondergreen/cultivos/pastos-gramineas",
     ]);
     for (const resource of cropMasters) {
-      expect(resource.delivery).toBe("web-native-master-pending");
+      expect(resource.delivery).toBe("public-download");
+      expect(resource.downloadHref).toBe(`/api/public-resources/${resource.id}`);
+      expect(resource.coverImage).toMatch(/^\/api\/public-media\//);
       expect(resource.masterLabel?.trim().length).toBeGreaterThan(0);
       expect(resource.masterSource).toBe("internal-document-library");
     }
   });
 
-  it("integrates the four governed Casa Jardin guide masters into the central library", () => {
+  it("integrates the four governed Casa Jardin guide masters into the central library without inventing downloads", () => {
     const homeGarden = publicResources.filter((resource) => resource.id.startsWith("home-garden-guide-"));
     expect(homeGarden).toHaveLength(4);
     expect(homeGarden.map((resource) => resource.href).sort()).toEqual([
@@ -40,31 +42,37 @@ describe("public knowledge resource registry", () => {
     ]);
     for (const resource of homeGarden) {
       expect(resource.delivery).toBe("web-native-master-pending");
+      expect(resource.downloadHref).toBeUndefined();
       expect(resource.masterSource).toBe("validated-handoff");
     }
   });
 
-  it("uses the navigable Product Master as the public catalog authority while its PDF master awaits public hosting", () => {
+  it("publishes the catalog while retaining the navigable Product Master", () => {
     const catalog = publicResources.find((resource) => resource.id === "wondergreen-product-master");
     expect(catalog?.href).toBe("/wondergreen/productos");
-    expect(catalog?.delivery).toBe("web-native-master-pending");
+    expect(catalog?.delivery).toBe("public-download");
+    expect(catalog?.downloadHref).toBe("/api/public-resources/wondergreen-product-master");
+    expect(catalog?.coverImage).toBe("/api/public-media/catalogo-cover");
     expect(catalog?.masterLabel).toMatch(/10 páginas/i);
     expect(catalog?.masterSource).toBe("internal-document-library");
   });
 
-  it("does not expose a private or fake downloadable asset before public hosting exists", () => {
+  it("enables only same-origin downloads while private source links remain forbidden", () => {
     expect(publicResourceHostingGate).toMatchObject({
       privateSourceLinksAllowed: false,
-      publicDownloadEnabled: false,
+      publicDownloadEnabled: true,
+      requiredPublicHost: "same-origin-server-proxy",
     });
 
     const serialized = JSON.stringify(publicResources);
     expect(serialized).not.toMatch(/sharepoint|graph\.microsoft/i);
 
-    for (const resource of publicResources.filter((item) => item.delivery !== "web-native")) {
-      expect(resource.href).not.toMatch(/\.pdf(?:$|\?)/i);
-      expect(resource.href).not.toMatch(/sharepoint|graph\.microsoft/i);
-      expect(resource.masterSource).toBeDefined();
+    const downloadable = publicResources.filter((item) => item.delivery === "public-download");
+    expect(downloadable).toHaveLength(6);
+    for (const resource of downloadable) {
+      expect(resource.downloadHref).toMatch(/^\/api\/public-resources\//);
+      expect(resource.downloadHref).not.toMatch(/sharepoint|graph\.microsoft/i);
+      expect(resource.masterSource).toBe("internal-document-library");
     }
   });
 });

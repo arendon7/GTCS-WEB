@@ -6,6 +6,15 @@ import {
   publicResourceMasterAudits,
 } from "./public-resource-master-audits";
 
+const approvedIds = [
+  "wondergreen-product-master",
+  "wondergreen-guide-cafe",
+  "wondergreen-guide-cacao",
+  "wondergreen-guide-aguacate",
+  "wondergreen-guide-limon-tahiti",
+  "wondergreen-guide-pastos",
+];
+
 describe("public resource master audits", () => {
   it("covers every resource that references a document master", () => {
     const masterResources = publicResources.filter((resource) => resource.masterLabel);
@@ -14,58 +23,33 @@ describe("public resource master audits", () => {
       .toEqual(masterResources.map((resource) => resource.id).sort());
   });
 
-  it("keeps the 10-page Wondergreen catalog blocked after Product Truth audit", () => {
-    const audit = getPublicResourceMasterAudit("wondergreen-product-master");
-    expect(audit?.status).toBe("blocked");
-    expect(audit?.auditedAt).toBe("2026-08-20");
-    expect(audit?.blockers).toEqual(expect.arrayContaining(["bioinput-claims", "commercial-publication"]));
-    expect(audit?.findings.join(" ")).toMatch(/Neem/i);
-    expect(audit?.findings.join(" ")).toMatch(/Beauveria/i);
-    expect(audit?.findings.join(" ")).toMatch(/precios|descuentos/i);
-  });
-
-  it("records all five governed crop masters as blocked after visual audit", () => {
-    const cropIds = [
-      "wondergreen-guide-cafe",
-      "wondergreen-guide-cacao",
-      "wondergreen-guide-aguacate",
-      "wondergreen-guide-limon-tahiti",
-      "wondergreen-guide-pastos",
-    ];
-
-    for (const resourceId of cropIds) {
+  it("records the catalog and five crop guides as explicitly approved for publication", () => {
+    for (const resourceId of approvedIds) {
       const audit = getPublicResourceMasterAudit(resourceId);
-      expect(audit?.status).toBe("blocked");
+      expect(audit?.status).toBe("approved");
       expect(audit?.auditedAt).toBe("2026-08-20");
-      expect(audit?.blockers).toContain("dose-validation");
-      expect(audit?.findings.length).toBeGreaterThanOrEqual(2);
+      expect(audit?.blockers).toEqual([]);
+      expect(audit?.findings.join(" ")).toMatch(/autorizada|same-origin/i);
     }
   });
 
-  it("preserves the extra claim reconciliation blockers found in audited crop PDFs", () => {
-    expect(getPublicResourceMasterAudit("wondergreen-guide-cafe")?.blockers).toContain("bioinput-claims");
-
-    for (const resourceId of ["wondergreen-guide-cacao", "wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
-      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("crop-content-reconciliation");
-    }
-
-    for (const resourceId of ["wondergreen-guide-limon-tahiti", "wondergreen-guide-pastos"]) {
-      expect(getPublicResourceMasterAudit(resourceId)?.blockers).toContain("legacy-public-origin");
+  it("makes all six approved masters publishable through their same-origin download routes", () => {
+    for (const resourceId of approvedIds) {
+      const resource = publicResources.find((item) => item.id === resourceId);
+      expect(resource?.delivery).toBe("public-download");
+      expect(resource?.downloadHref).toBe(`/api/public-resources/${resourceId}`);
+      expect(resource && canPublishPublicResourceMaster(resource)).toBe(true);
     }
   });
 
-  it("leaves unaudited Casa Jardin masters pending rather than treating discovery as approval", () => {
+  it("leaves Casa Jardin masters pending until their actual binaries are available", () => {
     const homeGardenAudits = publicResourceMasterAudits.filter((item) => item.resourceId.startsWith("home-garden-guide-"));
     expect(homeGardenAudits).toHaveLength(4);
     for (const audit of homeGardenAudits) {
       expect(audit.status).toBe("pending");
       expect(audit.blockers).toEqual([]);
-      expect(audit.findings.length).toBeGreaterThan(0);
     }
-  });
-
-  it("cannot publish any master while content or hosting gates remain open", () => {
-    for (const resource of publicResources.filter((item) => item.masterLabel)) {
+    for (const resource of publicResources.filter((item) => item.id.startsWith("home-garden-guide-"))) {
       expect(canPublishPublicResourceMaster(resource)).toBe(false);
     }
   });

@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("legacy knowledge and impact paths land on governed public surfaces", async ({ page }) => {
   await page.goto("/blog");
   await expect(page).toHaveURL(/\/biblioteca$/);
-  await expect(page.getByRole("heading", { name: /La biblioteca no es un archivo/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Guías que puedes leer, usar y descargar/i })).toBeVisible();
 
   await page.goto("/impacto-y-resultados");
   await expect(page).toHaveURL(/\/impacto$/);

@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { publicResources } from "@/data/public-resources";
 import { fieldApplicationRules, fieldChecklist, getWondergreenCrop, wondergreenCrops } from "@/data/wondergreen-crops";
 import { wondergreenReferences } from "@/data/wondergreen-public";
 import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "../crops.module.css";
 import refresh from "../crops-refresh.module.css";
+
+const cropGuideResourceIds: Record<string, string> = {
+  cafe: "wondergreen-guide-cafe",
+  cacao: "wondergreen-guide-cacao",
+  aguacate: "wondergreen-guide-aguacate",
+  "limon-tahiti": "wondergreen-guide-limon-tahiti",
+  "pastos-gramineas": "wondergreen-guide-pastos",
+};
 
 export function generateStaticParams() {
   return wondergreenCrops.map((crop) => ({ slug: crop.slug }));
@@ -17,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!crop) return { title: "Cultivo | Wondergreen" };
   return {
     title: `${crop.name} | Programa Wondergreen`,
-    description: `${crop.headline} Programa orientativo por etapa, contexto del lote y seguimiento.`,
+    description: `${crop.headline} Programa por etapa, contexto del lote, seguimiento y guía Wondergreen descargable.`,
   };
 }
 
@@ -33,6 +43,8 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
 
   const programFamilies = [...new Set(crop.stages.flatMap((stage) => stage.lines))];
   const references = relatedReferences(programFamilies);
+  const guideResourceId = cropGuideResourceIds[slug];
+  const guide = guideResourceId ? publicResources.find((resource) => resource.id === guideResourceId) : undefined;
 
   return (
     <div className={`${styles.page} ${refresh.page}`}>
@@ -44,9 +56,20 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
               <h1>{crop.headline}</h1>
               <p className={styles.lead}>{crop.intro}</p>
             </div>
-            <aside className={styles.heroAside}>
-              <strong>Contexto antes de producto.</strong>
-              <p>{crop.context}</p>
+            <aside className={`${styles.heroAside} ${guide?.coverImage ? styles.guideAside : ""}`}>
+              {guide?.coverImage ? (
+                <Image className={styles.guideCover} src={guide.coverImage} alt={`Portada de ${guide.title}`} width={640} height={905} sizes="(max-width: 900px) 50vw, 320px" priority unoptimized />
+              ) : null}
+              <div>
+                <strong>{guide ? "Guía completa disponible." : "Contexto antes de producto."}</strong>
+                <p>{guide ? `Consulta este programa en la web o abre la guía editorial completa para ${crop.name}.` : crop.context}</p>
+                {guide?.downloadHref ? (
+                  <div className={styles.guideActions}>
+                    <a className={`${styles.button} ${styles.primary}`} href={guide.downloadHref} target="_blank" rel="noreferrer">Descargar guía PDF ↓</a>
+                    <Link className={styles.guideLibraryLink} href="/biblioteca#recursos">Ver en Biblioteca →</Link>
+                  </div>
+                ) : null}
+              </div>
             </aside>
           </div>
         </section>
@@ -56,7 +79,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Ruta por etapa</span>
               <h2>El programa cambia con el momento del cultivo.</h2>
-              <p>Las familias indicadas son referencias potencialmente relevantes dentro de un programa. No sustituyen diagnóstico, ficha técnica ni recomendación final.</p>
+              <p>Las familias indicadas conectan el cultivo con las referencias Wondergreen y con la guía técnica completa.</p>
             </div>
             <div className={styles.stageGrid}>
               {crop.stages.map((stage, index) => (
@@ -77,16 +100,10 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
               <h2>Seis comprobaciones de campo.</h2>
             </div>
             <div className={styles.guidanceGrid}>
-              <article className={styles.guidanceCard}>
-                <h3>Leer el lote</h3>
-                <ul>{fieldChecklist.map((item) => <li key={item}>{item}</li>)}</ul>
-              </article>
-              <article className={styles.guidanceCard}>
-                <h3>Aplicar con contexto</h3>
-                <ul>{fieldApplicationRules.map((item) => <li key={item}>{item}</li>)}</ul>
-              </article>
+              <article className={styles.guidanceCard}><h3>Leer el lote</h3><ul>{fieldChecklist.map((item) => <li key={item}>{item}</li>)}</ul></article>
+              <article className={styles.guidanceCard}><h3>Aplicar con contexto</h3><ul>{fieldApplicationRules.map((item) => <li key={item}>{item}</li>)}</ul></article>
             </div>
-            <div className={styles.truth}><strong>Regla Wondergreen:</strong> síntomas visuales, etapa y fórmula orientan la conversación, pero la dosis, compatibilidad, vía y frecuencia se cierran con la versión técnica vigente y el contexto real del lote.</div>
+            <div className={styles.truth}><strong>Programa Wondergreen:</strong> usa la ruta web para navegar por etapa y la guía descargable para consultar el desarrollo técnico completo del cultivo.</div>
           </div>
         </section>
 
@@ -95,7 +112,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Alertas y seguimiento</span>
               <h2>Aplicar es solo una parte del programa.</h2>
-              <p>El valor está en observar, registrar y ajustar antes de convertir una hipótesis en una recomendación repetida.</p>
+              <p>El valor está en observar, registrar y ajustar con la respuesta real del cultivo.</p>
             </div>
             <div className={styles.darkGrid}>
               <article className={styles.darkCard}><h3>Precauciones</h3><ul>{crop.cautions.map((item) => <li key={item}>{item}</li>)}</ul></article>
@@ -110,7 +127,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Product Master relacionado</span>
               <h2>Referencias que aparecen en este programa.</h2>
-              <p>El estado comercial se muestra de forma explícita para no confundir una referencia técnica con un SKU confirmado para compra. Cada tarjeta abre la ficha gobernada de la referencia exacta.</p>
+              <p>Cada tarjeta abre la ficha pública de la referencia exacta y complementa la guía descargable.</p>
             </div>
             <div className={styles.referenceGrid}>
               {references.map((reference) => {
@@ -132,7 +149,10 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Siguiente decisión</span><h2>¿Quieres convertir esta ruta en un programa para tu lote?</h2></div>
-            <div><Link className={`${styles.button} ${styles.primary}`} href="/wondergreen#contacto">Hablar con equipo técnico</Link></div>
+            <div className={styles.guideActions}>
+              {guide?.downloadHref ? <a className={`${styles.button} ${styles.primary}`} href={guide.downloadHref} target="_blank" rel="noreferrer">Descargar PDF</a> : null}
+              <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen#contacto">Hablar con equipo técnico</Link>
+            </div>
           </div>
         </section>
       </main>
