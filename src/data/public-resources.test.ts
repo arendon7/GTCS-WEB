@@ -31,7 +31,7 @@ describe("public knowledge resource registry", () => {
     }
   });
 
-  it("integrates the four governed Casa Jardin guide masters into the central library without inventing downloads", () => {
+  it("publishes the four governed Casa Jardin guide masters through same-origin downloads", () => {
     const homeGarden = publicResources.filter((resource) => resource.id.startsWith("home-garden-guide-"));
     expect(homeGarden).toHaveLength(4);
     expect(homeGarden.map((resource) => resource.href).sort()).toEqual([
@@ -41,9 +41,10 @@ describe("public knowledge resource registry", () => {
       "/casa-jardin/guias#trasplante",
     ]);
     for (const resource of homeGarden) {
-      expect(resource.delivery).toBe("web-native-master-pending");
-      expect(resource.downloadHref).toBeUndefined();
-      expect(resource.masterSource).toBe("validated-handoff");
+      expect(resource.delivery).toBe("public-download");
+      expect(resource.downloadHref).toBe(`/api/public-resources/${resource.id}`);
+      expect(resource.masterSource).toBe("internal-document-library");
+      expect(resource.sourceAuthority).toMatch(/reconstruido 2026-08-21/i);
     }
   });
 
@@ -68,7 +69,7 @@ describe("public knowledge resource registry", () => {
     expect(serialized).not.toMatch(/sharepoint|graph\.microsoft/i);
 
     const downloadable = publicResources.filter((item) => item.delivery === "public-download");
-    expect(downloadable).toHaveLength(6);
+    expect(downloadable).toHaveLength(10);
     for (const resource of downloadable) {
       expect(resource.downloadHref).toMatch(/^\/api\/public-resources\//);
       expect(resource.downloadHref).not.toMatch(/sharepoint|graph\.microsoft/i);
