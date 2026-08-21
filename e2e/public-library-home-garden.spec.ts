@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("central public library integrates Casa Jardin without exposing private document links", async ({ page }) => {
+test("central public library publishes Wondergreen PDFs without exposing private document links", async ({ page }) => {
   await page.goto("/biblioteca");
 
   await expect(page.getByText("Tengo plantas en casa", { exact: true })).toBeVisible();
@@ -17,7 +17,8 @@ test("central public library integrates Casa Jardin without exposing private doc
 
   const hrefs = await page.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
   expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
-  expect(hrefs.filter((href) => /\.pdf(?:$|\?)/i.test(href))).toHaveLength(0);
+  expect(hrefs.filter((href) => href.startsWith("/api/public-resources/wondergreen-")).length).toBe(6);
 
-  await expect(page.getByText(/PDF maestro identificado · auditoría pública pendiente/i).first()).toBeVisible();
+  const homeGardenCards = page.getByRole("article").filter({ hasText: "Casa & Jardín" });
+  await expect(homeGardenCards.first()).toContainText(/PDF maestro pendiente/i);
 });
