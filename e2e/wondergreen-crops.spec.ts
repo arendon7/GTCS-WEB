@@ -25,6 +25,21 @@ test("crop library exposes the five initial programs", async ({ page }) => {
   }
 });
 
+test("each governed crop page exposes its public PDF guide", async ({ page }) => {
+  const guides = [
+    ["cafe", "/descargas/guia-cafe"],
+    ["cacao", "/descargas/guia-cacao"],
+    ["aguacate", "/descargas/guia-aguacate"],
+    ["limon-tahiti", "/descargas/guia-citricos"],
+    ["pastos-gramineas", "/descargas/guia-pastos-praderas"],
+  ] as const;
+
+  for (const [cropSlug, downloadHref] of guides) {
+    await page.goto(`/wondergreen/cultivos/${cropSlug}`);
+    await expect(page.getByRole("link", { name: "Descargar guía PDF ↓", exact: true })).toHaveAttribute("href", downloadHref);
+  }
+});
+
 test("cacao program connects stage guidance to exact Product Master references and canonical breadcrumb", async ({ page }) => {
   await page.goto("/wondergreen/cultivos/cacao");
 
