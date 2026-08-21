@@ -12,7 +12,7 @@ describe("public knowledge resource registry", () => {
     }
   });
 
-  it("registers the five governed crop masters already represented by public crop routes", () => {
+  it("registers the five governed crop masters with public same-origin PDF downloads", () => {
     const cropMasters = publicResources.filter((resource) => resource.id.startsWith("wondergreen-guide-"));
     expect(cropMasters).toHaveLength(5);
     expect(cropMasters.map((resource) => resource.href).sort()).toEqual([
@@ -23,7 +23,8 @@ describe("public knowledge resource registry", () => {
       "/wondergreen/cultivos/pastos-gramineas",
     ]);
     for (const resource of cropMasters) {
-      expect(resource.delivery).toBe("web-native-master-pending");
+      expect(resource.delivery).toBe("web-native-public-download");
+      expect(resource.downloadHref).toMatch(/^\/descargas\//);
       expect(resource.masterLabel?.trim().length).toBeGreaterThan(0);
       expect(resource.masterSource).toBe("internal-document-library");
     }
@@ -40,31 +41,36 @@ describe("public knowledge resource registry", () => {
     ]);
     for (const resource of homeGarden) {
       expect(resource.delivery).toBe("web-native-master-pending");
+      expect(resource.downloadHref).toBeUndefined();
       expect(resource.masterSource).toBe("validated-handoff");
     }
   });
 
-  it("uses the navigable Product Master as the public catalog authority while its PDF master awaits public hosting", () => {
+  it("keeps the navigable Product Master and publishes its catalog PDF", () => {
     const catalog = publicResources.find((resource) => resource.id === "wondergreen-product-master");
     expect(catalog?.href).toBe("/wondergreen/productos");
-    expect(catalog?.delivery).toBe("web-native-master-pending");
+    expect(catalog?.delivery).toBe("web-native-public-download");
+    expect(catalog?.downloadHref).toBe("/descargas/catalogo-wondergreen");
     expect(catalog?.masterLabel).toMatch(/10 páginas/i);
     expect(catalog?.masterSource).toBe("internal-document-library");
   });
 
-  it("does not expose a private or fake downloadable asset before public hosting exists", () => {
+  it("publishes only same-origin routes and never exposes private SharePoint or Graph URLs", () => {
     expect(publicResourceHostingGate).toMatchObject({
       privateSourceLinksAllowed: false,
-      publicDownloadEnabled: false,
+      publicDownloadEnabled: true,
+      requiredPublicHost: "same-origin-or-approved-public-cdn",
     });
 
     const serialized = JSON.stringify(publicResources);
     expect(serialized).not.toMatch(/sharepoint|graph\.microsoft/i);
 
-    for (const resource of publicResources.filter((item) => item.delivery !== "web-native")) {
-      expect(resource.href).not.toMatch(/\.pdf(?:$|\?)/i);
+    for (const resource of publicResources) {
       expect(resource.href).not.toMatch(/sharepoint|graph\.microsoft/i);
-      expect(resource.masterSource).toBeDefined();
+      if (resource.downloadHref) {
+        expect(resource.downloadHref).toMatch(/^\/descargas\//);
+        expect(resource.downloadHref).not.toMatch(/sharepoint|graph\.microsoft/i);
+      }
     }
   });
 });
