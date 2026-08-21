@@ -1,11 +1,20 @@
 import { test, expect } from "@playwright/test";
 
-test("public home presents Greenatics and links to OPS", async ({ page }) => {
+async function digitalEntry(page: import("@playwright/test").Page) {
+  const header = page.getByRole("banner");
+  const desktopEntry = header.getByRole("link", { name: "Ingresar", exact: true });
+  if (await desktopEntry.isVisible()) return desktopEntry;
+
+  await header.getByRole("button", { name: "Abrir navegación" }).click();
+  return page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true });
+}
+
+test("public home presents Greenatics and exposes the digital bridge", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Greenatics" }).first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "Acceder a Greenatics" })).toHaveAttribute("href", "/app");
+  await expect(await digitalEntry(page)).toHaveAttribute("href", "/app");
   await expect(page.getByRole("heading", { name: "Más que NPK." })).toBeVisible();
   await expect(page.getByText("5", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("referencias líquidas", { exact: true })).toBeVisible();
@@ -27,7 +36,7 @@ test("Wondergreen exposes fertilizers, bioinputs and technology narrative", asyn
 
 test("public-to-internal bridge lands on OPS home", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Acceder a Greenatics" }).click();
+  await (await digitalEntry(page)).click();
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });

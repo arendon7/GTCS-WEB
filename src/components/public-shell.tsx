@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { OrganizationJsonLd } from "@/components/organization-json-ld";
-import { publicFooterNav, publicNav, publicSite } from "@/data/public-site";
+import { PublicHeader } from "@/components/public-header";
+import { publicFooterNav, publicSite } from "@/data/public-site";
 import styles from "./public-shell.module.css";
 
 type PublicShellProps = {
@@ -21,25 +22,7 @@ export function PublicShell({ children, ownsMain = true }: PublicShellProps) {
       <OrganizationJsonLd />
       <a className={styles.skipLink} href="#public-main">Saltar al contenido</a>
 
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <Link className={styles.brand} href="/" aria-label="Greenatics, inicio">
-            <Image src="/brand/greenatics-horizontal.webp" alt="Greenatics" width={360} height={66} priority sizes="(max-width: 720px) 180px, 205px" />
-          </Link>
-
-          <nav className={styles.nav} aria-label="Navegación pública">
-            {publicNav.map((item) => (
-              <Link key={item.href} href={item.href}>{item.label}</Link>
-            ))}
-            <Link className={styles.mobileContact} href="/contacto">Contacto</Link>
-          </nav>
-
-          <div className={styles.actions}>
-            <Link className={styles.contact} href="/contacto">Contacto</Link>
-            <a className={styles.ops} href="/app">Acceder a Greenatics</a>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {content}
 

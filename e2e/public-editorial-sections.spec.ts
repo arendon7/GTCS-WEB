@@ -6,7 +6,14 @@ for (const route of ["/soluciones", "/proyectos"]) {
 
     await expect(page.getByRole("banner")).toHaveCount(1);
     await expect(page.getByRole("contentinfo")).toHaveCount(1);
-    await expect(page.getByRole("navigation", { name: "Navegación pública" })).toHaveCount(1);
+
+    const viewport = page.viewportSize();
+    if (viewport && viewport.width < 900) {
+      await expect(page.getByRole("button", { name: "Abrir navegación" })).toBeVisible();
+    } else {
+      await expect(page.getByRole("navigation", { name: "Navegación pública" })).toHaveCount(1);
+    }
+
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`${route.replace("/", "\\/")}$`));
   });
 }

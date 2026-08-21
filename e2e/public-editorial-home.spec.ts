@@ -49,10 +49,11 @@ test("public HOME exposes all five governed crop programs", async ({ page }) => 
 
 test("public HOME keeps its primary routes explicit and separate from OPS", async ({ page }) => {
   await page.goto("/");
+  const main = page.getByRole("main");
 
-  await expect(page.getByRole("link", { name: "Descubrir Wondergreen" })).toHaveAttribute("href", "/wondergreen");
-  await expect(page.getByRole("link", { name: "Explorar soluciones", exact: true }).first()).toHaveAttribute("href", "/soluciones");
-  await expect(page.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
-  await expect(page.getByRole("link", { name: "Contactar a Greenatics" })).toHaveAttribute("href", "/contacto");
-  await expect(page.getByRole("link", { name: "Acceder a la app interna" })).toHaveAttribute("href", "/app");
+  await expect(main.getByRole("link", { name: "Descubrir Wondergreen" })).toHaveAttribute("href", "/wondergreen");
+  await expect(main.getByRole("link", { name: "Explorar soluciones", exact: true }).first()).toHaveAttribute("href", "/soluciones");
+  await expect(main.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
+  await expect(main.getByRole("link", { name: "Contactar a Greenatics" })).toHaveAttribute("href", "/contacto");
+  await expect(main.getByRole("link", { name: "Acceder a la app interna" })).toHaveAttribute("href", "/app");
 });
