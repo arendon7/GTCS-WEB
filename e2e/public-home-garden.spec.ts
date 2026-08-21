@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
 
-test("Casa Jardín and Vivero exposes stage system without price or checkout", async ({ page }) => {
+test("Casa Jardín and Vivero exposes stage system with real Wondergreen visuals and without checkout", async ({ page }) => {
   await page.goto("/casa-jardin");
+
+  await expect(page.getByRole("img", { name: /Sistema Wondergreen por etapas/i })).toHaveAttribute("src", "/api/public-media/wondergreen-system-stages");
+  await expect(page.getByRole("link", { name: /Descargar catálogo Wondergreen/i })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master");
 
   for (const [name, formula] of [
     ["CRECE", "15-3-3"],
@@ -13,6 +16,15 @@ test("Casa Jardín and Vivero exposes stage system without price or checkout", a
     await expect(page.getByText(formula, { exact: true }).first()).toBeVisible();
   }
   await expect(page.getByText("COMPOST", { exact: true }).first()).toBeVisible();
+
+  for (const [alt, src] of [
+    [/Línea Wondergreen 2Grow/i, "/api/public-media/wondergreen-2grow"],
+    [/Línea Wondergreen 2Balance/i, "/api/public-media/wondergreen-2balance"],
+    [/Línea Wondergreen 2Bloom/i, "/api/public-media/wondergreen-2bloom"],
+    [/Línea Wondergreen 2Fruit/i, "/api/public-media/wondergreen-2fruit"],
+  ] as const) {
+    await expect(page.getByRole("img", { name: alt })).toHaveAttribute("src", src);
+  }
 
   for (const kit of ["Kit Plantas Verdes", "Kit Plantas con Flor", "Kit Mi Huerta", "Kit Casa Completa", "Casa Completa XL"]) {
     await expect(page.getByRole("heading", { name: kit, exact: true })).toBeVisible();
@@ -29,6 +41,7 @@ test("Casa Jardín and Vivero exposes stage system without price or checkout", a
   await expect(page.getByRole("heading", { name: "Kit Trasplanta & Arranca", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Ver etapa y formatos propuestos/i }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver composición y ruta/i }).first()).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
 
 test("Casa product detail exposes proposed household formats without making them commercial SKUs", async ({ page }) => {

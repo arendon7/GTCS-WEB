@@ -32,6 +32,13 @@ const plantQuestions = [
   ["Vas a preparar o recuperar sustrato", "COMPOST", "Materia orgánica + acondicionamiento"],
 ] as const;
 
+const stageVisuals: Record<string, { src: string; alt: string }> = {
+  crece: { src: "/api/public-media/wondergreen-2grow", alt: "Línea Wondergreen 2Grow para crecimiento y recuperación" },
+  equilibra: { src: "/api/public-media/wondergreen-2balance", alt: "Línea Wondergreen 2Balance para equilibrio y mantenimiento" },
+  florece: { src: "/api/public-media/wondergreen-2bloom", alt: "Línea Wondergreen 2Bloom para prefloración y floración" },
+  fructifica: { src: "/api/public-media/wondergreen-2fruit", alt: "Línea Wondergreen 2Fruit para llenado y maduración" },
+};
+
 export default function CasaJardinPage() {
   return (
     <div className={styles.page}>
@@ -41,15 +48,16 @@ export default function CasaJardinPage() {
             <div>
               <span className={styles.eyebrow}>Wondergreen · Casa, jardín y vivero</span>
               <h1>Nutrición por etapas para tus plantas.</h1>
-              <p className={styles.lead}>Tu planta cambia. Su nutrición también. Observa qué está haciendo, identifica su condición y elige solo la etapa que necesita. La propuesta Casa & Jardín lleva la lógica Wondergreen a hogares, huertas, jardines y viveros sin convertir la fertilización en una receta automática.</p>
+              <p className={styles.lead}>Tu planta cambia. Su nutrición también. Observa qué está haciendo, identifica su condición y elige la etapa que necesita. Casa & Jardín lleva la lógica Wondergreen a hogares, huertas, jardines y viveros con una ruta simple: suelo, crecimiento, equilibrio, floración y fruto.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Encontrar un punto de partida</Link>
-                <a className={`${styles.button} ${styles.ghost}`} href="#kits">Explorar kits</a>
+                <a className={`${styles.button} ${styles.ghost}`} href="#etapas">Ver las etapas</a>
+                <a className={`${styles.button} ${styles.ghost}`} href="/api/public-resources/wondergreen-product-master" target="_blank" rel="noreferrer">Descargar catálogo Wondergreen ↓</a>
               </div>
             </div>
             <aside className={styles.heroVisual}>
-              <p className={styles.heroNote}>No apliques todo. Aplica lo que necesita. La identidad técnica sigue en Wondergreen; Greenatics aporta el sistema circular, el conocimiento y el soporte.</p>
-              <Image src="/brand/wondergreen-nutrients.webp" width={720} height={310} alt="Logotipo oficial de Wondergreen Nutrients" priority />
+              <div className={styles.heroVisualLabel}>El sistema Wondergreen, de un vistazo.</div>
+              <Image className={styles.heroSystemImage} src="/api/public-media/wondergreen-system-stages" width={760} height={1074} alt="Sistema Wondergreen por etapas: compost, 2Grow, 2Balance, 2Bloom, 2Fruit y bioinsumos" priority unoptimized />
             </aside>
           </div>
         </section>
@@ -64,20 +72,32 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>4 etapas + suelo</span><h2>No necesita más. Necesita lo correcto.</h2></div>
-              <p>CRECE, EQUILIBRA, FLORECE y FRUCTIFICA son nombres de uso doméstico para referencias sólidas Wondergreen ya existentes. COMPOST prepara y acondiciona el sistema de suelo. Los formatos B2C del handoff se muestran como propuestas, no como inventario comprable.</p>
+              <p>CRECE, EQUILIBRA, FLORECE y FRUCTIFICA traducen para uso doméstico cuatro referencias sólidas Wondergreen ya existentes. COMPOST prepara y acondiciona el sistema de suelo. Aquí puedes conocer el sistema y sus formatos propuestos antes de que la tienda esté activa.</p>
             </div>
             <div className={styles.productGrid}>
-              {homeGardenProducts.map((product) => (
-                <article className={`${styles.card} ${styles[product.accent]}`} key={product.id}>
-                  <div className={styles.stageBar} aria-hidden="true" />
-                  <small>{product.id === "prepara" ? "Base del sistema" : "Etapa nutricional"}</small>
-                  <h3>{product.consumerName}</h3>
-                  <span className={styles.formula}>{product.formula ?? "Compost"}</span>
-                  <p>{product.role}</p>
-                  <p><strong>{product.prompt}</strong></p>
-                  <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
-                </article>
-              ))}
+              {homeGardenProducts.map((product) => {
+                const visual = stageVisuals[product.id];
+                return (
+                  <article className={`${styles.card} ${styles[product.accent]} ${visual ? styles.cardWithVisual : ""}`} key={product.id}>
+                    <div className={styles.stageBar} aria-hidden="true" />
+                    {visual ? (
+                      <div className={styles.productVisual}>
+                        <Image src={visual.src} width={760} height={1074} alt={visual.alt} sizes="(max-width: 820px) 88vw, (max-width: 1100px) 30vw, 18vw" unoptimized />
+                      </div>
+                    ) : (
+                      <div className={styles.compostVisual} aria-label="Compost como base del sistema">
+                        <span>01</span><strong>COMPOST</strong><small>Suelo · materia orgánica · acondicionamiento</small>
+                      </div>
+                    )}
+                    <small>{product.id === "prepara" ? "Base del sistema" : "Etapa nutricional"}</small>
+                    <h3>{product.consumerName}</h3>
+                    <span className={styles.formula}>{product.formula ?? "Compost"}</span>
+                    <p>{product.role}</p>
+                    <p><strong>{product.prompt}</strong></p>
+                    <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -159,17 +179,23 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Conocimiento práctico</span><h2>Guías para mirar mejor antes de decidir.</h2></div>
-              <p>El handoff incluye guías maestras de Casa & Jardín, Mi Huerta, etapas y trasplante. Las llevamos a una biblioteca navegable para que el PDF sea soporte, no el único lugar donde vive el conocimiento.</p>
+              <p>Casa & Jardín, Mi Huerta, etapas y trasplante ya están disponibles como lectura web. El catálogo general Wondergreen también puede descargarse completo desde esta página.</p>
             </div>
             <div className={styles.guideGrid}>
               {homeGardenGuides.map((guide) => (
                 <article className={styles.guideCard} key={guide.id}>
-                  <span>Guía del handoff</span>
+                  <span>Lectura web</span>
                   <h3>{guide.title}</h3>
                   <p>{guide.summary}</p>
                   <Link href={`/casa-jardin/guias#${guide.id}`}>Abrir guía →</Link>
                 </article>
               ))}
+              <article className={`${styles.guideCard} ${styles.catalogGuideCard}`}>
+                <span>PDF descargable</span>
+                <h3>Catálogo Wondergreen</h3>
+                <p>Consulta el sistema completo, organominerales, líquidos, bioinsumos, presentaciones y narrativa de las líneas Wondergreen.</p>
+                <a href="/api/public-resources/wondergreen-product-master" target="_blank" rel="noreferrer">Descargar catálogo PDF ↓</a>
+              </article>
             </div>
           </div>
         </section>
