@@ -43,7 +43,7 @@ describe("public Wondergreen PDF proxy", () => {
       }));
 
     const result = await downloadPublicWondergreenPdf("wondergreen-guide-cafe", env, fetchImpl);
-    expect(result?.resource.filename).toBe("guia-wondergreen-cafe.pdf");
+    expect(result?.asset.filename).toBe("guia-wondergreen-cafe.pdf");
     expect(result?.contentLength).toBe("4");
     expect(result?.etag).toBe("pdf-etag");
 
