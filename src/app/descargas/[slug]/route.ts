@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 function contentDisposition(fileName: string) {
   const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
-  return `inline; filename="${safeName}"`;
+  return `attachment; filename="${safeName}"`;
 }
 
 export async function GET(_request: Request, context: { params: Promise<{ slug: string }> }) {
