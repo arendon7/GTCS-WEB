@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublicResourceMasterAudit } from "@/data/public-resource-master-audits";
-import { publicResourceHostingGate, publicResources, type PublicResource } from "@/data/public-resources";
+import { publicResources, type PublicResource } from "@/data/public-resources";
 import styles from "./library.module.css";
 import refresh from "./library-refresh.module.css";
 
@@ -70,25 +70,17 @@ const intentRoutes = [
 ] as const;
 
 function getDeliveryLabel(resource: PublicResource) {
+  if (resource.delivery === "web-native-public-download") return "Lectura web + PDF disponible";
   if (resource.delivery === "web-native") return "Lectura web disponible";
-  const audit = getPublicResourceMasterAudit(resource.id);
-  if (audit?.status === "blocked") return "Lectura web disponible · PDF maestro retenido por auditoría";
-  if (audit?.status === "approved" && !publicResourceHostingGate.publicDownloadEnabled) {
-    return "Lectura web disponible · PDF maestro aprobado · hosting público pendiente";
-  }
-  if (resource.delivery === "web-native-master-pending") {
-    return "Lectura web disponible · PDF maestro identificado · auditoría pública pendiente";
-  }
+  if (resource.delivery === "web-native-master-pending") return "Lectura web disponible · PDF pendiente de binario público";
   return "Lectura web disponible · descarga pública pendiente";
 }
 
 function getMasterNotice(resource: PublicResource) {
+  if (!resource.masterLabel || resource.downloadHref) return null;
   const audit = getPublicResourceMasterAudit(resource.id);
-  if (audit?.status === "blocked") {
-    return "El PDF maestro no se publica todavía porque requiere conciliación técnica/comercial. La lectura web gobernada sigue disponible.";
-  }
   if (audit?.status === "pending") {
-    return "El maestro fue identificado, pero todavía debe pasar auditoría de contenido antes de habilitar una descarga pública.";
+    return "El contenido web está disponible; el PDF se añadirá cuando su binario público quede localizado.";
   }
   return null;
 }
@@ -102,11 +94,11 @@ export default function LibraryPage() {
             <div>
               <span className={styles.eyebrow}>Greenatics · conocimiento aplicado</span>
               <h1>La biblioteca no es un archivo. Es parte de la decisión.</h1>
-              <p className={styles.lead}>Guías, manuales y conocimiento técnico se convierten en rutas web conectadas con cultivos, productos, Casa & Jardín, síntomas, evidencia y acompañamiento.</p>
+              <p className={styles.lead}>Guías, manuales y conocimiento técnico se convierten en rutas web conectadas con cultivos, productos, Casa & Jardín, síntomas, evidencia y acompañamiento. Los principales maestros Wondergreen también están disponibles como PDF.</p>
             </div>
             <aside className={styles.warning}>
-              <strong>Conocimiento antes que recomendación.</strong>
-              <p>Una página técnica debe ayudar a formular mejores preguntas. Cuando la información no alcanza, la salida correcta es pedir análisis o escalar a un asesor.</p>
+              <strong>Consulta web o documento completo.</strong>
+              <p>Usa la ruta web para navegar por cultivo y producto, o descarga el PDF editorial cuando quieras conservar el material completo.</p>
             </aside>
           </div>
         </section>
@@ -136,8 +128,8 @@ export default function LibraryPage() {
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Recursos disponibles</span>
-              <h2>De documentos aislados a un sistema de conocimiento.</h2>
-              <p>Cada recurso se conecta con el Product Master, una ruta agronómica, Casa & Jardín o una decisión concreta. El estado visible evita presentar como definitivo lo que todavía requiere validación o hosting público.</p>
+              <h2>Web navegable y documentos para descargar.</h2>
+              <p>Catálogo Wondergreen y cinco guías agrícolas pueden consultarse directamente como PDF, además de sus rutas web. Los recursos de Casa & Jardín mantienen su lectura web mientras localizamos los binarios correspondientes.</p>
             </div>
             <div className={styles.libraryGrid}>
               {publicResources.map((resource) => {
@@ -152,7 +144,12 @@ export default function LibraryPage() {
                     <p>{resource.copy}</p>
                     {resource.masterLabel ? <small className={styles.delivery}>Maestro: {resource.masterLabel}</small> : null}
                     {masterNotice ? <small className={styles.delivery}>{masterNotice}</small> : null}
-                    <Link href={resource.href}>{resource.cta} →</Link>
+                    <div className={styles.resourceActions}>
+                      <Link href={resource.href}>{resource.cta} →</Link>
+                      {resource.downloadHref ? (
+                        <a href={resource.downloadHref} download>{resource.downloadCta ?? "Descargar PDF"} ↓</a>
+                      ) : null}
+                    </div>
                   </article>
                 );
               })}

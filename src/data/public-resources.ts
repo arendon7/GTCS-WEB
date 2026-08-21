@@ -1,7 +1,7 @@
 import { homeGardenGuides } from "./home-garden";
 
 export type PublicResourceKind = "crop-library" | "manual" | "guide" | "catalog" | "technology" | "finder";
-export type PublicResourceDelivery = "web-native" | "web-native-master-pending" | "public-download-pending";
+export type PublicResourceDelivery = "web-native" | "web-native-master-pending" | "public-download-pending" | "web-native-public-download";
 export type PublicResourceMasterSource = "internal-document-library" | "validated-handoff";
 
 export type PublicResource = {
@@ -16,6 +16,8 @@ export type PublicResource = {
   sourceAuthority: string;
   masterLabel?: string;
   masterSource?: PublicResourceMasterSource;
+  downloadHref?: string;
+  downloadCta?: string;
 };
 
 const homeGardenPublicResources: PublicResource[] = homeGardenGuides.map((guide) => ({
@@ -23,7 +25,7 @@ const homeGardenPublicResources: PublicResource[] = homeGardenGuides.map((guide)
   kind: "guide",
   statusLabel: "Casa & Jardín",
   title: guide.title,
-  copy: `${guide.summary} La lectura web está disponible dentro de Casa, Jardín y Vivero; el PDF maestro del handoff se conserva como fuente y todavía no se expone como descarga pública.`,
+  copy: `${guide.summary} La lectura web está disponible dentro de Casa, Jardín y Vivero; el PDF maestro del handoff se conserva como fuente mientras localizamos su binario publicable.`,
   href: `/casa-jardin/guias#${guide.id}`,
   cta: "Abrir guía",
   delivery: "web-native-master-pending",
@@ -47,67 +49,77 @@ export const publicResources: PublicResource[] = [
   {
     id: "wondergreen-guide-cafe",
     kind: "guide",
-    statusLabel: "Guía por cultivo",
+    statusLabel: "PDF disponible",
     title: "Guía Wondergreen para café",
-    copy: "Programa navegable para café conectado con etapa, contexto de lote, familias Wondergreen y seguimiento. El maestro editorial de 20 páginas ya fue localizado para su futura descarga pública.",
+    copy: "Programa navegable para café y guía editorial completa de 20 páginas disponibles desde una misma ruta pública.",
     href: "/wondergreen/cultivos/cafe",
-    cta: "Abrir guía de café",
-    delivery: "web-native-master-pending",
+    cta: "Abrir guía web",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Café · 20 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/guia-cafe",
+    downloadCta: "Descargar PDF",
   },
   {
     id: "wondergreen-guide-cacao",
     kind: "guide",
-    statusLabel: "Guía por cultivo",
+    statusLabel: "PDF disponible",
     title: "Guía Wondergreen para cacao",
-    copy: "Programa navegable para cacao con establecimiento, formación, transición reproductiva, llenado, recuperación, alertas y seguimiento. El maestro editorial de 20 páginas ya fue localizado.",
+    copy: "Programa navegable para cacao y guía editorial completa de 20 páginas disponibles para consulta y descarga.",
     href: "/wondergreen/cultivos/cacao",
-    cta: "Abrir guía de cacao",
-    delivery: "web-native-master-pending",
+    cta: "Abrir guía web",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cacao · 20 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/guia-cacao",
+    downloadCta: "Descargar PDF",
   },
   {
     id: "wondergreen-guide-aguacate",
     kind: "guide",
-    statusLabel: "Guía por cultivo",
+    statusLabel: "PDF disponible",
     title: "Guía Wondergreen para aguacate",
-    copy: "Programa navegable para aguacate con formación, mantenimiento, prefloración, cuajado, llenado y recuperación. El maestro editorial V2 de 20 páginas ya fue localizado.",
+    copy: "Programa navegable para aguacate y guía editorial completa de 20 páginas disponibles desde la Biblioteca Greenatics.",
     href: "/wondergreen/cultivos/aguacate",
-    cta: "Abrir guía de aguacate",
-    delivery: "web-native-master-pending",
+    cta: "Abrir guía web",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
-    masterLabel: "Guía Wondergreen Aguacate V2 · 20 páginas",
+    masterLabel: "Guía Wondergreen Aguacate · 20 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/guia-aguacate",
+    downloadCta: "Descargar PDF",
   },
   {
     id: "wondergreen-guide-limon-tahiti",
     kind: "guide",
-    statusLabel: "Guía por cultivo",
+    statusLabel: "PDF disponible",
     title: "Guía Wondergreen para limón Tahití",
-    copy: "Programa navegable para limón Tahití organizado alrededor de flujos vegetativos y reproductivos, contexto radicular y seguimiento. El maestro editorial de cítricos de 20 páginas ya fue localizado.",
+    copy: "Programa web para limón Tahití y guía editorial de cítricos de 20 páginas disponibles para consulta y descarga.",
     href: "/wondergreen/cultivos/limon-tahiti",
-    cta: "Abrir guía de limón Tahití",
-    delivery: "web-native-master-pending",
+    cta: "Abrir guía web",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cítricos · 20 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/guia-citricos",
+    downloadCta: "Descargar PDF",
   },
   {
     id: "wondergreen-guide-pastos",
     kind: "guide",
-    statusLabel: "Guía por cultivo",
+    statusLabel: "PDF disponible",
     title: "Guía Wondergreen para pastos y gramíneas",
-    copy: "Programa navegable para suelo, crecimiento activo, sostenimiento y rebrote por hectárea y manejo del potrero. El maestro editorial de pastos y praderas de 20 páginas ya fue localizado.",
+    copy: "Programa web para pastos y guía editorial de Pastos y Praderas de 20 páginas disponibles para consulta y descarga.",
     href: "/wondergreen/cultivos/pastos-gramineas",
-    cta: "Abrir guía de pastos",
-    delivery: "web-native-master-pending",
+    cta: "Abrir guía web",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Pastos y Praderas · 20 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/guia-pastos-praderas",
+    downloadCta: "Descargar PDF",
   },
   ...homeGardenPublicResources,
   {
@@ -146,15 +158,17 @@ export const publicResources: PublicResource[] = [
   {
     id: "wondergreen-product-master",
     kind: "catalog",
-    statusLabel: "Product Master público",
+    statusLabel: "PDF disponible",
     title: "Catálogo técnico-comercial Wondergreen",
-    copy: "Familias, formulaciones, formatos, precios reconciliados y estado público se consultan desde el Product Master navegable. El catálogo comercial optimizado de 10 páginas ya fue localizado como candidato de descarga pública.",
+    copy: "Catálogo comercial Wondergreen de 10 páginas disponible como PDF, complementado por el Product Master navegable de la web.",
     href: "/wondergreen/productos",
     cta: "Ver productos",
-    delivery: "web-native-master-pending",
+    delivery: "web-native-public-download",
     sourceAuthority: "Wondergreen Product Truth · maestro comercial localizado",
     masterLabel: "Catálogo Wondergreen optimizado · 10 páginas",
     masterSource: "internal-document-library",
+    downloadHref: "/descargas/catalogo-wondergreen",
+    downloadCta: "Descargar catálogo PDF",
   },
   {
     id: "wondergreen-more-than-npk",
@@ -182,7 +196,7 @@ export const publicResources: PublicResource[] = [
 
 export const publicResourceHostingGate = {
   privateSourceLinksAllowed: false,
-  publicDownloadEnabled: false,
+  publicDownloadEnabled: true,
   requiredPublicHost: "same-origin-or-approved-public-cdn",
-  rule: "Un maestro interno o de handoff puede sustentar contenido web, pero no se convierte en enlace de descarga hasta existir un binario auditado en un host público estable y gobernado.",
+  rule: "Los PDFs Wondergreen aprobados para publicación se sirven por una ruta pública same-origin con whitelist server-side; las URLs privadas de SharePoint nunca se exponen al navegador.",
 } as const;

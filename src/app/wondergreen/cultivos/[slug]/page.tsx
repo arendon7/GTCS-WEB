@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fieldApplicationRules, fieldChecklist, getWondergreenCrop, wondergreenCrops } from "@/data/wondergreen-crops";
+import { getWondergreenCropGuideDownloadHref } from "@/data/wondergreen-downloads";
 import { wondergreenReferences } from "@/data/wondergreen-public";
 import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "../crops.module.css";
@@ -33,6 +34,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
 
   const programFamilies = [...new Set(crop.stages.flatMap((stage) => stage.lines))];
   const references = relatedReferences(programFamilies);
+  const guideDownloadHref = getWondergreenCropGuideDownloadHref(slug);
 
   return (
     <div className={`${styles.page} ${refresh.page}`}>
@@ -43,6 +45,12 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
               <span className={styles.eyebrow}>Programa Wondergreen · {crop.name}</span>
               <h1>{crop.headline}</h1>
               <p className={styles.lead}>{crop.intro}</p>
+              {guideDownloadHref ? (
+                <div className={styles.heroActions}>
+                  <a className={`${styles.button} ${styles.primary}`} href={guideDownloadHref} download>Descargar guía PDF ↓</a>
+                  <Link className={styles.button} href="/biblioteca">Ver Biblioteca</Link>
+                </div>
+              ) : null}
             </div>
             <aside className={styles.heroAside}>
               <strong>Contexto antes de producto.</strong>

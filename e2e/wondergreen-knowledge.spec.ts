@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("public library exposes live Wondergreen knowledge resources and governed source masters", async ({ page }) => {
+test("public library exposes live Wondergreen knowledge resources and public PDF masters", async ({ page }) => {
   await page.goto("/biblioteca");
 
   await expect(page.getByRole("heading", { name: /La biblioteca no es un archivo/i })).toBeVisible();
@@ -17,13 +17,24 @@ test("public library exposes live Wondergreen knowledge resources and governed s
   });
   await expect(deficiencyCard.getByRole("link", { name: "Abrir guía →", exact: true })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
 
-  await expect(page.getByText("Lectura web disponible · PDF maestro identificado · auditoría pública pendiente", { exact: true }).first()).toBeVisible();
+  const expectedDownloads = [
+    ["Guía Wondergreen para café", "/descargas/guia-cafe", "Descargar PDF ↓"],
+    ["Guía Wondergreen para cacao", "/descargas/guia-cacao", "Descargar PDF ↓"],
+    ["Guía Wondergreen para aguacate", "/descargas/guia-aguacate", "Descargar PDF ↓"],
+    ["Guía Wondergreen para limón Tahití", "/descargas/guia-citricos", "Descargar PDF ↓"],
+    ["Guía Wondergreen para pastos y gramíneas", "/descargas/guia-pastos-praderas", "Descargar PDF ↓"],
+    ["Catálogo técnico-comercial Wondergreen", "/descargas/catalogo-wondergreen", "Descargar catálogo PDF ↓"],
+  ] as const;
 
-  const catalogCard = page.getByRole("article").filter({
-    has: page.getByRole("heading", { name: "Catálogo técnico-comercial Wondergreen", exact: true }),
-  });
-  await expect(catalogCard.getByText("Lectura web disponible · PDF maestro retenido por auditoría", { exact: true })).toBeVisible();
-  await expect(catalogCard.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
+  for (const [heading, href, label] of expectedDownloads) {
+    const card = page.getByRole("article").filter({ has: page.getByRole("heading", { name: heading, exact: true }) });
+    await expect(card.getByText("Lectura web + PDF disponible", { exact: true })).toBeVisible();
+    await expect(card.getByRole("link", { name: label, exact: true })).toHaveAttribute("href", href);
+  }
+
+  await expect(page.getByText("Lectura web disponible · PDF pendiente de binario público", { exact: true }).first()).toBeVisible();
+  const hrefs = await page.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href") || ""));
+  expect(hrefs.some((href) => /sharepoint\.com|graph\.microsoft\.com/i.test(href))).toBe(false);
 });
 
 test("public library routes by user intent before product selection", async ({ page }) => {
