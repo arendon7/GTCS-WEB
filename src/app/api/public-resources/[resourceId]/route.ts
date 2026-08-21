@@ -17,7 +17,7 @@ export async function GET(
 
     const headers = new Headers({
       "content-type": "application/pdf",
-      "content-disposition": `inline; filename="${download.resource.filename}"`,
+      "content-disposition": `inline; filename="${download.asset.filename}"`,
       "cache-control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
       "x-content-type-options": "nosniff",
     });
