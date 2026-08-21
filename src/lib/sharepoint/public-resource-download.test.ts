@@ -18,7 +18,7 @@ const env = {
 };
 
 describe("public Wondergreen resource proxy", () => {
-  it("exposes exactly the six explicitly approved PDFs", () => {
+  it("exposes exactly the ten explicitly approved PDFs", () => {
     expect(publicWondergreenPdfs.map((item) => item.id)).toEqual([
       "wondergreen-product-master",
       "wondergreen-guide-cafe",
@@ -26,8 +26,13 @@ describe("public Wondergreen resource proxy", () => {
       "wondergreen-guide-aguacate",
       "wondergreen-guide-limon-tahiti",
       "wondergreen-guide-pastos",
+      "home-garden-guide-casa-jardin",
+      "home-garden-guide-mi-huerta",
+      "home-garden-guide-etapas",
+      "home-garden-guide-trasplante",
     ]);
     expect(getPublicWondergreenPdf("home-garden-guide-green-plants")).toBeNull();
+    expect(getPublicWondergreenPdf("home-garden-guide-casa-jardin")?.filename).toBe("guia-casa-jardin.pdf");
   });
 
   it("registers the real Wondergreen visuals reused by Casa Jardin", () => {

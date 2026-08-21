@@ -17,6 +17,13 @@ const guideContent = {
   trasplante: ["Prioriza drenaje y estructura del sustrato.", "Manipula raíces con cuidado y evita sobrecompactar.", "Mantén humedad adecuada sin encharcar.", "Espera estabilidad antes de escoger una etapa nutricional.", "La guía es educativa; no habilita el Kit Trasplanta & Arranca bloqueado."],
 } as const;
 
+const guideDownloads: Record<string, string> = {
+  "casa-jardin": "/api/public-resources/home-garden-guide-casa-jardin",
+  "mi-huerta": "/api/public-resources/home-garden-guide-mi-huerta",
+  etapas: "/api/public-resources/home-garden-guide-etapas",
+  trasplante: "/api/public-resources/home-garden-guide-trasplante",
+};
+
 export default function CasaJardinGuiasPage() {
   return (
     <div className={styles.page}>
@@ -26,7 +33,7 @@ export default function CasaJardinGuiasPage() {
             <div>
               <span className={styles.eyebrow}>Wondergreen Casa & Jardín · biblioteca</span>
               <h1>Guías para observar antes de aplicar.</h1>
-              <p className={styles.lead}>El handoff de MKTG Studio incluye cuatro guías útiles para esta primera versión. Su conocimiento ya vive de forma navegable aquí; los binarios PDF se mantienen separados hasta completar su incorporación técnica al repositorio.</p>
+              <p className={styles.lead}>El conocimiento del handoff vive aquí de forma navegable y ahora se acompaña por cuatro masters públicos reconstruidos desde el contenido gobernado y los activos Wondergreen aprobados. La web sigue siendo la autoridad para límites, estados y actualizaciones.</p>
               <div className={styles.actions}><Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin">← Volver a Casa, Jardín y Vivero</Link></div>
             </div>
             <aside className={styles.heroVisual}><p className={styles.heroNote}>DEL PDF A CONTENIDO NAVEGABLE</p><strong style={{ color: "white", fontFamily: "var(--display)", fontSize: "3rem", lineHeight: 1 }}>Conocimiento que acompaña la decisión.</strong></aside>
@@ -44,8 +51,11 @@ export default function CasaJardinGuiasPage() {
                 {guideContent[guide.id as keyof typeof guideContent].map((item, itemIndex) => <article className={styles.decisionCard} key={item}><span className={styles.eyebrow}>{String(itemIndex + 1).padStart(2, "0")}</span><p><strong>{item}</strong></p></article>)}
               </div>
               <div className={styles.guardrail}>
-                <strong>PDF fuente validado en el handoff.</strong>
-                <p>{guide.sourceFile} · El archivo optimizado ya fue extraído y revisado, pero la descarga web permanece deshabilitada hasta que el binario quede incorporado y verificado dentro del deploy.</p>
+                <strong>Master público reconstruido y verificado.</strong>
+                <p>El PDF descargable fue reconstruido desde este contenido gobernado y activos Wondergreen aprobados, renderizado y revisado antes de publicación. No se presenta como una copia byte a byte del binario histórico del handoff.</p>
+                <div className={styles.actions}>
+                  <a className={`${styles.button} ${styles.primary}`} href={guideDownloads[guide.id]} target="_blank" rel="noreferrer">Descargar PDF →</a>
+                </div>
               </div>
             </div>
           </section>
