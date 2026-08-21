@@ -1,5 +1,3 @@
-import { parseSharePointGraphRuntimeConfig, type SharePointGraphRuntimeConfig } from "./graph-readonly";
-
 export type PublicWondergreenPdfId =
   | "wondergreen-product-master"
   | "wondergreen-guide-cafe"
@@ -30,47 +28,57 @@ export type PublicWondergreenMediaId =
   | "wondergreen-2fruit"
   | "wondergreen-bioinsumos";
 
-type PublicGraphAsset<TId extends string> = Readonly<{
+type PublicHostedAsset<TId extends string> = Readonly<{
   id: TId;
-  itemId: string;
   filename: string;
   contentType: string;
+  downloadUrl: string;
 }>;
 
-const GRAPH_ORIGIN = "https://graph.microsoft.com";
-const TOKEN_SCOPE = "https://graph.microsoft.com/.default";
-const GRAPH_ID = /^[A-Za-z0-9!._-]{3,512}$/;
+const PUBLIC_ONEDRIVE_HOST = "https://grupopineal-my.sharepoint.com";
 
-export const publicWondergreenPdfs: readonly PublicGraphAsset<PublicWondergreenPdfId>[] = Object.freeze([
-  { id: "wondergreen-product-master", itemId: "01VAJGQOVIQ3U2MLVR5FBZQ5U4LYDFOPLH", filename: "catalogo-wondergreen.pdf", contentType: "application/pdf" },
-  { id: "wondergreen-guide-cafe", itemId: "01VAJGQOUUF5DBWLCEB5D2O5YCVPNTAII2", filename: "guia-wondergreen-cafe.pdf", contentType: "application/pdf" },
-  { id: "wondergreen-guide-cacao", itemId: "01VAJGQOUKZOUUY37G45E3XSYD7DTTFXGI", filename: "guia-wondergreen-cacao.pdf", contentType: "application/pdf" },
-  { id: "wondergreen-guide-aguacate", itemId: "01VAJGQOVFGMMQPE7Q65EIUBBM4JGFUNK2", filename: "guia-wondergreen-aguacate.pdf", contentType: "application/pdf" },
-  { id: "wondergreen-guide-limon-tahiti", itemId: "01VAJGQOXZBLJD7F62J5G2SURIXBMWM7MW", filename: "guia-wondergreen-citricos.pdf", contentType: "application/pdf" },
-  { id: "wondergreen-guide-pastos", itemId: "01VAJGQOVR7Q3XBPIMRFAIDSYCGUIQM26F", filename: "guia-wondergreen-pastos-y-praderas.pdf", contentType: "application/pdf" },
-  { id: "home-garden-guide-casa-jardin", itemId: "01VAJGQOTJ4PZZOEPK4JFYP6TSAEZ7K4L2", filename: "guia-casa-jardin.pdf", contentType: "application/pdf" },
-  { id: "home-garden-guide-mi-huerta", itemId: "01VAJGQOSREI6AY43HKJEJ2J7QPPUT2INU", filename: "guia-mi-huerta.pdf", contentType: "application/pdf" },
-  { id: "home-garden-guide-etapas", itemId: "01VAJGQOTYKZXRHRQ43VCLVVV4KDLYT3PG", filename: "guia-rapida-etapas.pdf", contentType: "application/pdf" },
-  { id: "home-garden-guide-trasplante", itemId: "01VAJGQOX4IPEFYGPP2VA2OMQSKULETUKZ", filename: "guia-trasplante.pdf", contentType: "application/pdf" },
+function publicDownloadUrl(sharePath: string) {
+  const url = `${PUBLIC_ONEDRIVE_HOST}${sharePath}?download=1`;
+  const parsed = new URL(url);
+  if (parsed.protocol !== "https:" || parsed.hostname !== "grupopineal-my.sharepoint.com") {
+    throw new Error("El host público del recurso Wondergreen no es válido.");
+  }
+  if (parsed.searchParams.get("download") !== "1") {
+    throw new Error("El recurso Wondergreen debe usar descarga binaria directa.");
+  }
+  return parsed.toString();
+}
+
+export const publicWondergreenPdfs: readonly PublicHostedAsset<PublicWondergreenPdfId>[] = Object.freeze([
+  { id: "wondergreen-product-master", filename: "catalogo-wondergreen.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQDcgWu7j3izTKvOjrT8kjLEAWD-K4YFHC3WyJ906ESswp4") },
+  { id: "wondergreen-guide-cafe", filename: "guia-wondergreen-cafe.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQBO8IqLVbYUTI8ucVoT0UxAAYcla_Pi3Cw5m_g65JCBl0U") },
+  { id: "wondergreen-guide-cacao", filename: "guia-wondergreen-cacao.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQDARDgN7SAVTbRpWBh8C_5xAV6apLUuoYIoHZw4DzDwLHQ") },
+  { id: "wondergreen-guide-aguacate", filename: "guia-wondergreen-aguacate.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQD5xaF3W5lXQbzHdJzlLN6kAURwx3LLlWpYtl3oXX33pvs") },
+  { id: "wondergreen-guide-limon-tahiti", filename: "guia-wondergreen-citricos.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQAjljZmsVgPTof_vOtSyN9_AaO2dVDm6F8DrSuzD-OUuGg") },
+  { id: "wondergreen-guide-pastos", filename: "guia-wondergreen-pastos-y-praderas.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQBQJxECHjkBSo6ZJ66_Cm7mAQmtGjQSA3s9t5x-zLXHLKM") },
+  { id: "home-garden-guide-casa-jardin", filename: "guia-casa-jardin.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQASfZ8Pzy8GSIQ4wXS0XcJuAeQOI7xlmg4mp9w_PHLCRxY") },
+  { id: "home-garden-guide-mi-huerta", filename: "guia-mi-huerta.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQD2xJ1vPVbSTJKRhNY1xIWHAbeK08PJxlM6Ng1OEt3b_xQ") },
+  { id: "home-garden-guide-etapas", filename: "guia-rapida-etapas.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQDPTSliVwbYRYkD1LOY0LVyAZwVvTe_5EdfZhus1RTJ49g") },
+  { id: "home-garden-guide-trasplante", filename: "guia-trasplante.pdf", contentType: "application/pdf", downloadUrl: publicDownloadUrl("/:b:/g/personal/arendon_greenatics_com_co/IQBHpW-XGyh0T7QretbKRDqEAZxcCStEseVyT41tMRFdkw8") },
 ]);
 
-export const publicWondergreenMedia: readonly PublicGraphAsset<PublicWondergreenMediaId>[] = Object.freeze([
-  { id: "catalogo-cover", itemId: "01VAJGQOTUKW5ABSKD5FDKW3KXQ2UYYJG5", filename: "catalogo-cover.webp", contentType: "image/webp" },
-  { id: "guia-cafe-cover", itemId: "01VAJGQOWTVFFRPJ43R5EKGPFECG6F57FX", filename: "guia-cafe-cover.webp", contentType: "image/webp" },
-  { id: "guia-cacao-cover", itemId: "01VAJGQOUO66U2N5TGHBEZNUNMIC6366MG", filename: "guia-cacao-cover.webp", contentType: "image/webp" },
-  { id: "guia-aguacate-cover", itemId: "01VAJGQORJQCA46SIRKJBIXBDBFNVU3L4T", filename: "guia-aguacate-cover.webp", contentType: "image/webp" },
-  { id: "guia-citricos-cover", itemId: "01VAJGQOSTVLT43UZJZNHJZ4NTLSIL24SG", filename: "guia-citricos-cover.webp", contentType: "image/webp" },
-  { id: "guia-pastos-cover", itemId: "01VAJGQOQRG24OXXNDEZB2WQVPBUZYIX25", filename: "guia-pastos-cover.webp", contentType: "image/webp" },
-  { id: "home-garden-casa-jardin-cover", itemId: "01VAJGQOVTNRF35QW3JNDI3TBJO5SMWALQ", filename: "guia-casa-jardin-cover.webp", contentType: "image/webp" },
-  { id: "home-garden-mi-huerta-cover", itemId: "01VAJGQOSYF4ZTLATJDFGKERHDNBR6N7CX", filename: "guia-mi-huerta-cover.webp", contentType: "image/webp" },
-  { id: "home-garden-etapas-cover", itemId: "01VAJGQOVWDV5RXVC3KVEJL2ALODJVPRRX", filename: "guia-rapida-etapas-cover.webp", contentType: "image/webp" },
-  { id: "home-garden-trasplante-cover", itemId: "01VAJGQOQBKRDC4M7UW5AZ2SMVITAHRMAO", filename: "guia-trasplante-cover.webp", contentType: "image/webp" },
-  { id: "wondergreen-system-stages", itemId: "01VAJGQOQGN5JPABJ6NBAJXR4PUSLSZGJJ", filename: "wondergreen-system-stages.webp", contentType: "image/webp" },
-  { id: "wondergreen-2grow", itemId: "01VAJGQOXLFZYZPDA7MFFJAF5MRQM7VGJQ", filename: "wondergreen-2grow.webp", contentType: "image/webp" },
-  { id: "wondergreen-2balance", itemId: "01VAJGQOQ4K7CZQDH77RCLX4BBI7MYTRWS", filename: "wondergreen-2balance.webp", contentType: "image/webp" },
-  { id: "wondergreen-2bloom", itemId: "01VAJGQOTFHK6KH3Y7C5DJKBA5OULRMGHO", filename: "wondergreen-2bloom.webp", contentType: "image/webp" },
-  { id: "wondergreen-2fruit", itemId: "01VAJGQOUZYXMXQKDW6BAZFIUFO33MZKVL", filename: "wondergreen-2fruit.webp", contentType: "image/webp" },
-  { id: "wondergreen-bioinsumos", itemId: "01VAJGQOUNL6KJ5VX3MBAYA3BP74SWZRQ2", filename: "wondergreen-bioinsumos.webp", contentType: "image/webp" },
+export const publicWondergreenMedia: readonly PublicHostedAsset<PublicWondergreenMediaId>[] = Object.freeze([
+  { id: "catalogo-cover", filename: "catalogo-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCI3ajyCrgnRawDdBcPqlVbAZsyaWH3iw_8U1NwXvlPBV8") },
+  { id: "guia-cafe-cover", filename: "guia-cafe-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQDvQrei1O77QKWuINBoJuVsASQh3WrfGsH4cMeFCUV7lwk") },
+  { id: "guia-cacao-cover", filename: "guia-cacao-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCQm0Oc7miBSJO_AlHBavOgAVikqKpIskCMfgLz2R3dmwg") },
+  { id: "guia-aguacate-cover", filename: "guia-aguacate-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQABSbMd2IwrSajBXjvdOlnUARXIFX8_mr3O_6On_SUq23A") },
+  { id: "guia-citricos-cover", filename: "guia-citricos-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQB41MDxtNPmT6s9Kqha9U8aAZ_H_ouqvhOiC-nF-iHG8fU") },
+  { id: "guia-pastos-cover", filename: "guia-pastos-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQB0mMSAJJTQRa3ZarUROyZgAflzlj-RTURQ7V0bu_SksaI") },
+  { id: "home-garden-casa-jardin-cover", filename: "home-garden-casa-jardin-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQBOIZ_vtgN2RLQoy0TtiOHSAe8byjN1L1f6jJpVC75IQIk") },
+  { id: "home-garden-mi-huerta-cover", filename: "home-garden-mi-huerta-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQDbeD5lq9x3Rb-306BJAHHWAc7yjoJwEFAdRZlr2lacXY8") },
+  { id: "home-garden-etapas-cover", filename: "home-garden-etapas-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCxKy3wSSh6Q6BHjvNuGNpWAX8B1cykojKNjwAEXeQICKo") },
+  { id: "home-garden-trasplante-cover", filename: "home-garden-trasplante-cover.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCNIRs8EEKnSKJ0eIwgnNknAWibtUs0UaLgJduv1mceXgY") },
+  { id: "wondergreen-system-stages", filename: "wondergreen-system-stages.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQC6TKqflhX5S5h59TMNCd77AUMCOA_SMh_fJQrs9X-QSdw") },
+  { id: "wondergreen-2grow", filename: "wondergreen-2grow.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCqrTUPMFPNS56f8saQplOkAbzR7K-BHLSDApstzbdwHR0") },
+  { id: "wondergreen-2balance", filename: "wondergreen-2balance.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQCvT_T5AX6GQbkvEvcplOI7ASjgDg6YtfsFbjawtHfSP6Q") },
+  { id: "wondergreen-2bloom", filename: "wondergreen-2bloom.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQB31j0dbReqRoDAb8BFM1KYAQKtnTWh8SEoRZzLAYyDiDI") },
+  { id: "wondergreen-2fruit", filename: "wondergreen-2fruit.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQBtj_lxYNy6QbDKjE4_TP4kAaN9Vzo9hqw5lkqdHlei2Lg") },
+  { id: "wondergreen-bioinsumos", filename: "wondergreen-bioinsumos.webp", contentType: "image/webp", downloadUrl: publicDownloadUrl("/:u:/g/personal/arendon_greenatics_com_co/IQAioGSAn8F1R6XzPBo_Hop5AebpRx5OVbk_Vm7zQUOiDqs") },
 ]);
 
 export function getPublicWondergreenPdf(resourceId: string) {
@@ -79,68 +87,4 @@ export function getPublicWondergreenPdf(resourceId: string) {
 
 export function getPublicWondergreenMedia(assetId: string) {
   return publicWondergreenMedia.find((asset) => asset.id === assetId) ?? null;
-}
-
-async function getAccessToken(runtime: SharePointGraphRuntimeConfig, fetchImpl: typeof fetch) {
-  const tokenUrl = `https://login.microsoftonline.com/${runtime.auth.tenantId}/oauth2/v2.0/token`;
-  const body = new URLSearchParams({
-    client_id: runtime.auth.clientId,
-    client_secret: runtime.auth.clientSecret,
-    scope: TOKEN_SCOPE,
-    grant_type: "client_credentials",
-  });
-  const response = await fetchImpl(tokenUrl, {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body,
-    cache: "no-store",
-  });
-  if (!response.ok) throw new Error(`Microsoft identity token request failed with HTTP ${response.status}.`);
-  const payload = await response.json() as { access_token?: unknown };
-  const accessToken = typeof payload.access_token === "string" ? payload.access_token.trim() : "";
-  if (!accessToken) throw new Error("Microsoft identity token response was incomplete.");
-  return accessToken;
-}
-
-async function downloadGraphAsset<TId extends string>(
-  asset: PublicGraphAsset<TId>,
-  env: Record<string, string | undefined>,
-  fetchImpl: typeof fetch,
-) {
-  if (!GRAPH_ID.test(asset.itemId)) throw new Error("La referencia pública del recurso no es válida.");
-  const runtime = parseSharePointGraphRuntimeConfig(env);
-  if (!runtime.ok) throw new Error(runtime.error);
-  const accessToken = await getAccessToken(runtime.value, fetchImpl);
-  const url = `${GRAPH_ORIGIN}/v1.0/drives/${encodeURIComponent(runtime.value.source.driveId)}/items/${encodeURIComponent(asset.itemId)}/content`;
-  const response = await fetchImpl(url, {
-    method: "GET",
-    headers: { authorization: `Bearer ${accessToken}`, accept: asset.contentType },
-    cache: "no-store",
-    redirect: "follow",
-  });
-  if (!response.ok || !response.body) throw new Error(`Microsoft Graph document download failed with HTTP ${response.status}.`);
-  return {
-    asset,
-    body: response.body,
-    contentLength: response.headers.get("content-length"),
-    etag: response.headers.get("etag"),
-  } as const;
-}
-
-export async function downloadPublicWondergreenPdf(
-  resourceId: string,
-  env: Record<string, string | undefined> = process.env,
-  fetchImpl: typeof fetch = fetch,
-) {
-  const resource = getPublicWondergreenPdf(resourceId);
-  return resource ? downloadGraphAsset(resource, env, fetchImpl) : null;
-}
-
-export async function downloadPublicWondergreenMedia(
-  assetId: string,
-  env: Record<string, string | undefined> = process.env,
-  fetchImpl: typeof fetch = fetch,
-) {
-  const asset = getPublicWondergreenMedia(assetId);
-  return asset ? downloadGraphAsset(asset, env, fetchImpl) : null;
 }
