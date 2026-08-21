@@ -19,54 +19,46 @@ async function clickDigitalBridge(page: import("@playwright/test").Page) {
   await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true }).click();
 }
 
-test("solutions hub exposes strategic programs, decision modules, six commercial lines and governed services", async ({ page }) => {
+test("solutions hub routes by audience, service family, process and evidence", async ({ page }) => {
   await page.goto("/soluciones");
 
-  await expect(page.getByRole("heading", { name: /Primero estructurar. Luego operar. Después valorizar./i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Empieza por tu contexto. Después elegimos el servicio./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
-  await expect(page.getByText(/Vista aérea de archivo · Yarumal/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "No sé por dónde empezar", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
 
-  await expect(page.getByRole("heading", { name: "Tres formas de empezar con una base más clara." })).toBeVisible();
-  for (const program of ["ESP READY", "GREENATICS BASE", "PMIRS RED"]) {
-    await expect(page.getByRole("heading", { name: program, exact: true })).toBeVisible();
-  }
-  await expect(page.getByRole("link", { name: /Conocer ESP READY/ })).toHaveAttribute("href", "/soluciones/programas/esp-ready");
-  await expect(page.getByRole("link", { name: /Conocer GREENATICS BASE/ })).toHaveAttribute("href", "/soluciones/programas/greenatics-base");
-  await expect(page.getByRole("link", { name: /Conocer PMIRS RED/ })).toHaveAttribute("href", "/soluciones/programas/pmirs-red");
-
-  await expect(page.getByRole("heading", { name: "No todo problema necesita convertirse en un servicio nuevo." })).toBeVisible();
-  for (const moduleTitle of [
-    "Puesta en marcha de operación de aseo",
-    "Rutas, flota y continuidad operativa",
-    "Programa de orgánicos: captura real y piloto",
-    "Prefactibilidad de decisiones de infraestructura",
-    "Screening técnico de predios",
-    "Acompañamiento por etapas",
+  for (const audience of [
+    "ESP / Prestadores",
+    "Municipios",
+    "Empresas / Grandes generadores",
+    "Propiedad horizontal / Instituciones",
+    "Plantas / Operadores",
   ]) {
-    await expect(page.getByRole("heading", { name: moduleTitle, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: audience, exact: true })).toBeVisible();
   }
-  await expect(page.getByText(/no presupone una planta ni una tecnología/i)).toBeVisible();
-  await expect(page.getByText(/no sustituye concepto de uso del suelo/i)).toBeVisible();
 
-  for (const line of [
-    "Diagnóstico y datos",
-    "Planeación y gestión",
-    "Operación de aseo y logística",
-    "Circularidad y valorización",
-    "Infraestructura y proyectos",
-    "Acompañamiento y operación",
+  await expect(page.getByRole("heading", { name: "Ocho familias para contratar actividades y resultados concretos." })).toBeVisible();
+  for (const family of [
+    "Diagnóstico y gestión de residuos",
+    "Planeación y programas",
+    "Gestión jurídica y regulatoria",
+    "Rutas y logística",
+    "Plantas y tratamiento",
+    "Dirección técnica y operación asistida",
+    "Datos, trazabilidad y OPS",
+    "Valorización y desarrollo de productos",
   ]) {
-    await expect(page.getByRole("heading", { name: line, exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: family, exact: true })).toBeVisible();
   }
 
-  await expect(page.getByRole("link", { name: /Diagnóstico y caracterización/ }).first()).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
-  await expect(page.getByRole("link", { name: /Trazabilidad, indicadores y datos/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
-  await expect(page.getByRole("heading", { name: /De la planeación a una operación preparada para crecer/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /De cumplimiento aislado a gestión medible y circular/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "PMIRS y planes internos de gestión de residuos" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Operación integral de plantas de tratamiento y valorización" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Ver solución en profundidad/i }).first()).toHaveAttribute("href", /\/soluciones\//);
+  await expect(page.getByRole("link", { name: /Diagnóstico y gestión de residuos/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: /Rutas y logística/ })).toHaveAttribute("href", "/soluciones/rutas-selectivas");
+  await expect(page.getByRole("link", { name: /Datos, trazabilidad y OPS/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
+
+  await expect(page.getByRole("heading", { name: "El diagnóstico ordena la ruta; no reemplaza el servicio." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Antes de reemplazar una planta/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /La consultoría gana valor cuando la información sigue viva después del informe./i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Si todavía no sabes qué contratar, empieza por una línea base./i })).toBeVisible();
 });
 
 test("ESP READY keeps the ten sourced preparation dimensions and decision outputs", async ({ page }) => {
