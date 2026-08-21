@@ -58,7 +58,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Café · 20 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/guia-cafe",
+    downloadHref: "/descargas/guia-cafe",
     downloadCta: "Descargar PDF",
   },
   {
@@ -73,7 +73,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cacao · 20 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/guia-cacao",
+    downloadHref: "/descargas/guia-cacao",
     downloadCta: "Descargar PDF",
   },
   {
@@ -88,7 +88,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Aguacate · 20 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/guia-aguacate",
+    downloadHref: "/descargas/guia-aguacate",
     downloadCta: "Descargar PDF",
   },
   {
@@ -103,7 +103,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Cítricos · 20 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/guia-citricos",
+    downloadHref: "/descargas/guia-citricos",
     downloadCta: "Descargar PDF",
   },
   {
@@ -118,7 +118,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Crop Truth · maestro comercial localizado",
     masterLabel: "Guía Wondergreen Pastos y Praderas · 20 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/guia-pastos-praderas",
+    downloadHref: "/descargas/guia-pastos-praderas",
     downloadCta: "Descargar PDF",
   },
   ...homeGardenPublicResources,
@@ -167,7 +167,7 @@ export const publicResources: PublicResource[] = [
     sourceAuthority: "Wondergreen Product Truth · maestro comercial localizado",
     masterLabel: "Catálogo Wondergreen optimizado · 10 páginas",
     masterSource: "internal-document-library",
-    downloadHref: "/api/public-resources/catalogo-wondergreen",
+    downloadHref: "/descargas/catalogo-wondergreen",
     downloadCta: "Descargar catálogo PDF",
   },
   {
