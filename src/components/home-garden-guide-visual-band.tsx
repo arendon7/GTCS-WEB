@@ -29,6 +29,13 @@ const guideAssets = {
   },
 } as const;
 
+type GuideAssetId = keyof typeof guideAssets;
+
+function getGuideAsset(id: string) {
+  if (!Object.prototype.hasOwnProperty.call(guideAssets, id)) return null;
+  return guideAssets[id as GuideAssetId];
+}
+
 export function HomeGardenGuideVisualBand() {
   const pathname = usePathname();
   if (pathname !== "/casa-jardin") return null;
@@ -48,7 +55,8 @@ export function HomeGardenGuideVisualBand() {
 
         <div className={styles.grid}>
           {homeGardenGuides.map((guide) => {
-            const asset = guideAssets[guide.id];
+            const asset = getGuideAsset(guide.id);
+            if (!asset) return null;
             return (
               <article className={styles.card} key={guide.id}>
                 <a className={styles.coverLink} href={asset.download} target="_blank" rel="noreferrer" aria-label={`Abrir PDF ${guide.title}`}>
