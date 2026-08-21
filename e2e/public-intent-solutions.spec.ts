@@ -7,13 +7,14 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub exposes three governed intent routes", async ({ page }) => {
+test("solutions hub surfaces plant and multiunit intent through the audience router", async ({ page }) => {
   await page.goto("/soluciones");
 
-  await expect(page.getByRole("heading", { name: "Tres problemas que suelen atravesar varias líneas de servicio." })).toBeVisible();
-  await expect(page.locator('a[href="/soluciones/residuos-organicos"]')).toBeVisible();
-  await expect(page.locator('a[href="/soluciones/infraestructura-plantas"]')).toBeVisible();
-  await expect(page.locator('a[href="/soluciones/propiedad-horizontal-redes"]')).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Propiedad horizontal / Instituciones", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plantas / Operadores", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Ver ruta multiunidad/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal-redes");
+  await expect(page.getByRole("link", { name: /Ver ruta de plantas/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
+  await expect(page.getByRole("link", { name: /Plantas y tratamiento/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
 });
 
 test("organic waste route moves from real capture to treatment and prefactibility", async ({ page }) => {
