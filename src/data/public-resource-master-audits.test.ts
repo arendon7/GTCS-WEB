@@ -6,7 +6,7 @@ import {
   publicResourceMasterAudits,
 } from "./public-resource-master-audits";
 
-const approvedIds = [
+const legacyApprovedIds = [
   "wondergreen-product-master",
   "wondergreen-guide-cafe",
   "wondergreen-guide-cacao",
@@ -14,6 +14,15 @@ const approvedIds = [
   "wondergreen-guide-limon-tahiti",
   "wondergreen-guide-pastos",
 ];
+
+const homeGardenApprovedIds = [
+  "home-garden-guide-casa-jardin",
+  "home-garden-guide-mi-huerta",
+  "home-garden-guide-etapas",
+  "home-garden-guide-trasplante",
+];
+
+const approvedIds = [...legacyApprovedIds, ...homeGardenApprovedIds];
 
 describe("public resource master audits", () => {
   it("covers every resource that references a document master", () => {
@@ -23,8 +32,8 @@ describe("public resource master audits", () => {
       .toEqual(masterResources.map((resource) => resource.id).sort());
   });
 
-  it("records the catalog and five crop guides as explicitly approved for publication", () => {
-    for (const resourceId of approvedIds) {
+  it("keeps the catalog and five crop guides under their explicit publication approval", () => {
+    for (const resourceId of legacyApprovedIds) {
       const audit = getPublicResourceMasterAudit(resourceId);
       expect(audit?.status).toBe("approved");
       expect(audit?.auditedAt).toBe("2026-08-20");
@@ -33,24 +42,24 @@ describe("public resource master audits", () => {
     }
   });
 
-  it("makes all six approved masters publishable through their same-origin download routes", () => {
+  it("approves the four Casa Jardin masters as reconstructed public binaries without claiming historical identity", () => {
+    for (const resourceId of homeGardenApprovedIds) {
+      const audit = getPublicResourceMasterAudit(resourceId);
+      expect(audit?.status).toBe("approved");
+      expect(audit?.auditedAt).toBe("2026-08-21");
+      expect(audit?.blockers).toEqual([]);
+      expect(audit?.authority).toMatch(/reconstruido/i);
+      expect(audit?.findings.join(" ")).toMatch(/no se declara recuperado ni idéntico/i);
+      expect(audit?.findings.join(" ")).toMatch(/precios, checkout|calculadora pública de dosis/i);
+    }
+  });
+
+  it("makes all ten approved masters publishable through same-origin download routes", () => {
     for (const resourceId of approvedIds) {
       const resource = publicResources.find((item) => item.id === resourceId);
       expect(resource?.delivery).toBe("public-download");
       expect(resource?.downloadHref).toBe(`/api/public-resources/${resourceId}`);
       expect(resource && canPublishPublicResourceMaster(resource)).toBe(true);
-    }
-  });
-
-  it("leaves Casa Jardin masters pending until their actual binaries are available", () => {
-    const homeGardenAudits = publicResourceMasterAudits.filter((item) => item.resourceId.startsWith("home-garden-guide-"));
-    expect(homeGardenAudits).toHaveLength(4);
-    for (const audit of homeGardenAudits) {
-      expect(audit.status).toBe("pending");
-      expect(audit.blockers).toEqual([]);
-    }
-    for (const resource of publicResources.filter((item) => item.id.startsWith("home-garden-guide-"))) {
-      expect(canPublishPublicResourceMaster(resource)).toBe(false);
     }
   });
 });
