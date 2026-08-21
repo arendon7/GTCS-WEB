@@ -12,6 +12,7 @@ async function digitalEntry(page: import("@playwright/test").Page) {
 test("public home presents Greenatics and exposes the digital bridge", async ({ page }) => {
   await page.goto("/");
 
+  await expect(page.getByRole("main")).toHaveCount(1);
   await expect(page.getByRole("heading", { name: /Transformamos residuos en vida/i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Greenatics" }).first()).toBeVisible();
   await expect(await digitalEntry(page)).toHaveAttribute("href", "/app");
