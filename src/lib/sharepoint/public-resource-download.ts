@@ -1,4 +1,4 @@
-import { parseSharePointGraphRuntimeConfig } from "./graph-readonly";
+import { parseSharePointGraphRuntimeConfig, type SharePointGraphRuntimeConfig } from "./graph-readonly";
 
 export type PublicWondergreenPdfId =
   | "wondergreen-product-master"
@@ -31,10 +31,7 @@ export function getPublicWondergreenPdf(resourceId: string) {
   return publicWondergreenPdfs.find((resource) => resource.id === resourceId) ?? null;
 }
 
-async function getAccessToken(
-  runtime: ReturnType<typeof parseSharePointGraphRuntimeConfig> extends { ok: true; value: infer T } ? T : never,
-  fetchImpl: typeof fetch,
-) {
+async function getAccessToken(runtime: SharePointGraphRuntimeConfig, fetchImpl: typeof fetch) {
   const tokenUrl = `https://login.microsoftonline.com/${runtime.auth.tenantId}/oauth2/v2.0/token`;
   const body = new URLSearchParams({
     client_id: runtime.auth.clientId,
