@@ -16,8 +16,8 @@ describe("public site contact configuration", () => {
     expect(publicSite.legacyIndexedDomain).toBe("https://greenatics.org");
   });
 
-  it("reserves Casa y Jardín in the primary navigation without promoting the placeholder to the sitemap", () => {
-    expect(publicNav).toContainEqual({ href: "/casa-jardin", label: "Casa y Jardín" });
+  it("reserves Casa & Jardín in the primary navigation without promoting the placeholder to the sitemap", () => {
+    expect(publicNav).toContainEqual({ href: "/casa-jardin", label: "Casa & Jardín" });
     expect(publicReservedRoutes).toContain("/casa-jardin");
     expect([...publicStaticRoutes]).not.toContain("/casa-jardin");
   });
