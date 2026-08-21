@@ -58,7 +58,7 @@ export default async function WondergreenCropPage({ params }: { params: Promise<
             </div>
             <aside className={`${styles.heroAside} ${guide?.coverImage ? styles.guideAside : ""}`}>
               {guide?.coverImage ? (
-                <Image className={styles.guideCover} src={guide.coverImage} alt={`Portada de ${guide.title}`} width={640} height={905} sizes="(max-width: 900px) 50vw, 320px" priority />
+                <Image className={styles.guideCover} src={guide.coverImage} alt={`Portada de ${guide.title}`} width={640} height={905} sizes="(max-width: 900px) 50vw, 320px" priority unoptimized />
               ) : null}
               <div>
                 <strong>{guide ? "Guía completa disponible." : "Contexto antes de producto."}</strong>
