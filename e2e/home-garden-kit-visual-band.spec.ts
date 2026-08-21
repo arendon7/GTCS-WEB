@@ -9,10 +9,10 @@ const kits = [
 ] as const;
 
 const stageVisuals = [
-  ["Línea Wondergreen 2Grow dentro del kit", "/api/public-media/wondergreen-2grow"],
-  ["Línea Wondergreen 2Balance dentro del kit", "/api/public-media/wondergreen-2balance"],
-  ["Línea Wondergreen 2Bloom dentro del kit", "/api/public-media/wondergreen-2bloom"],
-  ["Línea Wondergreen 2Fruit dentro del kit", "/api/public-media/wondergreen-2fruit"],
+  ["Miniatura CRECE 2Grow dentro del kit", "/api/public-media/wondergreen-2grow"],
+  ["Miniatura EQUILIBRA 2Balance dentro del kit", "/api/public-media/wondergreen-2balance"],
+  ["Miniatura FLORECE 2Bloom dentro del kit", "/api/public-media/wondergreen-2bloom"],
+  ["Miniatura FRUCTIFICA 2Fruit dentro del kit", "/api/public-media/wondergreen-2fruit"],
 ] as const;
 
 test("Casa Jardin closes with visual kit compositions built from real Wondergreen stages", async ({ page }) => {
@@ -21,8 +21,9 @@ test("Casa Jardin closes with visual kit compositions built from real Wondergree
   await expect(page.getByRole("heading", { name: "Cada kit reúne etapas. No mezcla necesidades.", exact: true })).toBeVisible();
 
   for (const kit of kits) {
-    await expect(page.getByRole("heading", { name: kit, exact: true }).last()).toBeVisible();
-    await expect(page.getByLabel(`Composición visual ${kit}`, { exact: true })).toBeVisible();
+    const composition = page.getByLabel(`Composición visual ${kit}`, { exact: true });
+    await expect(composition).toBeVisible();
+    await expect(page.getByText(kit, { exact: true }).last()).toBeVisible();
   }
 
   for (const [alt, src] of stageVisuals) {
