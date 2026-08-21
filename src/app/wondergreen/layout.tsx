@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/public-shell";
+import { WondergreenVisualBand } from "@/components/wondergreen-visual-band";
 import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
 const social = publicSocialMetadata({
@@ -13,5 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default function WondergreenLayout({ children }: { children: React.ReactNode }) {
-  return <PublicShell ownsMain={false}>{children}</PublicShell>;
+  return (
+    <PublicShell ownsMain={false}>
+      {children}
+      <WondergreenVisualBand />
+    </PublicShell>
+  );
 }
