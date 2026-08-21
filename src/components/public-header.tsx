@@ -24,8 +24,8 @@ function isCurrentPath(pathname: string, href: string) {
 function isPrimaryActive(pathname: string, label: string, href: string) {
   if (label === "Soluciones") return pathname.startsWith("/soluciones");
   if (label === "Recursos") {
-    return ["/biblioteca", "/proyectos", "/impacto", "/recursos"].some((prefix) =>
-      pathname === prefix || pathname.startsWith(`${prefix}/`),
+    return ["/biblioteca", "/proyectos", "/impacto", "/recursos"].some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
     );
   }
   return isCurrentPath(pathname, href);
@@ -49,12 +49,6 @@ export function PublicHeader() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setDesktopMenu(null);
-    setMobileOpen(false);
-    setMobilePanel(null);
-  }, [pathname]);
-
-  useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       if (mobileOpen) {
@@ -75,8 +69,7 @@ export function PublicHeader() {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     requestAnimationFrame(() => {
-      const first = mobileMenuRef.current?.querySelector<HTMLElement>("button, a[href]");
-      first?.focus();
+      mobileMenuRef.current?.querySelector<HTMLElement>("button, a[href]")?.focus();
     });
     return () => {
       document.body.style.overflow = previousOverflow;
@@ -124,15 +117,11 @@ export function PublicHeader() {
           </Link>
           <div className={styles.mobileSectionLabel}>Por organización</div>
           <div className={styles.mobileLinkList}>
-            {publicSolutionAudiences.map((item) => (
-              <MenuLink key={item.label} item={item} onNavigate={closeMobile} />
-            ))}
+            {publicSolutionAudiences.map((item) => <MenuLink key={item.label} item={item} onNavigate={closeMobile} />)}
           </div>
           <div className={styles.mobileSectionLabel}>Por necesidad</div>
           <div className={styles.mobileLinkList}>
-            {publicSolutionNeeds.map((item) => (
-              <MenuLink key={item.label} item={item} onNavigate={closeMobile} />
-            ))}
+            {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={closeMobile} />)}
           </div>
           <Link className={styles.mobileDiagnostic} href="/soluciones/diagnostico-caracterizacion" onClick={closeMobile}>
             <span>No sé por dónde empezar</span>
@@ -154,9 +143,7 @@ export function PublicHeader() {
             <strong>Aprender, ver experiencia y consultar impacto.</strong>
           </div>
           <div className={styles.mobileLinkList}>
-            {publicResourceNav.map((item) => (
-              <MenuLink key={item.label} item={item} onNavigate={closeMobile} />
-            ))}
+            {publicResourceNav.map((item) => <MenuLink key={item.label} item={item} onNavigate={closeMobile} />)}
           </div>
         </>
       );
@@ -210,9 +197,10 @@ export function PublicHeader() {
         <nav className={styles.desktopNav} aria-label="Navegación pública">
           {publicPrimaryNav.map((item) => {
             const active = isPrimaryActive(pathname, item.label, item.href);
+            const exact = isCurrentPath(pathname, item.href);
             if (!item.menu) {
               return (
-                <Link className={active ? styles.navActive : undefined} href={item.href} key={item.label} aria-current={active ? "page" : undefined}>
+                <Link className={active ? styles.navActive : undefined} href={item.href} key={item.label} aria-current={exact ? "page" : undefined}>
                   {item.label}
                 </Link>
               );
@@ -230,7 +218,7 @@ export function PublicHeader() {
                 }}
               >
                 <div className={styles.navMenuTrigger}>
-                  <Link className={active ? styles.navActive : undefined} href={item.href} aria-current={active ? "page" : undefined}>
+                  <Link className={active ? styles.navActive : undefined} href={item.href} aria-current={exact ? "page" : undefined}>
                     {item.label}
                   </Link>
                   <button
@@ -254,15 +242,11 @@ export function PublicHeader() {
                     </div>
                     <div className={styles.megaColumn}>
                       <span className={styles.megaLabel}>¿Quién eres?</span>
-                      {publicSolutionAudiences.map((menuItem) => (
-                        <MenuLink key={menuItem.label} item={menuItem} onNavigate={() => setDesktopMenu(null)} />
-                      ))}
+                      {publicSolutionAudiences.map((item) => <MenuLink key={item.label} item={item} onNavigate={() => setDesktopMenu(null)} />)}
                     </div>
                     <div className={styles.megaColumn}>
                       <span className={styles.megaLabel}>¿Qué necesitas resolver?</span>
-                      {publicSolutionNeeds.map((menuItem) => (
-                        <MenuLink key={menuItem.label} item={menuItem} onNavigate={() => setDesktopMenu(null)} />
-                      ))}
+                      {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={() => setDesktopMenu(null)} />)}
                     </div>
                     <Link className={styles.megaDiagnostic} href="/soluciones/diagnostico-caracterizacion" onClick={() => setDesktopMenu(null)}>
                       <span>No sé por dónde empezar</span>
@@ -279,9 +263,7 @@ export function PublicHeader() {
                       <strong>Conocimiento, experiencia e impacto en un mismo lugar.</strong>
                     </div>
                     <div className={styles.megaColumn}>
-                      {publicResourceNav.map((menuItem) => (
-                        <MenuLink key={menuItem.label} item={menuItem} onNavigate={() => setDesktopMenu(null)} />
-                      ))}
+                      {publicResourceNav.map((item) => <MenuLink key={item.label} item={item} onNavigate={() => setDesktopMenu(null)} />)}
                     </div>
                   </div>
                 ) : null}
