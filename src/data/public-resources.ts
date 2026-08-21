@@ -24,18 +24,27 @@ export type PublicResource = {
 const publicDownload = (resourceId: string) => `/api/public-resources/${resourceId}`;
 const publicMedia = (assetId: string) => `/api/public-media/${assetId}`;
 
+const homeGardenMasterPages: Record<string, number> = {
+  "casa-jardin": 12,
+  "mi-huerta": 8,
+  etapas: 5,
+  trasplante: 8,
+};
+
 const homeGardenPublicResources: PublicResource[] = homeGardenGuides.map((guide) => ({
   id: `home-garden-guide-${guide.id}`,
   kind: "guide",
-  statusLabel: "Casa & Jardín",
+  statusLabel: "Guía + PDF",
   title: guide.title,
-  copy: `${guide.summary} La lectura web está disponible dentro de Casa, Jardín y Vivero; el PDF maestro del handoff se conserva como fuente y todavía no se expone como descarga pública.`,
+  copy: `${guide.summary} La lectura web permanece como autoridad navegable y se acompaña por un master público reconstruido desde el contenido gobernado y los activos Wondergreen aprobados.`,
   href: `/casa-jardin/guias#${guide.id}`,
   cta: "Abrir guía",
-  delivery: "web-native-master-pending",
-  sourceAuthority: "Wondergreen Casa & Jardín Truth · handoff validado",
-  masterLabel: `${guide.title} · PDF maestro validado`,
-  masterSource: "validated-handoff",
+  delivery: "public-download",
+  sourceAuthority: "Wondergreen Casa & Jardín Truth · master público reconstruido 2026-08-21",
+  masterLabel: `${guide.title} · ${homeGardenMasterPages[guide.id]} páginas · master público reconstruido`,
+  masterSource: "internal-document-library",
+  downloadHref: publicDownload(`home-garden-guide-${guide.id}`),
+  downloadLabel: "Descargar guía PDF",
 }));
 
 export const publicResources: PublicResource[] = [
