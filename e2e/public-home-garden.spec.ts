@@ -109,12 +109,24 @@ test("extremely dry substrate stays in review instead of recommending fertilizer
   await expect(page.getByRole("link", { name: "Abrir siguiente paso →" })).toHaveCount(0);
 });
 
-test("Casa guide library exposes handoff sources without broken download links", async ({ page }) => {
+test("Casa guide library publishes four reconstructed same-origin PDFs", async ({ page }) => {
   await page.goto("/casa-jardin/guias");
 
   for (const guide of ["Guía Wondergreen Casa & Jardín", "Guía Mi Huerta", "Guía rápida de etapas", "Guía de trasplante"]) {
     await expect(page.getByRole("heading", { name: guide, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole("link", { name: /Descargar PDF/i })).toHaveCount(0);
-  await expect(page.getByText(/PDF fuente validado en el handoff/i).first()).toBeVisible();
+
+  const downloads = page.getByRole("link", { name: "Descargar PDF →", exact: true });
+  await expect(downloads).toHaveCount(4);
+  const hrefs = await downloads.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+  expect(hrefs.sort()).toEqual([
+    "/api/public-resources/home-garden-guide-casa-jardin",
+    "/api/public-resources/home-garden-guide-etapas",
+    "/api/public-resources/home-garden-guide-mi-huerta",
+    "/api/public-resources/home-garden-guide-trasplante",
+  ]);
+  expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
+  await expect(page.getByText(/Master público reconstruido y verificado/i).first()).toBeVisible();
+  await expect(page.getByText(/no se presenta como una copia byte a byte/i).first()).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
