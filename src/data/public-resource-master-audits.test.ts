@@ -37,7 +37,8 @@ describe("public resource master audits", () => {
     expect(published).toHaveLength(6);
     for (const resource of published) {
       expect(resource.delivery).toBe("web-native-public-download");
-      expect(resource.downloadHref).toMatch(/^\/api\/public-resources\//);
+      expect(resource.downloadHref).toMatch(/^\/descargas\//);
+      expect(resource.downloadHref).not.toMatch(/sharepoint|graph\.microsoft/i);
       expect(canPublishPublicResourceMaster(resource)).toBe(true);
     }
   });
