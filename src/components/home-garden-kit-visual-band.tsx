@@ -7,10 +7,10 @@ import { visibleHomeGardenKits, type HomeGardenStage } from "@/data/home-garden"
 import styles from "./home-garden-kit-visual-band.module.css";
 
 const stageVisuals: Partial<Record<HomeGardenStage, { src: string; alt: string; label: string }>> = {
-  crece: { src: "/api/public-media/wondergreen-2grow", alt: "Línea Wondergreen 2Grow", label: "CRECE" },
-  equilibra: { src: "/api/public-media/wondergreen-2balance", alt: "Línea Wondergreen 2Balance", label: "EQUILIBRA" },
-  florece: { src: "/api/public-media/wondergreen-2bloom", alt: "Línea Wondergreen 2Bloom", label: "FLORECE" },
-  fructifica: { src: "/api/public-media/wondergreen-2fruit", alt: "Línea Wondergreen 2Fruit", label: "FRUCTIFICA" },
+  crece: { src: "/api/public-media/wondergreen-2grow", alt: "Miniatura CRECE 2Grow", label: "CRECE" },
+  equilibra: { src: "/api/public-media/wondergreen-2balance", alt: "Miniatura EQUILIBRA 2Balance", label: "EQUILIBRA" },
+  florece: { src: "/api/public-media/wondergreen-2bloom", alt: "Miniatura FLORECE 2Bloom", label: "FLORECE" },
+  fructifica: { src: "/api/public-media/wondergreen-2fruit", alt: "Miniatura FRUCTIFICA 2Fruit", label: "FRUCTIFICA" },
 };
 
 function StageVisual({ stage }: { stage: HomeGardenStage }) {
@@ -60,7 +60,7 @@ export function HomeGardenKitVisualBand() {
               </div>
               <div className={styles.cardBody}>
                 <span className={styles.audience}>{kit.audience}</span>
-                <h3>{kit.name}</h3>
+                <strong className={styles.kitName}>{kit.name}</strong>
                 <p className={styles.promise}>{kit.promise}</p>
                 <p className={styles.pathway}>{kit.pathway.map((stage) => stage.toUpperCase()).join(" → ")}</p>
                 <Link href={`/casa-jardin/kits/${kit.id}`}>Ver composición exacta y guardrails →</Link>
