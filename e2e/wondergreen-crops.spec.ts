@@ -25,12 +25,14 @@ test("crop library exposes the five initial programs", async ({ page }) => {
   }
 });
 
-test("cacao program connects stage guidance to exact Product Master references and canonical breadcrumb", async ({ page }) => {
+test("cacao program connects stage guidance, its PDF and exact Product Master references", async ({ page }) => {
   await page.goto("/wondergreen/cultivos/cacao");
 
   await expect(page.getByText(/01 · Establecimiento/)).toBeVisible();
   await expect(page.getByText("Compost", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("2Grow", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("img", { name: /Portada de Guía Wondergreen para cacao/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Descargar guía PDF/i }).first()).toHaveAttribute("href", "/api/public-resources/wondergreen-guide-cacao");
   await expect(page.getByRole("heading", { name: /Referencias que aparecen en este programa/i })).toBeVisible();
 
   const grow = page.getByRole("link", { name: /2Grow Sólido · 15-3-3/i }).first();
