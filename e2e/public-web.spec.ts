@@ -12,12 +12,12 @@ async function digitalEntry(page: import("@playwright/test").Page) {
 test("public home presents Greenatics and exposes the digital bridge", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Transformamos residuos en vida/i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Greenatics" }).first()).toBeVisible();
   await expect(await digitalEntry(page)).toHaveAttribute("href", "/app");
-  await expect(page.getByRole("heading", { name: "Más que NPK." })).toBeVisible();
-  await expect(page.getByText("5", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("referencias líquidas", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Una marca. Tres formas claras de entrar." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
 });
 
 test("Wondergreen exposes fertilizers, bioinputs and technology narrative", async ({ page }) => {

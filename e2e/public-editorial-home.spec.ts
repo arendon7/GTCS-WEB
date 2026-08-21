@@ -1,59 +1,64 @@
 import { test, expect } from "@playwright/test";
 
-test("public HOME presents the editorial hierarchy and governed Yarumal evidence", async ({ page }) => {
+test("public HOME opens with the approved Greenatics hero and governed Yarumal media", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Más que NPK." })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
-  await expect(page.getByText("2 activos conciliados", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver caso Yarumal →" })).toHaveAttribute("href", "/proyectos/yarumal");
-  await expect(page.getByText(/Product Truth vigente/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Transformamos residuos en vida/i })).toBeVisible();
+  await expect(page.getByText(/Diseñamos sistemas que conectan residuos, tecnología, operación y datos/i)).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Proyecto Yarumal", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Soluciones para organizaciones", exact: true })).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: "Descubrir Wondergreen", exact: true }).first()).toHaveAttribute("href", "/wondergreen");
 });
 
-test("public HOME exposes the three Greenatics pillars and commercial doors before Wondergreen depth", async ({ page }) => {
+test("public HOME reduces discovery to three clear Greenatics universes", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Biotecnología aplicada" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Economía circular" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Operación y acompañamiento" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Empieza por el problema que necesitas resolver." })).toBeVisible();
-  await expect(page.getByText("Seis puertas de entrada", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Una marca. Tres formas claras de entrar." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Soluciones para organizaciones", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Wondergreen", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Casa & Jardín", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Explorar Casa & Jardín →", exact: true })).toHaveAttribute("href", "/casa-jardin");
-  await expect(page.getByRole("link", { name: "Soluciones para municipios y ESP →", exact: true })).toHaveAttribute("href", "/soluciones/esp-municipios");
-  await expect(page.getByRole("link", { name: "Soluciones para empresas →", exact: true })).toHaveAttribute("href", "/soluciones/empresas-grandes-generadores");
-  await expect(page.getByRole("link", { name: "Explorar infraestructura y plantas →", exact: true })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
-  await expect(page.getByRole("link", { name: "Abrir biblioteca →", exact: true })).toHaveAttribute("href", "/biblioteca");
-
-  const levelTwoHeadings = await page.getByRole("heading", { level: 2 }).allTextContents();
-  const doorsIndex = levelTwoHeadings.indexOf("Empieza por el problema que necesitas resolver.");
-  const wondergreenIndex = levelTwoHeadings.indexOf("Más que NPK.");
-  expect(doorsIndex).toBeGreaterThanOrEqual(0);
-  expect(wondergreenIndex).toBeGreaterThan(doorsIndex);
+  await expect(page.getByRole("link", { name: /Explorar soluciones/ }).first()).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: /Descubrir Wondergreen/ }).last()).toHaveAttribute("href", "/wondergreen");
+  await expect(page.getByRole("link", { name: /Explorar Casa & Jardín/ })).toHaveAttribute("href", "/casa-jardin");
 });
 
-test("public HOME exposes all five governed crop programs", async ({ page }) => {
+test("public HOME explains Greenatics as an operating logic instead of stacked service taxonomies", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Cinco cultivos. Decisiones distintas según la etapa." })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Cacao/ })).toHaveAttribute("href", "/wondergreen/cultivos/cacao");
-  await expect(page.getByRole("link", { name: /Café/ })).toHaveAttribute("href", "/wondergreen/cultivos/cafe");
-  await expect(page.getByRole("link", { name: /Aguacate/ })).toHaveAttribute("href", "/wondergreen/cultivos/aguacate");
-  await expect(page.getByRole("link", { name: /Limón Tahití/ })).toHaveAttribute("href", "/wondergreen/cultivos/limon-tahiti");
-  await expect(page.getByRole("link", { name: /Pastos y gramíneas/ })).toHaveAttribute("href", "/wondergreen/cultivos/pastos-gramineas");
-  await expect(page.getByRole("link", { name: "Revisar criterios" })).toHaveAttribute("href", "/biblioteca/criterios-nutricionales");
-  await expect(page.getByRole("link", { name: "Ver Product Master" })).toHaveAttribute("href", "/wondergreen/productos");
+  await expect(page.getByRole("heading", { name: "Conectamos la decisión técnica con la ejecución." })).toBeVisible();
+  for (const step of ["Entender", "Diseñar", "Implementar", "Medir y mejorar"]) {
+    await expect(page.getByText(step, { exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("link", { name: "Conocer cómo trabajamos →" })).toHaveAttribute("href", "/soluciones");
 });
 
-test("public HOME keeps its primary routes explicit and separate from OPS", async ({ page }) => {
+test("public HOME elevates Wondergreen without publishing unsupported universal claims", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByText(/matriz organomineral, la oclusión y la lenta liberación documentada para esa versión/i)).toBeVisible();
+  await expect(page.getByText(/sin convertir una característica del producto en una promesa agronómica universal/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Productos →" })).toHaveAttribute("href", "/wondergreen/productos");
+  await expect(page.getByRole("link", { name: "Cultivos →" })).toHaveAttribute("href", "/wondergreen/cultivos");
+});
+
+test("public HOME keeps evidence, digital tools and resources as distinct layers", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "Proyecto, operación y aprendizaje en territorio." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Conocimiento, experiencia e impacto en un mismo lugar." })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Abrir biblioteca/ })).toHaveAttribute("href", "/biblioteca");
+  await expect(page.getByRole("link", { name: /Ver proyectos/ })).toHaveAttribute("href", "/proyectos");
+  await expect(page.getByRole("link", { name: /Ver impacto/ })).toHaveAttribute("href", "/impacto");
+});
+
+test("public HOME closes with a commercial route while keeping OPS separate", async ({ page }) => {
   await page.goto("/");
   const main = page.getByRole("main");
 
-  await expect(main.getByRole("link", { name: "Descubrir Wondergreen" })).toHaveAttribute("href", "/wondergreen");
-  await expect(main.getByRole("link", { name: "Explorar soluciones", exact: true }).first()).toHaveAttribute("href", "/soluciones");
-  await expect(main.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
-  await expect(main.getByRole("link", { name: "Contactar a Greenatics" })).toHaveAttribute("href", "/contacto");
-  await expect(main.getByRole("link", { name: "Acceder a la app interna" })).toHaveAttribute("href", "/app");
+  await expect(main.getByRole("heading", { name: "Empieza por el problema. Construimos la ruta contigo." })).toBeVisible();
+  await expect(main.getByRole("link", { name: "Hablar con nosotros", exact: true })).toHaveAttribute("href", "/contacto");
+  await expect(main.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
 });
