@@ -1,29 +1,41 @@
 import { test, expect } from "@playwright/test";
 
-test("public library exposes live Wondergreen knowledge resources and governed source masters", async ({ page }) => {
+const approvedDownloadIds = [
+  "wondergreen-product-master",
+  "wondergreen-guide-cafe",
+  "wondergreen-guide-cacao",
+  "wondergreen-guide-aguacate",
+  "wondergreen-guide-limon-tahiti",
+  "wondergreen-guide-pastos",
+];
+
+test("public library exposes Wondergreen guides with same-origin PDF downloads", async ({ page }) => {
   await page.goto("/biblioteca");
 
-  await expect(page.getByRole("heading", { name: /La biblioteca no es un archivo/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Programas Wondergreen por cultivo" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía Wondergreen para café" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía Wondergreen para cacao" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía Wondergreen para aguacate" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía Wondergreen para limón Tahití" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía Wondergreen para pastos y gramíneas" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Guías que puedes leer, usar y descargar/i })).toBeVisible();
+  for (const title of [
+    "Guía Wondergreen para café",
+    "Guía Wondergreen para cacao",
+    "Guía Wondergreen para aguacate",
+    "Guía Wondergreen para limón Tahití",
+    "Guía Wondergreen para pastos y gramíneas",
+    "Catálogo técnico-comercial Wondergreen",
+  ]) {
+    await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+  }
 
-  const deficiencyCard = page.getByRole("article").filter({
-    has: page.getByRole("heading", { name: "Guía práctica de deficiencias nutricionales" }),
-  });
-  await expect(deficiencyCard.getByRole("link", { name: "Abrir guía →", exact: true })).toHaveAttribute("href", "/biblioteca/guia-deficiencias");
+  const hrefs = await page.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+  expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
+  for (const resourceId of approvedDownloadIds) {
+    expect(hrefs).toContain(`/api/public-resources/${resourceId}`);
+  }
 
-  await expect(page.getByText("Lectura web disponible · PDF maestro identificado · auditoría pública pendiente", { exact: true }).first()).toBeVisible();
-
-  const catalogCard = page.getByRole("article").filter({
-    has: page.getByRole("heading", { name: "Catálogo técnico-comercial Wondergreen", exact: true }),
-  });
-  await expect(catalogCard.getByText("Lectura web disponible · PDF maestro retenido por auditoría", { exact: true })).toBeVisible();
-  await expect(catalogCard.getByText("Maestro: Catálogo Wondergreen optimizado · 10 páginas", { exact: true })).toBeVisible();
+  const catalogCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "Catálogo técnico-comercial Wondergreen", exact: true }) });
+  await expect(catalogCard.getByText("Lectura web + PDF disponible", { exact: true })).toBeVisible();
+  await expect(catalogCard.getByRole("link", { name: /Descargar catálogo PDF/i })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master");
+  await expect(catalogCard.getByRole("img", { name: /Portada de Catálogo técnico-comercial Wondergreen/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Más que NPK", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Bioinsumos Wondergreen", exact: true })).toBeVisible();
 });
 
 test("public library routes by user intent before product selection", async ({ page }) => {
@@ -35,12 +47,11 @@ test("public library routes by user intent before product selection", async ({ p
   await expect(page.getByRole("link", { name: /Comprobar criterios/ })).toHaveAttribute("href", "/biblioteca/criterios-nutricionales");
   await expect(page.getByRole("link", { name: /Abrir manual de uso/ })).toHaveAttribute("href", "/biblioteca/manual-uso-wondergreen");
   await expect(page.getByRole("link", { name: /Ver Product Master/ })).toHaveAttribute("href", "/wondergreen/productos");
-  await expect(page.getByRole("link", { name: /Pedir acompañamiento/ })).toHaveAttribute("href", "/contacto#wondergreen");
+  await expect(page.getByRole("link", { name: /Ir a descargas/ })).toHaveAttribute("href", "#recursos");
 });
 
 test("deficiency guide prevents symptom-only diagnosis and links to crop programs", async ({ page }) => {
   await page.goto("/biblioteca/guia-deficiencias");
-
   await expect(page.getByRole("heading", { name: "Una hoja amarilla no es un diagnóstico." })).toBeVisible();
   await expect(page.getByText("Cuatro preguntas antes del producto", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cacao", exact: true })).toBeVisible();
@@ -50,14 +61,12 @@ test("deficiency guide prevents symptom-only diagnosis and links to crop program
 
 test("deficiency guide can continue into the cacao Wondergreen program", async ({ page }) => {
   await page.goto("/biblioteca/guia-deficiencias");
-
   const cacaoBlock = page.locator("#cacao");
   const cacaoLink = cacaoBlock.getByRole("link", { name: /Ver programa Wondergreen para Cacao/i });
   await cacaoLink.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" }));
   await expect(cacaoLink).toBeInViewport();
   await expect(cacaoLink).toBeVisible();
   await cacaoLink.click();
-
   await expect(page).toHaveURL(/\/wondergreen\/cultivos\/cacao$/);
   await expect(page.getByText(/01 · Establecimiento/)).toBeVisible();
 });
