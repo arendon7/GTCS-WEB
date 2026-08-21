@@ -1,13 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test("Wondergreen uses the canonical public shell without duplicate chrome", async ({ page }) => {
+test("Wondergreen uses the canonical public shell without duplicate chrome", async ({ page }, testInfo) => {
   await page.goto("/wondergreen");
 
-  await expect(page.getByRole("banner")).toHaveCount(1);
+  const header = page.getByRole("banner");
+  await expect(header).toHaveCount(1);
   await expect(page.getByRole("contentinfo")).toHaveCount(1);
-  await expect(page.getByRole("navigation", { name: "Navegación pública" })).toBeVisible();
+  if (testInfo.project.name === "mobile-chromium") {
+    await expect(header.getByRole("button", { name: "Abrir navegación" })).toBeVisible();
+  } else {
+    await expect(header.getByRole("navigation", { name: "Navegación pública" })).toBeVisible();
+  }
   await expect(page.getByRole("navigation", { name: "Navegación Wondergreen" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "GREENATICS OPS" })).toHaveAttribute("href", "/app");
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
 });
 
 test("Wondergreen subnavigation connects products, crops, Casa Jardin and knowledge", async ({ page }) => {
