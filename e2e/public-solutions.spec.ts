@@ -7,6 +7,18 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
+async function clickDigitalBridge(page: import("@playwright/test").Page) {
+  const header = page.getByRole("banner");
+  const desktopEntry = header.getByRole("link", { name: "Ingresar", exact: true });
+  if (await desktopEntry.isVisible()) {
+    await desktopEntry.click();
+    return;
+  }
+
+  await header.getByRole("button", { name: "Abrir navegación" }).click();
+  await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true }).click();
+}
+
 test("solutions hub exposes strategic programs, decision modules, six commercial lines and governed services", async ({ page }) => {
   await page.goto("/soluciones");
 
@@ -145,9 +157,9 @@ test("specialized organics service does not present Greenatics as public-service
   await expect(page.getByText(/ni convierte automáticamente a Greenatics en prestador frente al usuario/i)).toBeVisible();
 });
 
-test("public solutions route keeps the bridge to OPS", async ({ page }) => {
+test("public solutions route keeps the bridge to the Greenatics digital space", async ({ page }) => {
   await page.goto("/soluciones");
-  await page.getByRole("banner").getByRole("link", { name: "Acceder a Greenatics" }).click();
+  await clickDigitalBridge(page);
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });
