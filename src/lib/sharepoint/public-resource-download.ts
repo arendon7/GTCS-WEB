@@ -6,7 +6,11 @@ export type PublicWondergreenPdfId =
   | "wondergreen-guide-cacao"
   | "wondergreen-guide-aguacate"
   | "wondergreen-guide-limon-tahiti"
-  | "wondergreen-guide-pastos";
+  | "wondergreen-guide-pastos"
+  | "home-garden-guide-casa-jardin"
+  | "home-garden-guide-mi-huerta"
+  | "home-garden-guide-etapas"
+  | "home-garden-guide-trasplante";
 
 export type PublicWondergreenMediaId =
   | "catalogo-cover"
@@ -40,6 +44,10 @@ export const publicWondergreenPdfs: readonly PublicGraphAsset<PublicWondergreenP
   { id: "wondergreen-guide-aguacate", itemId: "01VAJGQOVFGMMQPE7Q65EIUBBM4JGFUNK2", filename: "guia-wondergreen-aguacate.pdf", contentType: "application/pdf" },
   { id: "wondergreen-guide-limon-tahiti", itemId: "01VAJGQOXZBLJD7F62J5G2SURIXBMWM7MW", filename: "guia-wondergreen-citricos.pdf", contentType: "application/pdf" },
   { id: "wondergreen-guide-pastos", itemId: "01VAJGQOVR7Q3XBPIMRFAIDSYCGUIQM26F", filename: "guia-wondergreen-pastos-y-praderas.pdf", contentType: "application/pdf" },
+  { id: "home-garden-guide-casa-jardin", itemId: "01VAJGQOTJ4PZZOEPK4JFYP6TSAEZ7K4L2", filename: "guia-casa-jardin.pdf", contentType: "application/pdf" },
+  { id: "home-garden-guide-mi-huerta", itemId: "01VAJGQOSREI6AY43HKJEJ2J7QPPUT2INU", filename: "guia-mi-huerta.pdf", contentType: "application/pdf" },
+  { id: "home-garden-guide-etapas", itemId: "01VAJGQOTYKZXRHRQ43VCLVVV4KDLYT3PG", filename: "guia-rapida-etapas.pdf", contentType: "application/pdf" },
+  { id: "home-garden-guide-trasplante", itemId: "01VAJGQOX4IPEFYGPP2VA2OMQSKULETUKZ", filename: "guia-trasplante.pdf", contentType: "application/pdf" },
 ]);
 
 export const publicWondergreenMedia: readonly PublicGraphAsset<PublicWondergreenMediaId>[] = Object.freeze([
