@@ -19,6 +19,10 @@ export type PublicWondergreenMediaId =
   | "guia-aguacate-cover"
   | "guia-citricos-cover"
   | "guia-pastos-cover"
+  | "home-garden-casa-jardin-cover"
+  | "home-garden-mi-huerta-cover"
+  | "home-garden-etapas-cover"
+  | "home-garden-trasplante-cover"
   | "wondergreen-system-stages"
   | "wondergreen-2grow"
   | "wondergreen-2balance"
@@ -57,6 +61,10 @@ export const publicWondergreenMedia: readonly PublicGraphAsset<PublicWondergreen
   { id: "guia-aguacate-cover", itemId: "01VAJGQORJQCA46SIRKJBIXBDBFNVU3L4T", filename: "guia-aguacate-cover.webp", contentType: "image/webp" },
   { id: "guia-citricos-cover", itemId: "01VAJGQOSTVLT43UZJZNHJZ4NTLSIL24SG", filename: "guia-citricos-cover.webp", contentType: "image/webp" },
   { id: "guia-pastos-cover", itemId: "01VAJGQOQRG24OXXNDEZB2WQVPBUZYIX25", filename: "guia-pastos-cover.webp", contentType: "image/webp" },
+  { id: "home-garden-casa-jardin-cover", itemId: "01VAJGQOVTNRF35QW3JNDI3TBJO5SMWALQ", filename: "guia-casa-jardin-cover.webp", contentType: "image/webp" },
+  { id: "home-garden-mi-huerta-cover", itemId: "01VAJGQOSYF4ZTLATJDFGKERHDNBR6N7CX", filename: "guia-mi-huerta-cover.webp", contentType: "image/webp" },
+  { id: "home-garden-etapas-cover", itemId: "01VAJGQOVWDV5RXVC3KVEJL2ALODJVPRRX", filename: "guia-rapida-etapas-cover.webp", contentType: "image/webp" },
+  { id: "home-garden-trasplante-cover", itemId: "01VAJGQOQBKRDC4M7UW5AZ2SMVITAHRMAO", filename: "guia-trasplante-cover.webp", contentType: "image/webp" },
   { id: "wondergreen-system-stages", itemId: "01VAJGQOQGN5JPABJ6NBAJXR4PUSLSZGJJ", filename: "wondergreen-system-stages.webp", contentType: "image/webp" },
   { id: "wondergreen-2grow", itemId: "01VAJGQOXLFZYZPDA7MFFJAF5MRQM7VGJQ", filename: "wondergreen-2grow.webp", contentType: "image/webp" },
   { id: "wondergreen-2balance", itemId: "01VAJGQOQ4K7CZQDH77RCLX4BBI7MYTRWS", filename: "wondergreen-2balance.webp", contentType: "image/webp" },

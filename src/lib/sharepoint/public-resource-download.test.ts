@@ -35,29 +35,28 @@ describe("public Wondergreen resource proxy", () => {
     expect(getPublicWondergreenPdf("home-garden-guide-casa-jardin")?.filename).toBe("guia-casa-jardin.pdf");
   });
 
-  it("registers the real Wondergreen visuals reused by Casa Jardin", () => {
-    for (const assetId of [
+  it("registers the real Wondergreen visuals and published Casa Jardin covers", () => {
+    const expectedAssets = [
       "wondergreen-system-stages",
       "wondergreen-2grow",
       "wondergreen-2balance",
       "wondergreen-2bloom",
       "wondergreen-2fruit",
       "wondergreen-bioinsumos",
-    ]) {
+      "home-garden-casa-jardin-cover",
+      "home-garden-mi-huerta-cover",
+      "home-garden-etapas-cover",
+      "home-garden-trasplante-cover",
+    ];
+
+    for (const assetId of expectedAssets) {
       const asset = getPublicWondergreenMedia(assetId);
       expect(asset).not.toBeNull();
       expect(asset?.contentType).toBe("image/webp");
       expect(asset?.filename).toMatch(/\.webp$/);
     }
 
-    expect(publicWondergreenMedia.map((item) => item.id)).toEqual(expect.arrayContaining([
-      "wondergreen-system-stages",
-      "wondergreen-2grow",
-      "wondergreen-2balance",
-      "wondergreen-2bloom",
-      "wondergreen-2fruit",
-      "wondergreen-bioinsumos",
-    ]));
+    expect(publicWondergreenMedia.map((item) => item.id)).toEqual(expect.arrayContaining(expectedAssets));
     expect(getPublicWondergreenMedia("unknown-home-garden-visual")).toBeNull();
   });
 
