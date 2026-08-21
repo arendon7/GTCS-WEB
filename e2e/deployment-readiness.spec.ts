@@ -59,7 +59,7 @@ test("health exposes only safe deployment provenance and the canonical public or
 
 test("HOME content CTA crosses the public-to-OPS document boundary", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "Entrar a GREENATICS OPS" }).click();
+  await page.getByRole("main").getByRole("link", { name: "Ingresar", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });
