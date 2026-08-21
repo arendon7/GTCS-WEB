@@ -15,7 +15,11 @@ export type PublicWondergreenMediaId =
   | "guia-aguacate-cover"
   | "guia-citricos-cover"
   | "guia-pastos-cover"
+  | "wondergreen-system-stages"
+  | "wondergreen-2grow"
+  | "wondergreen-2balance"
   | "wondergreen-2bloom"
+  | "wondergreen-2fruit"
   | "wondergreen-bioinsumos";
 
 type PublicGraphAsset<TId extends string> = Readonly<{
@@ -45,7 +49,11 @@ export const publicWondergreenMedia: readonly PublicGraphAsset<PublicWondergreen
   { id: "guia-aguacate-cover", itemId: "01VAJGQORJQCA46SIRKJBIXBDBFNVU3L4T", filename: "guia-aguacate-cover.webp", contentType: "image/webp" },
   { id: "guia-citricos-cover", itemId: "01VAJGQOSTVLT43UZJZNHJZ4NTLSIL24SG", filename: "guia-citricos-cover.webp", contentType: "image/webp" },
   { id: "guia-pastos-cover", itemId: "01VAJGQOQRG24OXXNDEZB2WQVPBUZYIX25", filename: "guia-pastos-cover.webp", contentType: "image/webp" },
+  { id: "wondergreen-system-stages", itemId: "01VAJGQOQGN5JPABJ6NBAJXR4PUSLSZGJJ", filename: "wondergreen-system-stages.webp", contentType: "image/webp" },
+  { id: "wondergreen-2grow", itemId: "01VAJGQOXLFZYZPDA7MFFJAF5MRQM7VGJQ", filename: "wondergreen-2grow.webp", contentType: "image/webp" },
+  { id: "wondergreen-2balance", itemId: "01VAJGQOQ4K7CZQDH77RCLX4BBI7MYTRWS", filename: "wondergreen-2balance.webp", contentType: "image/webp" },
   { id: "wondergreen-2bloom", itemId: "01VAJGQOTFHK6KH3Y7C5DJKBA5OULRMGHO", filename: "wondergreen-2bloom.webp", contentType: "image/webp" },
+  { id: "wondergreen-2fruit", itemId: "01VAJGQOUZYXMXQKDW6BAZFIUFO33MZKVL", filename: "wondergreen-2fruit.webp", contentType: "image/webp" },
   { id: "wondergreen-bioinsumos", itemId: "01VAJGQOUNL6KJ5VX3MBAYA3BP74SWZRQ2", filename: "wondergreen-bioinsumos.webp", contentType: "image/webp" },
 ]);
 
