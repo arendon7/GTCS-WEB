@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PublicShell } from "@/components/public-shell";
+import { HomeGardenKitVisualBand } from "@/components/home-garden-kit-visual-band";
 
 export const metadata: Metadata = {
   title: "Casa y Jardín | Greenatics",
@@ -12,5 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default function CasaJardinLayout({ children }: { children: React.ReactNode }) {
-  return <PublicShell ownsMain={false}>{children}</PublicShell>;
+  return (
+    <PublicShell ownsMain={false}>
+      {children}
+      <HomeGardenKitVisualBand />
+    </PublicShell>
+  );
 }
