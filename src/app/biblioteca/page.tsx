@@ -90,7 +90,7 @@ export default function LibraryPage() {
                   <article className={`${styles.libraryCard} ${resource.coverImage ? styles.libraryCardVisual : ""}`} key={resource.id}>
                     {resource.coverImage ? (
                       <div className={styles.resourceVisual}>
-                        <Image src={resource.coverImage} alt={`Portada de ${resource.title}`} width={640} height={905} sizes="(max-width: 640px) 88vw, (max-width: 900px) 42vw, 28vw" />
+                        <Image src={resource.coverImage} alt={`Portada de ${resource.title}`} width={640} height={905} sizes="(max-width: 640px) 88vw, (max-width: 900px) 42vw, 28vw" unoptimized />
                       </div>
                     ) : null}
                     <div className={styles.resourceMeta}>
