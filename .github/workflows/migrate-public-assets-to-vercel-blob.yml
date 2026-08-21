@@ -16,12 +16,8 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_NAME: greenatics-ops
-      BLOB_STORE_NAME: greenatics-public-assets
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -74,7 +70,7 @@ jobs:
           print(f'Validated {len(normalized)} ephemeral assets without logging source URLs.')
           PY
 
-      - name: Resolve and link canonical Vercel project
+      - name: Resolve canonical Vercel project and Blob credential
         shell: bash
         run: |
           set -euo pipefail
@@ -85,57 +81,41 @@ jobs:
           project_id="$(jq -r '.id // empty' /tmp/project.json)"
           test "${project_id#prj_}" != "$project_id"
           echo "VERCEL_PROJECT_ID=$project_id" >> "$GITHUB_ENV"
-          mkdir -p .vercel
-          jq -n --arg projectId "$project_id" --arg orgId "$VERCEL_ORG_ID" '{projectId:$projectId,orgId:$orgId}' > .vercel/project.json
-          echo "Canonical project resolved: $VERCEL_PROJECT_NAME" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Install Vercel Blob tooling
-        run: npm install --no-save --ignore-scripts vercel@latest @vercel/blob@latest
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v10/projects/$project_id/env?decrypt=true&teamId=$VERCEL_ORG_ID" \
+            -o /tmp/project-env.json
 
-      - name: Create or reuse public Blob store
-        shell: bash
-        run: |
-          set -euo pipefail
-          npx vercel blob list-stores --all --token "$VERCEL_TOKEN" > /tmp/blob-stores.txt
-          if grep -Fq "$BLOB_STORE_NAME" /tmp/blob-stores.txt; then
-            echo "Blob store reused: $BLOB_STORE_NAME" >> "$GITHUB_STEP_SUMMARY"
-          else
-            npx vercel blob create-store "$BLOB_STORE_NAME" \
-              --access public \
-              --yes \
-              --environment production \
-              --environment preview \
-              --token "$VERCEL_TOKEN" \
-              > /tmp/blob-create.txt
-            echo "Blob store created and linked: $BLOB_STORE_NAME" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Pull linked Blob credential
-        shell: bash
-        run: |
-          set -euo pipefail
-          npx vercel env pull /tmp/blob.env --environment=production --yes --token "$VERCEL_TOKEN" >/dev/null
-          token_line="$(grep '^BLOB_READ_WRITE_TOKEN=' /tmp/blob.env | head -n 1 || true)"
-          test -n "$token_line"
-          value="${token_line#BLOB_READ_WRITE_TOKEN=}"
-          value="${value%\"}"
-          value="${value#\"}"
+          value="$(jq -r '(.envs // [])[] | select(.key == "BLOB_READ_WRITE_TOKEN") | .value // empty' /tmp/project-env.json | head -n 1)"
           test -n "$value"
           echo "::add-mask::$value"
           echo "BLOB_READ_WRITE_TOKEN=$value" >> "$GITHUB_ENV"
-          echo "Blob write credential resolved from linked project without exposing it." >> "$GITHUB_STEP_SUMMARY"
+          echo "Canonical project and linked Blob credential resolved without exposing secrets." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install minimal Blob SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blob-runner
+          cd /tmp/blob-runner
+          printf '{"type":"module","private":true}\n' > package.json
+          npm install --ignore-scripts --no-audit --no-fund @vercel/blob@latest
 
       - name: Transfer and certify public assets
         shell: bash
         run: |
           set -euo pipefail
-          node --input-type=module <<'NODE'
+          cp /tmp/assets.json /tmp/blob-runner/assets.json
+          cat > /tmp/blob-runner/migrate.mjs <<'NODE'
           import fs from 'node:fs';
           import { put } from '@vercel/blob';
 
-          const { assets } = JSON.parse(fs.readFileSync('/tmp/assets.json', 'utf8'));
-          const results = [];
-          for (const asset of assets) {
+          const { assets } = JSON.parse(fs.readFileSync(new URL('./assets.json', import.meta.url), 'utf8'));
+          const results = new Array(assets.length);
+          let cursor = 0;
+
+          async function transfer(asset) {
             const source = await fetch(asset.source, { redirect: 'follow' });
             if (!source.ok || !source.body) throw new Error(`source fetch failed for ${asset.pathname}: HTTP ${source.status}`);
             const blob = await put(asset.pathname, source.body, {
@@ -153,16 +133,28 @@ jobs:
             if (asset.contentType === 'application/pdf') {
               const magic = new TextDecoder().decode(bytes.slice(0, 4));
               if (magic !== '%PDF') throw new Error(`invalid PDF magic for ${asset.pathname}`);
-            } else if (asset.contentType === 'image/webp') {
+            } else {
               const riff = new TextDecoder().decode(bytes.slice(0, 4));
               const webp = new TextDecoder().decode(bytes.slice(8, 12));
               if (riff !== 'RIFF' || webp !== 'WEBP') throw new Error(`invalid WebP magic for ${asset.pathname}`);
             }
-            results.push({ pathname: asset.pathname, url: blob.url, contentType: asset.contentType, size: bytes.length });
+            return { pathname: asset.pathname, url: blob.url, contentType: asset.contentType, size: bytes.length };
           }
+
+          async function worker() {
+            while (true) {
+              const index = cursor++;
+              if (index >= assets.length) return;
+              results[index] = await transfer(assets[index]);
+            }
+          }
+
+          await Promise.all(Array.from({ length: Math.min(3, assets.length) }, () => worker()));
           fs.writeFileSync('/tmp/blob-results.json', JSON.stringify(results, null, 2));
           for (const result of results) console.log(`PUBLIC_ASSET ${result.pathname} ${result.url} ${result.size}`);
           NODE
+          cd /tmp/blob-runner
+          node migrate.mjs
 
       - name: Migration summary
         shell: bash
