@@ -4,7 +4,7 @@ const OPS_STORAGE_KEY = "greenatics-ops-mvp-001";
 
 test("public routes do not mount or persist the local OPS store", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Transformar residuos en vida/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Transformamos residuos en vida/i })).toBeVisible();
   await page.waitForTimeout(100);
   await expect.poll(() => page.evaluate((key) => window.localStorage.getItem(key), OPS_STORAGE_KEY)).toBeNull();
 });
