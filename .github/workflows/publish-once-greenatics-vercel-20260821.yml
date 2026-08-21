@@ -155,6 +155,39 @@ jobs:
         id: preview
         run: npm run pilot:vercel-preview
 
+      - name: Inspect Vercel public-resource environment keys
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Accept: application/json" \
+            "https://api.vercel.com/v10/projects/$VERCEL_PROJECT_ID/env?teamId=$VERCEL_ORG_ID" \
+            -o /tmp/vercel-env.json
+
+          node <<'NODE'
+          const fs = require('fs');
+          const payload = JSON.parse(fs.readFileSync('/tmp/vercel-env.json', 'utf8'));
+          const rows = Array.isArray(payload) ? payload : Array.isArray(payload.envs) ? payload.envs : [];
+          const present = new Set(rows.map((row) => String(row?.key || '').trim()).filter(Boolean));
+          const required = [
+            'SHAREPOINT_SITE_HOSTNAME',
+            'SHAREPOINT_SITE_PATH',
+            'SHAREPOINT_DRIVE_ID',
+            'SHAREPOINT_DOCUMENT_ROOT',
+            'SHAREPOINT_TENANT_ID',
+            'SHAREPOINT_CLIENT_ID',
+            'SHAREPOINT_CLIENT_SECRET',
+          ];
+          const report = required.map((key) => `${key}: ${present.has(key) ? 'PRESENT' : 'MISSING'}`);
+          console.log('Vercel SharePoint/Graph env key inventory (values intentionally hidden):');
+          report.forEach((line) => console.log(line));
+          const summary = process.env.GITHUB_STEP_SUMMARY;
+          if (summary) fs.appendFileSync(summary, `\n### Vercel SharePoint/Graph env inventory\n${report.map((line) => `- ${line}`).join('\n')}\n`);
+          NODE
+
       - name: Certify protected deployed Preview
         env:
           DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
@@ -182,33 +215,84 @@ jobs:
           APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
         shell: bash
         run: |
-          set -euo pipefail
+          set -u -o pipefail
           base="${APP_BASE_URL%/}"
+          failures=0
 
-          fetch_html() {
-            local path="$1"
-            local expected="$2"
-            local outfile="$3"
-            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 "$base$path" -o "$outfile"
-            grep -Fq "$expected" "$outfile"
+          report_fail() {
+            echo "::error::$1"
+            echo "- FAIL: $1" >> "$GITHUB_STEP_SUMMARY"
+            failures=$((failures + 1))
           }
 
-          fetch_html "/" "Greenatics" /tmp/home.html
-          fetch_html "/casa-jardin" "Nutrición por etapas para tus plantas." /tmp/casa-jardin.html
-          fetch_html "/casa-jardin/guias" "Guía Wondergreen Casa & Jardín" /tmp/casa-jardin-guias.html
-          fetch_html "/biblioteca" "Biblioteca" /tmp/biblioteca.html
+          check_html() {
+            local path="$1"
+            local marker="$2"
+            local outfile="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            echo "HTML $path -> status=$status bytes=$bytes marker=$marker"
+            if [ "$status" != "200" ]; then report_fail "$path HTTP $status"; return; fi
+            if [ "$bytes" -lt 500 ]; then report_fail "$path devolvió solo $bytes bytes"; return; fi
+            if ! grep -Fq "$marker" "$outfile"; then report_fail "$path no contiene marker '$marker'"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
+          }
 
-          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 \
-            "$base/api/public-resources/home-garden-guide-casa-jardin" -o /tmp/guia-casa-jardin.pdf
-          test "$(head -c 4 /tmp/guia-casa-jardin.pdf)" = "%PDF"
-          test -s /tmp/guia-casa-jardin.pdf
+          check_pdf() {
+            local path="$1"
+            local outfile="$2"
+            local headers="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 -D "$headers" -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0 magic=""
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            [ -f "$outfile" ] && magic="$(head -c 4 "$outfile" 2>/dev/null || true)"
+            local ctype="$(grep -i '^content-type:' "$headers" 2>/dev/null | tail -1 | tr -d '\r' || true)"
+            echo "PDF $path -> status=$status bytes=$bytes magic=$magic $ctype"
+            if [ "$status" != "200" ]; then
+              [ -f "$outfile" ] && { echo 'Response preview:'; head -c 240 "$outfile" | tr '\n' ' '; echo; }
+              report_fail "$path HTTP $status"
+              return
+            fi
+            if [ "$magic" != "%PDF" ]; then report_fail "$path no devolvió magic %PDF"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, PDF)" >> "$GITHUB_STEP_SUMMARY"
+          }
 
-          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 \
-            "$base/api/public-media/home-garden-casa-jardin-cover" -o /tmp/guia-casa-jardin-cover.webp
-          test "$(head -c 4 /tmp/guia-casa-jardin-cover.webp)" = "RIFF"
-          test "$(dd if=/tmp/guia-casa-jardin-cover.webp bs=1 skip=8 count=4 2>/dev/null)" = "WEBP"
-          test -s /tmp/guia-casa-jardin-cover.webp
+          check_webp() {
+            local path="$1"
+            local outfile="$2"
+            local headers="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 -D "$headers" -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0 riff="" webp=""
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            [ -f "$outfile" ] && riff="$(head -c 4 "$outfile" 2>/dev/null || true)"
+            [ -f "$outfile" ] && webp="$(dd if="$outfile" bs=1 skip=8 count=4 2>/dev/null || true)"
+            local ctype="$(grep -i '^content-type:' "$headers" 2>/dev/null | tail -1 | tr -d '\r' || true)"
+            echo "WEBP $path -> status=$status bytes=$bytes riff=$riff webp=$webp $ctype"
+            if [ "$status" != "200" ]; then
+              [ -f "$outfile" ] && { echo 'Response preview:'; head -c 240 "$outfile" | tr '\n' ' '; echo; }
+              report_fail "$path HTTP $status"
+              return
+            fi
+            if [ "$riff" != "RIFF" ] || [ "$webp" != "WEBP" ]; then report_fail "$path no devolvió un WebP válido"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, WebP)" >> "$GITHUB_STEP_SUMMARY"
+          }
 
+          echo "### Public editorial smoke" >> "$GITHUB_STEP_SUMMARY"
+          check_html "/" "Greenatics" /tmp/home.html
+          check_html "/casa-jardin" "Encontrar un punto de partida" /tmp/casa-jardin.html
+          check_html "/casa-jardin/guias" "Wondergreen" /tmp/casa-jardin-guias.html
+          check_html "/biblioteca" "Biblioteca" /tmp/biblioteca.html
+          check_pdf "/api/public-resources/home-garden-guide-casa-jardin" /tmp/guia-casa-jardin.pdf /tmp/pdf-headers.txt
+          check_webp "/api/public-media/home-garden-casa-jardin-cover" /tmp/guia-casa-jardin-cover.webp /tmp/webp-headers.txt
+
+          if [ "$failures" -ne 0 ]; then
+            echo "::error::Public editorial smoke terminó con $failures fallo(s)."
+            exit 1
+          fi
           echo "Public editorial smoke: HOME, Casa & Jardin, Guias, Biblioteca, PDF and WebP PASS." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publication summary
