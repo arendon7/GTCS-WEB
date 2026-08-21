@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { downloadPublicWondergreenPdf, getPublicWondergreenPdf, publicWondergreenPdfs } from "./public-resource-download";
+import {
+  downloadPublicWondergreenPdf,
+  getPublicWondergreenMedia,
+  getPublicWondergreenPdf,
+  publicWondergreenMedia,
+  publicWondergreenPdfs,
+} from "./public-resource-download";
 
 const env = {
   SHAREPOINT_SITE_HOSTNAME: "example.sharepoint.com",
@@ -11,8 +17,8 @@ const env = {
   SHAREPOINT_CLIENT_SECRET: "secret",
 };
 
-describe("public Wondergreen PDF proxy", () => {
-  it("exposes exactly the six explicitly approved resources", () => {
+describe("public Wondergreen resource proxy", () => {
+  it("exposes exactly the six explicitly approved PDFs", () => {
     expect(publicWondergreenPdfs.map((item) => item.id)).toEqual([
       "wondergreen-product-master",
       "wondergreen-guide-cafe",
@@ -24,7 +30,33 @@ describe("public Wondergreen PDF proxy", () => {
     expect(getPublicWondergreenPdf("home-garden-guide-green-plants")).toBeNull();
   });
 
-  it("returns null before auth for resources outside the allowlist", async () => {
+  it("registers the real Wondergreen visuals reused by Casa Jardin", () => {
+    for (const assetId of [
+      "wondergreen-system-stages",
+      "wondergreen-2grow",
+      "wondergreen-2balance",
+      "wondergreen-2bloom",
+      "wondergreen-2fruit",
+      "wondergreen-bioinsumos",
+    ]) {
+      const asset = getPublicWondergreenMedia(assetId);
+      expect(asset).not.toBeNull();
+      expect(asset?.contentType).toBe("image/webp");
+      expect(asset?.filename).toMatch(/\.webp$/);
+    }
+
+    expect(publicWondergreenMedia.map((item) => item.id)).toEqual(expect.arrayContaining([
+      "wondergreen-system-stages",
+      "wondergreen-2grow",
+      "wondergreen-2balance",
+      "wondergreen-2bloom",
+      "wondergreen-2fruit",
+      "wondergreen-bioinsumos",
+    ]));
+    expect(getPublicWondergreenMedia("unknown-home-garden-visual")).toBeNull();
+  });
+
+  it("returns null before auth for resources outside the PDF allowlist", async () => {
     const fetchImpl = vi.fn<typeof fetch>();
     await expect(downloadPublicWondergreenPdf("unknown", env, fetchImpl)).resolves.toBeNull();
     expect(fetchImpl).not.toHaveBeenCalled();
