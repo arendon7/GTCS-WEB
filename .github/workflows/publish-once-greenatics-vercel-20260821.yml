@@ -71,7 +71,7 @@ jobs:
             -d "{\"state\":\"pending\",\"context\":\"greenatics/vercel-publication\",\"description\":\"Publicando develop en greenatics-ops\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
             >/dev/null
 
-      - name: Require hosted deployment and UAT secrets
+      - name: Require deployment secrets
         shell: bash
         run: |
           set -euo pipefail
@@ -81,7 +81,23 @@ jobs:
             VERCEL_ORG_ID \
             NEXT_PUBLIC_SUPABASE_URL \
             NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
-            SUPABASE_SECRET_KEY \
+            SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted OPS production publication."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Resolve optional authenticated UAT
+        id: identity_uat
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          total=6
+          for name in \
             PILOT_DIRECTOR_EMAIL \
             PILOT_DIRECTOR_PASSWORD \
             PILOT_OPERATOR_TAM_EMAIL \
@@ -90,11 +106,21 @@ jobs:
             PILOT_OPERATOR_YAR_PASSWORD
           do
             if [ -z "${!name:-}" ]; then
-              echo "::error::$name is not configured for hosted OPS production publication."
-              missing=1
+              missing=$((missing + 1))
             fi
           done
-          test "$missing" -eq 0
+
+          if [ "$missing" -eq 0 ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Authenticated Director/Operario UAT: enabled." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$missing" -eq "$total" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Authenticated Director/Operario UAT skipped: its six identity secrets are not configured. Database RLS gates and hosted backend preflight remain mandatory."
+            echo "Authenticated Director/Operario UAT: SKIPPED (identity secrets not configured)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::Authenticated UAT identity secrets are only partially configured; configure all six or none."
+            exit 1
+          fi
 
       - name: Install dependencies
         run: npm install --ignore-scripts
@@ -110,6 +136,7 @@ jobs:
         run: npm run pilot:backend-preflight -- --plants TAM,YAR
 
       - name: Certify Director vs Operario Tamesis RLS isolation
+        if: ${{ steps.identity_uat.outputs.enabled == 'true' }}
         env:
           PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
           PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
@@ -117,6 +144,7 @@ jobs:
         run: npm run pilot:rls-smoke
 
       - name: Certify Director vs Operario Yarumal RLS isolation
+        if: ${{ steps.identity_uat.outputs.enabled == 'true' }}
         env:
           PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
           PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
@@ -188,11 +216,17 @@ jobs:
         env:
           OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
           UNIQUE_ORIGIN: ${{ steps.production.outputs.unique_deployment_url }}
+          IDENTITY_UAT_ENABLED: ${{ steps.identity_uat.outputs.enabled }}
         run: |
           echo "Stable OPS/public origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Unique deployment: $UNIQUE_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Published develop commit: $DEPLOY_GIT_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Quality, backend, TAM/YAR RLS, Preview, Production and public resource smoke passed." >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, hosted backend, Preview, Production and public resource smoke passed." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$IDENTITY_UAT_ENABLED" = "true" ]; then
+            echo "Authenticated TAM/YAR RLS smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Authenticated TAM/YAR RLS smoke: SKIPPED because identity secrets are not configured; database RLS/pgTAP remained mandatory in PR CI." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Mark publication success
         if: ${{ success() }}
