@@ -32,7 +32,7 @@
 
 .cardBody { padding: 28px 30px 26px; }
 .audience { display: block; color: var(--green); font-size: .67rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
-.cardBody h3 { margin: 12px 0 10px; font-family: var(--display); font-size: 2.2rem; font-weight: 600; line-height: 1; }
+.kitName { display: block; margin: 12px 0 10px; font-family: var(--display); font-size: 2.2rem; font-weight: 600; line-height: 1; }
 .promise { margin: 0 0 20px; color: var(--muted); line-height: 1.65; }
 .pathway { padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--forest) !important; font-size: .75rem; font-weight: 900; letter-spacing: .04em; }
 .cardBody a { display: inline-block; margin-top: 12px; color: var(--forest); font-weight: 850; text-decoration: none; }
@@ -56,7 +56,7 @@
   .visualStrip { min-height: 250px; padding: 12px; }
   .card { grid-template-rows: 250px 1fr auto; }
   .cardBody { padding: 24px 22px; }
-  .cardBody h3 { font-size: 1.9rem; }
+  .kitName { font-size: 1.9rem; }
   .status { padding: 14px 22px; }
   .guardrail { padding: 22px; }
 }
