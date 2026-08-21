@@ -227,7 +227,6 @@ export function PublicHeader() {
                     aria-expanded={open}
                     aria-haspopup="true"
                     onClick={() => setDesktopMenu(open ? null : item.menu ?? null)}
-                    onFocus={() => setDesktopMenu(item.menu ?? null)}
                   >
                     <span aria-hidden="true">⌄</span>
                   </button>
