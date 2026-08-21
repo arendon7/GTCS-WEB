@@ -22,6 +22,9 @@ test("public HOME exposes the three Greenatics pillars and commercial doors befo
   await expect(page.getByText("Seis puertas de entrada", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Casa & Jardín", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Explorar Casa & Jardín →", exact: true })).toHaveAttribute("href", "/casa-jardin");
+  await expect(page.getByRole("link", { name: "Soluciones para municipios y ESP →", exact: true })).toHaveAttribute("href", "/soluciones/esp-municipios");
+  await expect(page.getByRole("link", { name: "Soluciones para empresas →", exact: true })).toHaveAttribute("href", "/soluciones/empresas-grandes-generadores");
+  await expect(page.getByRole("link", { name: "Explorar infraestructura y plantas →", exact: true })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
   await expect(page.getByRole("link", { name: "Abrir biblioteca →", exact: true })).toHaveAttribute("href", "/biblioteca");
 
   const levelTwoHeadings = await page.getByRole("heading", { level: 2 }).allTextContents();
