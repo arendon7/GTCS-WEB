@@ -3,8 +3,8 @@ import { PublicShell } from "@/components/public-shell";
 import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
 const social = publicSocialMetadata({
-  title: "Biblioteca | Greenatics",
-  description: "Guías, programas por cultivo y herramientas técnicas de Greenatics y Wondergreen convertidas en conocimiento navegable.",
+  title: "Recursos | Greenatics",
+  description: "Biblioteca técnica, proyectos documentados, impacto, guías y herramientas de Greenatics y Wondergreen reunidas para tomar mejores decisiones.",
   path: "/biblioteca",
 });
 
