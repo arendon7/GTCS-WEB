@@ -23,6 +23,7 @@ test("Wondergreen subnavigation follows the approved editorial hierarchy", async
   await expect(nav.getByRole("link", { name: "Tecnología" })).toHaveAttribute("href", "#tecnologia");
   await expect(nav.getByRole("link", { name: "Productos" })).toHaveAttribute("href", "/wondergreen/productos");
   await expect(nav.getByRole("link", { name: "Cultivos" })).toHaveAttribute("href", "/wondergreen/cultivos");
+  await expect(nav.getByRole("link", { name: "Finder" })).toHaveAttribute("href", "/wondergreen/finder");
   await expect(nav.getByRole("link", { name: "Bioinsumos" })).toHaveAttribute("href", "#bioinsumos");
   await expect(nav.getByRole("link", { name: "Guías" })).toHaveAttribute("href", "/biblioteca");
   await expect(nav.getByRole("link", { name: "Casa & Jardín" })).toHaveAttribute("href", "/casa-jardin");
@@ -40,6 +41,29 @@ test("Wondergreen exposes a household entry without turning Casa Jardin into eco
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
+});
+
+test("Wondergreen hub surfaces the governed Finder without turning it into a product shortcut", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  await expect(page.getByRole("link", { name: "Encontrar mi programa" })).toHaveAttribute("href", "/wondergreen/finder");
+
+  const needEntry = page.getByRole("article").filter({
+    has: page.getByRole("heading", { name: "Tengo una necesidad", exact: true }),
+  });
+  await expect(needEntry.getByRole("link", { name: "Continuar →" })).toHaveAttribute("href", "/wondergreen/finder");
+
+  const finder = page.locator("#finder");
+  await expect(finder.getByRole("link", { name: "Abrir Finder Wondergreen" })).toHaveAttribute("href", "/wondergreen/finder");
+  await expect(finder.getByText(/cinco programas publicados/i)).toBeVisible();
+  await expect(finder.getByText(/no una prescripción automática/i)).toBeVisible();
+
+  await page.getByRole("link", { name: "Encontrar mi programa" }).click();
+  await expect(page).toHaveURL(/\/wondergreen\/finder$/);
+  await expect(page.getByRole("heading", { name: "Empieza por el cultivo y la etapa." })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
+  await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
 });
 
 test("Wondergreen V2 explains what the system is before technology and product selection", async ({ page }) => {
@@ -115,7 +139,7 @@ test("Wondergreen finder follows diagnosis to follow-up without automatic prescr
   await expect(finder.getByText("Diagnóstico y análisis", { exact: true })).toBeVisible();
   await expect(finder.getByText("Seguimiento y ajuste", { exact: true })).toBeVisible();
   await expect(finder.getByText(/no una prescripción automática/i)).toBeVisible();
-  await expect(finder.getByRole("link", { name: "Empezar por cultivo" })).toHaveAttribute("href", "/wondergreen/cultivos");
+  await expect(finder.getByRole("link", { name: "Abrir Finder Wondergreen" })).toHaveAttribute("href", "/wondergreen/finder");
   await expect(finder.getByRole("link", { name: "Consultar guías" })).toHaveAttribute("href", "/biblioteca");
 });
 
