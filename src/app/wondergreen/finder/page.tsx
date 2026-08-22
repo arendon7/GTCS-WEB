@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 import { WondergreenFinder } from "./finder-client";
 import styles from "./finder.module.css";
 
@@ -11,17 +10,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-function FinderFallback() {
-  return (
-    <div className={styles.finderShell} aria-busy="true">
-      <div className={styles.result}>
-        <div><span>Finder Wondergreen</span><h2>Cargando contexto…</h2><p>Estamos preparando los cinco programas publicados sin generar recomendaciones automáticas.</p></div>
-      </div>
-    </div>
-  );
+type FinderSearchParams = {
+  crop?: string | string[];
+  moment?: string | string[];
+  analysis?: string | string[];
+};
+
+function firstParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
 }
 
-export default function WondergreenFinderPage() {
+export default async function WondergreenFinderPage({ searchParams }: { searchParams: Promise<FinderSearchParams> }) {
+  const query = await searchParams;
+
   return (
     <div className={styles.page}>
       <main>
@@ -42,9 +43,11 @@ export default function WondergreenFinderPage() {
 
         <section className={styles.section} aria-label="Finder Wondergreen">
           <div className={styles.container}>
-            <Suspense fallback={<FinderFallback />}>
-              <WondergreenFinder />
-            </Suspense>
+            <WondergreenFinder
+              initialCrop={firstParam(query.crop)}
+              initialMoment={firstParam(query.moment)}
+              initialAnalysis={firstParam(query.analysis)}
+            />
           </div>
         </section>
       </main>
