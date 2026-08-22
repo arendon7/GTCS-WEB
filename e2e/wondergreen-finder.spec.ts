@@ -25,9 +25,10 @@ test("Finder persists a governed cacao stage without turning it into an automati
   await page.getByLabel("Etapa del cultivo Wondergreen", { exact: true }).selectOption({ label: "Prefloración y floración" });
   await page.getByLabel("Análisis disponible Wondergreen", { exact: true }).selectOption("none");
 
-  await expect(page.getByRole("heading", { name: "Esta es la ruta que ya aparece en el programa publicado." })).toBeVisible();
-  await expect(page.getByLabel("Familias presentes en el programa publicado").getByText("2Bloom", { exact: true })).toBeVisible();
-  await expect(page.getByText(/No calcula dosis, frecuencia, mezcla, compatibilidad, eficacia, cobertura ni disponibilidad comercial/i)).toBeVisible();
+  const result = page.getByLabel("Resultado orientativo del Finder Wondergreen");
+  await expect(result.getByRole("heading", { name: "Esta es la ruta que ya aparece en el programa publicado." })).toBeVisible();
+  await expect(result.getByLabel("Familias presentes en el programa publicado").getByText("2Bloom", { exact: true })).toBeVisible();
+  await expect(result.getByText(/No calcula dosis, frecuencia, mezcla, compatibilidad, eficacia, cobertura ni disponibilidad comercial/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
 
@@ -42,9 +43,10 @@ test("Finder restores a shared state and carries only contextual guidance into C
   await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("cacao");
   await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toHaveValue("Prefloración y floración");
   await expect(page.getByLabel("Análisis disponible Wondergreen", { exact: true })).toHaveValue("available");
-  await expect(page.getByText("2Bloom", { exact: true })).toBeVisible();
+  const result = page.getByLabel("Resultado orientativo del Finder Wondergreen");
+  await expect(result.getByLabel("Familias presentes en el programa publicado").getByText("2Bloom", { exact: true })).toBeVisible();
 
-  const support = page.getByRole("link", { name: "Llevar este contexto a soporte técnico" });
+  const support = result.getByRole("link", { name: "Llevar este contexto a soporte técnico" });
   const href = await support.getAttribute("href");
   expect(href).toBeTruthy();
   const target = new URL(href!, "https://greenatics.com.co");
@@ -70,9 +72,10 @@ test("unknown stage stops the Finder before exposing a program family", async ({
 
   await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("cacao");
   await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toHaveValue("unknown");
-  await expect(page.getByRole("heading", { name: "Todavía no cierres una referencia." })).toBeVisible();
-  await expect(page.getByLabel("Familias presentes en el programa publicado")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Llevar contexto al equipo técnico" })).toBeVisible();
+  const result = page.getByLabel("Resultado orientativo del Finder Wondergreen");
+  await expect(result.getByRole("heading", { name: "Todavía no cierres una referencia." })).toBeVisible();
+  await expect(result.getByLabel("Familias presentes en el programa publicado")).toHaveCount(0);
+  await expect(result.getByRole("link", { name: "Llevar contexto al equipo técnico" })).toBeVisible();
 });
 
 test("invalid Finder URL values fail closed instead of fabricating crop or evidence", async ({ page }) => {
@@ -81,5 +84,5 @@ test("invalid Finder URL values fail closed instead of fabricating crop or evide
   await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("");
   await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toBeDisabled();
   await expect(page.getByLabel("Análisis disponible Wondergreen", { exact: true })).toHaveValue("");
-  await expect(page.getByRole("heading", { name: "Empieza por un cultivo publicado." })).toBeVisible();
+  await expect(page.getByLabel("Resultado orientativo del Finder Wondergreen").getByRole("heading", { name: "Empieza por un cultivo publicado." })).toBeVisible();
 });
