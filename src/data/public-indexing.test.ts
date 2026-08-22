@@ -24,19 +24,28 @@ describe("public navigation and indexing contract", () => {
     const expectedCount = publicStaticRoutes.length + audienceSolutionPaths.length + intentSolutionPaths.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
 
     expect(entries).toHaveLength(expectedCount);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/esp-municipios`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/empresas-grandes-generadores`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/residuos-organicos`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/infraestructura-plantas`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/propiedad-horizontal-redes`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/esp-ready`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/greenatics-base`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/programas/pmirs-red`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/soluciones/diagnostico-caracterizacion`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/proyectos/yarumal`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/cultivos/cafe`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/2grow-solido-15-3-3`);
-    expect(urls).toContain(`${publicSite.publicDomainTarget}/wondergreen/productos/extracto-neem`);
+    for (const path of [
+      "/soluciones/esp",
+      "/soluciones/municipios",
+      "/soluciones/empresas",
+      "/soluciones/propiedad-horizontal",
+      "/soluciones/plantas",
+      "/soluciones/residuos-organicos",
+      "/soluciones/infraestructura-plantas",
+      "/soluciones/propiedad-horizontal-redes",
+      "/soluciones/programas/esp-ready",
+      "/soluciones/programas/greenatics-base",
+      "/soluciones/programas/pmirs-red",
+      "/soluciones/diagnostico-caracterizacion",
+      "/proyectos/yarumal",
+      "/wondergreen/cultivos/cafe",
+      "/wondergreen/productos/2grow-solido-15-3-3",
+      "/wondergreen/productos/extracto-neem",
+    ]) {
+      expect(urls).toContain(`${publicSite.publicDomainTarget}${path}`);
+    }
+    expect(urls).not.toContain(`${publicSite.publicDomainTarget}/soluciones/esp-municipios`);
+    expect(urls).not.toContain(`${publicSite.publicDomainTarget}/soluciones/empresas-grandes-generadores`);
     for (const path of publicReservedRoutes) expect(urls).not.toContain(`${publicSite.publicDomainTarget}${path}`);
     expect(urls.some((url) => url.includes("/app"))).toBe(false);
     expect(urls.some((url) => url.includes("/dashboard"))).toBe(false);
