@@ -4,8 +4,8 @@ import { HomeGardenGuideVisualBand } from "@/components/home-garden-guide-visual
 import { HomeGardenKitVisualBand } from "@/components/home-garden-kit-visual-band";
 
 export const metadata: Metadata = {
-  title: "Casa y Jardín | Greenatics",
-  description: "Espacio reservado para la futura línea Greenatics de soluciones para casa, jardín y autocultivo.",
+  title: "Casa y Jardín | Wondergreen · Greenatics",
+  description: "Sistema Wondergreen para plantas, jardín, huerta y vivero: diagnóstico orientativo, nutrición por etapas, productos, kits en pre-lanzamiento y guías prácticas.",
   alternates: { canonical: "/casa-jardin" },
   robots: {
     index: false,
