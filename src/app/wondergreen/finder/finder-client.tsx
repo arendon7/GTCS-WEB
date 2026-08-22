@@ -5,6 +5,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
 import styles from "./finder.module.css";
 
+const finderCropOrder = ["cafe", "cacao", "aguacate", "limon-tahiti", "pastos-gramineas"] as const;
+const finderCrops = finderCropOrder.flatMap((slug) => {
+  const crop = wondergreenCrops.find((item) => item.slug === slug);
+  return crop ? [crop] : [];
+});
+
 const analysisOptions = [
   ["", "Prefiero no definirlo todavía"],
   ["available", "Tengo análisis de suelo o foliar disponible"],
@@ -29,7 +35,7 @@ export function WondergreenFinder() {
   const searchParams = useSearchParams();
 
   const cropParam = searchParams.get("crop") ?? "";
-  const selectedCrop = wondergreenCrops.find((crop) => crop.slug === cropParam);
+  const selectedCrop = finderCrops.find((crop) => crop.slug === cropParam);
   const momentParam = searchParams.get("moment") ?? "";
   const selectedStage = selectedCrop?.stages.find((stage) => stage.moment === momentParam);
   const unknownStage = Boolean(selectedCrop && momentParam === "unknown");
@@ -44,7 +50,7 @@ export function WondergreenFinder() {
 
   function chooseCrop(value: string) {
     replaceParams((params) => {
-      if (wondergreenCrops.some((crop) => crop.slug === value)) params.set("crop", value);
+      if (finderCrops.some((crop) => crop.slug === value)) params.set("crop", value);
       else params.delete("crop");
       params.delete("moment");
     });
@@ -113,9 +119,9 @@ export function WondergreenFinder() {
           <strong>¿Qué cultivo estás revisando?</strong>
           <select aria-label="Cultivo Wondergreen" value={selectedCrop?.slug ?? ""} onChange={(event) => chooseCrop(event.target.value)}>
             <option value="">Selecciona uno de los programas publicados</option>
-            {wondergreenCrops.map((crop) => <option key={crop.slug} value={crop.slug}>{crop.name}</option>)}
+            {finderCrops.map((crop) => <option key={crop.slug} value={crop.slug}>{crop.name}</option>)}
           </select>
-          <small>El Finder V1 se limita a los cinco programas técnicos ya publicados.</small>
+          <small>El Finder V1 se limita a los cinco programas técnicos aprobados para esta herramienta.</small>
         </label>
 
         <label className={styles.field}>
