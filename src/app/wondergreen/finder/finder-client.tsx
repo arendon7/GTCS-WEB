@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
 import styles from "./finder.module.css";
 
@@ -21,7 +21,13 @@ const analysisOptions = [
 
 type AnalysisId = (typeof analysisOptions)[number][0];
 
-function validAnalysis(value: string | null): AnalysisId {
+type WondergreenFinderProps = {
+  initialCrop?: string;
+  initialMoment?: string;
+  initialAnalysis?: string;
+};
+
+function validAnalysis(value: string | null | undefined): AnalysisId {
   return analysisOptions.some(([id]) => id === value) ? (value as AnalysisId) : "";
 }
 
@@ -29,49 +35,53 @@ function analysisLabel(value: AnalysisId) {
   return analysisOptions.find(([id]) => id === value)?.[1] ?? "Por definir";
 }
 
-export function WondergreenFinder() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+function validInitialCrop(value: string | undefined) {
+  return finderCrops.some((crop) => crop.slug === value) ? value ?? "" : "";
+}
 
-  const cropParam = searchParams.get("crop") ?? "";
-  const selectedCrop = finderCrops.find((crop) => crop.slug === cropParam);
-  const momentParam = searchParams.get("moment") ?? "";
-  const selectedStage = selectedCrop?.stages.find((stage) => stage.moment === momentParam);
-  const unknownStage = Boolean(selectedCrop && momentParam === "unknown");
-  const analysis = validAnalysis(searchParams.get("analysis"));
+function validInitialMoment(cropSlug: string, value: string | undefined) {
+  const crop = finderCrops.find((item) => item.slug === cropSlug);
+  if (!crop || !value) return "";
+  if (value === "unknown") return value;
+  return crop.stages.some((stage) => stage.moment === value) ? value : "";
+}
 
-  function replaceParams(mutator: (params: URLSearchParams) => void) {
-    const params = new URLSearchParams(searchParams.toString());
-    mutator(params);
+export function WondergreenFinder({ initialCrop, initialMoment, initialAnalysis }: WondergreenFinderProps) {
+  const startingCrop = validInitialCrop(initialCrop);
+  const [cropSlug, setCropSlug] = useState(startingCrop);
+  const [moment, setMoment] = useState(() => validInitialMoment(startingCrop, initialMoment));
+  const [analysis, setAnalysis] = useState<AnalysisId>(() => validAnalysis(initialAnalysis));
+
+  const selectedCrop = finderCrops.find((crop) => crop.slug === cropSlug);
+  const selectedStage = selectedCrop?.stages.find((stage) => stage.moment === moment);
+  const unknownStage = Boolean(selectedCrop && moment === "unknown");
+
+  function syncUrl(nextCrop: string, nextMoment: string, nextAnalysis: AnalysisId) {
+    const params = new URLSearchParams();
+    if (nextCrop) params.set("crop", nextCrop);
+    if (nextMoment) params.set("moment", nextMoment);
+    if (nextAnalysis) params.set("analysis", nextAnalysis);
     const next = params.toString();
-    router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+    window.history.replaceState(null, "", next ? `${window.location.pathname}?${next}` : window.location.pathname);
   }
 
   function chooseCrop(value: string) {
-    replaceParams((params) => {
-      if (finderCrops.some((crop) => crop.slug === value)) params.set("crop", value);
-      else params.delete("crop");
-      params.delete("moment");
-    });
+    const nextCrop = finderCrops.some((crop) => crop.slug === value) ? value : "";
+    setCropSlug(nextCrop);
+    setMoment("");
+    syncUrl(nextCrop, "", analysis);
   }
 
   function chooseMoment(value: string) {
-    replaceParams((params) => {
-      if (!selectedCrop) {
-        params.delete("moment");
-        return;
-      }
-      if (value === "unknown" || selectedCrop.stages.some((stage) => stage.moment === value)) params.set("moment", value);
-      else params.delete("moment");
-    });
+    const nextMoment = selectedCrop && (value === "unknown" || selectedCrop.stages.some((stage) => stage.moment === value)) ? value : "";
+    setMoment(nextMoment);
+    syncUrl(cropSlug, nextMoment, analysis);
   }
 
   function chooseAnalysis(value: string) {
-    replaceParams((params) => {
-      if (analysisOptions.some(([id]) => id === value) && value) params.set("analysis", value);
-      else params.delete("analysis");
-    });
+    const nextAnalysis = validAnalysis(value);
+    setAnalysis(nextAnalysis);
+    syncUrl(cropSlug, moment, nextAnalysis);
   }
 
   const completed = Boolean(selectedCrop && (selectedStage || unknownStage));
@@ -117,7 +127,7 @@ export function WondergreenFinder() {
         <label className={styles.field}>
           <span>01 · Cultivo</span>
           <strong>¿Qué cultivo estás revisando?</strong>
-          <select aria-label="Cultivo Wondergreen" value={selectedCrop?.slug ?? ""} onChange={(event) => chooseCrop(event.target.value)}>
+          <select aria-label="Cultivo Wondergreen" value={cropSlug} onChange={(event) => chooseCrop(event.target.value)}>
             <option value="">Selecciona uno de los programas publicados</option>
             {finderCrops.map((crop) => <option key={crop.slug} value={crop.slug}>{crop.name}</option>)}
           </select>
@@ -127,7 +137,7 @@ export function WondergreenFinder() {
         <label className={styles.field}>
           <span>02 · Etapa</span>
           <strong>¿En qué momento está el cultivo?</strong>
-          <select aria-label="Etapa del cultivo Wondergreen" value={selectedStage?.moment ?? (unknownStage ? "unknown" : "")} onChange={(event) => chooseMoment(event.target.value)} disabled={!selectedCrop}>
+          <select aria-label="Etapa del cultivo Wondergreen" value={moment} onChange={(event) => chooseMoment(event.target.value)} disabled={!selectedCrop}>
             <option value="">{selectedCrop ? "Selecciona una etapa del programa" : "Primero selecciona el cultivo"}</option>
             {selectedCrop?.stages.map((stage) => <option key={stage.moment} value={stage.moment}>{stage.moment}</option>)}
             {selectedCrop ? <option value="unknown">No sé identificar la etapa</option> : null}
