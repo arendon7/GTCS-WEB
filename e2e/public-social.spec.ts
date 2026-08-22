@@ -4,6 +4,7 @@ const routes = [
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
+  "/recursos",
   "/impacto",
   "/biblioteca",
   "/biblioteca/guia-deficiencias",
