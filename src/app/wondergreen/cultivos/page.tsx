@@ -19,6 +19,7 @@ export default function WondergreenCropsPage() {
               <span className={styles.eyebrow}>Wondergreen · por cultivo</span>
               <h1>El cultivo cambia la pregunta.</h1>
               <p className={styles.lead}>Una misma referencia no debe explicarse igual para café, cacao, aguacate, cítricos o pastos. Estas rutas convierten las guías ya construidas en programas web orientativos, con alertas y seguimiento.</p>
+              <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/finder">Abrir Finder Wondergreen</Link>
             </div>
             <aside className={styles.heroAside}>
               <strong>No es una receta automática.</strong>
@@ -53,16 +54,19 @@ export default function WondergreenCropsPage() {
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Principio de uso</span>
               <h2>Cultivo → etapa → objetivo → contexto → solución potencial.</h2>
-              <p>Las páginas de cultivo son una capa de orientación. Ahora se conectan con el Product Master público para pasar de una familia potencial a una ficha concreta sin confundir pertinencia agronómica con disponibilidad comercial.</p>
+              <p>Las páginas de cultivo son una capa de orientación. El Finder organiza cultivo, etapa y evidencia disponible; después, el Product Master permite revisar una ficha concreta sin confundir pertinencia agronómica con disponibilidad comercial.</p>
             </div>
-            <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/productos">Explorar Product Master</Link>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen/finder">Usar Finder Wondergreen</Link>
+              <Link className={styles.button} href="/wondergreen/productos">Explorar Product Master</Link>
+            </div>
           </div>
         </section>
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Wondergreen</span><h2>¿No encuentras tu cultivo?</h2></div>
-            <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con equipo técnico</Link>
+            <Link className={`${styles.button} ${styles.primary}`} href="/contacto?audience=wondergreen&need=nutricion&source=wondergreen-cultivos">Hablar con equipo técnico</Link>
           </div>
         </section>
       </main>
