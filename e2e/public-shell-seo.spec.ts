@@ -6,7 +6,7 @@ const shellRoutes = [
   "/soluciones", "/soluciones/esp", "/soluciones/municipios", "/soluciones/empresas",
   "/soluciones/propiedad-horizontal", "/soluciones/plantas",
   "/soluciones/residuos-organicos", "/soluciones/infraestructura-plantas", "/soluciones/propiedad-horizontal-redes",
-  "/soluciones/diagnostico-caracterizacion", "/proyectos", "/proyectos/yarumal", "/impacto",
+  "/soluciones/diagnostico-caracterizacion", "/recursos", "/proyectos", "/proyectos/yarumal", "/impacto",
   "/biblioteca", "/biblioteca/guia-deficiencias", "/nosotros", "/contacto",
 ];
 
@@ -43,12 +43,13 @@ test("public home uses the canonical shell V2 and real routes", async ({ page },
     await expect(nav.getByRole("link", { name: "Soluciones", exact: true })).toHaveAttribute("href", "/soluciones");
     await expect(nav.getByRole("link", { name: "Wondergreen", exact: true })).toHaveAttribute("href", "/wondergreen");
     await expect(nav.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
-    await expect(nav.getByRole("link", { name: "Recursos", exact: true })).toHaveAttribute("href", "/biblioteca");
+    await expect(nav.getByRole("link", { name: "Recursos", exact: true })).toHaveAttribute("href", "/recursos");
     await expect(nav.getByRole("link", { name: "Nosotros", exact: true })).toHaveAttribute("href", "/nosotros");
     await expect(header.getByRole("link", { name: "Hablar con nosotros", exact: true })).toHaveAttribute("href", "/contacto");
     await expect(header.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
   }
 
+  await expect(footer.getByRole("link", { name: "Recursos", exact: true })).toHaveAttribute("href", "/recursos");
   await expect(footer.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
   await expect(footer.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
 });
@@ -131,6 +132,8 @@ test("sitemap exposes canonical audience routes while legacy combined routes sta
     "/soluciones/infraestructura-plantas",
     "/soluciones/propiedad-horizontal-redes",
     "/soluciones/diagnostico-caracterizacion",
+    "/recursos",
+    "/biblioteca",
   ]) expect(sitemapText).toContain(`https://greenatics.com.co${path}`);
   expect(sitemapText).not.toContain("https://greenatics.com.co/soluciones/esp-municipios");
   expect(sitemapText).not.toContain("https://greenatics.com.co/soluciones/empresas-grandes-generadores");

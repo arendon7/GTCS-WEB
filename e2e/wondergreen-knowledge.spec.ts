@@ -10,14 +10,16 @@ const approvedDownloadIds = [
 ];
 
 test("public resources hub exposes library, projects and impact as distinct layers", async ({ page }) => {
-  await page.goto("/biblioteca");
+  await page.goto("/recursos");
 
-  await expect(page.getByRole("heading", { name: "Conocimiento, casos y evidencia para decidir mejor." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Conocimiento, experiencia e impacto para decidir mejor." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Biblioteca técnica", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Proyectos / casos", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Impacto", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver casos →", exact: true })).toHaveAttribute("href", "/proyectos");
+  await expect(page.getByRole("link", { name: "Abrir biblioteca →", exact: true })).toHaveAttribute("href", "/biblioteca");
+  await expect(page.getByRole("link", { name: "Ver proyectos →", exact: true })).toHaveAttribute("href", "/proyectos");
   await expect(page.getByRole("link", { name: "Ver impacto →", exact: true })).toHaveAttribute("href", "/impacto");
+  await expect(page.getByRole("link", { name: "Explorar soluciones", exact: true })).toHaveAttribute("href", "/soluciones");
 });
 
 test("public library exposes Wondergreen guides with same-origin PDF downloads", async ({ page }) => {
