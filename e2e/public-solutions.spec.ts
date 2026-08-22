@@ -24,7 +24,7 @@ test("solutions hub routes by audience, service family, process and evidence", a
 
   await expect(page.getByRole("heading", { name: /Empieza por tu contexto. Después elegimos el servicio./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "No sé por dónde empezar", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: "No sé por dónde empezar", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 
   for (const audience of [
     "ESP / Prestadores",

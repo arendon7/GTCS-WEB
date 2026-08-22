@@ -123,9 +123,9 @@ export function PublicHeader() {
           <div className={styles.mobileLinkList}>
             {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={closeMobile} />)}
           </div>
-          <Link className={styles.mobileDiagnostic} href="/soluciones/diagnostico-caracterizacion" onClick={closeMobile}>
+          <Link className={styles.mobileDiagnostic} href="/soluciones/diagnostico-inicial" onClick={closeMobile}>
             <span>No sé por dónde empezar</span>
-            <strong>Iniciar por diagnóstico</strong>
+            <strong>Iniciar diagnóstico inicial</strong>
             <span aria-hidden="true">→</span>
           </Link>
         </>
@@ -247,7 +247,7 @@ export function PublicHeader() {
                       <span className={styles.megaLabel}>¿Qué necesitas resolver?</span>
                       {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={() => setDesktopMenu(null)} />)}
                     </div>
-                    <Link className={styles.megaDiagnostic} href="/soluciones/diagnostico-caracterizacion" onClick={() => setDesktopMenu(null)}>
+                    <Link className={styles.megaDiagnostic} href="/soluciones/diagnostico-inicial" onClick={() => setDesktopMenu(null)}>
                       <span>No sé por dónde empezar</span>
                       <strong>Diagnóstico inicial Greenatics</strong>
                       <span aria-hidden="true">→</span>
