@@ -17,7 +17,7 @@ test("public home presents Greenatics and exposes the digital bridge", async ({ 
   await expect(page.getByRole("img", { name: "Greenatics" }).first()).toBeVisible();
   await expect(await digitalEntry(page)).toHaveAttribute("href", "/app");
   await expect(page.getByRole("heading", { name: "Una marca. Tres formas claras de entrar." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
 });
 
