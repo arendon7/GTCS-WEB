@@ -24,7 +24,7 @@ test("public home presents Greenatics and exposes the digital bridge", async ({ 
 test("Wondergreen exposes fertilizers, bioinputs and governed technology narrative", async ({ page }) => {
   await page.goto("/wondergreen");
 
-  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Dos grandes líneas dentro de una misma marca." })).toBeVisible();
 
   const portfolio = page.locator("#portafolio");

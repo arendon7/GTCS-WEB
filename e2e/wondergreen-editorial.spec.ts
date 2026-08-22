@@ -66,10 +66,24 @@ test("Wondergreen hub surfaces the governed Finder without turning it into a pro
   await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
 });
 
+test("Wondergreen hero uses the approved soil message with governed technical qualification", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  const hero = page.locator("section").filter({ has: page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." }) }).first();
+  await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
+  await expect(hero.getByText(/nutrición organomineral, soluciones líquidas, biología y conocimiento/i)).toBeVisible();
+  await expect(hero.getByText(/En las referencias sólidas donde está documentado/i)).toBeVisible();
+  await expect(hero.getByText(/matriz, la oclusión y la lenta liberación/i)).toBeVisible();
+  await expect(hero.getByText(/la selección siempre vuelve al cultivo, la etapa y la evidencia disponible/i)).toBeVisible();
+  await expect(hero.getByRole("link", { name: "Encontrar mi programa" })).toHaveAttribute("href", "/wondergreen/finder");
+  await expect(hero.getByRole("link", { name: "Ver productos" })).toHaveAttribute("href", "/wondergreen/productos");
+  await expect(hero.getByText("Product Master público", { exact: true })).toBeVisible();
+});
+
 test("Wondergreen V2 explains what the system is before technology and product selection", async ({ page }) => {
   await page.goto("/wondergreen");
 
-  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Un sistema de nutrición y manejo alrededor del suelo y del cultivo." })).toBeVisible();
   await expect(page.getByText(/fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico/i)).toBeVisible();
   await expect(page.getByText(/Primero se lee el contexto; después se seleccionan las herramientas/i)).toBeVisible();
