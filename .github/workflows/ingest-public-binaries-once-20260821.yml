@@ -1,0 +1,144 @@
+name: ingest-public-binaries-once-20260821
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/ingest-public-binaries-once-20260821.yml
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+concurrency:
+  group: greenatics-public-binary-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HANDOFF_ISSUE: "227"
+      ASSET_BRANCH: assets/public-binaries-v1
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Fetch temporary handoff manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$HANDOFF_ISSUE" \
+            -o /tmp/handoff-issue.json
+          node <<'NODE'
+          const fs = require('fs');
+          const issue = JSON.parse(fs.readFileSync('/tmp/handoff-issue.json','utf8'));
+          const body = String(issue.body || '').trim();
+          let manifest;
+          try { manifest = JSON.parse(body); } catch { throw new Error('El issue handoff no contiene JSON válido.'); }
+          if (manifest.status !== 'ready' || !Array.isArray(manifest.files)) throw new Error('El handoff no está marcado ready.');
+          if (manifest.files.length !== 26) throw new Error(`Se esperaban 26 archivos y llegaron ${manifest.files.length}.`);
+          const paths = new Set();
+          for (const file of manifest.files) {
+            if (!file || typeof file.path !== 'string' || typeof file.url !== 'string' || typeof file.kind !== 'string') throw new Error('Entrada de handoff inválida.');
+            if (paths.has(file.path)) throw new Error(`Ruta duplicada: ${file.path}`);
+            paths.add(file.path);
+            if (!/^public\/(docs|media)\/wondergreen\/[A-Za-z0-9._-]+$/.test(file.path)) throw new Error(`Ruta fuera de allowlist: ${file.path}`);
+            if (!['pdf','webp'].includes(file.kind)) throw new Error(`Kind inválido: ${file.kind}`);
+            const u = new URL(file.url);
+            if (u.protocol !== 'https:' || !u.hostname.endsWith('.oaiusercontent.com')) throw new Error(`Host temporal no permitido para ${file.path}`);
+          }
+          fs.writeFileSync('/tmp/handoff.json', JSON.stringify(manifest));
+          NODE
+
+      - name: Download and validate public binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE' > /tmp/download.tsv
+          const manifest = require('/tmp/handoff.json');
+          for (const file of manifest.files) process.stdout.write(`${file.kind}\t${file.path}\t${file.url}\n`);
+          NODE
+          while IFS=$'\t' read -r kind path url; do
+            mkdir -p "$(dirname "$path")"
+            curl --fail --silent --show-error --location --retry 2 --retry-delay 1 --max-time 90 "$url" -o "$path"
+            test -s "$path"
+            case "$kind" in
+              pdf)
+                test "$(head -c 4 "$path")" = "%PDF"
+                ;;
+              webp)
+                test "$(head -c 4 "$path")" = "RIFF"
+                test "$(dd if="$path" bs=1 skip=8 count=4 2>/dev/null)" = "WEBP"
+                ;;
+              *) exit 2 ;;
+            esac
+            echo "validated $path ($(wc -c < "$path") bytes)"
+          done < /tmp/download.tsv
+
+      - name: Commit binaries to governed asset branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin "$ASSET_BRANCH" >/dev/null 2>&1; then
+            echo "::error::La rama $ASSET_BRANCH ya existe; no se sobrescribe una ingesta anterior."
+            exit 1
+          fi
+          git checkout -b "$ASSET_BRANCH"
+          git config user.name "greenatics-publication-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/docs/wondergreen public/media/wondergreen
+          git diff --cached --quiet && { echo "::error::No hay binarios para commitear."; exit 1; }
+          git commit -m "feat(public): versionar binarios Wondergreen"
+          git push origin "$ASSET_BRANCH"
+
+      - name: Open binary asset pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          body_file=/tmp/pr-body.txt
+          cat > "$body_file" <<'EOF'
+          ## Objetivo
+          Versionar en `public/` los 10 PDFs y 16 WebP Wondergreen/Casa & Jardín ya aprobados para publicación.
+
+          ## Origen
+          Los bytes fueron transferidos desde el archivo corporativo mediante URLs temporales firmadas de un solo uso. Esas URLs no forman parte de este commit.
+
+          ## Resultado
+          - `public/docs/wondergreen/`: catálogo + 5 guías de cultivo + 4 guías Casa & Jardín.
+          - `public/media/wondergreen/`: 16 portadas/visuales WebP.
+          - Vercel podrá servir estos recursos sin credenciales SharePoint/Graph en runtime.
+
+          ## Gate
+          Fusionar únicamente con CI 4/4 verde y después cambiar el registry público de proxy Graph a rutas estáticas same-origin.
+          EOF
+          payload="$(node -e "const fs=require('fs'); console.log(JSON.stringify({title:'feat(public): versionar PDFs e imágenes Wondergreen',head:process.env.ASSET_BRANCH,base:'develop',body:fs.readFileSync('/tmp/pr-body.txt','utf8'),draft:true}))")"
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls" \
+            -d "$payload" -o /tmp/opened-pr.json
+          node -e "const p=require('/tmp/opened-pr.json'); if(!p.number) process.exit(2); console.log('Opened PR #'+p.number+' '+p.html_url)"
+
+      - name: Handoff summary
+        shell: bash
+        run: |
+          echo "Public binary ingest completed into branch $ASSET_BRANCH." >> "$GITHUB_STEP_SUMMARY"
+          echo "Temporary source URLs were not committed." >> "$GITHUB_STEP_SUMMARY"
