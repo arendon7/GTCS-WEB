@@ -1,0 +1,209 @@
+name: repair-public-resource-runtime-20260821
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/repair-public-resource-runtime-20260821.yml
+
+permissions:
+  contents: read
+  statuses: write
+
+concurrency:
+  group: greenatics-hosted-pilot-production
+  cancel-in-progress: false
+
+jobs:
+  repair-and-certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      SHAREPOINT_TENANT_ID: ${{ secrets.SHAREPOINT_TENANT_ID }}
+      SHAREPOINT_CLIENT_ID: ${{ secrets.SHAREPOINT_CLIENT_ID }}
+      SHAREPOINT_CLIENT_SECRET: ${{ secrets.SHAREPOINT_CLIENT_SECRET }}
+      SHAREPOINT_SITE_HOSTNAME: grupopineal.sharepoint.com
+      SHAREPOINT_SITE_PATH: /sites/Greenatics
+      SHAREPOINT_DRIVE_ID: b!OCXIi11xr0eKn0p4zFu9iYc122SAPAhMnlXp20Uu2p4s4XyNuNVaR5Heiwwp8YEH
+      SHAREPOINT_DOCUMENT_ROOT: Documentos compartidos
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact commit and mark pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"pending\",\"context\":\"greenatics/vercel-publication\",\"description\":\"Reparando runtime documental público\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" >/dev/null
+
+      - name: Require core deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in VERCEL_TOKEN VERCEL_ORG_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name no está configurado."
+              exit 1
+            fi
+          done
+
+      - name: Resolve Greenatics Vercel project
+        id: project
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Accept: application/json" \
+            "https://api.vercel.com/v9/projects/greenatics-ops?teamId=$VERCEL_ORG_ID" \
+            -o /tmp/project.json
+          project_id="$(node -e "const p=require('/tmp/project.json'); if(!String(p.id||'').startsWith('prj_')) process.exit(2); process.stdout.write(p.id)")"
+          echo "project_id=$project_id" >> "$GITHUB_OUTPUT"
+          echo "Vercel project: greenatics-ops ($project_id)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Reconcile SharePoint runtime environment
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Accept: application/json" \
+            "https://api.vercel.com/v10/projects/$VERCEL_PROJECT_ID/env?teamId=$VERCEL_ORG_ID" \
+            -o /tmp/vercel-env-before.json
+
+          node <<'NODE'
+          const fs = require('fs');
+          const payload = JSON.parse(fs.readFileSync('/tmp/vercel-env-before.json','utf8'));
+          const rows = Array.isArray(payload) ? payload : Array.isArray(payload.envs) ? payload.envs : [];
+          const present = new Set(rows.map(r => String(r?.key || '').trim()).filter(Boolean));
+          const required = ['SHAREPOINT_SITE_HOSTNAME','SHAREPOINT_SITE_PATH','SHAREPOINT_DRIVE_ID','SHAREPOINT_DOCUMENT_ROOT','SHAREPOINT_TENANT_ID','SHAREPOINT_CLIENT_ID','SHAREPOINT_CLIENT_SECRET'];
+          const missing = required.filter(k => !present.has(k));
+          console.log('Vercel env inventory (values hidden):');
+          required.forEach(k => console.log(`${k}: ${present.has(k) ? 'PRESENT' : 'MISSING'}`));
+          fs.writeFileSync('/tmp/sharepoint-missing.json', JSON.stringify(missing));
+          NODE
+
+          missing_count="$(node -e "process.stdout.write(String(require('/tmp/sharepoint-missing.json').length))")"
+          auth_present=0
+          for name in SHAREPOINT_TENANT_ID SHAREPOINT_CLIENT_ID SHAREPOINT_CLIENT_SECRET; do
+            [ -n "${!name:-}" ] && auth_present=$((auth_present + 1))
+          done
+
+          if [ "$missing_count" -eq 0 ]; then
+            echo "SharePoint runtime ya estaba completo en Vercel; no se sobrescriben valores." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [ "$auth_present" -ne 3 ]; then
+            echo "::error::Vercel tiene $missing_count variable(s) SHAREPOINT_* faltante(s) y GitHub no dispone de las tres credenciales SHAREPOINT_TENANT_ID/CLIENT_ID/CLIENT_SECRET."
+            echo "SharePoint runtime: BLOCKED · faltan variables en Vercel y los tres secrets Graph no están disponibles en GitHub Actions." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          node <<'NODE' > /tmp/sharepoint-env-upsert.json
+          const vars = [
+            ['SHAREPOINT_SITE_HOSTNAME', process.env.SHAREPOINT_SITE_HOSTNAME, 'plain'],
+            ['SHAREPOINT_SITE_PATH', process.env.SHAREPOINT_SITE_PATH, 'plain'],
+            ['SHAREPOINT_DRIVE_ID', process.env.SHAREPOINT_DRIVE_ID, 'plain'],
+            ['SHAREPOINT_DOCUMENT_ROOT', process.env.SHAREPOINT_DOCUMENT_ROOT, 'plain'],
+            ['SHAREPOINT_TENANT_ID', process.env.SHAREPOINT_TENANT_ID, 'sensitive'],
+            ['SHAREPOINT_CLIENT_ID', process.env.SHAREPOINT_CLIENT_ID, 'sensitive'],
+            ['SHAREPOINT_CLIENT_SECRET', process.env.SHAREPOINT_CLIENT_SECRET, 'sensitive'],
+          ].map(([key,value,type]) => ({key,value,type,target:['production','preview'],comment:'GREENATICS public resource runtime'}));
+          process.stdout.write(JSON.stringify(vars));
+          NODE
+
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            "https://api.vercel.com/v10/projects/$VERCEL_PROJECT_ID/env?teamId=$VERCEL_ORG_ID&upsert=true" \
+            --data-binary @/tmp/sharepoint-env-upsert.json >/dev/null
+          echo "SharePoint runtime: sincronizado a Vercel (7 claves; valores ocultos)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Deploy stable production with reconciled runtime
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify production commit
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        run: npm run pilot:preflight -- --base-url "$APP_BASE_URL" --mode full-ops --expected-branch "$DEPLOY_GIT_REF" --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Certify public pages PDF and WebP
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${APP_BASE_URL%/}"
+          for path in / /casa-jardin /casa-jardin/guias /biblioteca; do
+            code="$(curl --silent --show-error --location --max-time 45 -o /tmp/page.html -w '%{http_code}' "$base$path")"
+            echo "$path -> HTTP $code"
+            test "$code" = "200"
+          done
+
+          pdf_code="$(curl --silent --show-error --location --max-time 60 -o /tmp/guide.pdf -w '%{http_code}' "$base/api/public-resources/home-garden-guide-casa-jardin")"
+          echo "PDF -> HTTP $pdf_code · $(wc -c < /tmp/guide.pdf) bytes"
+          test "$pdf_code" = "200"
+          test "$(head -c 4 /tmp/guide.pdf)" = "%PDF"
+
+          webp_code="$(curl --silent --show-error --location --max-time 60 -o /tmp/cover.webp -w '%{http_code}' "$base/api/public-media/home-garden-casa-jardin-cover")"
+          echo "WebP -> HTTP $webp_code · $(wc -c < /tmp/cover.webp) bytes"
+          test "$webp_code" = "200"
+          test "$(head -c 4 /tmp/cover.webp)" = "RIFF"
+          test "$(dd if=/tmp/cover.webp bs=1 skip=8 count=4 2>/dev/null)" = "WEBP"
+          echo "Public pages + PDF + WebP: PASS" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mark publication success
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"success\",\"context\":\"greenatics/vercel-publication\",\"description\":\"greenatics-ops + recursos públicos certificados\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" >/dev/null
+
+      - name: Mark publication failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          curl --fail --silent --show-error -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"failure\",\"context\":\"greenatics/vercel-publication\",\"description\":\"Falló reparación/certificación de recursos públicos\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" >/dev/null
