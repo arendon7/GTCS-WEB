@@ -22,6 +22,16 @@ test("public resources hub exposes library, projects and impact as distinct laye
   await expect(page.getByRole("link", { name: "Explorar soluciones", exact: true })).toHaveAttribute("href", "/soluciones");
 });
 
+test("public library is a technical surface instead of duplicating the Resources hub", async ({ page }) => {
+  await page.goto("/biblioteca");
+
+  await expect(page.getByRole("heading", { name: "Conocimiento técnico para llevar mejores decisiones a la práctica." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ver todos los recursos Greenatics", exact: true })).toHaveAttribute("href", "/recursos");
+  await expect(page.getByRole("heading", { name: "Proyectos / casos", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Impacto", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Entender → comprobar → aplicar → medir." })).toBeVisible();
+});
+
 test("public library exposes Wondergreen guides with same-origin PDF downloads", async ({ page }) => {
   await page.goto("/biblioteca");
 
