@@ -9,6 +9,7 @@ type ContactContextBuilderProps = {
   initialNeed?: string;
   initialProduct?: string;
   initialCrop?: string;
+  initialContext?: string;
 };
 
 const audiences = [
@@ -41,7 +42,7 @@ function optionLabel(options: readonly (readonly [string, string])[], value: str
   return options.find(([id]) => id === value)?.[1] ?? value;
 }
 
-export function ContactContextBuilder({ bookingUrl, initialAudience = "", initialNeed = "", initialProduct, initialCrop }: ContactContextBuilderProps) {
+export function ContactContextBuilder({ bookingUrl, initialAudience = "", initialNeed = "", initialProduct, initialCrop, initialContext }: ContactContextBuilderProps) {
   const [audience, setAudience] = useState(initialAudience);
   const [need, setNeed] = useState(initialNeed);
   const [location, setLocation] = useState("");
@@ -53,13 +54,14 @@ export function ContactContextBuilder({ bookingUrl, initialAudience = "", initia
     const lines = [
       `Contexto: ${optionLabel(audiences, audience) || "Por definir"}`,
       `Necesidad: ${optionLabel(needs, need) || "Por definir"}`,
+      initialContext ? `Contexto heredado: ${initialContext}` : "",
       location ? `Ubicación: ${location}` : "",
       initialProduct ? `Referencia Wondergreen: ${initialProduct}` : "",
       initialCrop ? `Cultivo: ${initialCrop}` : "",
       details ? `Situación: ${details}` : "",
     ].filter(Boolean);
     return lines.join("\n");
-  }, [audience, need, location, details, initialProduct, initialCrop]);
+  }, [audience, need, location, details, initialContext, initialProduct, initialCrop]);
 
   async function copySummary() {
     try {
@@ -95,6 +97,7 @@ export function ContactContextBuilder({ bookingUrl, initialAudience = "", initia
         </div>
       </div>
 
+      {initialContext ? <p className={styles.formHelp} aria-label="Contexto recibido de la navegación"><strong>Contexto recibido de la navegación:</strong> {initialContext}</p> : null}
       <p className={styles.formHelp}>Este paso no envía información a Greenatics ni la guarda en un servidor. Solo organiza el contexto en tu navegador para que llegues mejor preparado a la conversación.</p>
       <div className={styles.actions}><button className={`${styles.button} ${styles.primary}`} type="submit">Preparar contexto</button><a className={`${styles.button} ${styles.ghost}`} href={bookingUrl} target="_blank" rel="noreferrer">Agendar sin preparar</a></div>
 

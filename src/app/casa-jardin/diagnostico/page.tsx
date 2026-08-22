@@ -10,7 +10,28 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function CasaJardinDiagnosticoPage() {
+type DiagnosticSearchParams = {
+  plant?: string | string[];
+  stage?: string | string[];
+  condition?: string | string[];
+  count?: string | string[];
+  pots?: string | string[];
+};
+
+function firstParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function CasaJardinDiagnosticoPage({ searchParams }: { searchParams: Promise<DiagnosticSearchParams> }) {
+  const query = await searchParams;
+  const initial = {
+    plantType: firstParam(query.plant),
+    stage: firstParam(query.stage),
+    condition: firstParam(query.condition),
+    plantCount: firstParam(query.count),
+    potSizes: firstParam(query.pots),
+  };
+
   return (
     <div className={styles.page}>
       <main>
@@ -35,7 +56,7 @@ export default function CasaJardinDiagnosticoPage() {
               <div><span className={styles.eyebrow}>Flujo orientativo</span><h2>Etapa + condición antes de producto.</h2></div>
               <p>La cantidad de plantas se captura únicamente para preparar una futura recomendación de formato. No se traduce todavía en gramos, cucharadas, cobertura ni frecuencia.</p>
             </div>
-            <HomeGardenDiagnostic />
+            <HomeGardenDiagnostic initial={initial} />
           </div>
         </section>
       </main>

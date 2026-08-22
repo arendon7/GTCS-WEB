@@ -1,16 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { homeGardenDiagnostic, homeGardenProducts, visibleHomeGardenKits } from "@/data/home-garden";
 import styles from "../casa-jardin.module.css";
 
-type StageKey = keyof typeof homeGardenDiagnostic.stages | "";
+type StageKey = keyof typeof homeGardenDiagnostic.stages | "unknown" | "";
 type ConditionKey = "healthy" | "stressed" | "very-wilted" | "waterlogged" | "extremely-dry" | "pest-damage" | "root-problem" | "unknown" | "";
 type PlantType = "green" | "flower" | "garden" | "fruit" | "mixed" | "new-transplant" | "unsure" | "";
 type PotSize = (typeof homeGardenDiagnostic.potSizes)[number];
 
-const conditionOptions: readonly [ConditionKey, string][] = [
+type InitialDiagnosticContext = {
+  plantType?: string;
+  stage?: string;
+  condition?: string;
+  plantCount?: string;
+  potSizes?: string;
+};
+
+const plantTypeOptions: readonly [Exclude<PlantType, "">, string][] = [
+  ["green", "Planta verde / follaje"],
+  ["flower", "Planta con flor"],
+  ["garden", "Huerta / aromáticas"],
+  ["fruit", "Planta productiva / fruto"],
+  ["mixed", "Colección mixta"],
+  ["new-transplant", "Recién trasplantada"],
+  ["unsure", "No estoy seguro"],
+];
+
+const conditionOptions: readonly [Exclude<ConditionKey, "">, string][] = [
   ["healthy", "Activa / aparentemente sana"],
   ["stressed", "Estresada, pero sin daño severo evidente"],
   ["very-wilted", "Muy marchita"],
@@ -21,21 +39,42 @@ const conditionOptions: readonly [ConditionKey, string][] = [
   ["unknown", "No estoy seguro"],
 ];
 
-const stageOptions: readonly [StageKey, string][] = [
+const stageOptions: readonly [Exclude<StageKey, "">, string][] = [
   ["growing", "Sacando hojas o brotes nuevos"],
   ["stable", "Estable / mantenimiento"],
   ["flowering", "Formando botones o flores"],
   ["fruiting", "Con fruto o en etapa productiva"],
   ["mixed", "Tengo varias plantas en etapas distintas"],
-  ["", "No sé identificar la etapa"],
+  ["unknown", "No sé identificar la etapa"],
 ];
 
-export function HomeGardenDiagnostic() {
-  const [plantType, setPlantType] = useState<PlantType>("");
-  const [stage, setStage] = useState<StageKey>("");
-  const [condition, setCondition] = useState<ConditionKey>("");
-  const [plantCount, setPlantCount] = useState("");
-  const [potSizes, setPotSizes] = useState<PotSize[]>([]);
+const plantCounts = ["1-5", "6-10", "11-20", "21-40", "40+"] as const;
+
+function validOption<T extends string>(value: string | undefined, options: readonly (readonly [T, string])[]): T | "" {
+  if (!value) return "";
+  return options.some(([id]) => id === value) ? value as T : "";
+}
+
+function validPlantCount(value: string | undefined) {
+  return value && (plantCounts as readonly string[]).includes(value) ? value : "";
+}
+
+function validPotSizes(value: string | undefined): PotSize[] {
+  if (!value) return [];
+  const allowed = homeGardenDiagnostic.potSizes as readonly string[];
+  return value.split(",").filter((size): size is PotSize => allowed.includes(size));
+}
+
+function optionLabel<T extends string>(options: readonly (readonly [T, string])[], value: string) {
+  return options.find(([id]) => id === value)?.[1];
+}
+
+export function HomeGardenDiagnostic({ initial = {} }: { initial?: InitialDiagnosticContext }) {
+  const [plantType, setPlantType] = useState<PlantType>(() => validOption(initial.plantType, plantTypeOptions));
+  const [stage, setStage] = useState<StageKey>(() => validOption(initial.stage, stageOptions));
+  const [condition, setCondition] = useState<ConditionKey>(() => validOption(initial.condition, conditionOptions));
+  const [plantCount, setPlantCount] = useState(() => validPlantCount(initial.plantCount));
+  const [potSizes, setPotSizes] = useState<PotSize[]>(() => validPotSizes(initial.potSizes));
 
   const result = useMemo(() => {
     if (!condition || !stage) return null;
@@ -49,7 +88,7 @@ export function HomeGardenDiagnostic() {
       return { type: "review" as const, title: "Primero recupera una humedad adecuada.", copy: "El sustrato extremadamente seco queda en semáforo amarillo: corrige la condición y vuelve a observar antes de decidir una aplicación." };
     }
 
-    const destination = homeGardenDiagnostic.stages[stage as keyof typeof homeGardenDiagnostic.stages];
+    const destination = stage === "unknown" ? undefined : homeGardenDiagnostic.stages[stage as keyof typeof homeGardenDiagnostic.stages];
     if (!destination) return { type: "review" as const, title: "Todavía falta contexto.", copy: "No identificamos una etapa con suficiente claridad. Usa el semáforo, revisa agua, drenaje, raíces y sanidad, o solicita orientación antes de aplicar." };
 
     if (destination === "casa-completa") {
@@ -67,6 +106,37 @@ export function HomeGardenDiagnostic() {
     };
   }, [condition, plantType, stage]);
 
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (plantType) params.set("plant", plantType);
+    if (stage) params.set("stage", stage);
+    if (condition) params.set("condition", condition);
+    if (plantCount) params.set("count", plantCount);
+    if (potSizes.length) params.set("pots", potSizes.join(","));
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `${window.location.pathname}?${query}` : window.location.pathname);
+  }, [condition, plantCount, plantType, potSizes, stage]);
+
+  const contactHref = useMemo(() => {
+    if (!result) return null;
+    const context = [
+      "Casa & Jardín",
+      plantType ? `Tipo: ${optionLabel(plantTypeOptions, plantType)}` : "Tipo: por definir",
+      stage ? `Etapa: ${optionLabel(stageOptions, stage)}` : "Etapa: por definir",
+      condition ? `Condición: ${optionLabel(conditionOptions, condition)}` : "Condición: por definir",
+      plantCount ? `Escala: ${plantCount} plantas` : "",
+      potSizes.length ? `Materas: ${potSizes.join(", ")}` : "",
+      `Orientación del flujo: ${result.title}`,
+    ].filter(Boolean).join(" · ");
+    const params = new URLSearchParams({
+      audience: "wondergreen",
+      need: "nutricion",
+      source: "casa-jardin-diagnostico",
+      contexto: context,
+    });
+    return `/contacto?${params.toString()}#preparar`;
+  }, [condition, plantCount, plantType, potSizes, result, stage]);
+
   function togglePotSize(size: PotSize) {
     setPotSizes((current) => current.includes(size) ? current.filter((item) => item !== size) : [...current, size]);
   }
@@ -79,13 +149,7 @@ export function HomeGardenDiagnostic() {
           <h3>¿Qué estás cuidando?</h3>
           <select value={plantType} onChange={(event) => setPlantType(event.target.value as PlantType)} aria-label="Tipo de planta">
             <option value="">Selecciona una opción</option>
-            <option value="green">Planta verde / follaje</option>
-            <option value="flower">Planta con flor</option>
-            <option value="garden">Huerta / aromáticas</option>
-            <option value="fruit">Planta productiva / fruto</option>
-            <option value="mixed">Colección mixta</option>
-            <option value="new-transplant">Recién trasplantada</option>
-            <option value="unsure">No estoy seguro</option>
+            {plantTypeOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
         </label>
 
@@ -94,7 +158,7 @@ export function HomeGardenDiagnostic() {
           <h3>¿Qué está haciendo?</h3>
           <select value={stage} onChange={(event) => setStage(event.target.value as StageKey)} aria-label="Etapa de la planta">
             <option value="">Selecciona una opción</option>
-            {stageOptions.filter(([value]) => value).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            {stageOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
         </label>
 
@@ -145,6 +209,7 @@ export function HomeGardenDiagnostic() {
             <strong>{result.title}</strong>
             <p>{result.copy}</p>
             {"href" in result && result.href ? <Link href={result.href}>Abrir siguiente paso →</Link> : null}
+            {contactHref ? <Link href={contactHref}>Llevar este contexto a soporte técnico →</Link> : null}
           </>
         )}
       </div>
