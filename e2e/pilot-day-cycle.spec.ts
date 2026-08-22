@@ -1,5 +1,28 @@
 import { expect, test } from "@playwright/test";
 
+function operationalDateFromLotCode(lotCode: string) {
+  const match = lotCode.match(/TAM-FORSU-(\d{2})(\d{2})(\d{2})-\d{3}/);
+  if (!match) throw new Error(`No se pudo derivar la fecha operativa de ${lotCode}.`);
+  return `20${match[1]}-${match[2]}-${match[3]}`;
+}
+
+function bogotaLocalMinuteForDate(operationalDate: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    hourCycle: "h23",
+    timeZone: "America/Bogota",
+  }).formatToParts(new Date());
+  const read = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value;
+  const currentDate = `${read("year")}-${read("month")}-${read("day")}`;
+  const currentTime = `${read("hour")}:${read("minute")}`;
+  return `${operationalDate}T${currentDate === operationalDate ? currentTime : "23:59"}`;
+}
+
 /**
  * Pilot-readiness integration gate for the deterministic local adapter.
  *
@@ -32,6 +55,7 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   const receptionText = await reception.textContent();
   const lotCode = receptionText?.match(/TAM-FORSU-\d{6}-\d{3}/)?.[0];
   expect(lotCode).toBeTruthy();
+  const operationalDate = operationalDateFromLotCode(lotCode!);
 
   await page.goto("/app");
   await expect(page.getByLabel("Indicadores de hoy").locator(".metric-block").filter({ hasText: "Recibido" })).toContainText("1.50 t");
@@ -67,6 +91,9 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   await sourceRow.getByRole("checkbox").check();
   await sourceRow.getByLabel("Asignar (kg)").fill("1500");
   await page.getByLabel("Volumen conformado (m³)").fill("8");
+  const formationMoment = bogotaLocalMinuteForDate(operationalDate);
+  await page.getByLabel("Inicio de conformación · hora Colombia").fill(formationMoment);
+  await page.getByLabel("Fin de conformación · hora Colombia").fill(formationMoment);
   await page.getByRole("group", { name: "Trabajadores de conformación" }).getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Conformar pila" }).click();
   await page.waitForURL((url) => url.pathname.startsWith("/compost/") && url.pathname !== "/compost/new");
@@ -105,8 +132,9 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   const stock = page.locator("article").filter({ hasText: "Wondergreen sólido" }).first();
   await expect(stock).toContainText("300 kg");
 
-  // 8) Direction can reconstruct the day from canonical facts in one dashboard.
+  // 8) Direction can reconstruct the same operational day from canonical facts in one dashboard.
   await page.goto("/dashboard");
+  await page.getByLabel("Fecha").fill(operationalDate);
   const indicators = page.getByLabel("Indicadores operativos");
   await expect(indicators.locator("article").filter({ hasText: "Recibido" })).toContainText("1.50 t");
   await expect(indicators.locator("article").filter({ hasText: "Procesado" })).toContainText("1.50 t");
