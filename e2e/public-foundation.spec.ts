@@ -12,6 +12,7 @@ const publicRoutes = [
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
+  "/recursos",
   "/proyectos",
   "/proyectos/yarumal",
   "/impacto",
