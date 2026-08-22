@@ -129,7 +129,7 @@ test("Casa diagnostic restores structured state and Contact inherits it without 
   await expect(page.getByRole("heading", { name: /Cuéntanos sobre tu cultivo o tu interés en Wondergreen/i })).toBeVisible();
   await expect(page.getByLabel("¿Desde qué contexto nos escribes?")).toHaveValue("wondergreen");
   await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toHaveValue("nutricion");
-  await expect(page.getByText(/Contexto recibido de la navegación:/)).toContainText("Materas: M, L");
+  await expect(page.getByLabel("Contexto recibido de la navegación")).toContainText("Materas: M, L");
 
   await page.getByRole("button", { name: "Preparar contexto" }).click();
   await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Contexto heredado: Casa & Jardín");
