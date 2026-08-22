@@ -9,6 +9,17 @@ const approvedDownloadIds = [
   "wondergreen-guide-pastos",
 ];
 
+test("public resources hub exposes library, projects and impact as distinct layers", async ({ page }) => {
+  await page.goto("/biblioteca");
+
+  await expect(page.getByRole("heading", { name: "Conocimiento, casos y evidencia para decidir mejor." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Biblioteca técnica", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Proyectos / casos", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Impacto", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ver casos →", exact: true })).toHaveAttribute("href", "/proyectos");
+  await expect(page.getByRole("link", { name: "Ver impacto →", exact: true })).toHaveAttribute("href", "/impacto");
+});
+
 test("public library exposes Wondergreen guides with same-origin PDF downloads", async ({ page }) => {
   await page.goto("/biblioteca");
 
@@ -47,7 +58,7 @@ test("public library routes by user intent before product selection", async ({ p
   await expect(page.getByRole("link", { name: /Comprobar criterios/ })).toHaveAttribute("href", "/biblioteca/criterios-nutricionales");
   await expect(page.getByRole("link", { name: /Abrir manual de uso/ })).toHaveAttribute("href", "/biblioteca/manual-uso-wondergreen");
   await expect(page.getByRole("link", { name: /Ver Product Master/ })).toHaveAttribute("href", "/wondergreen/productos");
-  await expect(page.getByRole("link", { name: /Ir a descargas/ })).toHaveAttribute("href", "#recursos");
+  await expect(page.getByRole("link", { name: /Ir a descargas/ })).toHaveAttribute("href", "#biblioteca");
 });
 
 test("deficiency guide prevents symptom-only diagnosis and links to crop programs", async ({ page }) => {
