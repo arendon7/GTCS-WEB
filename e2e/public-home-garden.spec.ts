@@ -123,7 +123,7 @@ test("Casa diagnostic restores structured state and Contact inherits it without 
   expect(target.searchParams.get("need")).toBe("nutricion");
   expect(target.searchParams.get("source")).toBe("casa-jardin-diagnostico");
   expect(target.searchParams.get("contexto")).toContain("Materas: M, L");
-  expect(target.searchParams.get("contexto")).toContain("Punto").not;
+  expect(target.searchParams.get("contexto")).not.toContain("prescripción");
 
   await support.click();
   await expect(page.getByRole("heading", { name: /Cuéntanos sobre tu cultivo o tu interés en Wondergreen/i })).toBeVisible();
