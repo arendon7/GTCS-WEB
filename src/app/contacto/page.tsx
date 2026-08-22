@@ -66,6 +66,7 @@ type ContactSearchParams = {
   source?: string | string[];
   producto?: string | string[];
   cultivo?: string | string[];
+  contexto?: string | string[];
 };
 
 function firstParam(value: string | string[] | undefined) {
@@ -84,6 +85,10 @@ function normalizeAudience(value: string | undefined) {
   return "";
 }
 
+function normalizeInheritedContext(value: string | undefined) {
+  return value?.trim().slice(0, 480) || undefined;
+}
+
 export default async function ContactPage({ searchParams }: { searchParams: Promise<ContactSearchParams> }) {
   const query = await searchParams;
   const audience = normalizeAudience(firstParam(query.audience));
@@ -91,6 +96,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const service = firstParam(query.service);
   const source = firstParam(query.source);
   const crop = firstParam(query.cultivo);
+  const inheritedContext = normalizeInheritedContext(firstParam(query.contexto));
   const productSlug = firstParam(query.producto);
   const product = productSlug ? getWondergreenReference(productSlug) : undefined;
   const contextual = audienceContent[audience];
@@ -107,12 +113,13 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               <span className={styles.eyebrow}>Contacto Greenatics · conversación con contexto</span>
               <h1>{title}</h1>
               <p className={styles.lead}>{lead}</p>
-              {(source || service || product || crop) ? (
+              {(source || service || product || crop || inheritedContext) ? (
                 <div className={styles.contextLine} aria-label="Contexto heredado de navegación">
                   {source ? <span><strong>Origen:</strong> {source}</span> : null}
                   {service ? <span><strong>Servicio:</strong> {service}</span> : null}
                   {product ? <span><strong>Producto:</strong> {product.name}{product.formula ? ` ${product.formula}` : ""}</span> : null}
                   {crop ? <span><strong>Cultivo:</strong> {crop}</span> : null}
+                  {inheritedContext ? <span><strong>Contexto:</strong> {inheritedContext}</span> : null}
                 </div>
               ) : null}
             </div>
@@ -148,6 +155,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               initialNeed={need}
               initialProduct={product ? `${product.name}${product.formula ? ` ${product.formula}` : ""}` : undefined}
               initialCrop={crop}
+              initialContext={inheritedContext}
             />
           </div>
         </section>
