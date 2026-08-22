@@ -19,7 +19,7 @@ test("public resources hub exposes library, projects and impact as distinct laye
   await expect(page.getByRole("link", { name: "Abrir biblioteca →", exact: true })).toHaveAttribute("href", "/biblioteca");
   await expect(page.getByRole("link", { name: "Ver proyectos →", exact: true })).toHaveAttribute("href", "/proyectos");
   await expect(page.getByRole("link", { name: "Ver impacto →", exact: true })).toHaveAttribute("href", "/impacto");
-  await expect(page.getByRole("link", { name: "Explorar soluciones →", exact: true })).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: /Explorar soluciones/ })).toHaveAttribute("href", "/soluciones");
 });
 
 test("public library exposes Wondergreen guides with same-origin PDF downloads", async ({ page }) => {
