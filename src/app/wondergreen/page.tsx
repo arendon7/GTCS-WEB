@@ -3,83 +3,101 @@ import Image from "next/image";
 import Link from "next/link";
 import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
-import styles from "./wondergreen.module.css";
-import refresh from "./wondergreen-refresh.module.css";
+import styles from "./wondergreen-v2.module.css";
 
 export const metadata: Metadata = {
   title: "Wondergreen | Suelo, nutrición y biología",
   description:
-    "Wondergreen integra fertilizantes sólidos y líquidos, compost, bioinsumos, guías por cultivo, Casa & Jardín y acompañamiento técnico.",
+    "Wondergreen integra nutrición organomineral, fertilizantes líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico dentro de una misma lógica de suelo y seguimiento.",
   alternates: { canonical: "/wondergreen" },
 };
 
 const entryPaths = [
-  ["01", "Tengo un cultivo", "Empieza por especie, etapa y objetivo antes de elegir producto.", "/wondergreen/cultivos"],
-  ["02", "Tengo una necesidad", "Nutrición, suelo, floración, producción, raíz, plagas o enfermedades.", "#finder"],
-  ["03", "Sé qué producto busco", "Entra al Product Master público y revisa familia, formato y condición comercial.", "/wondergreen/productos"],
-  ["04", "Tengo plantas en casa", "Entra a Casa, Jardín y Vivero para observar la etapa, usar el diagnóstico orientativo y recorrer kits y guías de pre-lanzamiento.", "/casa-jardin"],
-];
+  {
+    number: "01",
+    title: "Tengo un cultivo",
+    copy: "Empieza por especie, etapa y objetivo antes de elegir una referencia.",
+    href: "/wondergreen/cultivos",
+  },
+  {
+    number: "02",
+    title: "Tengo una necesidad",
+    copy: "Cruza contexto, síntomas, análisis y objetivo antes de cerrar una ruta técnica.",
+    href: "#finder",
+  },
+  {
+    number: "03",
+    title: "Sé qué producto busco",
+    copy: "Entra al Product Master público y revisa familia, formato y condición vigente.",
+    href: "/wondergreen/productos",
+  },
+  {
+    number: "04",
+    title: "Tengo plantas en casa",
+    copy: "Entra a Casa & Jardín para observar etapa, diagnóstico orientativo, productos y guías.",
+    href: "/casa-jardin",
+  },
+] as const;
 
-const system = [
-  ["01", "Suelo", "Compost y materia orgánica como parte de la base del sistema."],
-  ["02", "Nutrición", "Fertilizantes sólidos y líquidos organizados por etapa y objetivo."],
-  ["03", "Biología", "Microorganismos y extractos botánicos según necesidad y estado aprobado."],
-  ["04", "Conocimiento", "Guías de cultivo, deficiencias, protocolos y criterios de uso."],
-  ["05", "Acompañamiento", "La recomendación final considera lote, análisis, agua y manejo."],
-];
-
-const tech = [
-  ["01", "Matriz orgánica", "Base orgánica estabilizada."],
-  ["02", "Formulación", "Integración de los componentes según la referencia."],
-  ["03", "Oclusión", "Incorporación de nutrientes dentro de la matriz organomineral cuando corresponde."],
-  ["04", "Peletizado", "Formato físico homogéneo para manejo y aplicación al suelo."],
-  ["05", "Interacción con el suelo", "Humedad, raíz y biología forman parte del contexto de disponibilidad."],
-];
+const scienceImplications = [
+  ["01", "El suelo es parte del sistema", "La lectura técnica no termina en la fórmula: materia orgánica, humedad, raíz y biología forman parte del contexto de uso."],
+  ["02", "La etapa cambia la decisión", "La misma referencia no se interpreta igual en establecimiento, crecimiento, floración, llenado o recuperación."],
+  ["03", "La disponibilidad necesita contexto", "La forma física y la matriz del producto se leen junto con condiciones de suelo, agua y manejo; no como una promesa aislada."],
+  ["04", "La evidencia manda", "Una característica documentada del producto no se convierte automáticamente en un resultado agronómico universal."],
+] as const;
 
 const finderSteps = [
   ["01", "Cultivo y contexto", "Especie, etapa, objetivo, historial, suelo, agua y condición actual del lote."],
   ["02", "Diagnóstico y análisis", "Síntomas, antecedentes y análisis disponibles antes de seleccionar una referencia."],
   ["03", "Programa técnico", "Se organiza una ruta potencial por etapa, necesidad y condición del cultivo."],
   ["04", "Implementación", "Producto, formato, vía y momento deben seguir la ficha y recomendación vigentes."],
-  ["05", "Seguimiento y ajuste", "La respuesta del cultivo y los nuevos datos permiten revisar la ruta técnica."],
-];
+  ["05", "Seguimiento y ajuste", "La respuesta observada y los nuevos datos permiten revisar la ruta técnica."],
+] as const;
 
 const bioFamilies = [
   ["01", "Microbiología y raíz", "Trichoderma · Micorrizas · Bacillus subtilis", "estado visible por referencia"],
   ["02", "Manejo biológico", "Beauveria · Metarhizium", "uso sujeto a evidencia y registro"],
   ["03", "Extractos botánicos", "Extracto de Neem · Extracto Ajo–Ají", "ficha y aplicación gobernadas"],
-];
+] as const;
+
+const knowledgeRoutes = [
+  ["01", "Programas por cultivo", "Etapa, objetivo, cautelas y referencias gobernadas para cada cultivo publicado.", "/wondergreen/cultivos", "Explorar cultivos"],
+  ["02", "Deficiencias nutricionales", "Síntomas, confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante.", "/biblioteca/guia-deficiencias", "Abrir guía"],
+  ["03", "Criterios nutricionales", "Principios para leer contexto, análisis y decisiones sin convertir una guía en prescripción automática.", "/biblioteca/criterios-nutricionales", "Revisar criterios"],
+  ["04", "Manual de uso", "Etapa, objetivo, formato, aplicación, seguimiento y ajuste dentro de una ruta técnica.", "/biblioteca/manual-uso-wondergreen", "Abrir manual"],
+] as const;
 
 const audiences = [
   ["01", "Productor", "Encuentra una ruta técnica para tu cultivo.", "Empezar por cultivo", "/wondergreen/cultivos"],
   ["02", "Hogar / jardín", "Observa la etapa de tus plantas y entra al sistema doméstico sin dosificar a ciegas.", "Explorar Casa & Jardín", "/casa-jardin"],
   ["03", "Agrotienda / distribuidor", "Conoce familias, formatos y oportunidad comercial.", "Quiero vender Wondergreen", "/contacto"],
   ["04", "Agrónomo / técnico", "Accede a portafolio, guías y criterios técnicos navegables.", "Abrir biblioteca técnica", "/biblioteca"],
-];
+] as const;
 
 export default function WondergreenPage() {
   return (
-    <div className={`${styles.page} ${refresh.page}`}>
+    <div className={styles.page}>
       <nav className={styles.subnav} aria-label="Navegación Wondergreen">
         <div className={styles.container}>
           <span>Wondergreen</span>
           <div>
+            <a href="#que-es">Qué es</a>
+            <a href="#tecnologia">Tecnología</a>
             <Link href="/wondergreen/productos">Productos</Link>
             <Link href="/wondergreen/cultivos">Cultivos</Link>
-            <Link href="/casa-jardin">Casa & Jardín</Link>
-            <a href="#tecnologia">Tecnología</a>
             <a href="#bioinsumos">Bioinsumos</a>
             <Link href="/biblioteca">Guías</Link>
+            <Link href="/casa-jardin">Casa & Jardín</Link>
           </div>
         </div>
       </nav>
 
       <main>
-        <section className={styles.hero}>
+        <section className={styles.hero} aria-labelledby="wondergreen-title">
           <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
-              <span className={styles.eyebrow}>Una marca Greenatics · Producto agrícola</span>
+              <span className={styles.eyebrow}>Wondergreen · Una marca Greenatics</span>
               <Image
                 className={styles.wgLogo}
                 src="/brand/wondergreen-nutrients.webp"
@@ -89,74 +107,207 @@ export default function WondergreenPage() {
                 sizes="(max-width: 720px) 78vw, 420px"
                 priority
               />
-              <h1>Nutrición que vuelve a la tierra.</h1>
+              <h1 id="wondergreen-title">Nutrición que vuelve a la tierra.</h1>
               <p className={styles.lead}>
-                Wondergreen reúne suelo, nutrición, biología y conocimiento para acompañar cada cultivo según su etapa, condición y objetivo. La ruta empieza por entender el caso, no por empujar una referencia.
+                Wondergreen integra suelo, nutrición, biología y conocimiento. En sus sólidos aplicables, la historia técnica parte de una matriz organomineral y de procesos como la oclusión; la lectura agronómica siempre vuelve al cultivo, al suelo y a la evidencia disponible.
               </p>
-              <div className={styles.buttonRow}>
-                <a className={`${styles.button} ${styles.primary}`} href="#finder">Encontrar mi solución</a>
-                <Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/productos">Ver productos</Link>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/productos">Ver productos</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+                <Link className={styles.textLink} href="/contacto">Hablar con equipo técnico →</Link>
+              </div>
+              <div className={styles.heroTruth}>
+                <span>Product Master público</span>
+                <strong>Composición, condición comercial, dosis y uso salen de la versión técnica vigente.</strong>
               </div>
             </div>
 
-            <aside className={styles.portfolioLedger} aria-label="Arquitectura pública vigente del portafolio Wondergreen">
-              <div className={styles.ledgerTop}>
-                <span>Product Master público</span>
-                <strong>Un sistema alrededor del cultivo.</strong>
+            <div className={styles.sciencePlate} aria-label="Lectura conceptual de la tecnología organomineral Wondergreen">
+              <div className={styles.plateTop}>
+                <span>Lectura del material</span>
+                <small>No es una curva de eficacia</small>
               </div>
-              <div className={styles.ledgerMetric}><strong>{liquidFertilizers.length}</strong><div><span>Líquidas</span><small>nutrición y ajuste por objetivo</small></div></div>
-              <div className={styles.ledgerMetric}><strong>{solidFertilizers.length}</strong><div><span>Sólidas</span><small>familia organomineral</small></div></div>
-              <div className={styles.ledgerMetric}><strong>{compostReferences.length}</strong><div><span>Compost</span><small>suelo y materia orgánica</small></div></div>
-              <div className={styles.ledgerMetric}><strong>{bioinputReferences.length}</strong><div><span>Bioinsumos</span><small>biología y manejo</small></div></div>
-              <p>Composición, condición comercial, dosis y uso se muestran únicamente desde la versión técnica vigente de cada referencia.</p>
-            </aside>
+              <div className={styles.materialStage}>
+                <div className={styles.materialSource}>
+                  <span>01</span>
+                  <strong>Matriz orgánica</strong>
+                  <small>base estabilizada</small>
+                </div>
+                <div className={styles.materialPlus} aria-hidden="true">+</div>
+                <div className={styles.materialSource}>
+                  <span>02</span>
+                  <strong>Componentes minerales</strong>
+                  <small>según referencia</small>
+                </div>
+              </div>
+              <div className={styles.plateArrow} aria-hidden="true">↓</div>
+              <div className={styles.matrixCore}>
+                <span>03 · integración</span>
+                <strong>Matriz organomineral</strong>
+                <div className={styles.matrixDots} aria-hidden="true">
+                  {Array.from({ length: 18 }).map((_, index) => <i key={index} />)}
+                </div>
+              </div>
+              <div className={styles.plateArrow} aria-hidden="true">↓</div>
+              <div className={styles.soilStage}>
+                <div><span>04</span><strong>Suelo</strong></div>
+                <div><span>05</span><strong>Humedad</strong></div>
+                <div><span>06</span><strong>Raíz + biología</strong></div>
+              </div>
+              <p>La formulación se explica primero como característica del producto. Su comportamiento y respuesta en campo requieren el contexto y la evidencia correspondientes.</p>
+            </div>
           </div>
         </section>
 
-        <section className={styles.entry}>
+        <section className={styles.router} aria-labelledby="router-title">
           <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Empieza por tu contexto</span>
-              <h2>No empieces por el producto. Empieza por lo que necesitas resolver.</h2>
-              <p>La selección cambia con cultivo, planta, suelo o sustrato, etapa, problema y objetivo. Wondergreen organiza distintas rutas para hacer esa decisión más clara.</p>
+            <div className={styles.sectionHead}>
+              <div>
+                <span className={styles.eyebrow}>Empieza por tu contexto</span>
+                <h2 id="router-title">No empieces por el producto. Empieza por la decisión.</h2>
+              </div>
+              <p>La selección cambia con cultivo, etapa, suelo o sustrato, problema, análisis disponibles y objetivo. Wondergreen organiza distintas puertas para llegar a la misma base técnica.</p>
             </div>
-            <div className={styles.entryList}>
-              {entryPaths.map(([number, title, copy, href]) => (
-                <article className={styles.entryItem} key={title}>
-                  <span>{number}</span>
-                  <div><h3>{title}</h3><p>{copy}</p></div>
-                  {href.startsWith("/") ? <Link href={href}>Continuar →</Link> : <a href={href}>Continuar →</a>}
+            <div className={styles.routerGrid}>
+              {entryPaths.map((item) => (
+                <article className={styles.routerCard} key={item.number}>
+                  <span className={styles.index}>{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  {item.href.startsWith("/") ? <Link href={item.href}>Continuar →</Link> : <a href={item.href}>Continuar →</a>}
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className={styles.systemSection}>
-          <div className={styles.container}>
-            <div className={styles.systemIntro}>
-              <div><span className={styles.eyebrow}>El sistema Wondergreen</span><h2>Una solución no siempre es un solo producto.</h2></div>
-              <p>El portafolio cobra sentido cuando se conecta con suelo, etapa, biología, diagnóstico y seguimiento. Esa es la diferencia entre mostrar fórmulas y construir una ruta agronómica.</p>
+        <section className={styles.definition} id="que-es" aria-labelledby="definition-title">
+          <div className={`${styles.container} ${styles.definitionGrid}`}>
+            <span className={styles.sectionIndex}>01</span>
+            <div>
+              <span className={styles.eyebrow}>Qué es Wondergreen</span>
+              <h2 id="definition-title">Un sistema de nutrición y manejo alrededor del suelo y del cultivo.</h2>
             </div>
-            <div className={styles.systemStrip}>
-              {system.map(([number, title, copy]) => (
+            <div className={styles.editorialCopy}>
+              <p>Wondergreen reúne fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico bajo una misma arquitectura de decisión.</p>
+              <p>La marca no presupone que una necesidad se resuelva con un solo producto. Primero se lee el contexto; después se seleccionan las herramientas que correspondan.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.science} id="tecnologia" aria-labelledby="science-title">
+          <div className={styles.container}>
+            <div className={styles.scienceIntro}>
+              <span className={styles.eyebrow}>Tecnología de sólidos · tres conceptos</span>
+              <h2 id="science-title">Organomineral. Oclusión. Lenta liberación.</h2>
+              <p>La secuencia separa lo que describe al producto de lo que todavía exige validación agronómica. No usamos una palabra tecnológica como sustituto de evidencia.</p>
+            </div>
+
+            <article className={styles.scienceChapter} id="organomineral">
+              <div className={styles.chapterNumber}>01</div>
+              <div className={styles.chapterCopy}>
+                <span className={styles.eyebrow}>Organomineral</span>
+                <h3>La nutrición mineral se integra dentro de una matriz que también contiene una fracción orgánica.</h3>
+                <p>En las referencias sólidas aplicables, Wondergreen parte de una base orgánica estabilizada e incorpora componentes minerales de acuerdo con la formulación documentada de cada producto.</p>
+                <div className={styles.chapterLock}><strong>Qué sí dice.</strong><span> Describe la naturaleza y formulación del material cuando está documentada para esa referencia.</span></div>
+              </div>
+              <div className={styles.organomineralVisual} aria-hidden="true">
+                <div><span>orgánico</span></div>
+                <b>+</b>
+                <div><span>mineral</span></div>
+                <b>→</b>
+                <div className={styles.result}><span>matriz organomineral</span></div>
+              </div>
+            </article>
+
+            <article className={styles.scienceChapter} id="oclusion">
+              <div className={styles.chapterNumber}>02</div>
+              <div className={styles.chapterCopy}>
+                <span className={styles.eyebrow}>Oclusión</span>
+                <h3>No se comunica como una capa decorativa: se explica como integración dentro de la matriz.</h3>
+                <p>Cuando corresponde a la versión técnica, la oclusión describe la incorporación de componentes minerales dentro de la matriz organomineral durante la formulación del sólido.</p>
+                <div className={styles.chapterLock}><strong>Qué no dice por sí sola.</strong><span> No demuestra una duración específica, una eficiencia porcentual ni una respuesta de rendimiento universal.</span></div>
+              </div>
+              <div className={styles.occlusionVisual} aria-label="Esquema conceptual de oclusión, sin escala ni porcentaje">
+                <div className={styles.occlusionOuter}>
+                  <span>Matriz</span>
+                  {Array.from({ length: 12 }).map((_, index) => <i key={index} />)}
+                  <div className={styles.occlusionCore}><strong>componentes</strong><small>integrados</small></div>
+                </div>
+                <small>Esquema conceptual · sin escala ni porcentaje</small>
+              </div>
+            </article>
+
+            <article className={styles.scienceChapter} id="lenta-liberacion">
+              <div className={styles.chapterNumber}>03</div>
+              <div className={styles.chapterCopy}>
+                <span className={styles.eyebrow}>Lenta liberación</span>
+                <h3>Una característica que debe estar vinculada a la referencia y versión que realmente la soporta.</h3>
+                <p>Wondergreen puede comunicar <strong>lenta liberación</strong> en las referencias y versiones donde esa característica esté documentada. La expresión no se extiende automáticamente a todo el portafolio sólido.</p>
+                <div className={styles.chapterLock}><strong>Truth lock.</strong><span> Lenta liberación describe una característica documentada del producto; no implica por sí sola una respuesta agronómica universal ni reemplaza la validación de uso en campo.</span></div>
+              </div>
+              <div className={styles.releaseVisual} aria-label="Representación conceptual de disponibilidad progresiva, no una curva experimental">
+                <div className={styles.releaseTrack}>
+                  <span>material</span>
+                  <i /><i /><i /><i /><i />
+                  <span>suelo</span>
+                </div>
+                <div className={styles.releaseLegend}>
+                  <span>Representación conceptual</span>
+                  <small>No es una curva experimental ni expresa un tiempo específico.</small>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section className={styles.implications} aria-labelledby="implications-title">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div>
+                <span className={styles.eyebrow}>Qué cambia en la lectura agronómica</span>
+                <h2 id="implications-title">La tecnología sirve para formular mejores preguntas, no para saltarse el diagnóstico.</h2>
+              </div>
+              <p>La matriz, la forma física y la característica de liberación se interpretan dentro de un sistema vivo. La recomendación final sigue dependiendo del cultivo y de la información disponible.</p>
+            </div>
+            <div className={styles.implicationGrid}>
+              {scienceImplications.map(([number, title, copy]) => (
                 <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className={styles.portfolio} id="portafolio">
+        <section className={styles.finder} id="finder" aria-labelledby="finder-title">
+          <div className={`${styles.container} ${styles.finderGrid}`}>
+            <div className={styles.finderIntro}>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Objetivo + etapa</span>
+              <h2 id="finder-title">Del contexto al seguimiento.</h2>
+              <p>La ruta es una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor antes de cerrar una recomendación.</p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Consultar guías</Link>
+              </div>
+            </div>
+            <div className={styles.finderSteps}>
+              {finderSteps.map(([number, title, copy]) => (
+                <div className={styles.finderStep} key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.portfolio} id="portafolio" aria-labelledby="portfolio-title">
           <div className={styles.container}>
-            <div className={styles.portfolioHeading}>
+            <div className={styles.portfolioHead}>
               <div>
-                <span className={`${styles.eyebrow} ${styles.lightEyebrow}`}>Portafolio Wondergreen</span>
-                <h2>Dos grandes líneas dentro de una misma marca.</h2>
+                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Portafolio · Product Master público</span>
+                <h2 id="portfolio-title">Dos grandes líneas dentro de una misma marca.</h2>
               </div>
               <p>Fertilizantes y bioinsumos pueden integrarse en programas de manejo, pero no cumplen la misma función ni siguen necesariamente la misma secuencia fenológica.</p>
             </div>
 
-            <div className={styles.familySection}>
+            <div className={styles.portfolioColumns}>
               <div className={styles.familyIntro}>
                 <span>01 · Fertilizantes</span>
                 <h3>Nutrición y suelo</h3>
@@ -168,110 +319,74 @@ export default function WondergreenPage() {
                 </div>
               </div>
               <div className={styles.productTable}>
-                {compostReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
-                {solidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
-                {liquidFertilizers.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {compostReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {solidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {liquidFertilizers.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name} · {item.formula}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
             </div>
 
-            <div className={styles.familySection} id="bioinsumos">
+            <div className={styles.portfolioColumns} id="bioinsumos">
               <div className={styles.familyIntro}>
                 <span>02 · Bioinsumos</span>
                 <h3>Biología y manejo</h3>
                 <p>Microorganismos, inoculantes y extractos botánicos se seleccionan según cultivo, problema, contexto técnico y estado regulatorio/comercial.</p>
+                <div className={styles.bioLegend}>
+                  {bioFamilies.map(([number, title, refs, status]) => <div key={number}><span>{number}</span><strong>{title}</strong><small>{refs} · {status}</small></div>)}
+                </div>
               </div>
               <div className={styles.productTable}>
-                {bioinputReferences.map((item) => <Link className={`${styles.productRow} ${refresh.productRow}`} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
+                {bioinputReferences.map((item) => <Link className={styles.productRow} href={`/wondergreen/productos/${item.slug}`} key={item.slug}><strong>{item.name}</strong><small>{item.publicStatus} · Ver ficha →</small></Link>)}
               </div>
             </div>
 
-            <div className={styles.buttonRow}>
-              <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/productos">Abrir catálogo completo</Link>
-              <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
-              <Link className={`${styles.button} ${refresh.outlineLight}`} href="/casa-jardin">Casa & Jardín</Link>
+            <div className={styles.actions}>
+              <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/productos">Abrir catálogo completo</Link>
+              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Abrir Biblioteca Wondergreen</Link>
+              <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/casa-jardin">Casa & Jardín</Link>
             </div>
+            <p className={styles.portfolioTruth}>Composición, condición comercial, dosis y uso se muestran únicamente desde la versión técnica vigente de cada referencia.</p>
           </div>
         </section>
 
-        <section className={styles.technology} id="tecnologia">
-          <div className={`${styles.container} ${styles.techGrid}`}>
-            <div className={styles.techCopy}>
-              <span className={styles.eyebrow}>Más que NPK</span>
-              <h2>Tecnología organomineral pensada para trabajar con el suelo.</h2>
-              <p>En las referencias sólidas aplicables, Wondergreen combina una matriz orgánica estabilizada con componentes minerales mediante formulación, oclusión y peletizado.</p>
-              <p>La web puede explicar disponibilidad más gradual o modulada cuando la afirmación esté respaldada; no convertiremos automáticamente cada sólido en un “fertilizante de liberación controlada” sin evidencia específica de esa versión.</p>
-              <div className={styles.claimLock}><strong>Regla de publicación.</strong><span> Característica, formulación, uso y eficacia deben estar vinculados a su versión técnica y evidencia.</span></div>
-            </div>
-            <div className={styles.techFlow}>
-              {tech.map(([number, title, copy]) => (
-                <div className={styles.techStep} key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.bioSection}>
+        <section className={styles.crops} id="cultivos" aria-labelledby="crops-title">
           <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Bioinsumos Wondergreen</span>
-              <h2>No son un apéndice del fertilizante: son otra capa del manejo.</h2>
-              <p>Los organizamos por función para que el productor pueda empezar por su necesidad y no tenga que conocer de antemano el nombre del microorganismo o extracto.</p>
+            <div className={styles.sectionHead}>
+              <div><span className={styles.eyebrow}>Programas por cultivo</span><h2 id="crops-title">La decisión técnica cambia con la etapa.</h2></div>
+              <p>Las guías conectan momento fisiológico, objetivo, cautelas, alertas y referencias gobernadas sin convertir todos los cultivos en una misma receta.</p>
             </div>
-            <div className={styles.bioList}>
-              {bioFamilies.map(([number, title, refs, status]) => (
-                <article key={number}><span>{number}</span><div><h3>{title}</h3><p>{refs}</p></div><small>{status}</small></article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.finder} id="finder">
-          <div className={`${styles.container} ${styles.finderGrid}`}>
-            <div className={styles.finderIntro}>
-              <span className={`${styles.eyebrow} ${styles.lightEyebrow}`}>Wondergreen Finder</span>
-              <h2>Del contexto al seguimiento.</h2>
-              <p>La ruta es una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor antes de cerrar una recomendación.</p>
-              <div className={styles.buttonRow}>
-                <Link className={`${styles.button} ${styles.light}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
-                <Link className={`${styles.button} ${refresh.outlineLight}`} href="/biblioteca">Consultar guías</Link>
-              </div>
-            </div>
-            <div className={styles.finderSteps}>
-              {finderSteps.map(([number, title, copy]) => (
-                <div className={styles.finderStep} key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.crops} id="cultivos">
-          <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Biblioteca por cultivo</span>
-              <h2>El conocimiento técnico ya existe; ahora es navegable.</h2>
-              <p>Las guías se convierten en páginas específicas sin reducir todos los cultivos a una misma receta.</p>
-            </div>
-            <div className={styles.cropList}>
+            <div className={styles.cropGrid}>
               {wondergreenCrops.map((crop, index) => (
-                <article key={crop.slug}>
+                <Link href={`/wondergreen/cultivos/${crop.slug}`} key={crop.slug}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
-                  <div><small>Guía de cultivo</small><h3>{crop.name}</h3><p>{crop.headline}</p></div>
-                  <Link href={`/wondergreen/cultivos/${crop.slug}`}>Abrir programa →</Link>
-                </article>
+                  <small>Programa técnico</small>
+                  <h3>{crop.name}</h3>
+                  <p>{crop.headline}</p>
+                  <strong>Abrir programa →</strong>
+                </Link>
               ))}
-            </div>
-            <div className={styles.buttonRow}>
-              <Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/cultivos">Ver cultivos</Link>
-              <Link className={`${styles.button} ${styles.ghost}`} href="/biblioteca">Explorar Biblioteca</Link>
             </div>
           </div>
         </section>
 
-        <section className={styles.commercial} id="acompanamiento">
+        <section className={styles.knowledge} aria-labelledby="knowledge-title">
           <div className={styles.container}>
-            <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Cuatro rutas de entrada</span>
-              <h2>El mismo sistema, distintas preguntas.</h2>
+            <div className={styles.sectionHead}>
+              <div><span className={styles.eyebrow}>Evidencia y conocimiento</span><h2 id="knowledge-title">La recomendación debe poder explicar de dónde sale.</h2></div>
+              <p>Guías, criterios y Product Master mantienen separadas la orientación general, la ficha del producto y la recomendación específica para un caso.</p>
+            </div>
+            <div className={styles.knowledgeGrid}>
+              {knowledgeRoutes.map(([number, title, copy, href, cta]) => (
+                <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p><Link href={href}>{cta} →</Link></article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.commercial} id="acompanamiento" aria-labelledby="commercial-title">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div><span className={styles.eyebrow}>Distribución y asesoría</span><h2 id="commercial-title">El mismo sistema, distintas preguntas.</h2></div>
+              <p>La entrada puede ser un cultivo, una planta en casa, una oportunidad de distribución o una necesidad técnica. Cada ruta termina en un destino público gobernado.</p>
             </div>
             <div className={styles.commercialList}>
               {audiences.map(([number, title, copy, cta, href]) => (
@@ -281,10 +396,19 @@ export default function WondergreenPage() {
           </div>
         </section>
 
-        <section className={styles.closing} id="contacto">
-          <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Wondergreen</span><h2>¿Tienes un cultivo, plantas en casa, una necesidad o un problema por resolver?</h2><p>Empieza por el contexto. El siguiente paso puede ser Casa & Jardín, una guía, un producto, un análisis o acompañamiento técnico.</p></div>
-            <div className={styles.buttonRow}><Link className={`${styles.button} ${styles.dark}`} href="/contacto">Hablar con equipo técnico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/">Volver a Greenatics</Link></div>
+        <section className={styles.closing} id="contacto" aria-labelledby="closing-title">
+          <div className={`${styles.container} ${styles.closingGrid}`}>
+            <div>
+              <span className={styles.eyebrow}>Wondergreen</span>
+              <h2 id="closing-title">¿Tienes un cultivo, una necesidad o un problema por resolver?</h2>
+            </div>
+            <div>
+              <p>Empieza por el contexto. El siguiente paso puede ser una guía, un producto, un análisis, Casa & Jardín o acompañamiento técnico.</p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con equipo técnico</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/">Volver a Greenatics</Link>
+              </div>
+            </div>
           </div>
         </section>
       </main>
