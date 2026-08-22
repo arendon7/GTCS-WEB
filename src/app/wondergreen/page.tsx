@@ -22,8 +22,8 @@ const entryPaths = [
   {
     number: "02",
     title: "Tengo una necesidad",
-    copy: "Cruza contexto, síntomas, análisis y objetivo antes de cerrar una ruta técnica.",
-    href: "#finder",
+    copy: "Organiza cultivo, etapa y evidencia disponible antes de revisar una ruta técnica.",
+    href: "/wondergreen/finder",
   },
   {
     number: "03",
@@ -85,6 +85,7 @@ export default function WondergreenPage() {
             <a href="#tecnologia">Tecnología</a>
             <Link href="/wondergreen/productos">Productos</Link>
             <Link href="/wondergreen/cultivos">Cultivos</Link>
+            <Link href="/wondergreen/finder">Finder</Link>
             <a href="#bioinsumos">Bioinsumos</a>
             <Link href="/biblioteca">Guías</Link>
             <Link href="/casa-jardin">Casa & Jardín</Link>
@@ -113,7 +114,7 @@ export default function WondergreenPage() {
               </p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/productos">Ver productos</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/finder">Encontrar mi programa</Link>
                 <Link className={styles.textLink} href="/contacto">Hablar con equipo técnico →</Link>
               </div>
               <div className={styles.heroTruth}>
@@ -174,7 +175,7 @@ export default function WondergreenPage() {
                   <span className={styles.index}>{item.number}</span>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
-                  {item.href.startsWith("/") ? <Link href={item.href}>Continuar →</Link> : <a href={item.href}>Continuar →</a>}
+                  <Link href={item.href}>Continuar →</Link>
                 </article>
               ))}
             </div>
@@ -283,9 +284,9 @@ export default function WondergreenPage() {
             <div className={styles.finderIntro}>
               <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Objetivo + etapa</span>
               <h2 id="finder-title">Del contexto al seguimiento.</h2>
-              <p>La ruta es una orientación técnica, no una prescripción automática. Cuando falte información, el sistema debe pedir análisis o derivar a un asesor antes de cerrar una recomendación.</p>
+              <p>El Finder V1 organiza cultivo, etapa y evidencia disponible dentro de los cinco programas publicados. Es una orientación técnica, no una prescripción automática, y se detiene cuando la etapa no está clara.</p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/cultivos">Empezar por cultivo</Link>
+                <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/finder">Abrir Finder Wondergreen</Link>
                 <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Consultar guías</Link>
               </div>
             </div>
