@@ -131,7 +131,7 @@ export default function SolutionsPage() {
                 Greenatics conecta diagnóstico, planeación, regulación, logística, plantas, dirección técnica, datos y valorización para convertir necesidades de gestión en decisiones, entregables y capacidad operativa.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones/diagnostico-caracterizacion">No sé por dónde empezar</Link>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones/diagnostico-inicial">No sé por dónde empezar</Link>
                 <a className={`${styles.button} ${styles.buttonGhost}`} href="#servicios">Ya sé qué necesito</a>
               </div>
               <div className={styles.heroPrinciple}>
