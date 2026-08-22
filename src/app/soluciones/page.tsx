@@ -1,231 +1,284 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { commercialModules } from "@/data/commercial-modules";
-import { intentLandings } from "@/data/intent-landings";
-import { serviceJourneys } from "@/data/service-journeys";
 import { getPrimaryProjectMedia } from "@/data/public-media";
-import { companyServices, getService, municipalServices, serviceCategories, services, type ServiceCategory } from "@/data/services";
-import { strategicPrograms } from "@/data/strategic-programs";
-import styles from "./solutions.module.css";
-import refresh from "./solutions-refresh.module.css";
-import programStyles from "./strategic-programs.module.css";
-import moduleStyles from "./commercial-modules.module.css";
+import styles from "./solutions-v2.module.css";
 
 export const metadata: Metadata = {
   title: "Soluciones | Greenatics",
-  description: "Estructuración, línea base, planeación, operación de aseo, gestión de residuos, infraestructura, trazabilidad y acompañamiento para municipios, ESP, empresas y grandes generadores.",
+  description:
+    "Diagnóstico, planeación, regulación, logística, plantas, dirección técnica, datos y valorización para ESP, municipios, empresas, instituciones y operadores.",
   alternates: { canonical: "/soluciones" },
 };
 
-const categoryIntro: Record<ServiceCategory, string> = {
-  Planeación: "Entender el problema y madurar el proyecto antes de comprometer inversión.",
-  Recolección: "Conectar al generador con el destino previsto mediante logística, separación y datos.",
-  Infraestructura: "Diseñar, construir o recuperar sistemas alrededor del residuo y de la operación real.",
-  Operación: "Convertir infraestructura en rutina, control, mantenimiento, producto y mejora continua.",
-  Datos: "Hacer que cada actividad deje evidencia y alimente decisiones, indicadores y trazabilidad.",
-};
+const audiences = [
+  {
+    number: "01",
+    title: "ESP / Prestadores",
+    copy: "Preparar, estabilizar y fortalecer la prestación y sus capacidades operativas, regulatorias, logísticas y de información.",
+    href: "/soluciones/esp-municipios",
+    cta: "Ver ruta para prestadores",
+  },
+  {
+    number: "02",
+    title: "Municipios",
+    copy: "Conectar planeación territorial, PGIRS, proyectos, infraestructura, valorización y seguimiento con una ruta técnicamente ejecutable.",
+    href: "/soluciones/esp-municipios",
+    cta: "Ver ruta para municipios",
+  },
+  {
+    number: "03",
+    title: "Empresas / Grandes generadores",
+    copy: "Pasar de obligaciones y prácticas dispersas a una gestión de residuos medible, trazable y orientada a mejora continua.",
+    href: "/soluciones/empresas-grandes-generadores",
+    cta: "Ver ruta para empresas",
+  },
+  {
+    number: "04",
+    title: "Propiedad horizontal / Instituciones",
+    copy: "Estandarizar diagnóstico, separación, almacenamiento, rutas, indicadores y oportunidades de gestión en una o varias sedes.",
+    href: "/soluciones/propiedad-horizontal-redes",
+    cta: "Ver ruta multiunidad",
+  },
+  {
+    number: "05",
+    title: "Plantas / Operadores",
+    copy: "Diagnosticar, recuperar, optimizar, dirigir o madurar infraestructura de tratamiento antes de comprometer nuevas inversiones.",
+    href: "/soluciones/infraestructura-plantas",
+    cta: "Ver ruta de plantas",
+  },
+];
 
-const path = ["Entender", "Estructurar", "Operar", "Medir", "Optimizar", "Valorizar", "Escalar"];
+const serviceFamilies = [
+  {
+    number: "01",
+    title: "Diagnóstico y gestión de residuos",
+    copy: "Línea base, caracterización, flujos, brechas y priorización para decidir con información real.",
+    href: "/soluciones/diagnostico-caracterizacion",
+  },
+  {
+    number: "02",
+    title: "Planeación y programas",
+    copy: "PGIRS, PMIRS, programas internos, hojas de ruta e implementación según actor, territorio y obligación aplicable.",
+    href: "/soluciones/pmirs",
+  },
+  {
+    number: "03",
+    title: "Gestión jurídica y regulatoria",
+    copy: "Lectura del marco aplicable, responsabilidades, instrumentos, relaciones contractuales y ruta de cumplimiento dentro del alcance definido.",
+    href: "/contacto",
+  },
+  {
+    number: "04",
+    title: "Rutas y logística",
+    copy: "Diseño de rutas y microrrutas, frecuencias, puntos, pilotos, datos operativos y criterios de escalamiento.",
+    href: "/soluciones/rutas-selectivas",
+  },
+  {
+    number: "05",
+    title: "Plantas y tratamiento",
+    copy: "Prefactibilidad, ingeniería, construcción, rehabilitación y optimización según la madurez y el problema real del sistema.",
+    href: "/soluciones/infraestructura-plantas",
+  },
+  {
+    number: "06",
+    title: "Dirección técnica y operación asistida",
+    copy: "Protocolos, programación, mantenimiento, calidad, roles, seguimiento y fortalecimiento de la operación sin presumir un modelo único.",
+    href: "/soluciones/direccion-operacion",
+  },
+  {
+    number: "07",
+    title: "Datos, trazabilidad y OPS",
+    copy: "Captura, indicadores, evidencia, inventarios y seguimiento para convertir la actividad operativa en información útil para decidir.",
+    href: "/soluciones/trazabilidad-datos",
+  },
+  {
+    number: "08",
+    title: "Valorización y desarrollo de productos",
+    copy: "Ruta técnica para convertir salidas del tratamiento en productos con especificaciones, control, documentación y estrategia de aprovechamiento según el caso.",
+    href: "/contacto",
+  },
+];
+
+const process = [
+  ["01", "Diagnosticar", "Entender generación, corrientes, infraestructura, operación, datos, restricciones y objetivos."],
+  ["02", "Definir la ruta", "Separar lo urgente de lo estructural y ordenar decisiones técnicas, jurídicas, operativas y económicas."],
+  ["03", "Implementar", "Ejecutar el alcance contratado: programas, rutas, adecuaciones, protocolos, puesta en marcha o herramientas."],
+  ["04", "Acompañar", "Dirigir, medir, documentar y corregir con responsables y una cadencia de seguimiento definida."],
+  ["05", "Mejorar y valorizar", "Usar la evidencia para optimizar el sistema y abrir nuevas oportunidades de aprovechamiento cuando sean viables."],
+];
+
+const digitalCapabilities = [
+  ["01", "Captura", "Datos de campo y operación donde ocurre la actividad."],
+  ["02", "Trazabilidad", "Rutas, recepciones, procesos, lotes, inventarios y tareas."],
+  ["03", "Seguimiento", "Indicadores, novedades, evidencias y compromisos."],
+  ["04", "Decisión", "Lectura de tendencias, prioridades y acciones de mejora."],
+];
 
 export default function SolutionsPage() {
   const yarumalEvidence = getPrimaryProjectMedia("yarumal");
 
   return (
-    <div className={`${styles.page} ${refresh.page}`}>
+    <div className={styles.page}>
       <main>
-        <section className={styles.hero}>
+        <section className={styles.hero} aria-labelledby="solutions-title">
           <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
+            <div className={styles.heroCopy}>
+              <span className={styles.eyebrow}>Soluciones Greenatics · Organizaciones</span>
+              <h1 id="solutions-title">Empieza por tu contexto. Después elegimos el servicio.</h1>
+              <p className={styles.lead}>
+                Greenatics conecta diagnóstico, planeación, regulación, logística, plantas, dirección técnica, datos y valorización para convertir necesidades de gestión en decisiones, entregables y capacidad operativa.
+              </p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones/diagnostico-caracterizacion">No sé por dónde empezar</Link>
+                <a className={`${styles.button} ${styles.buttonGhost}`} href="#servicios">Ya sé qué necesito</a>
+              </div>
+              <div className={styles.heroPrinciple}>
+                <span>Principio de trabajo</span>
+                <strong>Primero claridad. Después inversión y ejecución.</strong>
+              </div>
+            </div>
+
+            {yarumalEvidence ? (
+              <figure className={styles.heroMedia}>
+                <Image src={yarumalEvidence.src} alt={yarumalEvidence.alt} fill priority sizes="(max-width: 900px) 100vw, 46vw" />
+                <figcaption>
+                  <span>Evidencia de proyecto</span>
+                  <strong>Yarumal · Antioquia</strong>
+                  <small>{yarumalEvidence.caption}</small>
+                </figcaption>
+              </figure>
+            ) : null}
+          </div>
+        </section>
+
+        <section className={styles.audiences} aria-labelledby="audiences-title">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div>
+                <span className={styles.eyebrow}>¿Quién eres?</span>
+                <h2 id="audiences-title">El mismo residuo exige decisiones distintas según quién lo gestiona.</h2>
+              </div>
+              <p>La ruta cambia por competencia, responsabilidad, escala, infraestructura, tipo de generador y relación con usuarios. Por eso la primera entrada es el contexto.</p>
+            </div>
+
+            <div className={styles.audienceGrid}>
+              {audiences.map((audience) => (
+                <article className={styles.audienceCard} key={audience.number}>
+                  <span className={styles.index}>{audience.number}</span>
+                  <div>
+                    <h3>{audience.title}</h3>
+                    <p>{audience.copy}</p>
+                  </div>
+                  <Link href={audience.href}>{audience.cta} <span aria-hidden="true">→</span></Link>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.services} id="servicios" aria-labelledby="services-title">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div>
+                <span className={styles.eyebrow}>Ya sé qué necesito</span>
+                <h2 id="services-title">Ocho familias para contratar actividades y resultados concretos.</h2>
+              </div>
+              <p>Las familias organizan la conversación comercial. El alcance contractual define estudios, entregables, permisos, personal, operación, herramientas y responsabilidades realmente incluidos.</p>
+            </div>
+
+            <div className={styles.serviceList}>
+              {serviceFamilies.map((family) => (
+                <Link className={styles.serviceRow} href={family.href} key={family.number}>
+                  <span className={styles.index}>{family.number}</span>
+                  <h3>{family.title}</h3>
+                  <p>{family.copy}</p>
+                  <span className={styles.arrow} aria-hidden="true">→</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.process} aria-labelledby="process-title">
+          <div className={`${styles.container} ${styles.processGrid}`}>
+            <div className={styles.processIntro}>
+              <span className={styles.eyebrow}>Cómo trabajamos</span>
+              <h2 id="process-title">El diagnóstico ordena la ruta; no reemplaza el servicio.</h2>
+              <p>
+                Cuando el alcance ya está claro podemos entrar directamente a una fase específica. Cuando no lo está, la línea base evita diseñar rutas, comprar equipos o intervenir infraestructura sobre supuestos débiles.
+              </p>
+            </div>
+            <div className={styles.processRail}>
+              {process.map(([number, title, copy]) => (
+                <div className={styles.processStep} key={number}>
+                  <span>{number}</span>
+                  <div><strong>{title}</strong><p>{copy}</p></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.caseStudy} aria-labelledby="case-title">
+          <div className={`${styles.container} ${styles.caseGrid}`}>
+            <div className={styles.caseMedia}>
+              <Image
+                src="/projects/yarumal/aerial-02.webp"
+                alt="Segunda vista aérea documentada del caso Greenatics en Yarumal"
+                fill
+                sizes="(max-width: 900px) 100vw, 50vw"
+              />
+            </div>
+            <div className={styles.caseCopy}>
+              <span className={styles.eyebrow}>Plantas e infraestructura existente</span>
+              <h2 id="case-title">Antes de reemplazar una planta, hay que entender por qué no está entregando lo esperado.</h2>
+              <p>
+                Greenatics separa brechas de infraestructura, proceso, suministro, personal, mantenimiento, control y gestión. Esa lectura permite decidir si corresponde rehabilitar, optimizar, operar con otra metodología o madurar una nueva inversión.
+              </p>
+              <div className={styles.caseLinks}>
+                <Link href="/soluciones/rehabilitacion">Revisar infraestructura existente →</Link>
+                <Link href="/proyectos/yarumal">Ver caso Yarumal →</Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.digital} aria-labelledby="digital-title">
+          <div className={`${styles.container} ${styles.digitalGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Soluciones Greenatics · Estructuración técnica de sistemas de residuos</span>
-              <h1>Primero estructurar. Luego operar. Después valorizar.</h1>
-              <p className={styles.lead}>Greenatics acompaña sistemas de gestión de residuos desde la comprensión del problema hasta la operación, la medición, la optimización, la valorización y el escalamiento. No partimos de una planta, un vehículo o un documento predeterminado: partimos de las decisiones que el sistema realmente necesita.</p>
-              <div className={styles.heroLinks}>
-                <a href="#programas">Ver programas de entrada →</a>
-                <a href="#modulos">Resolver una decisión concreta →</a>
-                <a href="#retos">Explorar por reto específico →</a>
-                <Link href="/soluciones/esp-municipios">Municipios y ESP →</Link>
-                <Link href="/soluciones/empresas-grandes-generadores">Empresas →</Link>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Tecnología y datos</span>
+              <h2 id="digital-title">La consultoría gana valor cuando la información sigue viva después del informe.</h2>
+              <p>
+                GREENATICS OPS funciona como capa de operación y trazabilidad para procesos activos. La arquitectura deja espacio para incorporar nuevas herramientas de captura de campo, diagnóstico y seguimiento sin convertir cada servicio en una aplicación aislada.
+              </p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonLight}`} href="/soluciones/trazabilidad-datos">Ver trazabilidad y datos</Link>
+                <a className={`${styles.button} ${styles.buttonOutlineLight}`} href="/app">Ingresar</a>
               </div>
             </div>
-            <aside className={styles.heroProof}>
-              {yarumalEvidence ? (
-                <figure className={refresh.proofFigure}>
-                  <div className={refresh.proofImage}>
-                    <Image src={yarumalEvidence.src} alt={yarumalEvidence.alt} fill sizes="(max-width: 1060px) 100vw, 36vw" priority />
-                  </div>
-                  <figcaption>{yarumalEvidence.caption}</figcaption>
-                </figure>
-              ) : null}
-              <span>Principio de trabajo</span>
-              <strong>Método + evidencia antes de inversión.</strong>
-              <p>El residuo, los usuarios, la logística, la operación, los datos y el destino deben entenderse como un sistema. La infraestructura y la tecnología se deciden después, no al revés.</p>
-            </aside>
-          </div>
-        </section>
-
-        <section className={styles.path} aria-label="Ruta Greenatics de estructuración y crecimiento">
-          <div className={`${styles.container} ${styles.pathGrid} ${refresh.businessPath}`}>
-            {path.map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>)}
-          </div>
-        </section>
-
-        <section className={programStyles.programs} id="programas">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas estratégicos de entrada</span>
-              <h2>Tres formas de empezar con una base más clara.</h2>
-              <p>ESP READY ordena la preparación de una operación; GREENATICS BASE permite producir una línea base técnica desde campo; PMIRS RED convierte planes por unidad en una arquitectura común de información. Ninguno sustituye el catálogo técnico.</p>
-            </div>
-            <div className={programStyles.programGrid}>
-              {strategicPrograms.map((program) => (
-                <article className={programStyles.programCard} key={program.slug}>
-                  <span>{program.audience}</span>
-                  <h3>{program.name}</h3>
-                  <strong>{program.headline}</strong>
-                  <p>{program.summary}</p>
-                  <div className={programStyles.outputFlow}>
-                    {program.outputs.map((output) => <span key={output}>{output}</span>)}
-                  </div>
-                  <Link href={`/soluciones/programas/${program.slug}`}>Conocer {program.name} →</Link>
-                </article>
+            <div className={styles.digitalRail}>
+              {digitalCapabilities.map(([number, title, copy]) => (
+                <div key={number}><span>{number}</span><strong>{title}</strong><small>{copy}</small></div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className={moduleStyles.modules} id="modulos">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Módulos de decisión e implementación</span>
-              <h2>No todo problema necesita convertirse en un servicio nuevo.</h2>
-              <p>Estos módulos empaquetan decisiones frecuentes y conectan capacidades ya gobernadas. Sirven para entrar por una pregunta concreta sin duplicar los 13 servicios técnicos ni prometer resultados antes de contar con evidencia.</p>
+        <section className={styles.finalCta} aria-labelledby="final-cta-title">
+          <div className={`${styles.container} ${styles.finalGrid}`}>
+            <div>
+              <span className={styles.eyebrow}>Punto de entrada recomendado</span>
+              <h2 id="final-cta-title">Si todavía no sabes qué contratar, empieza por una línea base.</h2>
             </div>
-            <div className={moduleStyles.moduleGrid}>
-              {commercialModules.map((commercialModule) => {
-                const relatedServices = commercialModule.relatedServiceSlugs.map((slug) => getService(slug)).filter(Boolean);
-                return (
-                  <article className={moduleStyles.moduleCard} key={commercialModule.id}>
-                    <span>{commercialModule.kicker}</span>
-                    <h3>{commercialModule.title}</h3>
-                    <p>{commercialModule.summary}</p>
-                    <div className={moduleStyles.decision}><small>Decisión que organiza</small><strong>{commercialModule.decision}</strong></div>
-                    <div className={moduleStyles.signals}>{commercialModule.signals.map((signal) => <span key={signal}>{signal}</span>)}</div>
-                    <p className={moduleStyles.guardrail}>{commercialModule.guardrail}</p>
-                    <div className={moduleStyles.moduleLinks}>
-                      <small>Servicios técnicos relacionados</small>
-                      {relatedServices.slice(0, 3).map((service) => service ? <Link href={`/soluciones/${service.slug}`} key={service.slug}><span>{service.name}</span><span>→</span></Link> : null)}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.journeys} id="recorridos">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Seis líneas de solución</span>
-              <h2>Primero ubica el problema; luego elegimos el servicio.</h2>
-              <p>Los 13 servicios siguen siendo independientes y contratables por fase. Estas seis líneas son la arquitectura comercial que conecta necesidades reales con el catálogo técnico sin duplicarlo.</p>
-            </div>
-            <div className={styles.journeyGrid}>
-              {serviceJourneys.map((journey) => (
-                <article className={styles.journeyCard} key={journey.number}>
-                  <span className={styles.journeyNumber}>{journey.number}</span>
-                  <small>{journey.kicker}</small>
-                  <h3>{journey.title}</h3>
-                  <p>{journey.copy}</p>
-                  <div className={styles.journeyLinks}>
-                    {journey.services.map((service) => (
-                      <Link href={`/soluciones/${service.slug}`} key={service.slug}>{service.label} →</Link>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.audience}>
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Ahora ubica tu contexto</span>
-              <h2>Un sistema de residuos cambia según quién lo planea, quién lo opera y dónde se genera.</h2>
-              <p>Por eso el portafolio distingue rutas para territorios y prestadores, y rutas para empresas o grandes generadores.</p>
-            </div>
-            <div className={styles.audienceGrid}>
-              <article className={styles.audienceCard} id="municipios">
-                <div className={styles.audienceIndex}>01</div>
-                <div><span className={styles.eyebrow}>Municipios y ESP</span><h3>De la planeación a una operación preparada para crecer.</h3><p>Diagnóstico, PGIRS, rutas, operación, datos, infraestructura y valorización para convertir metas o nuevas oportunidades en capacidad real.</p></div>
-                <div className={styles.audienceFacts}><strong>{municipalServices.length}</strong><span>servicios aplicables</span><small>Primero claridad de modelo · luego operación e inversión.</small></div>
-                <Link href="/soluciones/esp-municipios">Ver ruta para ESP y municipios →</Link>
-              </article>
-              <article className={styles.audienceCard} id="empresas">
-                <div className={styles.audienceIndex}>02</div>
-                <div><span className={styles.eyebrow}>Empresas y grandes generadores</span><h3>De cumplimiento aislado a gestión medible y circular.</h3><p>Caracterización, PMIRS, redes multiunidad, separación, recolección, tratamiento, infraestructura y evidencia de gestión según cada corriente.</p></div>
-                <div className={styles.audienceFacts}><strong>{companyServices.length}</strong><span>servicios aplicables</span><small>Información una vez · gestión y seguimiento sobre la misma base.</small></div>
-                <Link href="/soluciones/empresas-grandes-generadores">Ver ruta para empresas →</Link>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.audience} id="retos">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Explora por reto específico</span>
-              <h2>Tres problemas que suelen atravesar varias líneas de servicio.</h2>
-              <p>Estas rutas no agregan servicios al catálogo. Reordenan capacidades existentes alrededor de una intención concreta para que sea más fácil encontrar el punto de entrada correcto.</p>
-            </div>
-            <div className={styles.audienceGrid}>
-              {intentLandings.map((landing, index) => (
-                <article className={styles.audienceCard} key={landing.slug}>
-                  <div className={styles.audienceIndex}>{String(index + 1).padStart(2, "0")}</div>
-                  <div><span className={styles.eyebrow}>{landing.audience}</span><h3>{landing.title}</h3><p>{landing.lead}</p></div>
-                  <div className={styles.audienceFacts}><strong>{landing.decisions.length}</strong><span>puntos de entrada</span><small>{landing.path.join(" · ")}</small></div>
-                  <Link href={`/soluciones/${landing.slug}`}>Explorar este reto →</Link>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {serviceCategories.map((category, categoryIndex) => {
-          const items = services.filter((service) => service.category === category);
-          return (
-            <section className={styles.category} key={category} id={category.toLocaleLowerCase("es")}>
-              <div className={styles.container}>
-                <div className={styles.categoryHead}>
-                  <span className={styles.categoryIndex}>{String(categoryIndex + 1).padStart(2, "0")}</span>
-                  <div><span className={styles.eyebrow}>{category}</span><h2>{categoryIntro[category]}</h2></div>
-                  <strong>{items.length} solución{items.length === 1 ? "" : "es"}</strong>
-                </div>
-                <div className={styles.serviceGrid}>
-                  {items.map((service, index) => (
-                    <article className={styles.card} key={service.slug}>
-                      <span className={styles.serviceIndex}>{String(index + 1).padStart(2, "0")}</span>
-                      <div className={styles.serviceBody}>
-                        <div className={styles.meta}><span>{service.audience}</span><em>{service.category}</em></div>
-                        <h3>{service.name}</h3>
-                        <p>{service.summary}</p>
-                      </div>
-                      <div className={styles.problem}><strong>Qué resuelve</strong><p>{service.solves}</p></div>
-                      <Link href={`/soluciones/${service.slug}`}>Ver solución en profundidad →</Link>
-                    </article>
-                  ))}
-                </div>
+            <div>
+              <p>El diagnóstico permite identificar brechas, prioridades y la siguiente fase sin obligar a convertir todo el problema en un proyecto de infraestructura o en una operación integral.</p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones/diagnostico-caracterizacion">Conocer diagnóstico y caracterización</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/contacto">Hablar con Greenatics</Link>
               </div>
-            </section>
-          );
-        })}
-
-        <section className={styles.guardrail}>
-          <div className={`${styles.container} ${styles.guardrailGrid}`}>
-            <div><span className={styles.eyebrow}>Alcance responsable</span><h2>La arquitectura orienta; el alcance contractual manda.</h2></div>
-            <p>Los programas y módulos comerciales ayudan a ordenar la conversación. Las fichas técnicas describen capacidades y entregables posibles. Cada proyecto define expresamente estudios, ingeniería, construcción, permisos, operación, personal, certificaciones, informes y responsabilidades incluidas.</p>
+            </div>
           </div>
         </section>
       </main>

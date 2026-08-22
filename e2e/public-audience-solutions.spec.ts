@@ -7,13 +7,14 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub exposes dedicated audience routes instead of internal-only anchors", async ({ page }) => {
+test("solutions hub exposes the five approved audience entries", async ({ page }) => {
   await page.goto("/soluciones");
 
-  await expect(page.getByRole("link", { name: "Municipios y ESP →", exact: true })).toHaveAttribute("href", "/soluciones/esp-municipios");
-  await expect(page.getByRole("link", { name: "Empresas →", exact: true })).toHaveAttribute("href", "/soluciones/empresas-grandes-generadores");
-  await expect(page.getByRole("link", { name: /Ver ruta para ESP y municipios/ })).toHaveAttribute("href", "/soluciones/esp-municipios");
+  await expect(page.getByRole("link", { name: /Ver ruta para prestadores/ })).toHaveAttribute("href", "/soluciones/esp-municipios");
+  await expect(page.getByRole("link", { name: /Ver ruta para municipios/ })).toHaveAttribute("href", "/soluciones/esp-municipios");
   await expect(page.getByRole("link", { name: /Ver ruta para empresas/ })).toHaveAttribute("href", "/soluciones/empresas-grandes-generadores");
+  await expect(page.getByRole("link", { name: /Ver ruta multiunidad/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal-redes");
+  await expect(page.getByRole("link", { name: /Ver ruta de plantas/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
 });
 
 test("ESP and municipalities landing routes decisions to governed programs and services", async ({ page }) => {
