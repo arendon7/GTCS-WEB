@@ -23,7 +23,7 @@ test("solutions hub routes by audience, service family, process and evidence", a
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: /Empieza por tu contexto. Después elegimos el servicio./i })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "No sé por dónde empezar", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
 
   for (const audience of [
@@ -56,7 +56,7 @@ test("solutions hub routes by audience, service family, process and evidence", a
 
   await expect(page.getByRole("heading", { name: "El diagnóstico ordena la ruta; no reemplaza el servicio." })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Antes de reemplazar una planta/ })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: /La consultoría gana valor cuando la información sigue viva después del informe./i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Si todavía no sabes qué contratar, empieza por una línea base./i })).toBeVisible();
 });
