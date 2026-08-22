@@ -22,7 +22,7 @@ export const publicFooterNav = [
     title: "Explorar",
     links: [
       { href: "/soluciones", label: "Soluciones" },
-      { href: "/biblioteca", label: "Recursos" },
+      { href: "/recursos", label: "Recursos" },
       { href: "/proyectos", label: "Proyectos / casos" },
       { href: "/impacto", label: "Impacto" },
     ],
@@ -54,6 +54,7 @@ export const publicStaticRoutes = [
   "/wondergreen",
   "/wondergreen/productos",
   "/wondergreen/cultivos",
+  "/recursos",
   "/proyectos",
   "/impacto",
   "/biblioteca",
