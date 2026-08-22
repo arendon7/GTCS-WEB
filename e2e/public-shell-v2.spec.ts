@@ -20,7 +20,7 @@ test("desktop shell exposes the approved Soluciones mega-menu and closes with Es
   await expect(menu.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
   await expect(menu.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
   await expect(menu.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
-  await expect(menu.getByRole("link", { name: /Diagnóstico inicial Greenatics/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(menu.getByRole("link", { name: /Diagnóstico inicial Greenatics/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 
   await page.keyboard.press("Escape");
   await expect(menu).toHaveCount(0);
@@ -48,7 +48,7 @@ test("mobile shell uses a two-level drawer and returns focus after Escape", asyn
   await expect(dialog.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
   await expect(dialog.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
   await expect(dialog.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
-  await expect(dialog.getByRole("link", { name: /Iniciar por diagnóstico/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(dialog.getByRole("link", { name: /Iniciar diagnóstico inicial/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
