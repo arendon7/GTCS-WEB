@@ -7,13 +7,13 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub surfaces plant and multiunit intent through the audience router", async ({ page }) => {
+test("solutions hub separates audience routes from problem-specific intent routes", async ({ page }) => {
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: "Propiedad horizontal / Instituciones", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Plantas / Operadores", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Ver ruta multiunidad/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal-redes");
-  await expect(page.getByRole("link", { name: /Ver ruta de plantas/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
+  await expect(page.getByRole("link", { name: /Ver ruta multiunidad/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
+  await expect(page.getByRole("link", { name: /Ver ruta de plantas/ })).toHaveAttribute("href", "/soluciones/plantas");
   await expect(page.getByRole("link", { name: /Plantas y tratamiento/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
 });
 
@@ -49,7 +49,7 @@ test("infrastructure route keeps prefactibility before engineering and construct
   expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/infraestructura-plantas");
 });
 
-test("multiunit property route standardizes method without importing ESP READY", async ({ page }) => {
+test("multiunit property intent route standardizes method without importing ESP READY", async ({ page }) => {
   await page.goto("/soluciones/propiedad-horizontal-redes");
 
   await expect(page.getByRole("heading", { name: "Cada unidad conserva su realidad. La red puede compartir método y datos." })).toBeVisible();

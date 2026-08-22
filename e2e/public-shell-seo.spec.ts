@@ -3,7 +3,8 @@ import { test, expect, type Page, type TestInfo } from "@playwright/test";
 const shellRoutes = [
   "/", "/wondergreen", "/wondergreen/cultivos", "/wondergreen/cultivos/cafe",
   "/casa-jardin", "/casa-jardin/diagnostico", "/casa-jardin/guias",
-  "/soluciones", "/soluciones/esp-municipios", "/soluciones/empresas-grandes-generadores",
+  "/soluciones", "/soluciones/esp", "/soluciones/municipios", "/soluciones/empresas",
+  "/soluciones/propiedad-horizontal", "/soluciones/plantas",
   "/soluciones/residuos-organicos", "/soluciones/infraestructura-plantas", "/soluciones/propiedad-horizontal-redes",
   "/soluciones/diagnostico-caracterizacion", "/proyectos", "/proyectos/yarumal", "/impacto",
   "/biblioteca", "/biblioteca/guia-deficiencias", "/nosotros", "/contacto",
@@ -116,16 +117,23 @@ test("every governed public route renders exactly one shared shell", async ({ pa
   }
 });
 
-test("sitemap exposes indexed routes while Casa & Jardín remains reserved", async ({ request }) => {
+test("sitemap exposes canonical audience routes while legacy combined routes stay out", async ({ request }) => {
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.ok()).toBe(true);
   const sitemapText = await sitemap.text();
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/esp-municipios");
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/empresas-grandes-generadores");
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/residuos-organicos");
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/infraestructura-plantas");
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/propiedad-horizontal-redes");
-  expect(sitemapText).toContain("https://greenatics.com.co/soluciones/diagnostico-caracterizacion");
+  for (const path of [
+    "/soluciones/esp",
+    "/soluciones/municipios",
+    "/soluciones/empresas",
+    "/soluciones/propiedad-horizontal",
+    "/soluciones/plantas",
+    "/soluciones/residuos-organicos",
+    "/soluciones/infraestructura-plantas",
+    "/soluciones/propiedad-horizontal-redes",
+    "/soluciones/diagnostico-caracterizacion",
+  ]) expect(sitemapText).toContain(`https://greenatics.com.co${path}`);
+  expect(sitemapText).not.toContain("https://greenatics.com.co/soluciones/esp-municipios");
+  expect(sitemapText).not.toContain("https://greenatics.com.co/soluciones/empresas-grandes-generadores");
   expect(sitemapText).toContain("https://greenatics.com.co/proyectos/yarumal");
   expect(sitemapText).toContain("https://greenatics.com.co/wondergreen/cultivos/cafe");
   expect(sitemapText).not.toContain("https://greenatics.com.co/casa-jardin");

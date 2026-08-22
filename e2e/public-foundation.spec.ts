@@ -3,6 +3,11 @@ import { test, expect } from "@playwright/test";
 const publicRoutes = [
   "/",
   "/soluciones",
+  "/soluciones/esp",
+  "/soluciones/municipios",
+  "/soluciones/empresas",
+  "/soluciones/propiedad-horizontal",
+  "/soluciones/plantas",
   "/soluciones/diagnostico-caracterizacion",
   "/wondergreen",
   "/wondergreen/cultivos",
