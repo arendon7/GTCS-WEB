@@ -82,6 +82,7 @@ test("Casa diagnostic stops fertilizer-first response on safety conditions", asy
   await expect(page.getByText("Primero corrige la condición de la planta.", { exact: true })).toBeVisible();
   await expect(page.getByText(/NO EMPIECES FERTILIZANDO/i)).toBeVisible();
   await expect(page.getByText(/Calculadora de dosis: deshabilitada/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Llevar este contexto a soporte técnico →" })).toHaveAttribute("href", /need=nutricion/);
 });
 
 test("Casa diagnostic captures pot size but routes a healthy growing plant without calculating dose", async ({ page }) => {
@@ -98,6 +99,53 @@ test("Casa diagnostic captures pot size but routes a healthy growing plant witho
   await expect(page.getByRole("link", { name: "Abrir siguiente paso →" })).toHaveAttribute("href", "/casa-jardin/productos/crece");
   await expect(page.getByText(/Aún no tiene equivalencia pública a volumen ni gramos/i)).toBeVisible();
   await expect(page.getByText(/No calcula dosis ni cobertura todavía/i)).toBeVisible();
+
+  const params = await page.evaluate(() => Object.fromEntries(new URL(window.location.href).searchParams.entries()));
+  expect(params).toMatchObject({ plant: "green", stage: "growing", condition: "healthy", count: "6-10", pots: "M,L" });
+});
+
+test("Casa diagnostic restores structured state and Contact inherits it without turning it into a prescription", async ({ page }) => {
+  await page.goto("/casa-jardin/diagnostico?plant=green&stage=growing&condition=healthy&count=6-10&pots=M,L");
+
+  await expect(page.getByLabel("Tipo de planta")).toHaveValue("green");
+  await expect(page.getByLabel("Etapa de la planta")).toHaveValue("growing");
+  await expect(page.getByLabel("Condición de la planta")).toHaveValue("healthy");
+  await expect(page.getByLabel("Cantidad de plantas")).toHaveValue("6-10");
+  await expect(page.getByLabel("Matera M")).toBeChecked();
+  await expect(page.getByLabel("Matera L")).toBeChecked();
+  await expect(page.getByText("CRECE · 15-3-3", { exact: true })).toBeVisible();
+
+  const support = page.getByRole("link", { name: "Llevar este contexto a soporte técnico →" });
+  const href = await support.getAttribute("href");
+  expect(href).toBeTruthy();
+  const target = new URL(href!, "https://greenatics.com.co");
+  expect(target.searchParams.get("audience")).toBe("wondergreen");
+  expect(target.searchParams.get("need")).toBe("nutricion");
+  expect(target.searchParams.get("source")).toBe("casa-jardin-diagnostico");
+  expect(target.searchParams.get("contexto")).toContain("Materas: M, L");
+  expect(target.searchParams.get("contexto")).toContain("Punto").not;
+
+  await support.click();
+  await expect(page.getByRole("heading", { name: /Cuéntanos sobre tu cultivo o tu interés en Wondergreen/i })).toBeVisible();
+  await expect(page.getByLabel("¿Desde qué contexto nos escribes?")).toHaveValue("wondergreen");
+  await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toHaveValue("nutricion");
+  await expect(page.getByText(/Contexto recibido de la navegación:/)).toContainText("Materas: M, L");
+
+  await page.getByRole("button", { name: "Preparar contexto" }).click();
+  await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Contexto heredado: Casa & Jardín");
+  await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Orientación del flujo: CRECE · 15-3-3");
+  await expect(page.getByText(/Nada se ha enviado todavía/i)).toBeVisible();
+});
+
+test("Casa diagnostic lets an unknown stage stay in review instead of fabricating a product", async ({ page }) => {
+  await page.goto("/casa-jardin/diagnostico");
+  await page.getByLabel("Tipo de planta").selectOption("green");
+  await page.getByLabel("Etapa de la planta").selectOption("unknown");
+  await page.getByLabel("Condición de la planta").selectOption("healthy");
+
+  await expect(page.getByText("Todavía falta contexto.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Abrir siguiente paso →" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Llevar este contexto a soporte técnico →" })).toBeVisible();
 });
 
 test("extremely dry substrate stays in review instead of recommending fertilizer", async ({ page }) => {
@@ -107,6 +155,7 @@ test("extremely dry substrate stays in review instead of recommending fertilizer
   await page.getByLabel("Condición de la planta").selectOption("extremely-dry");
   await expect(page.getByText("Primero recupera una humedad adecuada.", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Abrir siguiente paso →" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Llevar este contexto a soporte técnico →" })).toBeVisible();
 });
 
 test("Casa guide library publishes four reconstructed same-origin PDFs", async ({ page }) => {
