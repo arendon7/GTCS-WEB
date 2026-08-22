@@ -9,11 +9,14 @@ const programSlugs = new Set(strategicPrograms.map((program) => program.slug));
 const moduleIds = new Set(commercialModules.map((commercialModule) => commercialModule.id));
 
 describe("audience solution landings", () => {
-  it("defines exactly the two master B2B audience routes", () => {
-    expect(audienceLandings).toHaveLength(2);
+  it("defines exactly the five canonical organization routes", () => {
+    expect(audienceLandings).toHaveLength(5);
     expect(audienceSolutionPaths).toEqual([
-      "/soluciones/esp-municipios",
-      "/soluciones/empresas-grandes-generadores",
+      "/soluciones/esp",
+      "/soluciones/municipios",
+      "/soluciones/empresas",
+      "/soluciones/propiedad-horizontal",
+      "/soluciones/plantas",
     ]);
   });
 
@@ -28,14 +31,21 @@ describe("audience solution landings", () => {
     }
   });
 
-  it("keeps the ESP route centered on ESP READY and the enterprise route centered on PMIRS RED", () => {
-    const esp = audienceLandings.find((landing) => landing.slug === "esp-municipios");
-    const companies = audienceLandings.find((landing) => landing.slug === "empresas-grandes-generadores");
+  it("keeps strategic programs attached only to the audiences they actually govern", () => {
+    const esp = audienceLandings.find((landing) => landing.slug === "esp");
+    const municipalities = audienceLandings.find((landing) => landing.slug === "municipios");
+    const companies = audienceLandings.find((landing) => landing.slug === "empresas");
+    const properties = audienceLandings.find((landing) => landing.slug === "propiedad-horizontal");
+    const plants = audienceLandings.find((landing) => landing.slug === "plantas");
 
     expect(esp?.programSlugs).toContain("esp-ready");
     expect(esp?.programSlugs).not.toContain("pmirs-red");
-    expect(companies?.programSlugs).toContain("pmirs-red");
+    expect(municipalities?.programSlugs).not.toContain("esp-ready");
     expect(companies?.programSlugs).not.toContain("esp-ready");
+    expect(companies?.programSlugs).not.toContain("pmirs-red");
+    expect(properties?.programSlugs).toContain("pmirs-red");
+    expect(properties?.programSlugs).not.toContain("esp-ready");
+    expect(plants?.programSlugs).toEqual([]);
   });
 
   it("routes every decision to an existing governed public destination", () => {
