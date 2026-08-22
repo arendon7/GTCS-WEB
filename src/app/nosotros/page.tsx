@@ -37,7 +37,7 @@ const ecosystem = [
   ["Soluciones", "/soluciones", "Diagnóstico, planeación, regulación, rutas, plantas, operación, datos y valorización."],
   ["Wondergreen", "/wondergreen", "Suelo, nutrición, biología, productos, cultivos y acompañamiento técnico."],
   ["Casa & Jardín", "/casa-jardin", "Una entrada doméstica por observación, seguridad y etapa, todavía sin ecommerce activo."],
-  ["Recursos", "/biblioteca", "Biblioteca técnica, proyectos documentados e impacto publicado con gobierno."],
+  ["Recursos", "/recursos", "Biblioteca técnica, proyectos documentados e impacto publicado con gobierno."],
   ["GREENATICS OPS", "/app", "La capa digital donde una operación activa puede registrar y convertir actividad en evidencia."],
 ] as const;
 
@@ -56,7 +56,7 @@ export default function AboutPage() {
               <p className={styles.lead}>Greenatics conecta gestión de residuos, ingeniería, procesos biológicos, operación, productos agrícolas y datos para desarrollar soluciones que puedan implementarse, medirse y mejorar.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Ver soluciones</Link>
-                <Link className={`${styles.button} ${styles.ghost}`} href="/biblioteca">Ver recursos y experiencia</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/recursos">Ver recursos y experiencia</Link>
               </div>
             </div>
             {yarumal ? (
