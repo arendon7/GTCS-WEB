@@ -19,40 +19,31 @@ export const publicPrimaryNav: readonly PublicPrimaryNavItem[] = [
   { href: "/nosotros", label: "Nosotros" },
 ] as const;
 
-/**
- * Transitional hrefs keep every menu destination live while the new audience
- * landings are implemented. canonicalHref documents the approved IA target.
- */
 export const publicSolutionAudiences: readonly PublicMenuItem[] = [
   {
     label: "ESP / Prestador",
     description: "Preparación, regulación, rutas, operación, infraestructura y datos.",
-    href: "/soluciones/esp-municipios",
-    canonicalHref: "/soluciones/esp",
+    href: "/soluciones/esp",
   },
   {
     label: "Municipio",
     description: "Planeación, PGIRS, activos, proyectos y fortalecimiento territorial.",
-    href: "/soluciones/esp-municipios",
-    canonicalHref: "/soluciones/municipios",
+    href: "/soluciones/municipios",
   },
   {
     label: "Empresa / Gran generador",
     description: "Caracterización, PMIRS, logística, tratamiento y trazabilidad.",
-    href: "/soluciones/empresas-grandes-generadores",
-    canonicalHref: "/soluciones/empresas",
+    href: "/soluciones/empresas",
   },
   {
     label: "Propiedad horizontal / Institución",
     description: "Diagnóstico por unidad, PMIRS, redes e información comparable.",
-    href: "/soluciones/propiedad-horizontal-redes",
-    canonicalHref: "/soluciones/propiedad-horizontal",
+    href: "/soluciones/propiedad-horizontal",
   },
   {
     label: "Planta / Operador",
     description: "Prefactibilidad, rehabilitación, optimización, dirección y datos.",
-    href: "/soluciones/infraestructura-plantas",
-    canonicalHref: "/soluciones/plantas",
+    href: "/soluciones/plantas",
   },
 ] as const;
 
