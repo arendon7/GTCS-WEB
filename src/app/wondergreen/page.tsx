@@ -108,13 +108,13 @@ export default function WondergreenPage() {
                 sizes="(max-width: 720px) 78vw, 420px"
                 priority
               />
-              <h1 id="wondergreen-title">Nutrición que vuelve a la tierra.</h1>
+              <h1 id="wondergreen-title">Nutrición que trabaja con el suelo.</h1>
               <p className={styles.lead}>
-                Wondergreen integra suelo, nutrición, biología y conocimiento. En sus sólidos aplicables, la historia técnica parte de una matriz organomineral y de procesos como la oclusión; la lectura agronómica siempre vuelve al cultivo, al suelo y a la evidencia disponible.
+                En Wondergreen desarrollamos soluciones para acompañar el cultivo desde el suelo: nutrición organomineral, soluciones líquidas, biología y conocimiento. En las referencias sólidas donde está documentado, explicamos además la matriz, la oclusión y la lenta liberación; la selección siempre vuelve al cultivo, la etapa y la evidencia disponible.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/productos">Ver productos</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/finder">Encontrar mi programa</Link>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/finder">Encontrar mi programa</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/productos">Ver productos</Link>
                 <Link className={styles.textLink} href="/contacto">Hablar con equipo técnico →</Link>
               </div>
               <div className={styles.heroTruth}>
