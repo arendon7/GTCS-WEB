@@ -15,7 +15,7 @@ export const publicPrimaryNav: readonly PublicPrimaryNavItem[] = [
   { href: "/soluciones", label: "Soluciones", menu: "solutions" },
   { href: "/wondergreen", label: "Wondergreen" },
   { href: "/casa-jardin", label: "Casa & Jardín" },
-  { href: "/biblioteca", label: "Recursos", menu: "resources" },
+  { href: "/recursos", label: "Recursos", menu: "resources" },
   { href: "/nosotros", label: "Nosotros" },
 ] as const;
 
