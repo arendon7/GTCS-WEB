@@ -36,9 +36,10 @@ test("public HOME explains Greenatics as an operating logic instead of stacked s
 test("public HOME elevates Wondergreen without publishing unsupported universal claims", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
   await expect(page.getByText(/matriz organomineral, la oclusión y la lenta liberación documentada para esa versión/i)).toBeVisible();
   await expect(page.getByText(/sin convertir una característica del producto en una promesa agronómica universal/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Encontrar mi programa →" })).toHaveAttribute("href", "/wondergreen/finder");
   await expect(page.getByRole("link", { name: "Productos →" })).toHaveAttribute("href", "/wondergreen/productos");
   await expect(page.getByRole("link", { name: "Cultivos →" })).toHaveAttribute("href", "/wondergreen/cultivos");
 });
