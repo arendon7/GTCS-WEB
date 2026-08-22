@@ -15,14 +15,17 @@ test("Wondergreen uses the canonical public shell without duplicate chrome", asy
   await expect(page.getByRole("contentinfo").getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
 });
 
-test("Wondergreen subnavigation connects products, crops, Casa Jardin and knowledge", async ({ page }) => {
+test("Wondergreen subnavigation follows the approved editorial hierarchy", async ({ page }) => {
   await page.goto("/wondergreen");
 
   const nav = page.getByRole("navigation", { name: "Navegación Wondergreen" });
+  await expect(nav.getByRole("link", { name: "Qué es" })).toHaveAttribute("href", "#que-es");
+  await expect(nav.getByRole("link", { name: "Tecnología" })).toHaveAttribute("href", "#tecnologia");
   await expect(nav.getByRole("link", { name: "Productos" })).toHaveAttribute("href", "/wondergreen/productos");
   await expect(nav.getByRole("link", { name: "Cultivos" })).toHaveAttribute("href", "/wondergreen/cultivos");
-  await expect(nav.getByRole("link", { name: "Casa & Jardín" })).toHaveAttribute("href", "/casa-jardin");
+  await expect(nav.getByRole("link", { name: "Bioinsumos" })).toHaveAttribute("href", "#bioinsumos");
   await expect(nav.getByRole("link", { name: "Guías" })).toHaveAttribute("href", "/biblioteca");
+  await expect(nav.getByRole("link", { name: "Casa & Jardín" })).toHaveAttribute("href", "/casa-jardin");
 });
 
 test("Wondergreen exposes a household entry without turning Casa Jardin into ecommerce", async ({ page }) => {
@@ -39,11 +42,58 @@ test("Wondergreen exposes a household entry without turning Casa Jardin into eco
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
 });
 
-test("Wondergreen editorial hub preserves governed product truth and opens exact references", async ({ page }) => {
+test("Wondergreen V2 explains what the system is before technology and product selection", async ({ page }) => {
   await page.goto("/wondergreen");
 
   await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Un sistema de nutrición y manejo alrededor del suelo y del cultivo." })).toBeVisible();
+  await expect(page.getByText(/fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico/i)).toBeVisible();
+  await expect(page.getByText(/Primero se lee el contexto; después se seleccionan las herramientas/i)).toBeVisible();
   await expect(page.getByText("Product Master público", { exact: true })).toBeVisible();
+});
+
+test("Wondergreen V2 separates organomineral, occlusion and slow release without universal claims", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  const technology = page.locator("#tecnologia");
+  await expect(technology.getByRole("heading", { name: "Organomineral. Oclusión. Lenta liberación." })).toBeVisible();
+
+  const organomineral = page.locator("#organomineral");
+  await expect(organomineral.getByText("Organomineral", { exact: true })).toBeVisible();
+  await expect(organomineral.getByText(/base orgánica estabilizada/i)).toBeVisible();
+  await expect(organomineral.getByText(/componentes minerales/i)).toBeVisible();
+
+  const occlusion = page.locator("#oclusion");
+  await expect(occlusion.getByText("Oclusión", { exact: true })).toBeVisible();
+  await expect(occlusion.getByText(/incorporación de componentes minerales dentro de la matriz organomineral/i)).toBeVisible();
+  await expect(occlusion.getByText(/No demuestra una duración específica, una eficiencia porcentual ni una respuesta de rendimiento universal/i)).toBeVisible();
+
+  const slowRelease = page.locator("#lenta-liberacion");
+  await expect(slowRelease.getByText("Lenta liberación", { exact: true })).toBeVisible();
+  await expect(slowRelease.getByText(/referencias y versiones donde esa característica esté documentada/i)).toBeVisible();
+  await expect(slowRelease.getByText(/no se extiende automáticamente a todo el portafolio sólido/i)).toBeVisible();
+  await expect(slowRelease.getByText(/no implica por sí sola una respuesta agronómica universal/i)).toBeVisible();
+  await expect(slowRelease.getByText(/No es una curva experimental ni expresa un tiempo específico/i)).toBeVisible();
+});
+
+test("Wondergreen keeps agronomic implications separate from product characteristics", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  await expect(page.getByRole("heading", { name: "La tecnología sirve para formular mejores preguntas, no para saltarse el diagnóstico." })).toBeVisible();
+  for (const heading of [
+    "El suelo es parte del sistema",
+    "La etapa cambia la decisión",
+    "La disponibilidad necesita contexto",
+    "La evidencia manda",
+  ]) {
+    await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
+  }
+  await expect(page.getByText(/Una característica documentada del producto no se convierte automáticamente en un resultado agronómico universal/i)).toBeVisible();
+});
+
+test("Wondergreen editorial hub preserves governed product truth and opens exact references", async ({ page }) => {
+  await page.goto("/wondergreen");
+
   await expect(page.getByRole("heading", { name: "Dos grandes líneas dentro de una misma marca." })).toBeVisible();
 
   const portfolio = page.locator("#portafolio");
@@ -69,6 +119,17 @@ test("Wondergreen finder follows diagnosis to follow-up without automatic prescr
   await expect(finder.getByRole("link", { name: "Consultar guías" })).toHaveAttribute("href", "/biblioteca");
 });
 
+test("Wondergreen knowledge layer keeps guidance, product truth and case recommendation distinct", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  await expect(page.getByRole("heading", { name: "La recomendación debe poder explicar de dónde sale." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Programas por cultivo", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Deficiencias nutricionales", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Criterios nutricionales", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Manual de uso", exact: true })).toBeVisible();
+  await expect(page.getByText(/mantienen separadas la orientación general, la ficha del producto y la recomendación específica para un caso/i)).toBeVisible();
+});
+
 test("Wondergreen audience routes end in real governed destinations", async ({ page }) => {
   await page.goto("/wondergreen");
 
@@ -77,5 +138,5 @@ test("Wondergreen audience routes end in real governed destinations", async ({ p
   await expect(routes.getByRole("link", { name: "Explorar Casa & Jardín →" })).toHaveAttribute("href", "/casa-jardin");
   await expect(routes.getByRole("link", { name: "Quiero vender Wondergreen →" })).toHaveAttribute("href", "/contacto");
   await expect(routes.getByRole("link", { name: "Abrir biblioteca técnica →" })).toHaveAttribute("href", "/biblioteca");
-  await expect(page.getByRole("link", { name: "Hablar con equipo técnico" })).toHaveAttribute("href", "/contacto");
+  await expect(page.getByRole("link", { name: "Hablar con equipo técnico" }).first()).toHaveAttribute("href", "/contacto");
 });

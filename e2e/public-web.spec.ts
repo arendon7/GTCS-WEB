@@ -21,7 +21,7 @@ test("public home presents Greenatics and exposes the digital bridge", async ({ 
   await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
 });
 
-test("Wondergreen exposes fertilizers, bioinputs and technology narrative", async ({ page }) => {
+test("Wondergreen exposes fertilizers, bioinputs and governed technology narrative", async ({ page }) => {
   await page.goto("/wondergreen");
 
   await expect(page.getByRole("heading", { name: "Nutrición que vuelve a la tierra." })).toBeVisible();
@@ -32,7 +32,8 @@ test("Wondergreen exposes fertilizers, bioinputs and technology narrative", asyn
   await expect(portfolio.getByText("Extracto de Neem", { exact: true })).toBeVisible();
   await expect(portfolio.getByText("Extracto Ajo–Ají", { exact: true })).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: /Tecnología organomineral pensada para trabajar con el suelo/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Organomineral. Oclusión. Lenta liberación." })).toBeVisible();
+  await expect(page.locator("#lenta-liberacion").getByText(/no se extiende automáticamente a todo el portafolio sólido/i)).toBeVisible();
 });
 
 test("public-to-internal bridge lands on OPS home", async ({ page }) => {
