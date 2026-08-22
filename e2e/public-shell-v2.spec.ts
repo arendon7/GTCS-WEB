@@ -15,11 +15,11 @@ test("desktop shell exposes the approved Soluciones mega-menu and closes with Es
   await header.getByRole("button", { name: "Abrir menú Soluciones" }).click();
   const menu = header.getByRole("group", { name: "Menú Soluciones" });
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp-municipios");
-  await expect(menu.getByRole("link", { name: /Municipio/ }).first()).toHaveAttribute("href", "/soluciones/esp-municipios");
-  await expect(menu.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas-grandes-generadores");
-  await expect(menu.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal-redes");
-  await expect(menu.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
+  await expect(menu.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp");
+  await expect(menu.getByRole("link", { name: /Municipio/ }).first()).toHaveAttribute("href", "/soluciones/municipios");
+  await expect(menu.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
+  await expect(menu.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
+  await expect(menu.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
   await expect(menu.getByRole("link", { name: /Diagnóstico inicial Greenatics/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
 
   await page.keyboard.press("Escape");
@@ -43,7 +43,11 @@ test("mobile shell uses a two-level drawer and returns focus after Escape", asyn
 
   await dialog.getByRole("button", { name: /Soluciones/ }).click();
   await expect(dialog.getByText("Por organización", { exact: true })).toBeVisible();
-  await expect(dialog.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp-municipios");
+  await expect(dialog.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp");
+  await expect(dialog.getByRole("link", { name: /Municipio/ }).first()).toHaveAttribute("href", "/soluciones/municipios");
+  await expect(dialog.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
+  await expect(dialog.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
+  await expect(dialog.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
   await expect(dialog.getByRole("link", { name: /Iniciar por diagnóstico/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
 
   await page.keyboard.press("Escape");
