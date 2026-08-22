@@ -8,11 +8,12 @@ test("crop library exposes the governed Wondergreen Finder", async ({ page }) =>
 test("Wondergreen Finder is limited to the five published crop programs", async ({ page }) => {
   await page.goto("/wondergreen/finder");
 
+  const cropSelect = page.getByLabel("Cultivo Wondergreen", { exact: true });
   await expect(page.getByRole("heading", { name: "Empieza por el cultivo y la etapa." })).toBeVisible();
   for (const crop of ["Café", "Cacao", "Aguacate", "Limón Tahití", "Pastos y gramíneas"]) {
-    await expect(page.getByRole("option", { name: crop, exact: true })).toBeAttached();
+    await expect(cropSelect.getByRole("option", { name: crop, exact: true })).toBeAttached();
   }
-  await expect(page.getByLabel("Cultivo Wondergreen").locator("option")).toHaveCount(6);
+  await expect(cropSelect.locator("option")).toHaveCount(6);
   await expect(page.getByText(/V1 trabaja únicamente con Café, Cacao, Aguacate, Limón Tahití y Pastos\/Gramíneas/i)).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
@@ -20,9 +21,9 @@ test("Wondergreen Finder is limited to the five published crop programs", async 
 test("Finder persists a governed cacao stage without turning it into an automatic prescription", async ({ page }) => {
   await page.goto("/wondergreen/finder");
 
-  await page.getByLabel("Cultivo Wondergreen").selectOption("cacao");
-  await page.getByLabel("Etapa del cultivo Wondergreen").selectOption({ label: "Prefloración y floración" });
-  await page.getByLabel("Análisis disponible Wondergreen").selectOption("none");
+  await page.getByLabel("Cultivo Wondergreen", { exact: true }).selectOption("cacao");
+  await page.getByLabel("Etapa del cultivo Wondergreen", { exact: true }).selectOption({ label: "Prefloración y floración" });
+  await page.getByLabel("Análisis disponible Wondergreen", { exact: true }).selectOption("none");
 
   await expect(page.getByRole("heading", { name: "Esta es la ruta que ya aparece en el programa publicado." })).toBeVisible();
   await expect(page.getByLabel("Familias presentes en el programa publicado").getByText("2Bloom", { exact: true })).toBeVisible();
@@ -38,9 +39,9 @@ test("Finder restores a shared state and carries only contextual guidance into C
   const url = "/wondergreen/finder?crop=cacao&moment=Prefloraci%C3%B3n+y+floraci%C3%B3n&analysis=available";
   await page.goto(url);
 
-  await expect(page.getByLabel("Cultivo Wondergreen")).toHaveValue("cacao");
-  await expect(page.getByLabel("Etapa del cultivo Wondergreen")).toHaveValue("Prefloración y floración");
-  await expect(page.getByLabel("Análisis disponible Wondergreen")).toHaveValue("available");
+  await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("cacao");
+  await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toHaveValue("Prefloración y floración");
+  await expect(page.getByLabel("Análisis disponible Wondergreen", { exact: true })).toHaveValue("available");
   await expect(page.getByText("2Bloom", { exact: true })).toBeVisible();
 
   const support = page.getByRole("link", { name: "Llevar este contexto a soporte técnico" });
@@ -55,8 +56,8 @@ test("Finder restores a shared state and carries only contextual guidance into C
   expect(target.searchParams.get("contexto")).not.toContain("dosis");
 
   await support.click();
-  await expect(page.getByLabel("¿Desde qué contexto nos escribes?")).toHaveValue("wondergreen");
-  await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toHaveValue("nutricion");
+  await expect(page.getByLabel("¿Desde qué contexto nos escribes?", { exact: true })).toHaveValue("wondergreen");
+  await expect(page.getByLabel("¿Qué necesitas resolver primero?", { exact: true })).toHaveValue("nutricion");
   await page.getByRole("button", { name: "Preparar contexto" }).click();
   await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Cultivo: Cacao");
   await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Wondergreen Finder");
@@ -67,8 +68,8 @@ test("Finder restores a shared state and carries only contextual guidance into C
 test("unknown stage stops the Finder before exposing a program family", async ({ page }) => {
   await page.goto("/wondergreen/finder?crop=cacao&moment=unknown");
 
-  await expect(page.getByLabel("Cultivo Wondergreen")).toHaveValue("cacao");
-  await expect(page.getByLabel("Etapa del cultivo Wondergreen")).toHaveValue("unknown");
+  await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("cacao");
+  await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toHaveValue("unknown");
   await expect(page.getByRole("heading", { name: "Todavía no cierres una referencia." })).toBeVisible();
   await expect(page.getByLabel("Familias presentes en el programa publicado")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Llevar contexto al equipo técnico" })).toBeVisible();
@@ -77,8 +78,8 @@ test("unknown stage stops the Finder before exposing a program family", async ({
 test("invalid Finder URL values fail closed instead of fabricating crop or evidence", async ({ page }) => {
   await page.goto("/wondergreen/finder?crop=banano&moment=produccion&analysis=magic");
 
-  await expect(page.getByLabel("Cultivo Wondergreen")).toHaveValue("");
-  await expect(page.getByLabel("Etapa del cultivo Wondergreen")).toBeDisabled();
-  await expect(page.getByLabel("Análisis disponible Wondergreen")).toHaveValue("");
+  await expect(page.getByLabel("Cultivo Wondergreen", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Etapa del cultivo Wondergreen", { exact: true })).toBeDisabled();
+  await expect(page.getByLabel("Análisis disponible Wondergreen", { exact: true })).toHaveValue("");
   await expect(page.getByRole("heading", { name: "Empieza por un cultivo publicado." })).toBeVisible();
 });
