@@ -50,6 +50,7 @@ export const publicFooterNav = [
 export const publicStaticRoutes = [
   "/",
   "/soluciones",
+  "/soluciones/diagnostico-inicial",
   "/wondergreen",
   "/wondergreen/productos",
   "/wondergreen/cultivos",
