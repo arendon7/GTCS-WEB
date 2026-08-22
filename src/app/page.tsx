@@ -178,7 +178,7 @@ export default function Home() {
                 height={221}
                 sizes="(max-width: 760px) 76vw, 420px"
               />
-              <h2 id="home-wondergreen-title">Nutrición que vuelve a la tierra.</h2>
+              <h2 id="home-wondergreen-title">Nutrición que trabaja con el suelo.</h2>
             </div>
 
             <div className={styles.wondergreenCopy}>
@@ -186,6 +186,7 @@ export default function Home() {
                 Wondergreen organiza el portafolio alrededor del suelo, la nutrición, la biología, el cultivo y el seguimiento. En las referencias sólidas que correspondan, la explicación técnica parte de la matriz organomineral, la oclusión y la lenta liberación documentada para esa versión, sin convertir una característica del producto en una promesa agronómica universal.
               </p>
               <div className={styles.wondergreenLinks}>
+                <Link href="/wondergreen/finder">Encontrar mi programa →</Link>
                 <Link href="/wondergreen/productos">Productos →</Link>
                 <Link href="/wondergreen/cultivos">Cultivos →</Link>
                 <Link href="/biblioteca">Guías →</Link>
