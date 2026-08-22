@@ -37,7 +37,7 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
               <p className={styles.lead}>{landing.lead}</p>
               <div className={styles.heroLinks}>
                 <a href="#decisiones">Encontrar punto de entrada →</a>
-                <a href="#programas">Ver programas aplicables →</a>
+                {programs.length > 0 ? <a href="#programas">Ver programas aplicables →</a> : null}
                 <a href="#etapas">Ver ruta por etapas →</a>
                 <Link href="/contacto">Hablar con Greenatics →</Link>
               </div>
@@ -81,27 +81,29 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
           </div>
         </section>
 
-        <section className={programStyles.programs} id="programas">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas de entrada más relevantes</span>
-              <h2>Programas para ordenar el inicio antes de desplegar servicios.</h2>
-              <p>Los programas empaquetan una primera etapa de trabajo. El alcance contractual y los servicios técnicos relacionados permanecen gobernados por sus fichas específicas.</p>
+        {programs.length > 0 ? (
+          <section className={programStyles.programs} id="programas">
+            <div className={styles.container}>
+              <div className={styles.sectionHead}>
+                <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas de entrada más relevantes</span>
+                <h2>Programas para ordenar el inicio antes de desplegar servicios.</h2>
+                <p>Los programas empaquetan una primera etapa de trabajo. El alcance contractual y los servicios técnicos relacionados permanecen gobernados por sus fichas específicas.</p>
+              </div>
+              <div className={programStyles.programGrid}>
+                {programs.map((program) => program ? (
+                  <article className={programStyles.programCard} key={program.slug}>
+                    <span>{program.audience}</span>
+                    <h3>{program.name}</h3>
+                    <strong>{program.headline}</strong>
+                    <p>{program.summary}</p>
+                    <div className={programStyles.outputFlow}>{program.outputs.map((output) => <span key={output}>{output}</span>)}</div>
+                    <Link href={`/soluciones/programas/${program.slug}`}>Conocer {program.name} →</Link>
+                  </article>
+                ) : null)}
+              </div>
             </div>
-            <div className={programStyles.programGrid}>
-              {programs.map((program) => program ? (
-                <article className={programStyles.programCard} key={program.slug}>
-                  <span>{program.audience}</span>
-                  <h3>{program.name}</h3>
-                  <strong>{program.headline}</strong>
-                  <p>{program.summary}</p>
-                  <div className={programStyles.outputFlow}>{program.outputs.map((output) => <span key={output}>{output}</span>)}</div>
-                  <Link href={`/soluciones/programas/${program.slug}`}>Conocer {program.name} →</Link>
-                </article>
-              ) : null)}
-            </div>
-          </div>
-        </section>
+          </section>
+        ) : null}
 
         <section className={moduleStyles.modules} id="modulos">
           <div className={styles.container}>
