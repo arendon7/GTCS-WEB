@@ -8,7 +8,7 @@ test("company page explains Greenatics through capability, method and evidence",
   await expect(page.getByRole("heading", { name: /Diagnóstico primero\. Después una ruta que pueda ejecutarse/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Un caso sirve cuando deja aprendizaje transferible/i })).toBeVisible();
   await expect(page.getByRole("link", { name: /Wondergreen/i }).last()).toHaveAttribute("href", "/wondergreen");
-  await expect(page.getByRole("link", { name: /Recursos/i }).last()).toHaveAttribute("href", "/biblioteca");
+  await expect(page.getByRole("link", { name: /Recursos/i }).last()).toHaveAttribute("href", "/recursos");
 });
 
 test("contact page starts with context instead of forcing a service name", async ({ page }) => {
