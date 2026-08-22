@@ -97,7 +97,7 @@ export function ContactContextBuilder({ bookingUrl, initialAudience = "", initia
         </div>
       </div>
 
-      {initialContext ? <p className={styles.formHelp}><strong>Contexto recibido de la navegación:</strong> {initialContext}</p> : null}
+      {initialContext ? <p className={styles.formHelp} aria-label="Contexto recibido de la navegación"><strong>Contexto recibido de la navegación:</strong> {initialContext}</p> : null}
       <p className={styles.formHelp}>Este paso no envía información a Greenatics ni la guarda en un servidor. Solo organiza el contexto en tu navegador para que llegues mejor preparado a la conversación.</p>
       <div className={styles.actions}><button className={`${styles.button} ${styles.primary}`} type="submit">Preparar contexto</button><a className={`${styles.button} ${styles.ghost}`} href={bookingUrl} target="_blank" rel="noreferrer">Agendar sin preparar</a></div>
 
