@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("crop library exposes the governed Wondergreen Finder", async ({ page }) => {
   await page.goto("/wondergreen/cultivos");
-  await expect(page.getByRole("link", { name: "Abrir Finder Wondergreen" })).toHaveAttribute("href", "/wondergreen/finder");
+  await expect(page.getByRole("link", { name: "Usar Finder Wondergreen" }).first()).toHaveAttribute("href", "/wondergreen/finder");
 });
 
 test("Wondergreen Finder is limited to the five published crop programs", async ({ page }) => {
