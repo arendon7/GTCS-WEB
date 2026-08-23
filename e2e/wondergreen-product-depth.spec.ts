@@ -17,7 +17,8 @@ test("Wondergreen product page exposes presentations and official PDF relationsh
 
   await expect(page.getByRole("heading", { name: /2Grow Sólido/ })).toBeVisible();
   await expect(page.getByRole("img", { name: "Identidad visual aprobada de la línea Wondergreen 2Grow" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Documentación oficial" })).toBeVisible();
+  await expect(page.getByText("Documentación oficial", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Abre los documentos aprobados, no una reconstrucción de ellos." })).toBeVisible();
   await expect(page.getByText("5 kg", { exact: true })).toBeVisible();
   await expect(page.getByText("40 kg", { exact: true })).toBeVisible();
 
