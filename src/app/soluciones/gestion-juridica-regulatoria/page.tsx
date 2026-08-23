@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "../solutions.module.css";
 import refresh from "../solutions-refresh.module.css";
 
+const title = "Gestión jurídica y regulatoria | Greenatics";
+const description = "Asesoría jurídica y regulatoria para estructurar responsabilidades, instrumentos, contratos, trámites y decisiones asociadas a residuos, aseo y proyectos de aprovechamiento.";
+
 export const metadata: Metadata = {
-  title: "Gestión jurídica y regulatoria | Greenatics",
-  description: "Asesoría jurídica y regulatoria para estructurar responsabilidades, instrumentos, contratos, trámites y decisiones asociadas a residuos, aseo y proyectos de aprovechamiento.",
+  title,
+  description,
   alternates: { canonical: "/soluciones/gestion-juridica-regulatoria" },
+  ...publicSocialMetadata({ title, description, path: "/soluciones/gestion-juridica-regulatoria" }),
 };
 
 const deliverables = [
