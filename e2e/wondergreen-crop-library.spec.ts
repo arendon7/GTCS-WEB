@@ -41,7 +41,7 @@ test("crop library keeps guide, web program and Product Master responsibilities 
   await expect(page.getByText("Programa web", { exact: true })).toBeVisible();
   await expect(page.getByText("Product Master", { exact: true })).toBeVisible();
   await expect(page.getByText(/no los fusiona en una sola fuente/i)).toBeVisible();
-  await expect(page.getByText(/no se interprete como dosis cerrada/i)).toBeVisible();
+  await expect(page.getByText(/evita que una guía general se interprete como dosis cerrada/i)).toBeVisible();
 
   await expect(page.getByRole("link", { name: "Usar Finder Wondergreen" }).first()).toHaveAttribute("href", "/wondergreen/finder");
   await expect(page.getByRole("link", { name: "Ver Product Master" })).toHaveAttribute("href", "/wondergreen/productos");
