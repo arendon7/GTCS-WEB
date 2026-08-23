@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   bioinputReferences,
@@ -11,8 +12,10 @@ import {
   type WondergreenReference,
   type WondergreenTruthStatus,
 } from "@/data/wondergreen-public";
+import { getWondergreenProductArtwork } from "@/data/wondergreen-product-assets";
 import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "./catalog.module.css";
+import depth from "./catalog-depth.module.css";
 
 type StatusFilter = "all" | WondergreenTruthStatus;
 type FormatFilter = "all" | "solid" | "liquid" | "compost" | "bioinput";
@@ -25,8 +28,8 @@ const groups = [
 ] as const;
 
 const statusOptions: { value: StatusFilter; label: string }[] = [
-  { value: "all", label: "Todos los estados" },
   { value: "commercial-reconciled", label: "Comerciales reconciliadas" },
+  { value: "all", label: "Todo el portafolio" },
   { value: "technical-portfolio", label: "Portafolio técnico" },
   { value: "development", label: "Desarrollo" },
 ];
@@ -62,7 +65,7 @@ function searchableText(reference: WondergreenReference) {
 
 export function ProductCatalogBrowser() {
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<StatusFilter>("all");
+  const [status, setStatus] = useState<StatusFilter>("commercial-reconciled");
   const [format, setFormat] = useState<FormatFilter>("all");
 
   const filtered = useMemo(() => {
@@ -81,7 +84,7 @@ export function ProductCatalogBrowser() {
 
   const clearFilters = () => {
     setQuery("");
-    setStatus("all");
+    setStatus("commercial-reconciled");
     setFormat("all");
   };
 
@@ -91,10 +94,11 @@ export function ProductCatalogBrowser() {
         <div className={styles.container}>
           <div className={styles.browserHeading}>
             <div>
-              <span className={styles.eyebrow}>Explorar el Product Master</span>
-              <h2>Encuentra una referencia sin perder su estado técnico.</h2>
+              <span className={styles.eyebrow}>Portafolio Wondergreen</span>
+              <h2>Empieza por los productos comercialmente reconciliados.</h2>
+              <span className={depth.commercialNote}>Después puedes abrir el portafolio técnico y las referencias en desarrollo sin mezclarlas con disponibilidad comercial.</span>
             </div>
-            <p>Busca por nombre, familia, fórmula, etapa o función y filtra únicamente con atributos ya gobernados en Product Truth.</p>
+            <p>Busca por nombre, familia, formulación, etapa o función. Cada referencia abre una página propia con presentaciones, documentación pública vinculada y condición comercial.</p>
           </div>
 
           <div className={styles.browserControls}>
@@ -144,7 +148,7 @@ export function ProductCatalogBrowser() {
           <div className={styles.resultBar} aria-live="polite">
             <strong>{filtered.length} {filtered.length === 1 ? "referencia" : "referencias"}</strong>
             <span>de {wondergreenReferences.length} en el Product Master público</span>
-            {(query || status !== "all" || format !== "all") ? <button type="button" onClick={clearFilters}>Limpiar filtros</button> : null}
+            {(query || status !== "commercial-reconciled" || format !== "all") ? <button type="button" onClick={clearFilters}>Volver a comerciales</button> : null}
           </div>
         </div>
       </section>
@@ -159,13 +163,20 @@ export function ProductCatalogBrowser() {
             <div className={styles.productGrid}>
               {group.items.map((item) => {
                 const tone = getWondergreenVisualTone(item);
+                const artwork = getWondergreenProductArtwork(item);
                 return (
                   <Link className={styles.productCard} data-tone={tone} href={`/wondergreen/productos/${item.slug}`} key={item.slug}>
                     <div className={styles.cardTop}><span>{item.publicStatus}</span><small>{item.format}</small></div>
-                    <div className={styles.identity}><strong>{item.family}</strong>{item.formula ? <em>{item.formula}</em> : null}</div>
+                    {artwork ? (
+                      <>
+                        <Image className={depth.cardArtwork} src={artwork.href} alt={artwork.alt} width={720} height={450} sizes="(max-width: 640px) 92vw, (max-width: 900px) 45vw, 30vw" unoptimized />
+                        <span className={depth.cardAssetLabel}>{artwork.label}</span>
+                      </>
+                    ) : null}
+                    <div className={`${styles.identity} ${artwork ? depth.cardIdentityWithArtwork : ""}`}><strong>{item.family}</strong>{item.formula ? <em>{item.formula}</em> : null}</div>
                     <h3>{item.name}</h3>
                     <p>{item.role}</p>
-                    <div className={styles.cardBottom}><span>{item.stage}</span><strong>Ver ficha →</strong></div>
+                    <div className={styles.cardBottom}><span>{item.stage}</span><strong>Ver producto →</strong></div>
                   </Link>
                 );
               })}
@@ -179,9 +190,9 @@ export function ProductCatalogBrowser() {
           <div className={styles.container}>
             <span className={styles.eyebrow}>Sin coincidencias</span>
             <h2>No encontramos una referencia con esos filtros.</h2>
-            <p>Esto no significa que debas escoger otro producto automáticamente. Limpia los filtros o entra por cultivo para revisar el contexto agronómico.</p>
+            <p>Esto no significa que debas escoger otro producto automáticamente. Vuelve al portafolio comercial o entra por cultivo para revisar el contexto agronómico.</p>
             <div className={styles.emptyActions}>
-              <button type="button" onClick={clearFilters}>Ver todo el portafolio</button>
+              <button type="button" onClick={clearFilters}>Ver referencias comerciales</button>
               <Link href="/wondergreen/cultivos">Buscar por cultivo →</Link>
             </div>
           </div>
