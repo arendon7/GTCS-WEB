@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "../solutions.module.css";
 import refresh from "../solutions-refresh.module.css";
 
+const title = "Valorización y desarrollo de productos | Greenatics";
+const description = "Ruta técnica, documental y comercial para convertir salidas del tratamiento en productos con especificaciones, control, documentación y condiciones de comercialización definidas.";
+
 export const metadata: Metadata = {
-  title: "Valorización y desarrollo de productos | Greenatics",
-  description: "Ruta técnica, documental y comercial para convertir salidas del tratamiento en productos con especificaciones, control, documentación y condiciones de comercialización definidas.",
+  title,
+  description,
   alternates: { canonical: "/soluciones/valorizacion-productos" },
+  ...publicSocialMetadata({ title, description, path: "/soluciones/valorizacion-productos" }),
 };
 
 const deliverables = [
