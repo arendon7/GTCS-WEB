@@ -21,11 +21,12 @@ test("public home presents Greenatics and exposes the digital bridge", async ({ 
   await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
 });
 
-test("Wondergreen exposes fertilizers, bioinputs and governed technology narrative", async ({ page }) => {
+test("Wondergreen exposes commercial products, full portfolio and governed technology narrative", async ({ page }) => {
   await page.goto("/wondergreen");
 
   await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Dos grandes líneas dentro de una misma marca." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Empieza por los productos que ya puedes revisar." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Fertilizantes y bioinsumos, con su estado visible." })).toBeVisible();
 
   const portfolio = page.locator("#portafolio");
   await expect(portfolio.getByText("2Grow Sólido · 15-3-3", { exact: true })).toBeVisible();
