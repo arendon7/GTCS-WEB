@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ resourceId: string }> },
 ) {
   const { resourceId } = await context.params;
@@ -15,9 +15,11 @@ export async function GET(
     const download = await downloadPublicWondergreenPdf(resourceId);
     if (!download) return new Response("Recurso no encontrado.", { status: 404 });
 
+    const attachmentRequested = new URL(request.url).searchParams.get("download") === "1";
+    const disposition = attachmentRequested ? "attachment" : "inline";
     const headers = new Headers({
       "content-type": "application/pdf",
-      "content-disposition": `inline; filename="${download.asset.filename}"`,
+      "content-disposition": `${disposition}; filename="${download.asset.filename}"`,
       "cache-control": "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400",
       "x-content-type-options": "nosniff",
     });
