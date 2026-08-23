@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
+const description = "Programas Wondergreen por cultivo con guías PDF publicadas, lectura por etapa, contexto agronómico y referencias relacionadas.";
+
 const social = publicSocialMetadata({
   title: "Cultivos | Wondergreen",
-  description: "Programas orientativos Wondergreen por cultivo, etapa, condición del lote y objetivo agronómico.",
+  description,
   path: "/wondergreen/cultivos",
 });
 
