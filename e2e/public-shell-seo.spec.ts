@@ -6,7 +6,8 @@ const shellRoutes = [
   "/soluciones", "/soluciones/esp", "/soluciones/municipios", "/soluciones/empresas",
   "/soluciones/propiedad-horizontal", "/soluciones/plantas",
   "/soluciones/residuos-organicos", "/soluciones/infraestructura-plantas", "/soluciones/propiedad-horizontal-redes",
-  "/soluciones/diagnostico-caracterizacion", "/recursos", "/proyectos", "/proyectos/yarumal", "/impacto",
+  "/soluciones/diagnostico-caracterizacion", "/soluciones/gestion-juridica-regulatoria", "/soluciones/valorizacion-productos",
+  "/recursos", "/proyectos", "/proyectos/yarumal", "/impacto",
   "/biblioteca", "/biblioteca/guia-deficiencias", "/nosotros", "/contacto",
 ];
 
@@ -132,6 +133,8 @@ test("sitemap exposes canonical audience routes while legacy combined routes sta
     "/soluciones/infraestructura-plantas",
     "/soluciones/propiedad-horizontal-redes",
     "/soluciones/diagnostico-caracterizacion",
+    "/soluciones/gestion-juridica-regulatoria",
+    "/soluciones/valorizacion-productos",
     "/recursos",
     "/biblioteca",
   ]) expect(sitemapText).toContain(`https://greenatics.com.co${path}`);
