@@ -13,7 +13,9 @@ test("crop index makes every published guide directly visible without replacing 
 
   await expect(page.getByRole("heading", { name: "El cultivo cambia la pregunta." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cinco programas. Cinco guías completas." })).toBeVisible();
-  await expect(page.getByText("5", { exact: true })).toHaveCount(2);
+  const summary = page.getByLabel("Resumen de la biblioteca por cultivo");
+  await expect(summary.getByText("5", { exact: true })).toHaveCount(2);
+  await expect(summary.getByText("3", { exact: true })).toHaveCount(1);
 
   for (const [crop, slug, guideTitle, resourceId] of cropGuides) {
     const card = page.getByRole("article").filter({
