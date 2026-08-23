@@ -51,6 +51,8 @@ export const publicStaticRoutes = [
   "/",
   "/soluciones",
   "/soluciones/diagnostico-inicial",
+  "/soluciones/gestion-juridica-regulatoria",
+  "/soluciones/valorizacion-productos",
   "/wondergreen",
   "/wondergreen/productos",
   "/wondergreen/cultivos",
