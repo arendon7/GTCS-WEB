@@ -3,39 +3,40 @@ import Image from "next/image";
 import Link from "next/link";
 import { bioinputReferences, compostReferences, liquidFertilizers, solidFertilizers } from "@/data/wondergreen-public";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
+import { WondergreenCommercialShowcase } from "./wondergreen-commercial-showcase";
 import styles from "./wondergreen-v2.module.css";
 
 export const metadata: Metadata = {
   title: "Wondergreen | Suelo, nutrición y biología",
   description:
-    "Wondergreen integra nutrición organomineral, fertilizantes líquidos, compost, bioinsumos, guías por cultivo y acompañamiento técnico dentro de una misma lógica de suelo y seguimiento.",
+    "Wondergreen integra productos organominerales, fertilizantes líquidos, compost, bioinsumos, tecnología, guías por cultivo y acompañamiento técnico dentro de una misma lógica de suelo y seguimiento.",
   alternates: { canonical: "/wondergreen" },
 };
 
 const entryPaths = [
   {
     number: "01",
-    title: "Tengo un cultivo",
-    copy: "Empieza por especie, etapa y objetivo antes de elegir una referencia.",
-    href: "/wondergreen/cultivos",
-  },
-  {
-    number: "02",
-    title: "Tengo una necesidad",
-    copy: "Organiza cultivo, etapa y evidencia disponible antes de revisar una ruta técnica.",
-    href: "/wondergreen/finder",
-  },
-  {
-    number: "03",
-    title: "Sé qué producto busco",
-    copy: "Entra al Product Master público y revisa familia, formato y condición vigente.",
+    title: "Quiero ver productos",
+    copy: "Entra al catálogo y abre cada referencia para revisar formulación, presentaciones, condición comercial y documentación vinculada.",
     href: "/wondergreen/productos",
   },
   {
-    number: "04",
+    number: "02",
+    title: "Tengo un cultivo",
+    copy: "Explora los programas publicados y sus guías PDF antes de convertir una referencia en recomendación.",
+    href: "/wondergreen/cultivos",
+  },
+  {
+    number: "03",
     title: "Tengo plantas en casa",
-    copy: "Entra a Casa & Jardín para observar etapa, diagnóstico orientativo, productos y guías.",
+    copy: "Entra a Casa & Jardín para conocer productos, kits, etapas, guías y orientación segura.",
     href: "/casa-jardin",
+  },
+  {
+    number: "04",
+    title: "No sé qué producto revisar",
+    copy: "Usa el Finder como orientación cuando todavía necesitas ordenar cultivo, etapa y contexto antes de escoger una referencia.",
+    href: "/wondergreen/finder",
   },
 ] as const;
 
@@ -68,9 +69,9 @@ const knowledgeRoutes = [
 ] as const;
 
 const audiences = [
-  ["01", "Productor", "Encuentra una ruta técnica para tu cultivo.", "Empezar por cultivo", "/wondergreen/cultivos"],
-  ["02", "Hogar / jardín", "Observa la etapa de tus plantas y entra al sistema doméstico sin dosificar a ciegas.", "Explorar Casa & Jardín", "/casa-jardin"],
-  ["03", "Agrotienda / distribuidor", "Conoce familias, formatos y oportunidad comercial.", "Quiero vender Wondergreen", "/contacto"],
+  ["01", "Productor", "Conoce primero el portafolio y luego cruza la referencia con la etapa de tu cultivo.", "Ver productos", "/wondergreen/productos"],
+  ["02", "Hogar / jardín", "Explora productos, kits y guías domésticas sin convertir la navegación en dosificación automática.", "Explorar Casa & Jardín", "/casa-jardin"],
+  ["03", "Agrotienda / distribuidor", "Conoce familias, formatos y condición comercial antes de conversar sobre distribución.", "Quiero vender Wondergreen", "/contacto"],
   ["04", "Agrónomo / técnico", "Accede a portafolio, guías y criterios técnicos navegables.", "Abrir biblioteca técnica", "/biblioteca"],
 ] as const;
 
@@ -81,14 +82,14 @@ export default function WondergreenPage() {
         <div className={styles.container}>
           <span>Wondergreen</span>
           <div>
-            <a href="#que-es">Qué es</a>
-            <a href="#tecnologia">Tecnología</a>
             <Link href="/wondergreen/productos">Productos</Link>
+            <a href="#tecnologia">Tecnología</a>
             <Link href="/wondergreen/cultivos">Cultivos</Link>
+            <Link href="/biblioteca">Guías</Link>
             <Link href="/wondergreen/finder">Finder</Link>
             <a href="#bioinsumos">Bioinsumos</a>
-            <Link href="/biblioteca">Guías</Link>
             <Link href="/casa-jardin">Casa & Jardín</Link>
+            <a href="#que-es">Qué es</a>
           </div>
         </div>
       </nav>
@@ -110,12 +111,12 @@ export default function WondergreenPage() {
               />
               <h1 id="wondergreen-title">Nutrición que trabaja con el suelo.</h1>
               <p className={styles.lead}>
-                En Wondergreen desarrollamos soluciones para acompañar el cultivo desde el suelo: nutrición organomineral, soluciones líquidas, biología y conocimiento. En las referencias sólidas donde está documentado, explicamos además la matriz, la oclusión y la lenta liberación; la selección siempre vuelve al cultivo, la etapa y la evidencia disponible.
+                Wondergreen reúne productos para nutrición y manejo del cultivo: referencias organominerales sólidas, soluciones líquidas, compost y bioinsumos. Puedes empezar por el producto y profundizar hasta formulación, presentación, tecnología y documentación; cuando la elección todavía no está clara, las guías y el Finder ayudan a ordenar el contexto.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/finder">Encontrar mi programa</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/productos">Ver productos</Link>
-                <Link className={styles.textLink} href="/contacto">Hablar con equipo técnico →</Link>
+                <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/wondergreen/productos">Ver productos</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen/cultivos">Explorar cultivos y guías</Link>
+                <Link className={styles.textLink} href="/wondergreen/finder">No sé qué producto revisar →</Link>
               </div>
               <div className={styles.heroTruth}>
                 <span>Product Master público</span>
@@ -160,14 +161,16 @@ export default function WondergreenPage() {
           </div>
         </section>
 
+        <WondergreenCommercialShowcase />
+
         <section className={styles.router} aria-labelledby="router-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div>
-                <span className={styles.eyebrow}>Empieza por tu contexto</span>
-                <h2 id="router-title">No empieces por el producto. Empieza por la decisión.</h2>
+                <span className={styles.eyebrow}>Elige tu nivel de profundidad</span>
+                <h2 id="router-title">Si ya sabes qué buscas, entra directo. Si no, te orientamos.</h2>
               </div>
-              <p>La selección cambia con cultivo, etapa, suelo o sustrato, problema, análisis disponibles y objetivo. Wondergreen organiza distintas puertas para llegar a la misma base técnica.</p>
+              <p>La web separa dos recorridos: quien conoce el producto puede abrirlo y llegar hasta su documentación; quien todavía tiene dudas puede entrar por cultivo, Casa & Jardín o Finder sin convertir la orientación en prescripción automática.</p>
             </div>
             <div className={styles.routerGrid}>
               {entryPaths.map((item) => (
@@ -190,8 +193,8 @@ export default function WondergreenPage() {
               <h2 id="definition-title">Un sistema de nutrición y manejo alrededor del suelo y del cultivo.</h2>
             </div>
             <div className={styles.editorialCopy}>
-              <p>Wondergreen reúne fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico bajo una misma arquitectura de decisión.</p>
-              <p>La marca no presupone que una necesidad se resuelva con un solo producto. Primero se lee el contexto; después se seleccionan las herramientas que correspondan.</p>
+              <p>Wondergreen reúne fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico bajo una misma arquitectura de producto y decisión.</p>
+              <p>El portafolio es una entrada comercial real. El contexto agronómico determina después cómo y cuándo una referencia puede convertirse en una recomendación específica.</p>
             </div>
           </div>
         </section>
@@ -267,9 +270,9 @@ export default function WondergreenPage() {
             <div className={styles.sectionHead}>
               <div>
                 <span className={styles.eyebrow}>Qué cambia en la lectura agronómica</span>
-                <h2 id="implications-title">La tecnología sirve para formular mejores preguntas, no para saltarse el diagnóstico.</h2>
+                <h2 id="implications-title">La tecnología ayuda a entender el producto; el contexto define la recomendación.</h2>
               </div>
-              <p>La matriz, la forma física y la característica de liberación se interpretan dentro de un sistema vivo. La recomendación final sigue dependiendo del cultivo y de la información disponible.</p>
+              <p>La matriz, la forma física y la característica de liberación se interpretan dentro de un sistema vivo. Conocer el producto es el primer nivel; decidir dosis, momento o combinación exige la información aplicable al cultivo.</p>
             </div>
             <div className={styles.implicationGrid}>
               {scienceImplications.map(([number, title, copy]) => (
@@ -282,9 +285,9 @@ export default function WondergreenPage() {
         <section className={styles.finder} id="finder" aria-labelledby="finder-title">
           <div className={`${styles.container} ${styles.finderGrid}`}>
             <div className={styles.finderIntro}>
-              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Objetivo + etapa</span>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Orientación cuando hace falta</span>
               <h2 id="finder-title">Del contexto al seguimiento.</h2>
-              <p>El Finder V1 organiza cultivo, etapa y evidencia disponible dentro de los cinco programas publicados. Es una orientación técnica, no una prescripción automática, y se detiene cuando la etapa no está clara.</p>
+              <p>El Finder V1 organiza cultivo, etapa y evidencia disponible dentro de los cinco programas publicados. Es una orientación técnica para quien todavía no sabe qué referencia revisar, no una prescripción automática, y se detiene cuando la etapa no está clara.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/finder">Abrir Finder Wondergreen</Link>
                 <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Consultar guías</Link>
@@ -302,10 +305,10 @@ export default function WondergreenPage() {
           <div className={styles.container}>
             <div className={styles.portfolioHead}>
               <div>
-                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Portafolio · Product Master público</span>
-                <h2 id="portfolio-title">Dos grandes líneas dentro de una misma marca.</h2>
+                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Portafolio completo · Product Master público</span>
+                <h2 id="portfolio-title">Fertilizantes y bioinsumos, con su estado visible.</h2>
               </div>
-              <p>Fertilizantes y bioinsumos pueden integrarse en programas de manejo, pero no cumplen la misma función ni siguen necesariamente la misma secuencia fenológica.</p>
+              <p>Después de las referencias comerciales destacadas, el Product Master permite revisar también referencias técnicas o en desarrollo sin confundirlas con disponibilidad comercial.</p>
             </div>
 
             <div className={styles.portfolioColumns}>
@@ -352,14 +355,14 @@ export default function WondergreenPage() {
         <section className={styles.crops} id="cultivos" aria-labelledby="crops-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Programas por cultivo</span><h2 id="crops-title">La decisión técnica cambia con la etapa.</h2></div>
-              <p>Las guías conectan momento fisiológico, objetivo, cautelas, alertas y referencias gobernadas sin convertir todos los cultivos en una misma receta.</p>
+              <div><span className={styles.eyebrow}>Programas y guías por cultivo</span><h2 id="crops-title">La decisión técnica cambia con la etapa.</h2></div>
+              <p>Las rutas de cultivo conectan momento fisiológico, objetivo, cautelas y productos relacionados; cuando existe una guía PDF aprobada, la página la mantiene disponible como documento editorial completo.</p>
             </div>
             <div className={styles.cropGrid}>
               {wondergreenCrops.map((crop, index) => (
                 <Link href={`/wondergreen/cultivos/${crop.slug}`} key={crop.slug}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
-                  <small>Programa técnico</small>
+                  <small>Programa + guía</small>
                   <h3>{crop.name}</h3>
                   <p>{crop.headline}</p>
                   <strong>Abrir programa →</strong>
@@ -372,8 +375,8 @@ export default function WondergreenPage() {
         <section className={styles.knowledge} aria-labelledby="knowledge-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Evidencia y conocimiento</span><h2 id="knowledge-title">La recomendación debe poder explicar de dónde sale.</h2></div>
-              <p>Guías, criterios y Product Master mantienen separadas la orientación general, la ficha del producto y la recomendación específica para un caso.</p>
+              <div><span className={styles.eyebrow}>Documentación y conocimiento</span><h2 id="knowledge-title">Profundiza desde el producto hasta el documento oficial.</h2></div>
+              <p>La web contextualiza y conecta. Las guías y PDF aprobados conservan su diseño y contenido como piezas documentales, mientras Product Truth gobierna la referencia exacta.</p>
             </div>
             <div className={styles.knowledgeGrid}>
               {knowledgeRoutes.map(([number, title, copy, href, cta]) => (
@@ -386,8 +389,8 @@ export default function WondergreenPage() {
         <section className={styles.commercial} id="acompanamiento" aria-labelledby="commercial-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Distribución y asesoría</span><h2 id="commercial-title">El mismo sistema, distintas preguntas.</h2></div>
-              <p>La entrada puede ser un cultivo, una planta en casa, una oportunidad de distribución o una necesidad técnica. Cada ruta termina en un destino público gobernado.</p>
+              <div><span className={styles.eyebrow}>Compra informada, distribución y asesoría</span><h2 id="commercial-title">El mismo portafolio, distintas necesidades.</h2></div>
+              <p>El productor puede revisar productos, el hogar entra por Casa & Jardín, un distribuidor conversa sobre líneas y formatos y el técnico profundiza en documentación. La orientación aparece cuando agrega valor, no como sustituto de la oferta.</p>
             </div>
             <div className={styles.commercialList}>
               {audiences.map(([number, title, copy, cta, href]) => (
@@ -401,13 +404,13 @@ export default function WondergreenPage() {
           <div className={`${styles.container} ${styles.closingGrid}`}>
             <div>
               <span className={styles.eyebrow}>Wondergreen</span>
-              <h2 id="closing-title">¿Tienes un cultivo, una necesidad o un problema por resolver?</h2>
+              <h2 id="closing-title">¿Quieres revisar un producto, una presentación o una ruta para tu cultivo?</h2>
             </div>
             <div>
-              <p>Empieza por el contexto. El siguiente paso puede ser una guía, un producto, un análisis, Casa & Jardín o acompañamiento técnico.</p>
+              <p>Puedes entrar directamente al producto, consultar las guías o hablar con Greenatics cuando necesites confirmar disponibilidad, contexto técnico o distribución.</p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonDark}`} href="/contacto">Hablar con equipo técnico</Link>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/">Volver a Greenatics</Link>
+                <Link className={`${styles.button} ${styles.buttonDark}`} href="/wondergreen/productos">Ver productos</Link>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/contacto">Hablar con equipo técnico</Link>
               </div>
             </div>
           </div>
