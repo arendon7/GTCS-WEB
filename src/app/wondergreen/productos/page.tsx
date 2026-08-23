@@ -4,8 +4,8 @@ import { ProductCatalogBrowser } from "./product-catalog-browser";
 import styles from "./catalog.module.css";
 
 export const metadata: Metadata = {
-  title: "Productos Wondergreen | Portafolio técnico",
-  description: "Explora fertilizantes sólidos y líquidos, compost y bioinsumos Wondergreen con estado técnico y comercial visible.",
+  title: "Productos Wondergreen | Portafolio técnico y comercial",
+  description: "Explora fertilizantes sólidos y líquidos Wondergreen por línea, formulación, presentación, estado comercial y documentación pública vinculada.",
   alternates: { canonical: "/wondergreen/productos" },
 };
 
@@ -16,14 +16,14 @@ export default function WondergreenProductsPage() {
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Wondergreen · Product Master público</span>
-              <h1>Un portafolio que muestra también lo que todavía debe confirmarse.</h1>
-              <p className={styles.lead}>Cada referencia tiene una ficha propia con función, formato, etapa, presentaciones, condición comercial y cautelas. El catálogo separa producto documentado de disponibilidad real.</p>
+              <span className={styles.eyebrow}>Wondergreen · Productos</span>
+              <h1>Productos concretos, formulación por formulación.</h1>
+              <p className={styles.lead}>Empieza por las referencias comercialmente reconciliadas y abre cada producto para revisar formulación, presentaciones, condición comercial, cultivos relacionados y documentos oficiales. Las referencias técnicas o en desarrollo permanecen separadas y explícitamente identificadas.</p>
             </div>
             <aside className={styles.router}>
-              <strong>¿No sabes por cuál empezar?</strong>
-              <p>Entra por cultivo y etapa. La selección final se ajusta al lote, análisis, agua, manejo y documentación vigente.</p>
-              <Link href="/wondergreen/cultivos">Buscar por cultivo →</Link>
+              <strong>¿No sabes qué producto revisar?</strong>
+              <p>Los productos son la oferta. El Finder y los programas por cultivo sirven para orientarte cuando todavía no sabes cuál corresponde a tu contexto.</p>
+              <Link href="/wondergreen/finder">Encontrar mi programa →</Link>
             </aside>
           </div>
         </section>
@@ -32,18 +32,18 @@ export default function WondergreenProductsPage() {
 
         <section className={styles.knowledge}>
           <div className={`${styles.container} ${styles.knowledgeGrid}`}>
-            <div><span className={styles.eyebrow}>Producto + conocimiento</span><h2>La ficha no termina en la fórmula.</h2><p>Wondergreen conecta producto con diagnóstico, cultivo, aplicación y seguimiento.</p></div>
+            <div><span className={styles.eyebrow}>Producto + documentación</span><h2>Profundiza hasta el documento oficial.</h2><p>La web explica y conecta. Los PDF aprobados conservan su diseño, contenido y condición de master público.</p></div>
             <div className={styles.knowledgeLinks}>
-              <Link href="/biblioteca/manual-uso-wondergreen">Manual de uso <span>→</span></Link>
-              <Link href="/biblioteca/criterios-nutricionales">Criterios nutricionales <span>→</span></Link>
-              <Link href="/biblioteca/guia-deficiencias">Deficiencias nutricionales <span>→</span></Link>
-              <Link href="/wondergreen/cultivos">Programas por cultivo <span>→</span></Link>
+              <Link href="/biblioteca"><strong>Biblioteca técnica</strong><span>→</span></Link>
+              <Link href="/biblioteca/manual-uso-wondergreen"><strong>Manual de uso Wondergreen</strong><span>→</span></Link>
+              <Link href="/biblioteca/criterios-nutricionales"><strong>Criterios nutricionales</strong><span>→</span></Link>
+              <Link href="/wondergreen/cultivos"><strong>Programas y guías por cultivo</strong><span>→</span></Link>
             </div>
           </div>
         </section>
 
         <section className={styles.closing}>
-          <div className={`${styles.container} ${styles.closingInner}`}><div><span className={styles.eyebrow}>Wondergreen</span><h2>¿Necesitas confirmar una referencia, presentación o disponibilidad?</h2></div><Link className={styles.button} href="/contacto">Consultar con Greenatics</Link></div>
+          <div className={`${styles.container} ${styles.closingInner}`}><div><span className={styles.eyebrow}>Wondergreen</span><h2>¿Quieres confirmar una referencia, presentación o condición comercial?</h2></div><Link className={styles.button} href="/contacto?necesidad=producto-wondergreen#wondergreen">Hablar con Greenatics</Link></div>
         </section>
       </main>
     </div>
