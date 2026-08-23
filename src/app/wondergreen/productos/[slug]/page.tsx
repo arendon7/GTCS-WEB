@@ -10,6 +10,7 @@ import {
 import { getWondergreenReference, wondergreenReferences } from "@/data/wondergreen-public";
 import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "./product.module.css";
+import depth from "./product-depth.module.css";
 
 export function generateStaticParams() {
   return wondergreenReferences.map((reference) => ({ slug: reference.slug }));
@@ -77,9 +78,9 @@ export default async function WondergreenProductPage({ params }: { params: Promi
             </div>
 
             {artwork ? (
-              <aside className={styles.visualPlate} aria-label={`Activo visual de ${reference.family}`}>
+              <aside className={depth.visualPlate} aria-label={`Activo visual de ${reference.family}`}>
                 <Image
-                  className={styles.productArtwork}
+                  className={depth.productArtwork}
                   src={artwork.href}
                   alt={artwork.alt}
                   width={900}
@@ -88,7 +89,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
                   priority
                   unoptimized
                 />
-                <div className={styles.visualCaption}>
+                <div className={depth.visualCaption}>
                   <strong>{artwork.label}</strong>
                   <span>Activo aprobado de línea. No se presenta como packshot específico si ese master todavía no está vinculado.</span>
                 </div>
@@ -151,22 +152,22 @@ export default async function WondergreenProductPage({ params }: { params: Promi
               <h2>Abre los documentos aprobados, no una reconstrucción de ellos.</h2>
               <p>La página web organiza la referencia y sus relaciones. Los PDF publicados conservan el diseño y contenido del master editorial aprobado.</p>
             </div>
-            <div className={styles.documentGrid}>
+            <div className={depth.documentGrid}>
               {documents.catalog?.downloadHref ? (
-                <article className={styles.documentCard}>
+                <article className={depth.documentCard}>
                   {documents.catalog.coverImage ? <Image src={documents.catalog.coverImage} alt={`Portada de ${documents.catalog.title}`} width={520} height={735} unoptimized /> : null}
                   <div><span>{documents.catalog.statusLabel}</span><h3>{documents.catalog.title}</h3><p>{documents.catalog.masterLabel}</p><a href={documents.catalog.downloadHref} target="_blank" rel="noreferrer">Abrir catálogo PDF →</a></div>
                 </article>
               ) : null}
 
               {documents.guides.map((guide) => (
-                <article className={styles.documentCard} key={guide.id}>
+                <article className={depth.documentCard} key={guide.id}>
                   {guide.coverImage ? <Image src={guide.coverImage} alt={`Portada de ${guide.title}`} width={520} height={735} unoptimized /> : null}
-                  <div><span>{guide.statusLabel}</span><h3>{guide.title}</h3><p>{guide.masterLabel}</p><div className={styles.documentActions}><Link href={guide.href}>Ver programa web</Link>{guide.downloadHref ? <a href={guide.downloadHref} target="_blank" rel="noreferrer">Abrir PDF →</a> : null}</div></div>
+                  <div><span>{guide.statusLabel}</span><h3>{guide.title}</h3><p>{guide.masterLabel}</p><div className={depth.documentActions}><Link href={guide.href}>Ver programa web</Link>{guide.downloadHref ? <a href={guide.downloadHref} target="_blank" rel="noreferrer">Abrir PDF →</a> : null}</div></div>
                 </article>
               ))}
 
-              <article className={`${styles.documentCard} ${styles.pendingDocument}`}>
+              <article className={`${depth.documentCard} ${depth.pendingDocument}`}>
                 <div><span>Master individual</span><h3>{documents.technicalSheet.label}</h3><p>{documents.technicalSheet.note}</p><strong>Pendiente de vincular master público</strong></div>
               </article>
             </div>
