@@ -6,34 +6,10 @@ import { publicResources, type PublicResource } from "@/data/public-resources";
 import styles from "./resources-v2.module.css";
 
 export const metadata: Metadata = {
-  title: "Recursos | Greenatics",
-  description: "Biblioteca técnica, proyectos documentados, impacto, guías, programas por cultivo y herramientas de Greenatics y Wondergreen reunidas para tomar mejores decisiones.",
+  title: "Biblioteca técnica | Greenatics",
+  description: "Guías, manuales, criterios, programas por cultivo, Product Master y materiales descargables de Greenatics y Wondergreen con contexto técnico gobernado.",
   alternates: { canonical: "/biblioteca" },
 };
-
-const resourceUniverses = [
-  {
-    number: "01",
-    title: "Biblioteca técnica",
-    copy: "Guías, Product Master, programas por cultivo, Casa & Jardín, criterios nutricionales y manuales para consultar o llevar al campo.",
-    href: "#biblioteca",
-    cta: "Explorar biblioteca",
-  },
-  {
-    number: "02",
-    title: "Proyectos / casos",
-    copy: "Experiencia documentada con contexto, periodo y alcance. Los casos muestran aprendizajes transferibles sin convertir evidencia histórica en resultados vigentes.",
-    href: "/proyectos",
-    cta: "Ver casos",
-  },
-  {
-    number: "03",
-    title: "Impacto",
-    copy: "Indicadores y resultados solo cuando cuentan con fuente, periodo, metodología y aprobación para publicación.",
-    href: "/impacto",
-    cta: "Ver impacto",
-  },
-] as const;
 
 const intentRoutes = [
   { number: "01", kicker: "Tengo un cultivo", title: "Quiero orientar el programa según la etapa.", copy: "Entra por café, cacao, aguacate, limón Tahití o pastos y revisa momentos, objetivos, cautelas, alertas y seguimiento.", href: "/wondergreen/cultivos", cta: "Elegir cultivo" },
@@ -46,10 +22,10 @@ const intentRoutes = [
 ] as const;
 
 const method = [
-  ["01", "Diagnosticar", "Revisa síntomas, lote, planta, suelo o sustrato y posibles confundidores."],
-  ["02", "Entender", "Ubica etapa, condición, contexto y objetivo antes de elegir una ruta."],
-  ["03", "Aplicar", "Usa la guía completa y la información vigente de la referencia para ejecutar."],
-  ["04", "Medir y ajustar", "Observa respuesta y usa evidencia para decidir el siguiente evento."],
+  ["01", "Entender", "Ubica planta o cultivo, etapa, condición, objetivo y señales observadas antes de buscar una respuesta."],
+  ["02", "Comprobar", "Revisa contexto, posibles confundidores, criterios técnicos y la autoridad del recurso que estás consultando."],
+  ["03", "Aplicar", "Usa la guía completa y la información vigente de la referencia para preparar y ejecutar el siguiente paso."],
+  ["04", "Medir y ajustar", "Registra la respuesta observada y vuelve a la evidencia antes de decidir el siguiente evento."],
 ] as const;
 
 function getDeliveryLabel(resource: PublicResource) {
@@ -70,49 +46,32 @@ export default function LibraryPage() {
   return (
     <div className={styles.page}>
       <main>
-        <section className={styles.hero} aria-labelledby="resources-title">
+        <section className={styles.hero} aria-labelledby="library-page-title">
           <div className={styles.heroAccent} aria-hidden="true" />
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Recursos Greenatics · conocimiento + evidencia</span>
-              <h1 id="resources-title">Conocimiento, casos y evidencia para decidir mejor.</h1>
-              <p className={styles.lead}>Recursos reúne la biblioteca técnica de Greenatics y Wondergreen con proyectos documentados e impacto gobernado. La idea no es acumular PDFs: es ayudarte a encontrar el contexto, la evidencia o la guía que necesitas para la siguiente decisión.</p>
+              <span className={styles.eyebrow}>Biblioteca técnica Greenatics</span>
+              <h1 id="library-page-title">Conocimiento técnico para llevar mejores decisiones a la práctica.</h1>
+              <p className={styles.lead}>Consulta guías, manuales, criterios, programas por cultivo, Product Master y materiales descargables con una regla común: distinguir orientación, información de producto y evidencia antes de convertir un recurso en una decisión.</p>
               <div className={styles.actions}>
-                <a className={`${styles.button} ${styles.primary}`} href="#biblioteca">Explorar biblioteca</a>
-                <Link className={`${styles.button} ${styles.ghost}`} href="/proyectos">Ver proyectos</Link>
+                <a className={`${styles.button} ${styles.primary}`} href="#rutas">Encontrar un recurso</a>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/recursos">Ver todos los recursos Greenatics</Link>
               </div>
             </div>
             <aside className={styles.heroLedger}>
-              <span>Una sola entrada · tres capas</span>
-              <strong>Aprender, comprobar y transferir experiencia.</strong>
-              <p>La biblioteca explica. Los proyectos documentan experiencia. Impacto publica únicamente lo que puede sostenerse con una fuente y un periodo.</p>
+              <span>Lectura web + documentos gobernados</span>
+              <strong>Un recurso sirve cuando conserva contexto, fuente y siguiente paso.</strong>
+              <p>La biblioteca no reemplaza diagnóstico, ficha técnica ni criterio profesional. Organiza conocimiento publicado para que sea más fácil saber qué revisar antes, durante y después de una decisión.</p>
               <div className={styles.ledgerRows}>
-                <div className={styles.ledgerRow}><span>01</span><div><strong>Biblioteca</strong><small>guías · manuales · Product Master</small></div></div>
-                <div className={styles.ledgerRow}><span>02</span><div><strong>Casos</strong><small>contexto · evidencia · aprendizajes</small></div></div>
-                <div className={styles.ledgerRow}><span>03</span><div><strong>Impacto</strong><small>fuente · periodo · metodología</small></div></div>
+                <div className={styles.ledgerRow}><span>01</span><div><strong>Orientación</strong><small>guías · programas · síntomas</small></div></div>
+                <div className={styles.ledgerRow}><span>02</span><div><strong>Aplicación</strong><small>manuales · criterios · seguimiento</small></div></div>
+                <div className={styles.ledgerRow}><span>03</span><div><strong>Consulta</strong><small>Product Master · catálogo · descargas</small></div></div>
               </div>
             </aside>
           </div>
         </section>
 
-        <section className={styles.universes} aria-labelledby="resource-universes-title">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Tres capas de recursos</span><h2 id="resource-universes-title">No todo recurso cumple la misma función.</h2></div>
-              <p>Una guía orienta una decisión. Un caso prueba experiencia documentada. Un indicador resume un resultado bajo reglas de publicación. Separarlos hace que la evidencia sea más útil y menos ambigua.</p>
-            </div>
-            <div className={styles.universeGrid}>
-              {resourceUniverses.map((item) => (
-                <article className={styles.universeCard} key={item.number}>
-                  <span>{item.number}</span><h3>{item.title}</h3><p>{item.copy}</p>
-                  {item.href.startsWith("#") ? <a href={item.href}>{item.cta} →</a> : <Link href={item.href}>{item.cta} →</Link>}
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.router} aria-labelledby="library-router-title">
+        <section className={styles.router} id="rutas" aria-labelledby="library-router-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Empieza por tu decisión</span><h2 id="library-router-title">No necesitas conocer el nombre del recurso.</h2></div>
@@ -158,8 +117,8 @@ export default function LibraryPage() {
         <section className={styles.method} aria-labelledby="resource-method-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Cómo usar la biblioteca</span><h2 id="resource-method-title">Diagnosticar → entender → aplicar → medir.</h2></div>
-              <p>La navegación ayuda a encontrar la decisión correcta y el documento permite llevar el material completo al campo, al equipo o al cliente.</p>
+              <div><span className={styles.eyebrow}>Cómo usar la biblioteca</span><h2 id="resource-method-title">Entender → comprobar → aplicar → medir.</h2></div>
+              <p>La navegación ayuda a encontrar el recurso correcto y cada material mantiene su propio alcance. Una guía orienta; la ficha o Product Master gobierna la referencia; la observación posterior ayuda a decidir qué hacer después.</p>
             </div>
             <div className={styles.methodFlow}>{method.map(([number,title,copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
           </div>
@@ -167,8 +126,8 @@ export default function LibraryPage() {
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingGrid}`}>
-            <div><span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Recursos Greenatics</span><h2>¿Necesitas una guía, un caso o una conversación técnica?</h2></div>
-            <div><p>Puedes entrar por la biblioteca, revisar proyectos documentados o llevar un problema concreto al equipo Greenatics.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.light}`} href="/contacto">Hablar con nosotros</Link><Link className={`${styles.button} ${styles.ghost}`} href="/proyectos">Ver casos</Link></div></div>
+            <div><span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Más allá de la biblioteca</span><h2>¿Buscas experiencia documentada o resultados publicados?</h2></div>
+            <div><p>Los proyectos y los indicadores de impacto viven fuera de la biblioteca para conservar su contexto y sus reglas de evidencia. El hub Recursos reúne esas capas sin mezclarlas con las guías técnicas.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.light}`} href="/recursos">Volver a Recursos</Link><Link className={`${styles.button} ${styles.ghost}`} href="/contacto">Hablar con nosotros</Link></div></div>
           </div>
         </section>
       </main>
