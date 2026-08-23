@@ -83,6 +83,7 @@
 .documentNavInner a { color: #2f7d32 !important; font-size: .8rem; font-weight: 900; }
 
 .documentAuthority { padding: 74px 0; background: #063d2c; color: white; }
+.authorityEyebrow { color: #9bcf72 !important; }
 .authorityGrid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; }
 .authorityGrid h2 { max-width: 580px; }
 .authorityGrid p { margin: 0; color: #c2d2c9; line-height: 1.7; }
