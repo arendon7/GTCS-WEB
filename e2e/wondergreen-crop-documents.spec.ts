@@ -12,11 +12,11 @@ for (const [slug, title, resourceId] of publishedGuides) {
   test(`${slug} keeps the published PDF master visually primary and separately downloadable`, async ({ page }) => {
     await page.goto(`/wondergreen/cultivos/${slug}`);
 
-    const document = page.getByRole("complementary", { name: new RegExp(`Documento oficial para`, "i") });
+    const document = page.getByRole("complementary", { name: /Documento oficial para/i });
     await expect(document.getByRole("heading", { name: title, exact: true })).toBeVisible();
     await expect(document.getByRole("img", { name: `Portada de ${title}` })).toBeVisible();
     await expect(document.getByText(/Documento completo publicado/i)).toBeVisible();
-    await expect(document.getByText(/20 páginas/i)).toBeVisible();
+    await expect(document.locator("strong").filter({ hasText: /20 páginas/i })).toHaveCount(1);
     await expect(document.getByText(/PDF público same-origin/i)).toBeVisible();
 
     await expect(document.getByRole("link", { name: "Abrir PDF original ↗" })).toHaveAttribute(
@@ -28,7 +28,7 @@ for (const [slug, title, resourceId] of publishedGuides) {
       `/api/public-resources/${resourceId}?download=1`,
     );
 
-    const nav = page.getByRole("navigation", { name: new RegExp(`Contenido del programa`, "i") });
+    const nav = page.getByRole("navigation", { name: /Contenido del programa/i });
     await expect(nav.getByRole("link", { name: "Etapas" })).toHaveAttribute("href", "#etapas");
     await expect(nav.getByRole("link", { name: "Comprobaciones" })).toHaveAttribute("href", "#comprobaciones");
     await expect(nav.getByRole("link", { name: "Seguimiento" })).toHaveAttribute("href", "#seguimiento");
