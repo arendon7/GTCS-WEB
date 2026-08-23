@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  getWondergreenProductArtwork,
+  getWondergreenProductCrops,
+  getWondergreenProductDocuments,
+} from "@/data/wondergreen-product-assets";
 import { getWondergreenReference, wondergreenReferences } from "@/data/wondergreen-public";
-import { wondergreenCrops } from "@/data/wondergreen-crops";
 import { getWondergreenVisualTone } from "@/data/wondergreen-visual";
 import styles from "./product.module.css";
 
@@ -16,18 +21,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!reference) return { title: "Producto | Wondergreen" };
   return {
     title: `${reference.name}${reference.formula ? ` ${reference.formula}` : ""} | Wondergreen`,
-    description: `${reference.role} Estado público: ${reference.publicStatus}.`,
+    description: `${reference.role} Consulta formulación, presentaciones, estado público y documentación Wondergreen vinculada.`,
     alternates: { canonical: `/wondergreen/productos/${reference.slug}` },
   };
 }
 
 function money(value: number) {
   return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
-}
-
-function relatedCrops(family: string) {
-  const target = family.toLowerCase();
-  return wondergreenCrops.filter((crop) => crop.stages.some((stage) => stage.lines.some((line) => line.toLowerCase() === target)));
 }
 
 function formatLabel(format: string) {
@@ -46,7 +46,9 @@ export default async function WondergreenProductPage({ params }: { params: Promi
   const reference = getWondergreenReference(slug);
   if (!reference) notFound();
 
-  const crops = relatedCrops(reference.family);
+  const crops = getWondergreenProductCrops(reference);
+  const artwork = getWondergreenProductArtwork(reference);
+  const documents = getWondergreenProductDocuments(reference);
   const isCommercial = reference.truthStatus === "commercial-reconciled";
   const contactHref = `/contacto?producto=${encodeURIComponent(reference.slug)}#wondergreen`;
   const visualTone = getWondergreenVisualTone(reference);
@@ -57,40 +59,64 @@ export default async function WondergreenProductPage({ params }: { params: Promi
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
-              <Link className={styles.back} href="/wondergreen#portafolio">← Volver al portafolio</Link>
+              <Link className={styles.back} href="/wondergreen/productos">← Volver a productos</Link>
               <span className={styles.eyebrow}>Wondergreen · {reference.family}</span>
               <h1>{reference.name}{reference.formula ? <em>{reference.formula}</em> : null}</h1>
               <p className={styles.lead}>{reference.role}</p>
               <div className={styles.heroMeta}>
                 <span>{formatLabel(reference.format)}</span>
                 <span>{reference.stage}</span>
+                <span>{reference.publicStatus}</span>
               </div>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Consultar esta referencia</Link>
-                {crops.length > 0 ? <Link className={`${styles.button} ${styles.ghost}`} href={`/wondergreen/cultivos/${crops[0].slug}`}>Ver en cultivo</Link> : null}
+                {documents.catalog?.downloadHref ? (
+                  <a className={`${styles.button} ${styles.ghost}`} href={documents.catalog.downloadHref} target="_blank" rel="noreferrer">Ver catálogo PDF</a>
+                ) : null}
               </div>
             </div>
 
-            <aside className={styles.identityPlate} aria-label={`Identidad técnica de ${reference.name}`}>
-              <div className={styles.plateTop}>
-                <span>Product Master público</span>
-                <small>{reference.publicStatus}</small>
-              </div>
-              <div className={styles.familyMark}>{reference.family}</div>
-              {reference.formula ? <strong className={styles.formula}>{reference.formula}</strong> : <strong className={styles.formula}>{formatLabel(reference.format)}</strong>}
-              <p>Representación editorial. El packshot se publicará únicamente cuando exista maestro vigente vinculado a esta referencia.</p>
-            </aside>
+            {artwork ? (
+              <aside className={styles.visualPlate} aria-label={`Activo visual de ${reference.family}`}>
+                <Image
+                  className={styles.productArtwork}
+                  src={artwork.href}
+                  alt={artwork.alt}
+                  width={900}
+                  height={900}
+                  sizes="(max-width: 900px) 92vw, 520px"
+                  priority
+                  unoptimized
+                />
+                <div className={styles.visualCaption}>
+                  <strong>{artwork.label}</strong>
+                  <span>Activo aprobado de línea. No se presenta como packshot específico si ese master todavía no está vinculado.</span>
+                </div>
+              </aside>
+            ) : (
+              <aside className={styles.identityPlate} aria-label={`Identidad técnica de ${reference.name}`}>
+                <div className={styles.plateTop}>
+                  <span>Product Master público</span>
+                  <small>{reference.publicStatus}</small>
+                </div>
+                <div className={styles.familyMark}>{reference.family}</div>
+                {reference.formula ? <strong className={styles.formula}>{reference.formula}</strong> : <strong className={styles.formula}>{formatLabel(reference.format)}</strong>}
+                <p>La web mantiene una representación editorial hasta que exista un master visual específico aprobado para esta referencia.</p>
+              </aside>
+            )}
           </div>
         </section>
 
         <section className={`${styles.section} ${styles.white}`}>
           <div className={`${styles.container} ${styles.truthGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Estado de producto</span>
-              <h2>Qué sabemos hoy y qué todavía debe confirmarse.</h2>
+              <span className={styles.eyebrow}>Ficha de producto</span>
+              <h2>La referencia, su formulación y su condición comercial en un solo lugar.</h2>
             </div>
             <div className={styles.truthPanel}>
               <div className={styles.statusRow}><span>Estado público</span><strong>{reference.publicStatus}</strong></div>
+              <div className={styles.statusRow}><span>Familia</span><strong>{reference.family}</strong></div>
+              {reference.formula ? <div className={styles.statusRow}><span>Formulación declarada</span><strong>{reference.formula}</strong></div> : null}
               <div className={styles.statusRow}><span>Formato</span><strong>{formatLabel(reference.format)}</strong></div>
               <div className={styles.statusRow}><span>Momento / función</span><strong>{reference.stage}</strong></div>
               <div className={styles.statusRow}><span>Condición comercial</span><strong>{isCommercial ? "Reconciliada" : "Requiere confirmación"}</strong></div>
@@ -101,9 +127,9 @@ export default async function WondergreenProductPage({ params }: { params: Promi
         <section className={styles.section}>
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Presentaciones y condición comercial</span>
-              <h2>Información visible sin fingir disponibilidad.</h2>
-              <p>Una presentación documentada no equivale automáticamente a inventario. El equipo confirma existencia, versión, despacho y recomendación antes de cerrar la venta.</p>
+              <span className={styles.eyebrow}>Presentaciones</span>
+              <h2>Tamaños documentados, separados de inventario y disponibilidad.</h2>
+              <p>La existencia de una presentación en Product Truth no equivale automáticamente a inventario disponible. La cotización confirma versión, despacho y condición comercial.</p>
             </div>
             <div className={styles.commercialGrid}>
               <article className={styles.infoCard}>
@@ -118,15 +144,45 @@ export default async function WondergreenProductPage({ params }: { params: Promi
           </div>
         </section>
 
+        <section className={`${styles.section} ${styles.white}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <span className={styles.eyebrow}>Documentación oficial</span>
+              <h2>Abre los documentos aprobados, no una reconstrucción de ellos.</h2>
+              <p>La página web organiza la referencia y sus relaciones. Los PDF publicados conservan el diseño y contenido del master editorial aprobado.</p>
+            </div>
+            <div className={styles.documentGrid}>
+              {documents.catalog?.downloadHref ? (
+                <article className={styles.documentCard}>
+                  {documents.catalog.coverImage ? <Image src={documents.catalog.coverImage} alt={`Portada de ${documents.catalog.title}`} width={520} height={735} unoptimized /> : null}
+                  <div><span>{documents.catalog.statusLabel}</span><h3>{documents.catalog.title}</h3><p>{documents.catalog.masterLabel}</p><a href={documents.catalog.downloadHref} target="_blank" rel="noreferrer">Abrir catálogo PDF →</a></div>
+                </article>
+              ) : null}
+
+              {documents.guides.map((guide) => (
+                <article className={styles.documentCard} key={guide.id}>
+                  {guide.coverImage ? <Image src={guide.coverImage} alt={`Portada de ${guide.title}`} width={520} height={735} unoptimized /> : null}
+                  <div><span>{guide.statusLabel}</span><h3>{guide.title}</h3><p>{guide.masterLabel}</p><div className={styles.documentActions}><Link href={guide.href}>Ver programa web</Link>{guide.downloadHref ? <a href={guide.downloadHref} target="_blank" rel="noreferrer">Abrir PDF →</a> : null}</div></div>
+                </article>
+              ))}
+
+              <article className={`${styles.documentCard} ${styles.pendingDocument}`}>
+                <div><span>Master individual</span><h3>{documents.technicalSheet.label}</h3><p>{documents.technicalSheet.note}</p><strong>Pendiente de vincular master público</strong></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section className={`${styles.section} ${styles.dark}`}>
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
-              <span className={styles.eyebrow}>Product Truth</span>
-              <h2>Lo que esta página deliberadamente no promete.</h2>
+              <span className={styles.eyebrow}>Condiciones y cautelas</span>
+              <h2>La ficha pública no convierte el producto en una receta universal.</h2>
+              <p>Dosis, frecuencia, compatibilidad, vía y eficacia solo se publican cuando la documentación vigente y el contexto agronómico las soportan.</p>
             </div>
             <div className={styles.notesGrid}>
               {reference.notes.map((note, index) => <article key={note}><span>{String(index + 1).padStart(2, "0")}</span><p>{note}</p></article>)}
-              <article><span>{String(reference.notes.length + 1).padStart(2, "0")}</span><p>Dosis, frecuencia, compatibilidad y eficacia se cierran únicamente con la versión técnica vigente y el contexto real del lote.</p></article>
+              <article><span>{String(reference.notes.length + 1).padStart(2, "0")}</span><p>La recomendación final debe cruzar cultivo, etapa, suelo, agua, manejo y documentación técnica vigente.</p></article>
             </div>
           </div>
         </section>
@@ -137,7 +193,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
               <div className={styles.sectionHeading}>
                 <span className={styles.eyebrow}>Cultivos relacionados</span>
                 <h2>Esta familia aparece dentro de programas por etapa.</h2>
-                <p>La relación indica pertinencia potencial dentro de una ruta agronómica; no una receta automática.</p>
+                <p>Cada programa abre también su guía PDF editorial cuando existe un master público aprobado.</p>
               </div>
               <div className={styles.cropGrid}>
                 {crops.map((crop) => <Link key={crop.slug} href={`/wondergreen/cultivos/${crop.slug}`}><span>Programa</span><h3>{crop.name}</h3><p>{crop.headline}</p><strong>Explorar cultivo →</strong></Link>)}
@@ -148,19 +204,19 @@ export default async function WondergreenProductPage({ params }: { params: Promi
 
         <section className={styles.resources}>
           <div className={`${styles.container} ${styles.resourceGrid}`}>
-            <div><span className={styles.eyebrow}>Usar mejor el producto</span><h2>Producto + contexto + aplicación + seguimiento.</h2></div>
+            <div><span className={styles.eyebrow}>Conocimiento relacionado</span><h2>Producto, criterio técnico y seguimiento.</h2></div>
             <div className={styles.resourceLinks}>
-              <Link href="/biblioteca/manual-uso-wondergreen"><strong>Manual de uso Wondergreen</strong><span>Preparar, aplicar, registrar y revisar →</span></Link>
-              <Link href="/biblioteca/criterios-nutricionales"><strong>Criterios de revisión nutricional</strong><span>Qué comprobar antes de recomendar →</span></Link>
-              <Link href="/biblioteca/guia-deficiencias"><strong>Guía de deficiencias</strong><span>Leer síntomas y confundidores →</span></Link>
+              {documents.webResources.map((resource) => (
+                <Link href={resource.href} key={resource.id}><strong>{resource.title}</strong><span>{resource.cta} →</span></Link>
+              ))}
             </div>
           </div>
         </section>
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>¿Quieres validar esta referencia para tu cultivo o negocio?</h2></div>
-            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen">Ver Wondergreen</Link></div>
+            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>¿Quieres confirmar esta referencia para tu cultivo o negocio?</h2></div>
+            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link><Link className={`${styles.button} ${styles.ghost}`} href="/wondergreen/productos">Ver todos los productos</Link></div>
           </div>
         </section>
       </main>
