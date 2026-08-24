@@ -9,8 +9,9 @@ test("trazabilidad service connects governed Yarumal evidence without turning th
   await expect(main.getByRole("heading", { name: "Qué hacemos", exact: true })).toBeVisible();
   await expect(main.getByRole("heading", { name: /Casos que documentan esta capacidad/ })).toBeVisible();
 
-  const evidence = main.getByRole("article").filter({ has: main.getByRole("heading", { name: "Yarumal", exact: true }) });
+  const evidence = main.getByRole("article").filter({ hasText: "Yarumal" });
   await expect(evidence).toHaveCount(1);
+  await expect(evidence.getByRole("heading", { name: "Yarumal", exact: true })).toBeVisible();
   await expect(evidence.getByText("Caso documentado", { exact: true })).toBeVisible();
   await expect(evidence.getByText(/registros de recepción, lotes, mantenimiento, producto e inventarios/i)).toBeVisible();
   await expect(evidence.getByRole("link", { name: /Abrir caso documentado/ })).toHaveAttribute("href", "/proyectos/yarumal");
@@ -21,8 +22,9 @@ test("rehabilitation service connects only the governed Tamesis assessment and r
   await page.goto("/soluciones/rehabilitacion");
 
   const main = page.getByRole("main");
-  const evidence = main.getByRole("article").filter({ has: main.getByRole("heading", { name: "Támesis", exact: true }) });
+  const evidence = main.getByRole("article").filter({ hasText: "Támesis" });
   await expect(evidence).toHaveCount(1);
+  await expect(evidence.getByRole("heading", { name: "Támesis", exact: true })).toBeVisible();
   await expect(evidence.getByText("Diagnóstico y rehabilitación documentados", { exact: true })).toBeVisible();
   await expect(evidence.getByRole("link", { name: /Abrir caso documentado/ })).toHaveAttribute("href", "/proyectos/tamesis");
   await expect(main.getByRole("heading", { name: "Yarumal", exact: true })).toHaveCount(0);
