@@ -1,17 +1,20 @@
 import { test, expect } from "@playwright/test";
 
-test("company page explains Greenatics through capability, method and evidence", async ({ page }) => {
+test("company page explains Greenatics through capability, commercial method and evidence", async ({ page }) => {
   await page.goto("/nosotros");
 
   await expect(page.getByRole("heading", { name: /Diseñamos sistemas que tienen que funcionar en la vida real/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /La capacidad está en conectar disciplinas/i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Diagnóstico primero\. Después una ruta que pueda ejecutarse/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Primero el resultado que necesitas\. Después definimos la ruta para alcanzarlo/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Un caso sirve cuando deja aprendizaje transferible/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Si ya sabes qué necesitas, entra directo al servicio/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Explorar servicios", exact: true })).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: "Usar orientador inicial", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
   await expect(page.getByRole("link", { name: /Wondergreen/i }).last()).toHaveAttribute("href", "/wondergreen");
   await expect(page.getByRole("link", { name: /Recursos/i }).last()).toHaveAttribute("href", "/recursos");
 });
 
-test("contact page starts with context instead of forcing a service name", async ({ page }) => {
+test("contact page starts with context without forcing diagnosis or a service name", async ({ page }) => {
   await page.goto("/contacto");
 
   await expect(page.getByRole("heading", { name: "Cuéntanos qué quieres resolver." })).toBeVisible();
@@ -20,6 +23,10 @@ test("contact page starts with context instead of forcing a service name", async
   await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toBeVisible();
   await expect(page.getByText(/Este paso no envía información a Greenatics/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Preparar conversación/i }).first()).toHaveAttribute("href", /\/contacto\?audience=/);
+  await expect(page.getByRole("heading", { name: "El servicio primero. La orientación solo cuando todavía hace falta." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Explorar servicios", exact: true })).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByRole("link", { name: "Usar orientador inicial", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
+  await expect(page.getByRole("link", { name: "Empezar por diagnóstico", exact: true })).toHaveCount(0);
 });
 
 test("contact page inherits audience and need context without inventing a recommendation", async ({ page }) => {
@@ -39,6 +46,23 @@ test("contact page inherits audience and need context without inventing a recomm
   await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Planta / Operador");
   await expect(page.getByLabel("Resumen preparado para la conversación")).toContainText("Antioquia");
   await expect(page.getByText("Nada se ha enviado todavía.", { exact: false })).toBeVisible();
+});
+
+test("contact page preserves an exact service from a commercial solution route", async ({ page }) => {
+  const service = "Dirección técnica y coordinación de operación";
+  await page.goto(`/contacto?service=${encodeURIComponent(service)}&source=solucion&contexto=${encodeURIComponent("Interés en fortalecer la operación de una planta.")}`);
+
+  const inherited = page.getByLabel("Contexto heredado de navegación");
+  await expect(inherited.locator("span").filter({ hasText: "Servicio:" })).toContainText(service);
+  await expect(page.getByLabel("Servicio recibido de la navegación")).toContainText(service);
+
+  await page.getByLabel("¿Desde qué contexto nos escribes?").selectOption("planta");
+  await page.getByLabel("¿Qué necesitas resolver primero?").selectOption("operacion");
+  await page.getByRole("button", { name: "Preparar contexto" }).click();
+
+  const summary = page.getByLabel("Resumen preparado para la conversación");
+  await expect(summary).toContainText(`Servicio de interés: ${service}`);
+  await expect(summary).toContainText("Interés en fortalecer la operación de una planta.");
 });
 
 test("contact page preserves an exact Wondergreen product context", async ({ page }) => {
