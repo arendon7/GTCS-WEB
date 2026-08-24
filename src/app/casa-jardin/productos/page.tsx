@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { HomeGardenStageVisual } from "@/components/home-garden-stage-visual";
 import { homeGardenProducts } from "@/data/home-garden";
 import styles from "../casa-jardin.module.css";
 
@@ -41,7 +42,7 @@ export default function HomeGardenProductsPage() {
                 Cinco entradas. Una lógica por etapa.
               </strong>
               <p style={{ color: "#d5e2dc", maxWidth: "26rem" }}>
-                Explorar una etapa no equivale a prescribir fertilización. Agua, drenaje, raíces, estrés y sanidad siguen gobernando si corresponde aplicar o detenerse.
+                Los artes visibles son activos aprobados de cada línea técnica; no se presentan como packshots específicos de las futuras presentaciones domésticas.
               </p>
             </aside>
           </div>
@@ -60,8 +61,9 @@ export default function HomeGardenProductsPage() {
             </div>
             <div className={styles.productGrid}>
               {homeGardenProducts.map((product) => (
-                <article className={`${styles.card} ${styles[product.accent]}`} key={product.id}>
+                <article className={`${styles.card} ${styles.cardWithVisual} ${styles[product.accent]}`} key={product.id}>
                   <div className={styles.stageBar} />
+                  <HomeGardenStageVisual stage={product.id} size="card" />
                   <small>{product.id === "prepara" ? "Suelo" : "Etapa"}</small>
                   <h3>{product.consumerName}</h3>
                   <span className={styles.formula}>{product.formula ?? "Compost"}</span>
