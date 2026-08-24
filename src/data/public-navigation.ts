@@ -8,7 +8,6 @@ export type PublicMenuItem = {
   label: string;
   description: string;
   href: string;
-  canonicalHref?: string;
 };
 
 export const publicPrimaryNav: readonly PublicPrimaryNavItem[] = [
@@ -37,7 +36,7 @@ export const publicSolutionAudiences: readonly PublicMenuItem[] = [
   },
   {
     label: "Propiedad horizontal / Institución",
-    description: "Diagnóstico por unidad, PMIRS, redes e información comparable.",
+    description: "Gestión por unidad, PMIRS, redes, implementación e información comparable.",
     href: "/soluciones/propiedad-horizontal",
   },
   {
@@ -60,9 +59,8 @@ export const publicSolutionNeeds: readonly PublicMenuItem[] = [
   },
   {
     label: "Gestión jurídica y regulatoria",
-    description: "Obligaciones, decisiones regulatorias y acciones concretas.",
-    href: "/soluciones",
-    canonicalHref: "/soluciones/juridica-regulacion",
+    description: "Obligaciones, competencias, documentos, contratos, trámites y soporte regulatorio.",
+    href: "/soluciones/gestion-juridica-regulatoria",
   },
   {
     label: "Mejorar rutas y logística",
@@ -86,9 +84,8 @@ export const publicSolutionNeeds: readonly PublicMenuItem[] = [
   },
   {
     label: "Valorizar y desarrollar productos",
-    description: "Calidad, destinos y nuevas rutas de aprovechamiento.",
-    href: "/soluciones/residuos-organicos",
-    canonicalHref: "/soluciones/valorizacion-productos",
+    description: "Especificaciones, calidad, documentación, ruta regulatoria y preparación comercial.",
+    href: "/soluciones/valorizacion-productos",
   },
 ] as const;
 

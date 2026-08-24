@@ -17,7 +17,7 @@ const universes = [
     number: "01",
     kicker: "Organizaciones",
     title: "Soluciones para organizaciones",
-    copy: "Diagnóstico, planeación, regulación, rutas, plantas, dirección técnica y datos para convertir necesidades de gestión en decisiones y entregables concretos.",
+    copy: "Planeación, regulación, rutas, plantas, dirección técnica, operación, datos y valorización convertidos en actividades y entregables concretos.",
     href: "/soluciones",
     cta: "Explorar soluciones",
   },
@@ -25,7 +25,7 @@ const universes = [
     number: "02",
     kicker: "Agro",
     title: "Wondergreen",
-    copy: "Nutrición organomineral, bioinsumos, programas por cultivo, guías y acompañamiento técnico dentro de una misma lógica de suelo, nutrición y seguimiento.",
+    copy: "Productos, nutrición organomineral, bioinsumos, programas por cultivo, guías y acompañamiento técnico dentro de una misma lógica de suelo y seguimiento.",
     href: "/wondergreen",
     cta: "Descubrir Wondergreen",
   },
@@ -33,14 +33,14 @@ const universes = [
     number: "03",
     kicker: "Hogar · jardín · huerta",
     title: "Casa & Jardín",
-    copy: "Nutrición por etapas, diagnóstico orientativo y guías para plantas de casa, jardines, huertas y viveros, con el comercio aún separado de la validación técnica.",
+    copy: "Productos por etapa, kits y guías para plantas de casa, jardines, huertas y viveros, con un orientador disponible cuando la etapa o condición todavía no están claras.",
     href: "/casa-jardin",
     cta: "Explorar Casa & Jardín",
   },
 ];
 
 const operatingLogic = [
-  ["01", "Entender", "Caracterización, contexto, restricciones, operación existente y datos disponibles."],
+  ["01", "Entender", "Objetivo, contexto, restricciones, operación existente e información disponible para definir el punto de partida."],
   ["02", "Diseñar", "Ruta técnica, jurídica, operativa y económica adecuada al problema real."],
   ["03", "Implementar", "Protocolos, infraestructura, acompañamiento, puesta en marcha o dirección técnica según el alcance."],
   ["04", "Medir y mejorar", "Trazabilidad, indicadores, seguimiento y nuevas decisiones sobre información verificable."],
@@ -89,11 +89,11 @@ export default function Home() {
                 <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones">Soluciones para organizaciones</Link>
                 <Link className={`${styles.button} ${styles.buttonGhost}`} href="/wondergreen">Descubrir Wondergreen</Link>
               </div>
-              <div className={styles.capabilityLine} aria-label="Lógica de trabajo Greenatics">
-                <span>Diagnóstico</span>
+              <div className={styles.capabilityLine} aria-label="Capacidades Greenatics">
+                <span>Planeación</span>
                 <span>Infraestructura</span>
                 <span>Operación</span>
-                <span>Datos</span>
+                <span>Valorización</span>
               </div>
             </div>
 
@@ -122,7 +122,7 @@ export default function Home() {
                 <h2 id="home-universes-title">Una marca. Tres formas claras de entrar.</h2>
               </div>
               <p>
-                La web separa la consultoría para organizaciones, la línea agro Wondergreen y la experiencia Casa & Jardín para que cada visitante llegue rápido al contexto que le corresponde.
+                La web separa las soluciones para organizaciones, la línea agro Wondergreen y la experiencia Casa & Jardín para que cada visitante llegue rápido a la oferta que le corresponde.
               </p>
             </div>
 
@@ -185,11 +185,11 @@ export default function Home() {
               <p>
                 Wondergreen organiza el portafolio alrededor del suelo, la nutrición, la biología, el cultivo y el seguimiento. En las referencias sólidas que correspondan, la explicación técnica parte de la matriz organomineral, la oclusión y la lenta liberación documentada para esa versión, sin convertir una característica del producto en una promesa agronómica universal.
               </p>
-              <div className={styles.wondergreenLinks}>
-                <Link href="/wondergreen/finder">Encontrar mi programa →</Link>
+              <div className={styles.wondergreenLinks} aria-label="Profundizar en Wondergreen">
                 <Link href="/wondergreen/productos">Productos →</Link>
                 <Link href="/wondergreen/cultivos">Cultivos →</Link>
                 <Link href="/biblioteca">Guías →</Link>
+                <Link href="/wondergreen/finder">Encontrar mi programa →</Link>
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function Home() {
               <span className={styles.eyebrow}>Tecnología y datos</span>
               <h2 id="home-digital-title">La operación también necesita una capa digital.</h2>
               <p>
-                GREENATICS OPS conecta datos operativos, trazabilidad y seguimiento para los procesos que ya están en ejecución. La arquitectura digital de Greenatics está pensada para crecer con nuevas herramientas de captura en campo, diagnóstico y acompañamiento sin fragmentar la experiencia del cliente.
+                GREENATICS OPS conecta datos operativos, trazabilidad y seguimiento para los procesos que ya están en ejecución. La arquitectura digital de Greenatics está pensada para crecer con nuevas herramientas de captura en campo y acompañamiento sin fragmentar la experiencia del cliente.
               </p>
               <div className={styles.actions}>
                 <a className={`${styles.button} ${styles.buttonDark}`} href="/app">Ingresar</a>
@@ -251,15 +251,15 @@ export default function Home() {
           <div className={`${styles.container} ${styles.closingGrid}`}>
             <div>
               <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Greenatics</span>
-              <h2 id="home-closing-title">Empieza por el problema. Construimos la ruta contigo.</h2>
+              <h2 id="home-closing-title">Elige una solución y profundiza hasta el alcance que necesitas.</h2>
             </div>
             <div>
               <p>
-                Residuos, operación, plantas, cumplimiento, datos, valorización o nutrición pueden ser el punto de entrada. La primera conversación sirve para ubicar el contexto y definir el siguiente paso.
+                Puedes entrar directamente por servicios para organizaciones, productos Wondergreen o Casa & Jardín. Si todavía no sabes qué ruta corresponde, cada universo conserva herramientas de orientación sin convertirlas en la oferta principal.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonLight}`} href="/contacto">Hablar con nosotros</Link>
-                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/soluciones">Explorar soluciones</Link>
+                <Link className={`${styles.button} ${styles.buttonLight}`} href="/soluciones">Explorar soluciones</Link>
+                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/contacto">Hablar con nosotros</Link>
               </div>
             </div>
           </div>
