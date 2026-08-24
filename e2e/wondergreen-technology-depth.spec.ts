@@ -1,5 +1,16 @@
 import { test, expect } from "@playwright/test";
 
+test("Wondergreen commercial offer exposes the deep technology route without making it the primary product CTA", async ({ page }) => {
+  await page.goto("/wondergreen");
+
+  const showcase = page.locator("#productos-destacados");
+  await expect(showcase.getByRole("link", { name: "Ver todos los productos →", exact: true })).toHaveAttribute("href", "/wondergreen/productos");
+  await expect(showcase.getByRole("link", { name: "Profundizar en la tecnología →", exact: true })).toHaveAttribute("href", "/wondergreen/tecnologia");
+
+  const links = await showcase.locator("a").allTextContents();
+  expect(links.indexOf("Ver todos los productos →")).toBeLessThan(links.indexOf("Profundizar en la tecnología →"));
+});
+
 test("Wondergreen technology separates product characteristics from agronomic results", async ({ page }) => {
   await page.goto("/wondergreen/tecnologia");
 
