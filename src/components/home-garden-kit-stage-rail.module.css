@@ -1,6 +1,6 @@
 .rail {
   display: grid;
-  grid-template-columns: repeat(var(--rail-count, 4), minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
   gap: 8px;
 }
 
@@ -30,11 +30,6 @@
 .dark .order {
   background: rgba(255, 255, 255, .9);
   color: #063d2c;
-}
-
-.dark :global(figcaption),
-.dark :global([data-home-garden-stage]) {
-  color: inherit;
 }
 
 @media (max-width: 560px) {
