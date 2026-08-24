@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import {
   BackendPreflightError,
@@ -11,6 +12,14 @@ const env = {
   NEXT_PUBLIC_SUPABASE_URL: "https://sanitized-project.supabase.co",
   SUPABASE_SECRET_KEY: "sanitized-server-secret",
 };
+
+const migrationsUrl = new URL("../supabase/migrations/", import.meta.url);
+
+function canonicalMigrationFiles() {
+  return readdirSync(migrationsUrl)
+    .filter((name) => /^\d{4}_.+\.sql$/.test(name))
+    .sort();
+}
 
 function schemaContract(overrides = {}) {
   return {
@@ -79,6 +88,16 @@ function fakeClient({
 }
 
 describe("hosted backend preflight", () => {
+  it("keeps the hosted contract coupled to the highest canonical migration", () => {
+    const files = canonicalMigrationFiles();
+    expect(files.length).toBeGreaterThan(0);
+    const latest = files.at(-1);
+    expect(latest).toBeTruthy();
+    expect(latest.slice(0, 4)).toBe(HOSTED_SCHEMA_CONTRACT_VERSION);
+    const sql = readFileSync(new URL(`../supabase/migrations/${latest}`, import.meta.url), "utf8");
+    expect(sql).toContain(`'${HOSTED_SCHEMA_CONTRACT_VERSION}'::text as schema_contract`);
+  });
+
   it("normalizes canonical plant codes and human aliases", () => {
     expect(normalizePilotPlantCodes("Támesis,Yarumal")).toEqual(["TAM", "YAR"]);
     expect(normalizePilotPlantCodes("tam,YAR")).toEqual(["TAM", "YAR"]);
@@ -133,9 +152,9 @@ describe("hosted backend preflight", () => {
     await expect(runHostedBackendPreflight({
       env,
       createClientImpl: () => fakeClient({
-        contract: schemaContract({ schema_contract: "0025" }),
+        contract: schemaContract({ schema_contract: "0050" }),
       }),
-    })).rejects.toThrow(/desactualizado.*0026.*0025/);
+    })).rejects.toThrow(new RegExp(`desactualizado.*${HOSTED_SCHEMA_CONTRACT_VERSION}.*0050`));
   });
 
   it("fails closed when any public table escapes RLS", async () => {
