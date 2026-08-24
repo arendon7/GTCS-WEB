@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 const routes = [
+  "/soluciones/gestion-juridica-regulatoria",
+  "/soluciones/valorizacion-productos",
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",

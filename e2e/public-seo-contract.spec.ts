@@ -11,6 +11,8 @@ const publicRoutes = [
   "/soluciones/propiedad-horizontal",
   "/soluciones/plantas",
   "/soluciones/diagnostico-caracterizacion",
+  "/soluciones/gestion-juridica-regulatoria",
+  "/soluciones/valorizacion-productos",
   "/wondergreen",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",

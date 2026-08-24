@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test("solutions uncertainty CTA opens the initial diagnostic instead of the technical service", async ({ page }) => {
   await page.goto("/soluciones");
-  const start = page.getByRole("link", { name: "No sé por dónde empezar", exact: true });
+  const start = page.getByRole("link", { name: "Usar orientador inicial", exact: true });
   await expect(start).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
   await start.click();
   await expect(page).toHaveURL(/\/soluciones\/diagnostico-inicial$/);

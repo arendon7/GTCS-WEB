@@ -45,6 +45,10 @@ export default async function SolutionDetailPage({ params }: Props) {
                 <span className={styles.eyebrow}>{service.audience} · {service.category}</span>
                 <h1>{service.name}</h1>
                 <p className={styles.detailLead}>{service.summary}</p>
+                <div className={styles.actions}>
+                  <a className={`${styles.button} ${styles.primary}`} href="#entregables">Ver qué recibe el cliente</a>
+                  <Link className={styles.button} href="/contacto">Solicitar conversación comercial</Link>
+                </div>
               </div>
               <aside className={styles.detailAside}>
                 <span>Problema de partida</span>
@@ -58,13 +62,13 @@ export default async function SolutionDetailPage({ params }: Props) {
         <section className={styles.detailBody}>
           <div className={styles.container}>
             <div className={styles.detailColumns}>
-              <article className={styles.listBox}>
+              <article className={styles.listBox} id="entregables">
                 <span className={styles.detailIndex}>01</span>
-                <div><span className={styles.eyebrow}>Alcance posible</span><h2>Qué puede incluir</h2><ul>{service.includes.map((item) => <li key={item}>{item}</li>)}</ul></div>
+                <div><span className={styles.eyebrow}>Resultado contratado</span><h2>Qué recibe</h2><ul>{service.deliverables.map((item) => <li key={item}>{item}</li>)}</ul></div>
               </article>
               <article className={styles.listBox}>
                 <span className={styles.detailIndex}>02</span>
-                <div><span className={styles.eyebrow}>Salida esperada</span><h2>Entregables típicos</h2><ul>{service.deliverables.map((item) => <li key={item}>{item}</li>)}</ul></div>
+                <div><span className={styles.eyebrow}>Actividades y alcance</span><h2>Qué hacemos</h2><ul>{service.includes.map((item) => <li key={item}>{item}</li>)}</ul></div>
               </article>
             </div>
             {service.scopeNote ? (
@@ -75,7 +79,11 @@ export default async function SolutionDetailPage({ params }: Props) {
               </aside>
             ) : null}
             <div className={styles.detailCta}>
-              <div><span className={styles.eyebrow}>Siguiente paso</span><h3>{service.cta}</h3><p>El alcance final depende del diagnóstico, la información disponible y las responsabilidades acordadas para el proyecto.</p></div>
+              <div>
+                <span className={styles.eyebrow}>Siguiente paso</span>
+                <h3>{service.cta}</h3>
+                <p>El alcance final depende de la información disponible, las condiciones del proyecto y las responsabilidades acordadas. Cuando falte información crítica, la línea base o el diagnóstico se incorpora como una actividad inicial; no sustituye el servicio contratado.</p>
+              </div>
               <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link>
             </div>
           </div>

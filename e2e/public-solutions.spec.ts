@@ -19,26 +19,16 @@ async function clickDigitalBridge(page: import("@playwright/test").Page) {
   await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true }).click();
 }
 
-test("solutions hub routes by audience, service family, process and evidence", async ({ page }) => {
+test("solutions hub leads with services and keeps orientation secondary", async ({ page }) => {
   await page.goto("/soluciones");
 
-  await expect(page.getByRole("heading", { name: /Empieza por tu contexto. Después elegimos el servicio./i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Servicios para convertir necesidades de gestión en resultados concretos./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "No sé por dónde empezar", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
+  await expect(page.getByRole("link", { name: "Ver servicios y entregables", exact: true })).toHaveAttribute("href", "#servicios");
 
-  for (const audience of [
-    "ESP / Prestadores",
-    "Municipios",
-    "Empresas / Grandes generadores",
-    "Propiedad horizontal / Instituciones",
-    "Plantas / Operadores",
-  ]) {
-    await expect(page.getByRole("heading", { name: audience, exact: true })).toBeVisible();
-  }
-
-  await expect(page.getByRole("heading", { name: "Ocho familias para contratar actividades y resultados concretos." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ocho familias para contratar actividades, entregables y capacidad de ejecución." })).toBeVisible();
   for (const family of [
-    "Diagnóstico y gestión de residuos",
+    "Caracterización y línea base",
     "Planeación y programas",
     "Gestión jurídica y regulatoria",
     "Rutas y logística",
@@ -50,15 +40,32 @@ test("solutions hub routes by audience, service family, process and evidence", a
     await expect(page.getByRole("heading", { name: family, exact: true })).toBeVisible();
   }
 
-  await expect(page.getByRole("link", { name: /Diagnóstico y gestión de residuos/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: /Caracterización y línea base/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+  await expect(page.getByRole("link", { name: /Gestión jurídica y regulatoria/ })).toHaveAttribute("href", "/soluciones/gestion-juridica-regulatoria");
   await expect(page.getByRole("link", { name: /Rutas y logística/ })).toHaveAttribute("href", "/soluciones/rutas-selectivas");
   await expect(page.getByRole("link", { name: /Datos, trazabilidad y OPS/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
+  await expect(page.getByRole("link", { name: /Valorización y desarrollo de productos/ })).toHaveAttribute("href", "/soluciones/valorizacion-productos");
 
-  await expect(page.getByRole("heading", { name: "El diagnóstico ordena la ruta; no reemplaza el servicio." })).toBeVisible();
+  for (const audience of [
+    "ESP / Prestadores",
+    "Municipios",
+    "Empresas / Grandes generadores",
+    "Propiedad horizontal / Instituciones",
+    "Plantas / Operadores",
+  ]) {
+    await expect(page.getByRole("heading", { name: audience, exact: true })).toBeVisible();
+  }
+
+  const serviceTop = await page.locator("#servicios").evaluate((element) => (element as HTMLElement).offsetTop);
+  const audienceTop = await page.locator("#audiencias").evaluate((element) => (element as HTMLElement).offsetTop);
+  expect(serviceTop).toBeLessThan(audienceTop);
+
+  await expect(page.getByRole("heading", { name: "El servicio define el resultado; la línea base solo entra cuando es necesaria." })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Antes de reemplazar una planta/ })).toBeVisible();
   await expect(page.getByRole("img", { name: "Segunda vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: /La consultoría gana valor cuando la información sigue viva después del informe./i })).toBeVisible();
-  await expect(page.getByRole("heading", { name: /Si todavía no sabes qué contratar, empieza por una línea base./i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /¿No sabes cuál de estas soluciones corresponde a tu caso?/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Usar orientador inicial", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 });
 
 test("ESP READY keeps the ten sourced preparation dimensions and decision outputs", async ({ page }) => {
@@ -115,22 +122,50 @@ test("PMIRS RED separates unit-level implementation from network intelligence", 
   await expect(page.getByText(/24 no es un mínimo ni una promesa universal/i)).toBeVisible();
 });
 
-test("diagnostic service separates technical measurement from regulatory aforo", async ({ page }) => {
+test("service detail puts deliverables before activities and keeps diagnosis conditional", async ({ page }) => {
   await page.goto("/soluciones/diagnostico-caracterizacion");
 
   await expect(page.getByRole("heading", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toBeVisible();
   await expect(page.getByText("Qué problema busca resolver", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Qué puede incluir" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Entregables típicos" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué recibe", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué hacemos", exact: true })).toBeVisible();
   await expect(page.getByText("mediciones de generación y caracterización", { exact: true })).toBeVisible();
   await expect(page.getByText("aforos y caracterización", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Alcance y precisión", { exact: true })).toBeVisible();
   await expect(page.getByText(/no constituyen por sí solas un aforo regulatorio/i)).toBeVisible();
+  await expect(page.getByText(/la línea base o el diagnóstico se incorpora como una actividad inicial; no sustituye el servicio contratado/i)).toBeVisible();
 
   const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
   expect(breadcrumbs).toHaveLength(1);
   expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/diagnostico-caracterizacion");
   expect(JSON.stringify(breadcrumbs[0])).toContain("Diagnóstico y caracterización de residuos orgánicos");
+});
+
+test("legal and regulatory family has a deep commercial route with authority guardrails", async ({ page }) => {
+  await page.goto("/soluciones/gestion-juridica-regulatoria");
+
+  await expect(page.getByRole("heading", { name: "Gestión jurídica y regulatoria para residuos, aseo y proyectos." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué recibe", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué hacemos", exact: true })).toBeVisible();
+  await expect(page.getByText("matriz de obligaciones, competencias y responsables según el alcance", { exact: true })).toBeVisible();
+  await expect(page.getByText(/no sustituye a la autoridad competente ni garantiza decisiones administrativas/i)).toBeVisible();
+
+  const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
+  expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/gestion-juridica-regulatoria");
+});
+
+test("valorization family reaches product preparation without inventing approvals or claims", async ({ page }) => {
+  await page.goto("/soluciones/valorizacion-productos");
+
+  await expect(page.getByRole("heading", { name: "Convertir una salida del proceso en un producto técnicamente preparado para vender." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué recibe", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Qué hacemos", exact: true })).toBeVisible();
+  await expect(page.getByText("matriz de preparación comercial para llevar el producto a una condición vendible", { exact: true })).toBeVisible();
+  await expect(page.getByText(/no presenta como aprobado, certificado o eficaz aquello que todavía está en validación/i)).toBeVisible();
+  await expect(page.getByText(/registros, certificaciones, autorizaciones y resultados de laboratorio dependen/i)).toBeVisible();
+
+  const breadcrumbs = await jsonLdByType(page, "BreadcrumbList");
+  expect(JSON.stringify(breadcrumbs[0])).toContain("https://greenatics.com.co/soluciones/valorizacion-productos");
 });
 
 test("PGIRS and plant operation expose their responsibility boundaries", async ({ page }) => {
