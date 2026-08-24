@@ -20,7 +20,7 @@ import styles from "./casa-jardin-v2.module.css";
 export const metadata: Metadata = {
   title: "Casa, Jardín y Vivero | Wondergreen · Greenatics",
   description:
-    "Nutrición por etapas para plantas, jardín, huerta y vivero: observa, identifica, elige, aplica y revisa con el sistema Wondergreen Casa & Jardín.",
+    "Productos Wondergreen por etapa y kits Casa & Jardín para plantas, huerta y vivero, con orientación segura cuando no está clara la etapa o condición de la planta.",
   alternates: { canonical: "/casa-jardin" },
   robots: { index: false, follow: true },
 };
@@ -36,23 +36,23 @@ const contexts = [
   {
     number: "01",
     title: "Plantas en casa",
-    copy: "Interior, balcón o terraza: identifica etapa y condición antes de decidir si la planta necesita nutrición, equilibrio o simplemente corregir manejo.",
-    href: "/casa-jardin/diagnostico",
-    cta: "Empezar diagnóstico",
+    copy: "Interior, balcón o terraza: explora kits organizados por uso y conserva la revisión de etapa y condición antes de aplicar.",
+    href: "#kits",
+    cta: "Ver kits para casa",
   },
   {
     number: "02",
     title: "Mi huerta",
     copy: "Suelo, crecimiento, transición reproductiva y fruto se leen como etapas distintas. La secuencia orienta; no significa aplicar todos los productos juntos.",
-    href: "/casa-jardin/guias#mi-huerta",
-    cta: "Abrir Mi Huerta",
+    href: "/casa-jardin/kits/mi-huerta",
+    cta: "Ver Kit Mi Huerta",
   },
   {
     number: "03",
     title: "Jardín o vivero",
     copy: "Cuando conviven muchas plantas, la lógica común ayuda a ordenar decisiones sin asumir que todas están en la misma etapa o condición.",
     href: "#etapas",
-    cta: "Ver etapas",
+    cta: "Ver productos por etapa",
   },
 ] as const;
 
@@ -70,11 +70,11 @@ export default function CasaJardinPage() {
         <div className={styles.container}>
           <span>Casa & Jardín</span>
           <div>
+            <a href="#etapas">Productos</a>
+            <a href="#kits">Kits</a>
             <a href="#contextos">Para quién</a>
             <a href="#seguridad">Antes de aplicar</a>
-            <a href="#etapas">Etapas</a>
-            <a href="#diagnostico">Diagnóstico</a>
-            <a href="#kits">Kits</a>
+            <a href="#diagnostico">Orientador</a>
             <a href="#guias">Guías</a>
             <a href="#lanzamiento">Estado</a>
           </div>
@@ -89,16 +89,17 @@ export default function CasaJardinPage() {
               <span className={styles.eyebrow}>Wondergreen · Casa, jardín y vivero</span>
               <h1 id="home-garden-title">Nutrición por etapas para tus plantas.</h1>
               <p className={styles.lead}>
-                Tu planta cambia. Su nutrición también. Casa & Jardín traduce la lógica Wondergreen a una ruta doméstica sencilla: primero observa la planta y el suelo; después identifica la etapa; solo entonces eliges el siguiente paso.
+                Casa & Jardín organiza Wondergreen en productos por etapa y kits por uso para que puedas entender la oferta antes de decidir. Si la etapa o la condición de la planta no están claras, el orientador ayuda a revisar el siguiente paso sin convertir un síntoma en una receta.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Encontrar un punto de partida</Link>
-                <a className={`${styles.button} ${styles.ghost}`} href="#etapas">Ver las etapas</a>
+                <a className={`${styles.button} ${styles.primary}`} href="#etapas">Ver productos por etapa</a>
+                <a className={`${styles.button} ${styles.ghost}`} href="#kits">Ver kits</a>
+                <Link className={styles.textLink} href="/casa-jardin/diagnostico">No sé qué etapa corresponde →</Link>
                 <a className={styles.textLink} href="/api/public-resources/wondergreen-product-master" target="_blank" rel="noreferrer">Descargar catálogo Wondergreen ↓</a>
               </div>
               <div className={styles.heroTruth}>
                 <span>Pre-lanzamiento</span>
-                <strong>La arquitectura de producto, diagnóstico y guías puede recorrerse. PVP, checkout y dosis domésticas universales permanecen bloqueados hasta cerrar sus dependencias.</strong>
+                <strong>Las referencias Wondergreen que soportan las etapas tienen Product Truth técnico. Los formatos domésticos y kits siguen en pre-lanzamiento; PVP, checkout y dosis universales permanecen bloqueados hasta cerrar sus dependencias.</strong>
               </div>
             </div>
 
@@ -119,60 +120,12 @@ export default function CasaJardinPage() {
           </div>
         </section>
 
-        <section className={styles.method} aria-label="Método Wondergreen Casa y Jardín">
-          <div className={`${styles.container} ${styles.methodGrid}`}>
-            {homeGardenMethod.map((step, index) => (
-              <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>
-            ))}
-          </div>
-        </section>
-
-        <section className={`${styles.section} ${styles.sectionSoft}`} id="contextos">
-          <div className={styles.container}>
-            <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Tres contextos</span><h2>La misma lógica, plantas muy distintas.</h2></div>
-              <p>Casa & Jardín no parte de una receta universal. Cambian la especie, el ambiente, el tamaño, la etapa y el problema; por eso la web te lleva primero al contexto que más se parece al tuyo.</p>
-            </div>
-            <div className={styles.contextGrid}>
-              {contexts.map((item) => (
-                <article className={styles.contextItem} key={item.number}>
-                  <span className={styles.index}>{item.number}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.copy}</p>
-                  {item.href.startsWith("/") ? <Link href={item.href}>{item.cta} →</Link> : <a href={item.href}>{item.cta} →</a>}
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={styles.safety} id="seguridad">
-          <div className={`${styles.container} ${styles.safetyGrid}`}>
-            <div className={styles.safetyIntro}>
-              <span className={styles.eyebrow}>Antes del producto</span>
-              <h2>A veces, la mejor dosis es no fertilizar todavía.</h2>
-              <p>Una hoja amarilla, una planta marchita o un sustrato muy húmedo no son diagnósticos nutricionales por sí solos. El sistema primero revisa agua, drenaje, raíces, estrés y sanidad.</p>
-              <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Iniciar diagnóstico</Link>
-              </div>
-            </div>
-            <div className={styles.trafficList}>
-              {homeGardenTrafficLight.map((item) => (
-                <article className={styles.trafficItem} key={item.level}>
-                  <span className={styles.trafficLevel}>{item.level}</span>
-                  <div><h3>{item.title}</h3><p>{item.copy}</p></div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className={styles.stages} id="etapas" aria-labelledby="stages-title">
           <div className={styles.container}>
             <div className={styles.stagesIntro}>
-              <span className={styles.eyebrow}>4 etapas + suelo</span>
+              <span className={styles.eyebrow}>Productos · 4 etapas + suelo</span>
               <h2 id="stages-title">No necesita más. Necesita lo correcto.</h2>
-              <p>COMPOST prepara la base. CRECE, EQUILIBRA, FLORECE y FRUCTIFICA traducen cuatro referencias sólidas Wondergreen ya existentes a una lectura doméstica por etapa. Los formatos pequeños siguen siendo propuestos hasta cerrar su habilitación comercial y regulatoria.</p>
+              <p>COMPOST prepara la base. CRECE, EQUILIBRA, FLORECE y FRUCTIFICA traducen cuatro referencias sólidas Wondergreen ya existentes a una lectura doméstica por etapa. Explorar una etapa no equivale a recomendar fertilización: si hay exceso de agua, daño radicular, estrés severo o una señal sanitaria, primero se corrige o revisa esa condición.</p>
             </div>
 
             {homeGardenProducts.map((product, index) => {
@@ -203,30 +156,11 @@ export default function CasaJardinPage() {
           </div>
         </section>
 
-        <section className={styles.diagnostic} id="diagnostico">
-          <div className={`${styles.container} ${styles.diagnosticGrid}`}>
-            <div>
-              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Diagnóstico orientativo</span>
-              <h2>Deja de fertilizar a ciegas.</h2>
-              <p>El diagnóstico no intenta adivinar una dosis. Ordena la observación, detecta señales de seguridad y te lleva a una etapa o a una revisión previa cuando todavía no corresponde fertilizar.</p>
-              <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.light}`} href="/casa-jardin/diagnostico">Abrir diagnóstico</Link>
-                <a className={`${styles.button} ${styles.outlineLight}`} href="#guias">Consultar guías</a>
-              </div>
-            </div>
-            <div className={styles.decisionList}>
-              {diagnosticQuestions.map(([number, title, copy]) => (
-                <div className={styles.decisionItem} key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className={styles.kits} id="kits">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Kits Casa & Jardín · pre-lanzamiento</span><h2>Compra la lógica del sistema, no una mezcla de productos.</h2></div>
-              <p>Los kits visibles conservan la composición V1 ya gobernada. No tienen checkout ni PVP público: dosificador, empaque, etiquetado, stock, logística y condición regulatoria de las presentaciones domésticas todavía deben cerrarse.</p>
+              <div><span className={styles.eyebrow}>Kits Casa & Jardín · pre-lanzamiento</span><h2>Kits por uso. Etapas separadas, no una receta universal.</h2></div>
+              <p>Los kits visibles conservan la composición V1 ya gobernada y reúnen etapas para contextos concretos. Tener varios productos en un kit no significa aplicarlos juntos. No tienen checkout ni PVP público: dosificador, empaque, etiquetado, stock, logística y condición regulatoria de las presentaciones domésticas todavía deben cerrarse.</p>
             </div>
             <div className={styles.kitList}>
               {visibleHomeGardenKits.map((kit, index) => (
@@ -245,6 +179,73 @@ export default function CasaJardinPage() {
             <div className={styles.guardrail}>
               <strong>Trasplanta & Arranca no aparece como kit disponible.</strong>
               <p>Permanece bloqueado hasta validar el componente radicular/bioinsumo. La guía educativa de trasplante sí puede consultarse porque prioriza drenaje, raíces, estabilidad y observación antes de decidir nutrición.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.safety} id="seguridad">
+          <div className={`${styles.container} ${styles.safetyGrid}`}>
+            <div className={styles.safetyIntro}>
+              <span className={styles.eyebrow}>Antes de aplicar</span>
+              <h2>A veces, la mejor dosis es no fertilizar todavía.</h2>
+              <p>Una hoja amarilla, una planta marchita o un sustrato muy húmedo no son diagnósticos nutricionales por sí solos. El sistema primero revisa agua, drenaje, raíces, estrés y sanidad antes de convertir una etapa del catálogo en una acción.</p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Revisar condición y etapa</Link>
+              </div>
+            </div>
+            <div className={styles.trafficList}>
+              {homeGardenTrafficLight.map((item) => (
+                <article className={styles.trafficItem} key={item.level}>
+                  <span className={styles.trafficLevel}>{item.level}</span>
+                  <div><h3>{item.title}</h3><p>{item.copy}</p></div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.diagnostic} id="diagnostico">
+          <div className={`${styles.container} ${styles.diagnosticGrid}`}>
+            <div>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Orientación secundaria</span>
+              <h2>¿No sabes qué etapa corresponde?</h2>
+              <p>El orientador entra cuando hay incertidumbre sobre la etapa o la condición de la planta. No calcula dosis, no diagnostica por un solo síntoma y puede detener la ruta de fertilización si primero corresponde revisar agua, drenaje, raíces, estrés o sanidad.</p>
+              <div className={styles.actions}>
+                <Link className={`${styles.button} ${styles.light}`} href="/casa-jardin/diagnostico">Usar orientador</Link>
+                <a className={`${styles.button} ${styles.outlineLight}`} href="#guias">Consultar guías</a>
+              </div>
+            </div>
+            <div className={styles.decisionList}>
+              {diagnosticQuestions.map(([number, title, copy]) => (
+                <div className={styles.decisionItem} key={number}><span>{number}</span><div><strong>{title}</strong><small>{copy}</small></div></div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.method} aria-label="Método Wondergreen Casa y Jardín">
+          <div className={`${styles.container} ${styles.methodGrid}`}>
+            {homeGardenMethod.map((step, index) => (
+              <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>
+            ))}
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.sectionSoft}`} id="contextos">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div><span className={styles.eyebrow}>Tres contextos</span><h2>La misma lógica, plantas muy distintas.</h2></div>
+              <p>Puedes entrar por el kit o la etapa que mejor describe tu contexto. La especie, el ambiente, el tamaño, la etapa y la condición siguen determinando si ese producto corresponde o si primero hay que corregir manejo.</p>
+            </div>
+            <div className={styles.contextGrid}>
+              {contexts.map((item) => (
+                <article className={styles.contextItem} key={item.number}>
+                  <span className={styles.index}>{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  {item.href.startsWith("/") ? <Link href={item.href}>{item.cta} →</Link> : <a href={item.href}>{item.cta} →</a>}
+                </article>
+              ))}
             </div>
           </div>
         </section>
@@ -303,7 +304,7 @@ export default function CasaJardinPage() {
             <div className={styles.releaseCopy}>
               <span className={styles.eyebrow}>Estado de lanzamiento</span>
               <h2>El catálogo puede recorrerse. La tienda todavía no.</h2>
-              <p>Productos, formatos propuestos, kits, diagnóstico y guías ya tienen arquitectura navegable. Compra, precios y cobertura se habilitan únicamente cuando sus dependencias estén reconciliadas.</p>
+              <p>Productos, formatos propuestos, kits, orientador y guías ya tienen arquitectura navegable. Compra, precios, dosis y cobertura se habilitan únicamente cuando sus dependencias estén reconciliadas.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen">Ver Wondergreen técnico</Link>
                 <Link className={`${styles.button} ${styles.ghost}`} href="/contacto">Hablar con Greenatics</Link>
