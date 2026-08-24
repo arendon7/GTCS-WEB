@@ -7,6 +7,9 @@ import refresh from "../solutions-refresh.module.css";
 
 const title = "Valorización y desarrollo de productos | Greenatics";
 const description = "Ruta técnica, documental y comercial para convertir salidas del tratamiento en productos con especificaciones, control, documentación y condiciones de comercialización definidas.";
+const serviceName = "Valorización y desarrollo de productos";
+const contactContext = "Interés en convertir una salida del tratamiento, formulación o material existente en un producto técnicamente documentado y comercialmente preparado.";
+const contactHref = `/contacto?service=${encodeURIComponent(serviceName)}&source=solucion&contexto=${encodeURIComponent(contactContext)}`;
 
 export const metadata: Metadata = {
   title,
@@ -55,7 +58,7 @@ export default function ValorizationProductSolutionPage() {
                 <p className={styles.detailLead}>Acompañamos la ruta desde la caracterización y especificación hasta la documentación, controles, presentación y preparación regulatoria o comercial que correspondan al producto.</p>
                 <div className={styles.actions}>
                   <a className={`${styles.button} ${styles.primary}`} href="#entregables">Ver entregables</a>
-                  <Link className={styles.button} href="/contacto">Evaluar un producto</Link>
+                  <Link className={styles.button} href={contactHref}>Evaluar un producto</Link>
                 </div>
               </div>
               <aside className={styles.detailAside}>
@@ -88,7 +91,7 @@ export default function ValorizationProductSolutionPage() {
 
             <div className={styles.detailCta}>
               <div><span className={styles.eyebrow}>Siguiente paso</span><h3>Definir qué material existe hoy y qué condición comercial se quiere alcanzar.</h3><p>La ruta puede iniciar en una caracterización, una formulación ya desarrollada, un producto en trámite o una referencia comercial existente. El alcance se diseña desde ese punto real, no desde una etapa obligatoria de diagnóstico.</p></div>
-              <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link>
+              <Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link>
             </div>
           </div>
         </section>
