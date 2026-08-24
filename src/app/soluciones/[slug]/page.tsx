@@ -28,6 +28,8 @@ export default async function SolutionDetailPage({ params }: Props) {
   const service = getService(slug);
   if (!service) notFound();
 
+  const contactHref = `/contacto?service=${encodeURIComponent(service.name)}&source=soluciones`;
+
   return (
     <div className={`${styles.page} ${refresh.page}`}>
       <BreadcrumbJsonLd items={[
@@ -47,7 +49,7 @@ export default async function SolutionDetailPage({ params }: Props) {
                 <p className={styles.detailLead}>{service.summary}</p>
                 <div className={styles.actions}>
                   <a className={`${styles.button} ${styles.primary}`} href="#entregables">Ver qué recibe el cliente</a>
-                  <Link className={styles.button} href="/contacto">Solicitar conversación comercial</Link>
+                  <Link className={styles.button} href={contactHref}>Solicitar conversación comercial</Link>
                 </div>
               </div>
               <aside className={styles.detailAside}>
@@ -84,7 +86,7 @@ export default async function SolutionDetailPage({ params }: Props) {
                 <h3>{service.cta}</h3>
                 <p>El alcance final depende de la información disponible, las condiciones del proyecto y las responsabilidades acordadas. Cuando falte información crítica, la línea base o el diagnóstico se incorpora como una actividad inicial; no sustituye el servicio contratado.</p>
               </div>
-              <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link>
+              <Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link>
             </div>
           </div>
         </section>
