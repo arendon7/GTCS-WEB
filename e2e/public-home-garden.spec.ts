@@ -77,7 +77,7 @@ test("Casa Jardín and Vivero leads with products and kits while keeping safe or
 test("Casa product detail exposes proposed household formats without making them commercial SKUs", async ({ page }) => {
   await page.goto("/casa-jardin/productos/crece");
 
-  await expect(page.getByRole("heading", { name: "CRECE", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "CRECE", exact: true })).toBeVisible();
   for (const variant of ["500 g", "1 kg", "2 kg", "5 kg"]) {
     await expect(page.getByRole("heading", { name: variant, exact: true })).toBeVisible();
   }
