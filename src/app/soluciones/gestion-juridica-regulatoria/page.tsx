@@ -7,6 +7,7 @@ import refresh from "../solutions-refresh.module.css";
 
 const title = "Gestión jurídica y regulatoria | Greenatics";
 const description = "Asesoría jurídica y regulatoria para estructurar responsabilidades, instrumentos, contratos, trámites y decisiones asociadas a residuos, aseo y proyectos de aprovechamiento.";
+const contactHref = "/contacto?service=Gestión%20jurídica%20y%20regulatoria&source=soluciones";
 
 export const metadata: Metadata = {
   title,
@@ -52,7 +53,7 @@ export default function RegulatoryLegalSolutionPage() {
                 <p className={styles.detailLead}>Estructuramos actividades, responsabilidades y documentos frente al marco aplicable al alcance, para que la decisión técnica tenga una ruta jurídica clara y ejecutable.</p>
                 <div className={styles.actions}>
                   <a className={`${styles.button} ${styles.primary}`} href="#entregables">Ver entregables</a>
-                  <Link className={styles.button} href="/contacto">Plantear el caso</Link>
+                  <Link className={styles.button} href={contactHref}>Plantear el caso</Link>
                 </div>
               </div>
               <aside className={styles.detailAside}>
@@ -85,7 +86,7 @@ export default function RegulatoryLegalSolutionPage() {
 
             <div className={styles.detailCta}>
               <div><span className={styles.eyebrow}>Siguiente paso</span><h3>Definir el problema jurídico y el resultado que necesita el proyecto.</h3><p>Si el asunto ya está identificado, podemos estructurar directamente el alcance. Si todavía existen vacíos de información, la revisión documental inicial se incorpora como actividad de trabajo y no como sustituto del servicio.</p></div>
-              <Link className={`${styles.button} ${styles.primary}`} href="/contacto">Hablar con Greenatics</Link>
+              <Link className={`${styles.button} ${styles.primary}`} href={contactHref}>Hablar con Greenatics</Link>
             </div>
           </div>
         </section>
