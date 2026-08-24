@@ -7,14 +7,20 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
     .filter((payload) => payload["@type"] === type);
 }
 
-test("solutions hub separates audience routes from problem-specific intent routes", async ({ page }) => {
+test("solutions hub separates audience routes from concrete service routes", async ({ page }) => {
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: "Propiedad horizontal / Instituciones", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Plantas / Operadores", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver ruta multiunidad/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
   await expect(page.getByRole("link", { name: /Ver ruta de plantas/ })).toHaveAttribute("href", "/soluciones/plantas");
-  await expect(page.getByRole("link", { name: /Plantas y tratamiento/ })).toHaveAttribute("href", "/soluciones/infraestructura-plantas");
+
+  const plantServices = page.getByRole("navigation", { name: "Servicios de Plantas y tratamiento" });
+  await expect(plantServices).toBeVisible();
+  await expect(plantServices.getByRole("link", { name: /Prefactibilidad de plantas y sistemas de tratamiento y valorización/ })).toHaveAttribute("href", "/soluciones/prefactibilidad");
+  await expect(plantServices.getByRole("link", { name: /Factibilidad, APU e ingeniería de detalle/ })).toHaveAttribute("href", "/soluciones/factibilidad-ingenieria");
+  await expect(plantServices.getByRole("link", { name: /Diseño, construcción e implementación de plantas/ })).toHaveAttribute("href", "/soluciones/plantas-nuevas");
+  await expect(plantServices.getByRole("link", { name: /Diagnóstico, rehabilitación y puesta en marcha de infraestructura existente/ })).toHaveAttribute("href", "/soluciones/rehabilitacion");
 });
 
 test("organic waste route moves from real capture to treatment and prefactibility", async ({ page }) => {
