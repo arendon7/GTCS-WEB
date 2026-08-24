@@ -59,7 +59,7 @@ export default function CasaJardinGuiasPage() {
             </div>
             <div className={styles.productGrid}>
               {homeGardenPublicDocuments.map((document, index) => (
-                <article className={styles.card} key={document.id}>
+                <article className={styles.card} id={document.id} key={document.id}>
                   <small>Guía {String(index + 1).padStart(2, "0")} · PDF público verificado</small>
                   <h3>{document.title}</h3>
                   <p>{document.summary}</p>
