@@ -19,14 +19,14 @@ async function clickDigitalBridge(page: import("@playwright/test").Page) {
   await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true }).click();
 }
 
-test("solutions hub leads with services and keeps orientation secondary", async ({ page }) => {
+test("solutions hub exposes concrete services inside every commercial family before orientation", async ({ page }) => {
   await page.goto("/soluciones");
 
   await expect(page.getByRole("heading", { name: /Servicios para convertir necesidades de gestión en resultados concretos./i })).toBeVisible();
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ver servicios y entregables", exact: true })).toHaveAttribute("href", "#servicios");
 
-  await expect(page.getByRole("heading", { name: "Ocho familias para contratar actividades, entregables y capacidad de ejecución." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ocho familias. Servicios concretos que puedes abrir y revisar en profundidad." })).toBeVisible();
   for (const family of [
     "Caracterización y línea base",
     "Planeación y programas",
@@ -40,11 +40,36 @@ test("solutions hub leads with services and keeps orientation secondary", async 
     await expect(page.getByRole("heading", { name: family, exact: true })).toBeVisible();
   }
 
-  await expect(page.getByRole("link", { name: /Caracterización y línea base/ })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
-  await expect(page.getByRole("link", { name: /Gestión jurídica y regulatoria/ })).toHaveAttribute("href", "/soluciones/gestion-juridica-regulatoria");
-  await expect(page.getByRole("link", { name: /Rutas y logística/ })).toHaveAttribute("href", "/soluciones/rutas-selectivas");
-  await expect(page.getByRole("link", { name: /Datos, trazabilidad y OPS/ })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
-  await expect(page.getByRole("link", { name: /Valorización y desarrollo de productos/ })).toHaveAttribute("href", "/soluciones/valorizacion-productos");
+  const baseline = page.getByRole("navigation", { name: "Servicios de Caracterización y línea base" });
+  await expect(baseline.getByRole("link", { name: "Diagnóstico y caracterización de residuos orgánicos" })).toHaveAttribute("href", "/soluciones/diagnostico-caracterizacion");
+
+  const planning = page.getByRole("navigation", { name: "Servicios de Planeación y programas" });
+  await expect(planning.getByRole("link", { name: /PGIRS/ })).toHaveAttribute("href", "/soluciones/pgirs");
+  await expect(planning.getByRole("link", { name: /PMIRS/ })).toHaveAttribute("href", "/soluciones/pmirs");
+
+  const legal = page.getByRole("navigation", { name: "Servicios de Gestión jurídica y regulatoria" });
+  await expect(legal.getByRole("link", { name: /Gestión jurídica y regulatoria para residuos/ })).toHaveAttribute("href", "/soluciones/gestion-juridica-regulatoria");
+
+  const logistics = page.getByRole("navigation", { name: "Servicios de Rutas y logística" });
+  await expect(logistics.getByRole("link", { name: /rutas selectivas y microrrutas/i })).toHaveAttribute("href", "/soluciones/rutas-selectivas");
+  await expect(logistics.getByRole("link", { name: /motocarguero/i })).toHaveAttribute("href", "/soluciones/motocarguero");
+
+  const plants = page.getByRole("navigation", { name: "Servicios de Plantas y tratamiento" });
+  await expect(plants.getByRole("link", { name: /Prefactibilidad de plantas/i })).toHaveAttribute("href", "/soluciones/prefactibilidad");
+  await expect(plants.getByRole("link", { name: /Factibilidad, APU e ingeniería de detalle/i })).toHaveAttribute("href", "/soluciones/factibilidad-ingenieria");
+  await expect(plants.getByRole("link", { name: /Diseño, construcción e implementación de plantas/i })).toHaveAttribute("href", "/soluciones/plantas-nuevas");
+  await expect(plants.getByRole("link", { name: /rehabilitación y puesta en marcha/i })).toHaveAttribute("href", "/soluciones/rehabilitacion");
+
+  const operations = page.getByRole("navigation", { name: "Servicios de Dirección técnica y operación asistida" });
+  await expect(operations.getByRole("link", { name: /Dirección técnica y coordinación de operación/i })).toHaveAttribute("href", "/soluciones/direccion-operacion");
+  await expect(operations.getByRole("link", { name: /Operación integral de plantas/i })).toHaveAttribute("href", "/soluciones/operacion-integral");
+  await expect(operations.getByRole("link", { name: /Gestión, recolección y tratamiento de residuos orgánicos/i })).toHaveAttribute("href", "/soluciones/recoleccion-tratamiento");
+
+  const data = page.getByRole("navigation", { name: "Servicios de Datos, trazabilidad y OPS" });
+  await expect(data.getByRole("link", { name: /Trazabilidad digital, indicadores y GREENATICS OPS/i })).toHaveAttribute("href", "/soluciones/trazabilidad-datos");
+
+  const valorization = page.getByRole("navigation", { name: "Servicios de Valorización y desarrollo de productos" });
+  await expect(valorization.getByRole("link", { name: "Valorización y desarrollo de productos", exact: true })).toHaveAttribute("href", "/soluciones/valorizacion-productos");
 
   for (const audience of [
     "ESP / Prestadores",
