@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("Casa product detail reaches technical truth, documents and related kits before orientation", async ({ page }) => {
   await page.goto("/casa-jardin/productos/crece");
 
-  await expect(page.getByRole("heading", { name: "CRECE", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "CRECE", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ver referencia técnica", exact: true })).toHaveAttribute(
     "href",
     "/wondergreen/productos/2grow-solido-15-3-3",
@@ -41,7 +41,7 @@ test("Casa product detail reaches technical truth, documents and related kits be
 test("Mi Huerta kit opens each product and its specific verified PDF", async ({ page }) => {
   await page.goto("/casa-jardin/kits/mi-huerta");
 
-  await expect(page.getByRole("heading", { name: "Kit Mi Huerta", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Kit Mi Huerta", exact: true })).toBeVisible();
   const productRoute = page.locator("#ruta-kit");
   for (const href of [
     "/casa-jardin/productos/prepara",
@@ -54,9 +54,8 @@ test("Mi Huerta kit opens each product and its specific verified PDF", async ({ 
 
   const documents = page.locator("#documentacion-kit");
   await expect(documents.getByRole("heading", { name: "Guía Mi Huerta", exact: true })).toBeVisible();
-  const miHuertaCard = documents.getByRole("article").filter({
-    has: documents.getByRole("heading", { name: "Guía Mi Huerta", exact: true }),
-  });
+  const miHuertaCard = documents.locator("article").filter({ hasText: "Guía Mi Huerta" });
+  await expect(miHuertaCard).toHaveCount(1);
   await expect(miHuertaCard.getByRole("link", { name: "Abrir PDF ↗" })).toHaveAttribute(
     "href",
     "/api/public-resources/home-garden-guide-mi-huerta",
