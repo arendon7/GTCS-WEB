@@ -20,7 +20,12 @@ for (const route of ["/soluciones", "/proyectos"]) {
 
 test("solution and project details keep governed public routes", async ({ page }) => {
   await page.goto("/soluciones/diagnostico-caracterizacion");
-  await expect(page.getByRole("link", { name: "Hablar con Greenatics" })).toHaveAttribute("href", "/contacto");
+  const contactHref = await page.getByRole("link", { name: "Hablar con Greenatics" }).getAttribute("href");
+  expect(contactHref).toBeTruthy();
+  const contact = new URL(contactHref!, "https://greenatics.com.co");
+  expect(contact.pathname).toBe("/contacto");
+  expect(contact.searchParams.get("source")).toBe("solucion");
+  expect(contact.searchParams.get("service")).toBe("Diagnóstico y caracterización de residuos orgánicos");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/soluciones\/diagnostico-caracterizacion$/);
 
   await page.goto("/proyectos/yarumal");
