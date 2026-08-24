@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("desktop shell exposes the approved Soluciones mega-menu and closes with Escape", async ({ page }, testInfo) => {
+test("desktop shell exposes direct commercial solutions and closes with Escape", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "desktop shell contract");
   await page.goto("/");
 
@@ -15,18 +15,21 @@ test("desktop shell exposes the approved Soluciones mega-menu and closes with Es
   await header.getByRole("button", { name: "Abrir menú Soluciones" }).click();
   const menu = header.getByRole("group", { name: "Menú Soluciones" });
   await expect(menu).toBeVisible();
+  await expect(menu.getByText("Elige el servicio que necesitas o entra por tu tipo de organización.", { exact: true })).toBeVisible();
   await expect(menu.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp");
   await expect(menu.getByRole("link", { name: /Municipio/ }).first()).toHaveAttribute("href", "/soluciones/municipios");
   await expect(menu.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
   await expect(menu.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
   await expect(menu.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
-  await expect(menu.getByRole("link", { name: /Diagnóstico inicial Greenatics/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
+  await expect(menu.getByRole("link", { name: /Gestión jurídica y regulatoria/ })).toHaveAttribute("href", "/soluciones/gestion-juridica-regulatoria");
+  await expect(menu.getByRole("link", { name: /Valorizar y desarrollar productos/ })).toHaveAttribute("href", "/soluciones/valorizacion-productos");
+  await expect(menu.getByRole("link", { name: /Usar orientador inicial/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 
   await page.keyboard.press("Escape");
   await expect(menu).toHaveCount(0);
 });
 
-test("mobile shell uses a two-level drawer and returns focus after Escape", async ({ page }, testInfo) => {
+test("mobile shell uses a two-level drawer with direct services and optional orientation", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile-chromium", "mobile shell contract");
   await page.goto("/");
 
@@ -42,13 +45,16 @@ test("mobile shell uses a two-level drawer and returns focus after Escape", asyn
   await expect(dialog.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
 
   await dialog.getByRole("button", { name: /Soluciones/ }).click();
+  await expect(dialog.getByText("Elige el servicio que necesitas o entra por tu tipo de organización.", { exact: true })).toBeVisible();
   await expect(dialog.getByText("Por organización", { exact: true })).toBeVisible();
   await expect(dialog.getByRole("link", { name: /ESP \/ Prestador/ })).toHaveAttribute("href", "/soluciones/esp");
   await expect(dialog.getByRole("link", { name: /Municipio/ }).first()).toHaveAttribute("href", "/soluciones/municipios");
   await expect(dialog.getByRole("link", { name: /Empresa \/ Gran generador/ })).toHaveAttribute("href", "/soluciones/empresas");
   await expect(dialog.getByRole("link", { name: /Propiedad horizontal \/ Institución/ })).toHaveAttribute("href", "/soluciones/propiedad-horizontal");
   await expect(dialog.getByRole("link", { name: /Planta \/ Operador/ })).toHaveAttribute("href", "/soluciones/plantas");
-  await expect(dialog.getByRole("link", { name: /Iniciar diagnóstico inicial/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
+  await expect(dialog.getByRole("link", { name: /Gestión jurídica y regulatoria/ })).toHaveAttribute("href", "/soluciones/gestion-juridica-regulatoria");
+  await expect(dialog.getByRole("link", { name: /Valorizar y desarrollar productos/ })).toHaveAttribute("href", "/soluciones/valorizacion-productos");
+  await expect(dialog.getByRole("link", { name: /Usar orientador inicial/ })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
 
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
