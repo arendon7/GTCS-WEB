@@ -10,6 +10,7 @@ const publicRoutes = [
   "/soluciones/plantas",
   "/soluciones/diagnostico-caracterizacion",
   "/wondergreen",
+  "/wondergreen/tecnologia",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
   "/recursos",
