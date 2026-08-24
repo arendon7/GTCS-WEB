@@ -84,8 +84,11 @@ export default function ProjectsPage() {
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
-            <div><span className={styles.eyebrow}>Construir el siguiente caso</span><h2>Cada territorio parte de condiciones distintas. El aprendizaje sí puede transferirse.</h2></div>
-            <Link className={`${styles.button} ${styles.darkButton}`} href="/soluciones/diagnostico-caracterizacion">Empezar por diagnóstico</Link>
+            <div><span className={styles.eyebrow}>Del caso al siguiente proyecto</span><h2>La evidencia ayuda a elegir una capacidad. El alcance se define para el contexto real.</h2><p>Si ya identificaste el tipo de intervención que necesitas, explora directamente las soluciones. Si todavía no sabes por dónde empezar, usa el orientador inicial como ruta secundaria.</p></div>
+            <div>
+              <Link className={`${styles.button} ${styles.darkButton}`} href="/soluciones">Ver soluciones</Link>
+              <Link className={styles.button} href="/soluciones/diagnostico-inicial">No sé por dónde empezar</Link>
+            </div>
           </div>
         </section>
       </main>
