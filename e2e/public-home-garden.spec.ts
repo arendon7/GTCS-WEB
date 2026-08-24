@@ -4,9 +4,13 @@ test("Casa Jardín and Vivero leads with products and kits while keeping safe or
   await page.goto("/casa-jardin");
 
   await expect(page.getByRole("heading", { name: "Nutrición por etapas para tus plantas.", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver productos por etapa", exact: true }).first()).toHaveAttribute("href", "#etapas");
-  await expect(page.getByRole("link", { name: "Ver kits", exact: true }).first()).toHaveAttribute("href", "#kits");
+  await expect(page.getByRole("link", { name: "Ver productos por etapa", exact: true }).first()).toHaveAttribute("href", "/casa-jardin/productos");
+  await expect(page.getByRole("link", { name: "Ver kits", exact: true }).first()).toHaveAttribute("href", "/casa-jardin/kits");
   await expect(page.getByRole("link", { name: "No sé qué etapa corresponde →", exact: true })).toHaveAttribute("href", "/casa-jardin/diagnostico");
+
+  const subnav = page.getByRole("navigation", { name: "Navegación Casa y Jardín" });
+  await expect(subnav.getByRole("link", { name: "Productos", exact: true })).toHaveAttribute("href", "/casa-jardin/productos");
+  await expect(subnav.getByRole("link", { name: "Kits", exact: true })).toHaveAttribute("href", "/casa-jardin/kits");
 
   const hierarchy = await page.evaluate(() => {
     const stages = document.querySelector("#etapas");
@@ -39,18 +43,22 @@ test("Casa Jardín and Vivero leads with products and kits while keeping safe or
   }
   await expect(page.getByText("COMPOST", { exact: true }).first()).toBeVisible();
 
-  for (const [alt, src] of [
-    [/Línea Wondergreen 2Grow/i, "/api/public-media/wondergreen-2grow"],
-    [/Línea Wondergreen 2Balance/i, "/api/public-media/wondergreen-2balance"],
-    [/Línea Wondergreen 2Bloom/i, "/api/public-media/wondergreen-2bloom"],
-    [/Línea Wondergreen 2Fruit/i, "/api/public-media/wondergreen-2fruit"],
+  for (const [stage, alt, src] of [
+    ["crece", /Arte aprobado de la línea Wondergreen 2Grow/i, "/api/public-media/wondergreen-2grow"],
+    ["equilibra", /Arte aprobado de la línea Wondergreen 2Balance/i, "/api/public-media/wondergreen-2balance"],
+    ["florece", /Arte aprobado de la línea Wondergreen 2Bloom/i, "/api/public-media/wondergreen-2bloom"],
+    ["fructifica", /Arte aprobado de la línea Wondergreen 2Fruit/i, "/api/public-media/wondergreen-2fruit"],
   ] as const) {
-    await expect(page.getByRole("img", { name: alt })).toHaveAttribute("src", src);
+    await expect(page.locator(`figure[data-home-garden-stage="${stage}"]`).first()).toBeVisible();
+    await expect(page.getByRole("img", { name: alt }).first()).toHaveAttribute("src", src);
   }
 
   for (const kit of ["Kit Plantas Verdes", "Kit Plantas con Flor", "Kit Mi Huerta", "Kit Casa Completa", "Casa Completa XL"]) {
     await expect(page.getByRole("heading", { name: kit, exact: true })).toBeVisible();
+    await expect(page.getByLabel(`Composición visual de ${kit}`)).toBeVisible();
   }
+  await expect(page.getByRole("link", { name: "Ver todos los kits →", exact: true })).toHaveAttribute("href", "/casa-jardin/kits");
+  await expect(page.getByRole("link", { name: "Ver catálogo completo de productos →", exact: true })).toHaveAttribute("href", "/casa-jardin/productos");
 
   await expect(page.getByText("Ya está gobernado", { exact: true })).toBeVisible();
   await expect(page.getByText("Falta cerrar antes de activar ecommerce", { exact: true })).toBeVisible();

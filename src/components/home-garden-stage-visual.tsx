@@ -24,12 +24,14 @@ const stageVisuals: Partial<Record<HomeGardenStage, { src: string; alt: string }
 type HomeGardenStageVisualProps = {
   stage: HomeGardenStage;
   size?: "mini" | "card" | "hero";
+  showIdentity?: boolean;
   showTruthLabel?: boolean;
 };
 
 export function HomeGardenStageVisual({
   stage,
   size = "card",
+  showIdentity = true,
   showTruthLabel = true,
 }: HomeGardenStageVisualProps) {
   const product = getHomeGardenProduct(stage);
@@ -63,10 +65,12 @@ export function HomeGardenStageVisual({
           unoptimized
         />
       </div>
-      <div className={styles.identity}>
-        <strong>{product.consumerName}</strong>
-        <small>{product.formula ?? "Compost"}</small>
-      </div>
+      {showIdentity ? (
+        <div className={styles.identity}>
+          <strong>{product.consumerName}</strong>
+          <small>{product.formula ?? "Compost"}</small>
+        </div>
+      ) : null}
       {showTruthLabel ? <figcaption>Arte de línea aprobado · no packshot específico</figcaption> : null}
     </figure>
   );
