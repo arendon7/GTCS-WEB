@@ -27,9 +27,7 @@ test("rehabilitation service connects only the governed Tamesis assessment and r
   await expect(evidence.getByRole("link", { name: /Abrir caso documentado/ })).toHaveAttribute("href", "/proyectos/tamesis");
   await expect(main.getByRole("heading", { name: "Yarumal", exact: true })).toHaveCount(0);
 
-  const related = main.getByRole("heading", { name: /El servicio puede conectarse con otras fases/ });
-  await expect(related).toBeVisible();
-  await expect(main.getByRole("link", { name: /Ver servicio/ }).filter({ has: page.locator('[href="/soluciones/factibilidad-ingenieria"]') })).toHaveCount(0);
+  await expect(main.getByRole("heading", { name: /El servicio puede conectarse con otras fases/ })).toBeVisible();
   await expect(main.locator('a[href="/soluciones/factibilidad-ingenieria"]')).toHaveCount(1);
   await expect(main.locator('a[href="/soluciones/plantas-nuevas"]')).toHaveCount(1);
 });
