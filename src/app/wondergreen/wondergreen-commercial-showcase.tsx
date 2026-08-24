@@ -18,6 +18,7 @@ export function WondergreenCommercialShowcase() {
           <div className={styles.headingCopy}>
             <p>Estas referencias sólidas tienen condición comercial reconciliada en Product Truth. Cada una abre su ficha con formulación, presentaciones, cultivos relacionados y documentación pública vinculada.</p>
             <Link href="/wondergreen/productos">Ver todos los productos →</Link>
+            <Link href="/wondergreen/tecnologia">Profundizar en la tecnología →</Link>
           </div>
         </div>
 
