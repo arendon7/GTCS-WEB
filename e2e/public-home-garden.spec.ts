@@ -77,13 +77,16 @@ test("Casa Jardín and Vivero leads with products and kits while keeping safe or
 test("Casa product detail exposes proposed household formats without making them commercial SKUs", async ({ page }) => {
   await page.goto("/casa-jardin/productos/crece");
 
-  await expect(page.getByRole("heading", { name: "CRECE", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "CRECE", exact: true })).toBeVisible();
   for (const variant of ["500 g", "1 kg", "2 kg", "5 kg"]) {
     await expect(page.getByRole("heading", { name: variant, exact: true })).toBeVisible();
   }
   await expect(page.getByText(/Sin precio público, cobertura ni dosis/i).first()).toBeVisible();
   await expect(page.getByText(/La presentación pequeña no se presume habilitada/i)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver Product Truth técnico" })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
+  await expect(page.getByRole("link", { name: "Ver referencia técnica", exact: true })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
+  await expect(page.getByRole("heading", { name: "Producto, guía y Product Truth permanecen conectados, pero no se confunden." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Este producto puede aparecer dentro de rutas de uso distintas." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "¿No sabes si CRECE corresponde a tu planta?" })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
 });
@@ -95,6 +98,8 @@ test("Casa kit detail preserves exact sourced composition without checkout or sa
   for (const component of ["COMPOST · 2 kg", "CRECE · 500 g", "FLORECE · 500 g", "FRUCTIFICA · 500 g"]) {
     await expect(page.getByRole("heading", { name: component, exact: true })).toBeVisible();
   }
+  await expect(page.getByRole("heading", { name: "Cada etapa abre su propia ficha antes de cualquier orientación." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "El kit también debe poder abrirse hasta sus guías." })).toBeVisible();
   await expect(page.getByText(/hipótesis comercial de precios/i)).toBeVisible();
   await expect(page.getByText(/Tampoco se anuncia ahorro/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
@@ -188,24 +193,38 @@ test("extremely dry substrate stays in review instead of recommending fertilizer
   await expect(page.getByRole("link", { name: "Llevar este contexto a soporte técnico →" })).toBeVisible();
 });
 
-test("Casa guide library publishes four reconstructed same-origin PDFs", async ({ page }) => {
+test("Casa guide library presents four complete same-origin PDFs instead of HTML replacements", async ({ page }) => {
   await page.goto("/casa-jardin/guias");
+
+  await expect(page.getByRole("heading", { name: "Las guías se consultan como documentos completos." })).toBeVisible();
+  await expect(page.getByText("WEB = CONTEXTO · PDF = DOCUMENTO", { exact: true })).toBeVisible();
 
   for (const guide of ["Guía Wondergreen Casa & Jardín", "Guía Mi Huerta", "Guía rápida de etapas", "Guía de trasplante"]) {
     await expect(page.getByRole("heading", { name: guide, exact: true })).toBeVisible();
   }
 
-  const downloads = page.getByRole("link", { name: "Descargar PDF →", exact: true });
-  await expect(downloads).toHaveCount(4);
-  const hrefs = await downloads.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
-  expect(hrefs.sort()).toEqual([
+  const opens = page.getByRole("link", { name: "Abrir PDF ↗", exact: true });
+  await expect(opens).toHaveCount(4);
+  const openHrefs = await opens.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+  expect(openHrefs.sort()).toEqual([
     "/api/public-resources/home-garden-guide-casa-jardin",
     "/api/public-resources/home-garden-guide-etapas",
     "/api/public-resources/home-garden-guide-mi-huerta",
     "/api/public-resources/home-garden-guide-trasplante",
   ]);
-  expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
-  await expect(page.getByText(/Master público reconstruido y verificado/i).first()).toBeVisible();
-  await expect(page.getByText(/no se presenta como una copia byte a byte/i).first()).toBeVisible();
+
+  const downloads = page.getByRole("link", { name: "Descargar ↓", exact: true });
+  await expect(downloads).toHaveCount(4);
+  const downloadHrefs = await downloads.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+  expect(downloadHrefs.sort()).toEqual([
+    "/api/public-resources/home-garden-guide-casa-jardin?download=1",
+    "/api/public-resources/home-garden-guide-etapas?download=1",
+    "/api/public-resources/home-garden-guide-mi-huerta?download=1",
+    "/api/public-resources/home-garden-guide-trasplante?download=1",
+  ]);
+  expect(`${openHrefs.join(" ")} ${downloadHrefs.join(" ")}`).not.toMatch(/sharepoint|graph\.microsoft/i);
+  await expect(page.getByText(/reconstruidos y verificados desde contenido gobernado/i).first()).toBeVisible();
+  await expect(page.getByText(/no se presentan como copias byte a byte/i).first()).toBeVisible();
+  await expect(page.getByText("DEL PDF A CONTENIDO NAVEGABLE", { exact: true })).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
