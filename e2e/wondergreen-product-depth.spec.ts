@@ -15,12 +15,13 @@ test("Wondergreen catalog starts with commercial products and keeps orientation 
 test("Wondergreen product page exposes presentations plus open and download PDF actions without inventing an individual technical sheet", async ({ page }) => {
   await page.goto("/wondergreen/productos/2grow-solido-15-3-3");
 
-  await expect(page.getByRole("heading", { name: /2Grow Sólido/ })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Identidad visual aprobada de la línea Wondergreen 2Grow" })).toBeVisible();
-  await expect(page.getByText("Documentación oficial", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Abre o descarga los documentos aprobados, no una reconstrucción de ellos." })).toBeVisible();
-  await expect(page.getByText("5 kg", { exact: true })).toBeVisible();
-  await expect(page.getByText("40 kg", { exact: true })).toBeVisible();
+  const main = page.getByRole("main");
+  await expect(main.getByRole("heading", { name: /2Grow Sólido/ })).toBeVisible();
+  await expect(main.getByRole("img", { name: "Identidad visual aprobada de la línea Wondergreen 2Grow" })).toBeVisible();
+  await expect(main.getByText("Documentación oficial", { exact: true })).toBeVisible();
+  await expect(main.getByRole("heading", { name: "Abre o descarga los documentos aprobados, no una reconstrucción de ellos." })).toBeVisible();
+  await expect(main.getByText("5 kg", { exact: true })).toBeVisible();
+  await expect(main.getByText("40 kg", { exact: true })).toBeVisible();
 
   const hrefs = await page.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
   expect(hrefs).toContain("/api/public-resources/wondergreen-product-master");
@@ -31,8 +32,8 @@ test("Wondergreen product page exposes presentations plus open and download PDF 
   expect(hrefs).toContain("/api/public-resources/wondergreen-guide-cacao?download=1");
   expect(hrefs.join(" ")).not.toMatch(/sharepoint|graph\.microsoft/i);
 
-  await expect(page.getByRole("link", { name: /Descargar catálogo PDF/ })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master?download=1");
-  await expect(page.getByRole("link", { name: /Descargar guía PDF/ }).first()).toHaveAttribute("href", /\?download=1$/);
-  await expect(page.getByRole("heading", { name: "Ficha técnica específica" })).toBeVisible();
-  await expect(page.getByText("Pendiente de vincular master público", { exact: true })).toBeVisible();
+  await expect(main.getByRole("link", { name: /Descargar catálogo PDF/ })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master?download=1");
+  await expect(main.getByRole("link", { name: /Descargar guía PDF/ }).first()).toHaveAttribute("href", /\?download=1$/);
+  await expect(main.getByRole("heading", { name: "Ficha técnica específica" })).toBeVisible();
+  await expect(main.getByText("Pendiente de vincular master público", { exact: true })).toBeVisible();
 });
