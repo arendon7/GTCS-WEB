@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-async function expectSectionBefore(page: import("@playwright/test").Page, first: string, secondText: string) {
-  const second = page.getByRole("heading", { name: secondText, exact: true });
-  const firstBeforeSecond = await page.locator(first).evaluate((node, secondElement) => {
-    return Boolean(node.compareDocumentPosition(secondElement as Node) & Node.DOCUMENT_POSITION_FOLLOWING);
-  }, await second.elementHandle());
+async function expectSectionBefore(page: import("@playwright/test").Page, first: string, secondHeading: string) {
+  const firstBeforeSecond = await page.locator(first).evaluate((node, headingText) => {
+    const heading = [...document.querySelectorAll("h1, h2, h3")].find((candidate) => candidate.textContent?.trim() === headingText);
+    if (!heading) return false;
+    return Boolean(node.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }, secondHeading);
   expect(firstBeforeSecond).toBe(true);
 }
 
@@ -25,12 +26,12 @@ for (const [slug, name, outputs, relatedHref] of programs) {
 
     await expectSectionBefore(page, "#entregables", "El programa organiza una etapa concreta sin convertirla en una ruta obligatoria para todos.");
 
-    const related = page.getByRole("link", { name: /Ver alcance y entregables/ }).filter({ has: page.locator(`[href="${relatedHref}"]`) });
     await expect(page.locator(`a[href="${relatedHref}"]`).filter({ hasText: "Ver alcance y entregables" }).first()).toBeVisible();
 
     const contact = page.getByRole("link", { name: `Hablar sobre ${name}`, exact: true });
-    await expect(contact).toHaveAttribute("href", new RegExp(`service=${encodeURIComponent(name).replace(/%20/g, "(?:%20|\\+)")}`));
     await expect(contact).toHaveAttribute("href", /source=programa/);
+    const href = await contact.getAttribute("href");
+    expect(new URL(href ?? "", "https://greenatics.com.co").searchParams.get("service")).toBe(name);
   });
 }
 
