@@ -1,0 +1,159 @@
+.figure {
+  --stage-accent: #2f7d32;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.figure[data-home-garden-stage="prepara"] { --stage-accent: #8b6d46; }
+.figure[data-home-garden-stage="crece"] { --stage-accent: #f28c28; }
+.figure[data-home-garden-stage="equilibra"] { --stage-accent: #7452a3; }
+.figure[data-home-garden-stage="florece"] { --stage-accent: #3b77b9; }
+.figure[data-home-garden-stage="fructifica"] { --stage-accent: #d95b50; }
+
+.imageFrame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 760 / 1074;
+  border: 1px solid rgba(6, 61, 44, .14);
+  background: #f6f3e9;
+  box-shadow: 0 18px 44px rgba(6, 61, 44, .09);
+}
+
+.imageFrame::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 2;
+  width: 5px;
+  background: var(--stage-accent);
+}
+
+.imageFrame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.identity {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.identity strong {
+  color: #17382d;
+  font-size: .83rem;
+  letter-spacing: .06em;
+}
+
+.identity small {
+  color: #2f7d32;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.figure figcaption {
+  color: #66766f;
+  font-size: .67rem;
+  line-height: 1.4;
+}
+
+.compostBody {
+  min-height: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 7px;
+  border: 1px solid rgba(6, 61, 44, .14);
+  border-left: 5px solid var(--stage-accent);
+  background: linear-gradient(155deg, #eadfc8 0%, #f8f4ea 60%, #d8e7cc 100%);
+  box-shadow: 0 18px 44px rgba(6, 61, 44, .09);
+}
+
+.compostBody span {
+  color: #8b6d46;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.compostBody strong {
+  color: #5f492f;
+  font-family: var(--display);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.compostBody small {
+  color: #745f45;
+  line-height: 1.35;
+}
+
+.card .imageFrame,
+.card .compostBody {
+  min-height: 260px;
+}
+
+.hero {
+  width: min(100%, 390px);
+  margin-inline: auto;
+}
+
+.hero .imageFrame,
+.hero .compostBody {
+  min-height: 420px;
+}
+
+.hero .identity strong,
+.hero .identity small,
+.hero figcaption {
+  color: #e5efe9;
+}
+
+.mini {
+  gap: 5px;
+}
+
+.mini .imageFrame,
+.mini .compostBody {
+  min-height: 118px;
+  box-shadow: none;
+}
+
+.mini .compostBody {
+  padding: 10px;
+}
+
+.mini .compostBody strong {
+  font-size: .9rem;
+}
+
+.mini .compostBody span,
+.mini .compostBody small,
+.mini .identity small,
+.mini figcaption {
+  display: none;
+}
+
+.mini .identity {
+  justify-content: center;
+}
+
+.mini .identity strong {
+  font-size: .62rem;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .hero .imageFrame,
+  .hero .compostBody {
+    min-height: 340px;
+  }
+}
