@@ -28,6 +28,20 @@ export default function ImpactPage() {
         <section className={`${styles.section} ${styles.soft}`}><div className={styles.container}><div className={styles.sectionHead}><span className={styles.eyebrow}>Por caso y territorio</span><h2>El impacto conserva su contexto operacional.</h2><p>Las comparaciones por planta o territorio solo tendrán sentido cuando periodo, unidad y cobertura sean compatibles.</p></div><div className={styles.siteGrid}><article className={styles.site}><h3>Yarumal</h3><p>Experiencia documentada en recepción, tratamiento, productos, mantenimiento y trazabilidad. Los indicadores públicos se habilitan únicamente cuando exista un corte validado.</p><Link href="/proyectos/yarumal">Ver caso Yarumal →</Link></article><article className={styles.site}><h3>Támesis</h3><p>Caso documentado de diagnóstico y rehabilitación. Los valores históricos permanecen separados de cualquier estado actual hasta una nueva validación.</p><Link href="/proyectos/tamesis">Ver caso Támesis →</Link></article></div></div></section>
 
         <section className={styles.guard}><div className={`${styles.container} ${styles.guardGrid}`}><div><span className={styles.eyebrow}>Impacto climático</span><h2>CO₂-eq no es una cifra decorativa.</h2></div><p>Un indicador climático solo podrá publicarse cuando estén definidos el escenario de referencia, los límites del sistema, los factores de emisión, el periodo, las fuentes de actividad y los supuestos. Hasta entonces permanece explícitamente en validación.</p></div></section>
+
+        <section className={styles.closing} aria-labelledby="impact-closing-title">
+          <div className={`${styles.container} ${styles.closingGrid}`}>
+            <div>
+              <span className={styles.eyebrow}>De la métrica a la decisión</span>
+              <h2 id="impact-closing-title">La evidencia pública debe llevar al caso que la explica y a la capacidad que puede intervenir.</h2>
+              <p>Los proyectos conservan el contexto operacional detrás de la evidencia. Las soluciones muestran las capacidades que Greenatics puede estructurar y ejecutar según el alcance de cada proyecto.</p>
+            </div>
+            <div className={styles.closingActions}>
+              <Link className={`${styles.button} ${styles.primary}`} href="/proyectos">Ver proyectos documentados</Link>
+              <Link className={styles.button} href="/soluciones">Ver soluciones</Link>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
