@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getPrimaryProjectMedia } from "@/data/public-media";
+import catalog from "./solutions-catalog.module.css";
 import styles from "./solutions-v2.module.css";
 
 export const metadata: Metadata = {
@@ -188,15 +189,15 @@ export default function SolutionsPage() {
 
             <div className={styles.serviceList}>
               {serviceFamilies.map((family) => (
-                <article className={styles.serviceFamily} key={family.number}>
-                  <div className={styles.serviceFamilyIntro}>
+                <article className={catalog.serviceFamily} key={family.number}>
+                  <div className={catalog.serviceFamilyIntro}>
                     <span className={styles.index}>{family.number}</span>
                     <h3>{family.title}</h3>
                     <p>{family.copy}</p>
                   </div>
-                  <nav className={styles.serviceOfferList} aria-label={`Servicios de ${family.title}`}>
+                  <nav className={catalog.serviceOfferList} aria-label={`Servicios de ${family.title}`}>
                     {family.offers.map((offer) => (
-                      <Link className={styles.serviceOffer} href={offer.href} key={offer.href}>
+                      <Link className={catalog.serviceOffer} href={offer.href} key={offer.href}>
                         <strong>{offer.label}</strong>
                         <span aria-hidden="true">→</span>
                       </Link>
