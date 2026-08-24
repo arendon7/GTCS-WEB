@@ -1,0 +1,147 @@
+.catalog {
+  padding: 112px 0;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.catalogGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.serviceCard {
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+  padding: 34px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.serviceMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.serviceMeta span,
+.deliverables > span {
+  color: var(--green);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.serviceMeta small {
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.serviceCard h3 {
+  max-width: 620px;
+  margin: 22px 0 0;
+}
+
+.serviceCard > p {
+  margin: 16px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.deliverables {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.deliverables ul {
+  display: grid;
+  gap: 9px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deliverables li {
+  position: relative;
+  padding-left: 17px;
+  color: var(--ink);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
+.deliverables li::before {
+  content: "";
+  position: absolute;
+  top: .6em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sun);
+}
+
+.serviceLink {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--green);
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+.catalogNote {
+  max-width: 880px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.orientation {
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .catalogGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .serviceCard {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .catalog {
+    padding: 78px 0;
+  }
+
+  .serviceCard {
+    padding: 28px 24px;
+  }
+
+  .serviceMeta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .serviceMeta small {
+    text-align: left;
+  }
+}
