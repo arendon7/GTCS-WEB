@@ -9,8 +9,40 @@ import styles from "@/app/soluciones/solutions.module.css";
 import refresh from "@/app/soluciones/solutions-refresh.module.css";
 import programStyles from "@/app/soluciones/strategic-programs.module.css";
 import moduleStyles from "@/app/soluciones/commercial-modules.module.css";
+import catalogStyles from "@/app/soluciones/audience-service-catalog.module.css";
 
 type GuidedSolutionLanding = AudienceLanding | IntentLanding;
+
+const contactAudienceBySlug: Partial<Record<GuidedSolutionLanding["slug"], string>> = {
+  esp: "esp",
+  municipios: "municipio",
+  empresas: "empresa",
+  "propiedad-horizontal": "ph",
+  plantas: "planta",
+};
+
+function uniqueServiceSlugs(landing: GuidedSolutionLanding) {
+  const decisionSlugs = landing.decisions.flatMap((decision) => {
+    if (!decision.href.startsWith("/soluciones/") || decision.href.startsWith("/soluciones/programas/")) return [];
+    const slug = decision.href.replace("/soluciones/", "");
+    return getService(slug) ? [slug] : [];
+  });
+
+  return [...new Set([
+    ...decisionSlugs,
+    ...landing.stages.flatMap((stage) => stage.serviceSlugs),
+  ])];
+}
+
+function contactHref(landing: GuidedSolutionLanding) {
+  const params = new URLSearchParams({
+    source: `soluciones-${landing.slug}`,
+    contexto: landing.audience,
+  });
+  const audience = contactAudienceBySlug[landing.slug];
+  if (audience) params.set("audience", audience);
+  return `/contacto?${params.toString()}`;
+}
 
 export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLanding }) {
   const programs = landing.programSlugs
@@ -19,6 +51,10 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
   const modules = landing.moduleIds
     .map((id) => commercialModules.find((commercialModule) => commercialModule.id === id))
     .filter(Boolean);
+  const audienceServices = uniqueServiceSlugs(landing)
+    .map((slug) => getService(slug))
+    .filter(Boolean);
+  const conversationHref = contactHref(landing);
 
   return (
     <div className={`${styles.page} ${refresh.page}`}>
@@ -36,10 +72,10 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
               <h1>{landing.title}</h1>
               <p className={styles.lead}>{landing.lead}</p>
               <div className={styles.heroLinks}>
-                <a href="#decisiones">Encontrar punto de entrada →</a>
+                <a href="#servicios">Ver servicios para este contexto →</a>
                 {programs.length > 0 ? <a href="#programas">Ver programas aplicables →</a> : null}
-                <a href="#etapas">Ver ruta por etapas →</a>
-                <Link href="/contacto">Hablar con Greenatics →</Link>
+                <a href="#decisiones">No sé cuál revisar →</a>
+                <Link href={conversationHref}>Hablar con Greenatics →</Link>
               </div>
             </div>
             <aside className={styles.heroProof}>
@@ -50,34 +86,37 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
           </div>
         </section>
 
-        <section className={styles.path} aria-label={`Ruta Greenatics para ${landing.audience}`}>
-          <div className={`${styles.container} ${styles.pathGrid} ${refresh.businessPath}`}>
-            {landing.path.map((item, index) => (
-              <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.journeys} id="decisiones">
+        <section className={catalogStyles.catalog} id="servicios" aria-labelledby={`${landing.slug}-services-title`}>
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <span className={styles.eyebrow}>Empieza por la situación actual</span>
-              <h2>No necesitas conocer el nombre del servicio.</h2>
-              <p>Ubica primero la decisión que tienes abierta. Cada entrada conduce a un programa o servicio ya gobernado; esta página no crea un catálogo paralelo.</p>
+              <div>
+                <span className={styles.eyebrow}>Oferta para {landing.audience}</span>
+                <h2 id={`${landing.slug}-services-title`}>Servicios que puedes abrir directamente.</h2>
+              </div>
+              <p>Si ya sabes qué necesitas, no tienes que pasar por un orientador. Cada ficha explica alcance, entregables, actividades, límites y evidencia disponible antes de preparar una conversación comercial.</p>
             </div>
-            <div className={styles.journeyGrid}>
-              {landing.decisions.map((decision, index) => (
-                <article className={styles.journeyCard} key={decision.situation}>
-                  <span className={styles.journeyNumber}>{String(index + 1).padStart(2, "0")}</span>
-                  <small>Si estás aquí</small>
-                  <h3>{decision.situation}</h3>
-                  <p>{decision.copy}</p>
-                  <div className={styles.journeyLinks}>
-                    <Link href={decision.href}>{decision.startWith} →</Link>
+            <div className={catalogStyles.catalogGrid}>
+              {audienceServices.map((service) => service ? (
+                <article className={catalogStyles.serviceCard} key={service.slug}>
+                  <div className={catalogStyles.serviceMeta}>
+                    <span>{service.category}</span>
+                    <small>{service.audience}</small>
                   </div>
+                  <h3>{service.name}</h3>
+                  <p>{service.summary}</p>
+                  <div className={catalogStyles.deliverables}>
+                    <span>Entregables típicos</span>
+                    <ul>
+                      {service.deliverables.slice(0, 2).map((deliverable) => <li key={deliverable}>{deliverable}</li>)}
+                    </ul>
+                  </div>
+                  <Link className={catalogStyles.serviceLink} href={`/soluciones/${service.slug}`}>
+                    Ver alcance y entregables <span aria-hidden="true">→</span>
+                  </Link>
                 </article>
-              ))}
+              ) : null)}
             </div>
+            <p className={catalogStyles.catalogNote}>La relación con este contexto facilita la navegación; no presume contratación conjunta ni amplía automáticamente el alcance de ninguna ficha.</p>
           </div>
         </section>
 
@@ -85,9 +124,9 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
           <section className={programStyles.programs} id="programas">
             <div className={styles.container}>
               <div className={styles.sectionHead}>
-                <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas de entrada más relevantes</span>
-                <h2>Programas para ordenar el inicio antes de desplegar servicios.</h2>
-                <p>Los programas empaquetan una primera etapa de trabajo. El alcance contractual y los servicios técnicos relacionados permanecen gobernados por sus fichas específicas.</p>
+                <span className={`${styles.eyebrow} ${programStyles.eyebrow}`}>Programas aplicables</span>
+                <h2>Programas empaquetados para situaciones recurrentes.</h2>
+                <p>Cuando un programa coincide con la necesidad puede funcionar como alcance comercial propio. Los servicios técnicos que lo soportan conservan de todos modos sus fichas, límites y entregables específicos.</p>
               </div>
               <div className={programStyles.programGrid}>
                 {programs.map((program) => program ? (
@@ -104,6 +143,37 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
             </div>
           </section>
         ) : null}
+
+        <section className={styles.path} aria-label={`Ruta Greenatics para ${landing.audience}`}>
+          <div className={`${styles.container} ${styles.pathGrid} ${refresh.businessPath}`}>
+            {landing.path.map((item, index) => (
+              <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></div>
+            ))}
+          </div>
+        </section>
+
+        <section className={`${styles.journeys} ${catalogStyles.orientation}`} id="decisiones">
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.eyebrow}>Si todavía no sabes cuál servicio revisar</span>
+              <h2>Usa la situación actual como orientación.</h2>
+              <p>Esta capa es secundaria: sirve para ubicar una ficha o un programa cuando el nombre de la solución todavía no está claro. No sustituye el servicio ni crea una prescripción automática.</p>
+            </div>
+            <div className={styles.journeyGrid}>
+              {landing.decisions.map((decision, index) => (
+                <article className={styles.journeyCard} key={decision.situation}>
+                  <span className={styles.journeyNumber}>{String(index + 1).padStart(2, "0")}</span>
+                  <small>Si estás aquí</small>
+                  <h3>{decision.situation}</h3>
+                  <p>{decision.copy}</p>
+                  <div className={styles.journeyLinks}>
+                    <Link href={decision.href}>{decision.startWith} →</Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <section className={moduleStyles.modules} id="modulos">
           <div className={styles.container}>
@@ -174,7 +244,7 @@ export function AudienceSolutionLanding({ landing }: { landing: GuidedSolutionLa
             <div>
               <p>{landing.ctaCopy}</p>
               <div className={styles.heroLinks}>
-                <Link href="/contacto">Preparar conversación →</Link>
+                <Link href={conversationHref}>Preparar conversación →</Link>
                 <Link href="/soluciones">Volver al portafolio completo →</Link>
               </div>
             </div>
