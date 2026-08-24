@@ -110,7 +110,7 @@ export function PublicHeader() {
           </button>
           <div className={styles.mobilePanelHead}>
             <span>Soluciones Greenatics</span>
-            <strong>Empieza por quién eres o por lo que necesitas resolver.</strong>
+            <strong>Elige el servicio que necesitas o entra por tu tipo de organización.</strong>
           </div>
           <Link className={styles.mobileFeaturedLink} href="/soluciones" onClick={closeMobile}>
             Ver todas las soluciones <span aria-hidden="true">→</span>
@@ -124,8 +124,8 @@ export function PublicHeader() {
             {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={closeMobile} />)}
           </div>
           <Link className={styles.mobileDiagnostic} href="/soluciones/diagnostico-inicial" onClick={closeMobile}>
-            <span>No sé por dónde empezar</span>
-            <strong>Iniciar diagnóstico inicial</strong>
+            <span>¿Todavía no sabes qué servicio revisar?</span>
+            <strong>Usar orientador inicial</strong>
             <span aria-hidden="true">→</span>
           </Link>
         </>
@@ -236,7 +236,7 @@ export function PublicHeader() {
                   <div className={`${styles.megaMenu} ${styles.solutionsMenu}`} role="group" aria-label="Menú Soluciones">
                     <div className={styles.megaIntro}>
                       <span>Soluciones Greenatics</span>
-                      <strong>Empieza por tu contexto. Después profundizamos en el servicio.</strong>
+                      <strong>Elige el servicio que necesitas o entra por tu tipo de organización.</strong>
                       <Link href="/soluciones" onClick={() => setDesktopMenu(null)}>Ver todas las soluciones →</Link>
                     </div>
                     <div className={styles.megaColumn}>
@@ -248,8 +248,8 @@ export function PublicHeader() {
                       {publicSolutionNeeds.map((item) => <MenuLink key={item.label} item={item} onNavigate={() => setDesktopMenu(null)} />)}
                     </div>
                     <Link className={styles.megaDiagnostic} href="/soluciones/diagnostico-inicial" onClick={() => setDesktopMenu(null)}>
-                      <span>No sé por dónde empezar</span>
-                      <strong>Diagnóstico inicial Greenatics</strong>
+                      <span>¿Todavía no sabes qué servicio revisar?</span>
+                      <strong>Usar orientador inicial</strong>
                       <span aria-hidden="true">→</span>
                     </Link>
                   </div>
