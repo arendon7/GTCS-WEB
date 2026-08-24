@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const capabilities = [
-  ["Gestión y planeación", "Diagnóstico, caracterización, PMIRS, PGIRS, separación, rutas y decisiones antes de comprometer infraestructura."],
+  ["Gestión y planeación", "Caracterización, PMIRS, PGIRS, separación, rutas y estructuración de decisiones antes de comprometer infraestructura."],
   ["Ingeniería y plantas", "Prefactibilidad, rehabilitación, optimización, compostaje, digestión anaerobia y puesta en marcha según el contexto."],
   ["Dirección y operación", "Protocolos, personas, mantenimiento, calidad, inventarios, coordinación y mejora continua sin asumir que Greenatics debe operar todo directamente."],
   ["Valorización y agro", "Wondergreen conecta suelo, nutrición organomineral, líquidos, compost, bioinsumos, conocimiento y desarrollo de destinos para materiales aprovechados."],
@@ -19,24 +19,24 @@ const capabilities = [
 ] as const;
 
 const method = [
-  ["01", "Diagnosticar", "Entender generación, operación, restricciones, infraestructura, datos y decisión pendiente."],
-  ["02", "Definir ruta", "Separar lo urgente, lo necesario y lo que todavía requiere validación antes de invertir."],
-  ["03", "Implementar", "Traducir el diagnóstico en actividades, protocolos, ingeniería, logística o herramientas concretas."],
+  ["01", "Entender", "Leer el resultado que se necesita, la situación actual, la información disponible, las restricciones y las responsabilidades involucradas."],
+  ["02", "Definir el alcance", "Traducir la necesidad en actividades, entregables, responsables, exclusiones y criterios de cierre antes de ejecutar."],
+  ["03", "Implementar", "Ejecutar programas, protocolos, ingeniería, logística, operación o herramientas concretas según el alcance contratado."],
   ["04", "Acompañar", "Dirigir, medir y corregir sin confundir seguimiento técnico con una obligación de operar todos los activos."],
   ["05", "Mejorar y valorizar", "Usar la evidencia para optimizar el sistema y encontrar mejores destinos para los recursos recuperados."],
 ] as const;
 
 const principles = [
-  ["Entender antes de dimensionar", "Una tecnología correcta para la corriente equivocada sigue siendo una mala solución. La línea base gobierna la siguiente decisión."],
+  ["Entender antes de dimensionar", "Una tecnología correcta para la corriente equivocada sigue siendo una mala solución. La información de partida gobierna la siguiente decisión cuando realmente hace falta medir o comprobar."],
   ["Diseñar pensando en operar", "Una planta necesita suministro, personas, procedimientos, mantenimiento, control y salida de producto; no solo equipos."],
   ["Separar evidencia de promesa", "Una foto, una capacidad nominal o una característica técnica no se convierten automáticamente en un resultado vigente o universal."],
   ["Medir para mejorar", "Recepciones, impropios, lotes, proceso, mantenimiento, producto e inventario deben producir información útil para decidir."],
 ] as const;
 
 const ecosystem = [
-  ["Soluciones", "/soluciones", "Diagnóstico, planeación, regulación, rutas, plantas, operación, datos y valorización."],
+  ["Soluciones", "/soluciones", "Planeación, regulación, caracterización, rutas, plantas, operación, datos y valorización."],
   ["Wondergreen", "/wondergreen", "Suelo, nutrición, biología, productos, cultivos y acompañamiento técnico."],
-  ["Casa & Jardín", "/casa-jardin", "Una entrada doméstica por observación, seguridad y etapa, todavía sin ecommerce activo."],
+  ["Casa & Jardín", "/casa-jardin", "Una entrada doméstica por producto, kit, etapa y seguridad, todavía sin ecommerce activo."],
   ["Recursos", "/recursos", "Biblioteca técnica, proyectos documentados e impacto publicado con gobierno."],
   ["GREENATICS OPS", "/app", "La capa digital donde una operación activa puede registrar y convertir actividad en evidencia."],
 ] as const;
@@ -85,8 +85,8 @@ export default function AboutPage() {
         <section className={`${styles.section} ${styles.dark}`} id="como-trabajamos" aria-labelledby="method-title">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Cómo trabajamos</span><h2 id="method-title">Diagnóstico primero. Después una ruta que pueda ejecutarse.</h2></div>
-              <p>No vendemos una tecnología como respuesta universal. La secuencia permite separar lo que sabemos, lo que falta comprobar y lo que realmente conviene hacer después.</p>
+              <div><span className={styles.eyebrow}>Cómo trabajamos</span><h2 id="method-title">Primero el resultado que necesitas. Después definimos la ruta para alcanzarlo.</h2></div>
+              <p>No vendemos una tecnología ni un diagnóstico como respuesta universal. Si el problema y la información ya están claros, podemos entrar directamente al servicio; cuando faltan datos críticos, la línea base se incorpora como una actividad del alcance.</p>
             </div>
             <div className={styles.method}>
               {method.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
@@ -98,7 +98,7 @@ export default function AboutPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Criterio de trabajo</span><h2 id="principles-title">La ingeniería, la operación y la comunicación necesitan el mismo estándar de verdad.</h2></div>
-              <p>Estos principios gobiernan tanto un diagnóstico como una propuesta, una planta, un producto o una cifra pública.</p>
+              <p>Estos principios gobiernan una caracterización, una propuesta, una planta, un producto, una operación o una cifra pública.</p>
             </div>
             <div className={styles.principles}>
               {principles.map(([title, copy], index) => <article className={styles.principle} key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}
@@ -133,8 +133,8 @@ export default function AboutPage() {
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingGrid}`}>
-            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>Si el problema es complejo, empecemos por ordenarlo.</h2></div>
-            <div><p>Cuéntanos qué decisión necesitas tomar y qué información ya existe. Podemos empezar por diagnóstico, una ruta técnica o una conversación exploratoria.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/contacto?source=nosotros">Hablar con nosotros</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones/diagnostico-caracterizacion">Empezar por diagnóstico</Link></div></div>
+            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>Si ya sabes qué necesitas, entra directo al servicio.</h2></div>
+            <div><p>Explora el alcance y los entregables de cada solución. Si todavía no está claro cuál corresponde, el orientador inicial puede ayudarte a ubicar una ruta sin sustituir la evaluación técnica ni el alcance comercial.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Explorar servicios</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link></div></div>
           </div>
         </section>
       </main>
