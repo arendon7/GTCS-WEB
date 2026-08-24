@@ -42,6 +42,10 @@ function formatLabel(format: string) {
   return labels[format] ?? format;
 }
 
+function forceDownloadHref(href: string) {
+  return `${href}${href.includes("?") ? "&" : "?"}download=1`;
+}
+
 export default async function WondergreenProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const reference = getWondergreenReference(slug);
@@ -149,21 +153,38 @@ export default async function WondergreenProductPage({ params }: { params: Promi
           <div className={styles.container}>
             <div className={styles.sectionHeading}>
               <span className={styles.eyebrow}>Documentación oficial</span>
-              <h2>Abre los documentos aprobados, no una reconstrucción de ellos.</h2>
-              <p>La página web organiza la referencia y sus relaciones. Los PDF publicados conservan el diseño y contenido del master editorial aprobado.</p>
+              <h2>Abre o descarga los documentos aprobados, no una reconstrucción de ellos.</h2>
+              <p>La página web organiza la referencia y sus relaciones. Los PDF publicados conservan el diseño y contenido del master editorial aprobado, con acciones separadas para lectura y descarga.</p>
             </div>
             <div className={depth.documentGrid}>
               {documents.catalog?.downloadHref ? (
                 <article className={depth.documentCard}>
                   {documents.catalog.coverImage ? <Image src={documents.catalog.coverImage} alt={`Portada de ${documents.catalog.title}`} width={520} height={735} unoptimized /> : null}
-                  <div><span>{documents.catalog.statusLabel}</span><h3>{documents.catalog.title}</h3><p>{documents.catalog.masterLabel}</p><a href={documents.catalog.downloadHref} target="_blank" rel="noreferrer">Abrir catálogo PDF →</a></div>
+                  <div>
+                    <span>{documents.catalog.statusLabel}</span>
+                    <h3>{documents.catalog.title}</h3>
+                    <p>{documents.catalog.masterLabel}</p>
+                    <div className={depth.documentActions}>
+                      <a href={documents.catalog.downloadHref} target="_blank" rel="noreferrer">Abrir catálogo PDF →</a>
+                      <a href={forceDownloadHref(documents.catalog.downloadHref)}>{documents.catalog.downloadLabel ?? "Descargar catálogo PDF"} ↓</a>
+                    </div>
+                  </div>
                 </article>
               ) : null}
 
               {documents.guides.map((guide) => (
                 <article className={depth.documentCard} key={guide.id}>
                   {guide.coverImage ? <Image src={guide.coverImage} alt={`Portada de ${guide.title}`} width={520} height={735} unoptimized /> : null}
-                  <div><span>{guide.statusLabel}</span><h3>{guide.title}</h3><p>{guide.masterLabel}</p><div className={depth.documentActions}><Link href={guide.href}>Ver programa web</Link>{guide.downloadHref ? <a href={guide.downloadHref} target="_blank" rel="noreferrer">Abrir PDF →</a> : null}</div></div>
+                  <div>
+                    <span>{guide.statusLabel}</span>
+                    <h3>{guide.title}</h3>
+                    <p>{guide.masterLabel}</p>
+                    <div className={depth.documentActions}>
+                      <Link href={guide.href}>Ver programa web</Link>
+                      {guide.downloadHref ? <a href={guide.downloadHref} target="_blank" rel="noreferrer">Abrir PDF →</a> : null}
+                      {guide.downloadHref ? <a href={forceDownloadHref(guide.downloadHref)}>{guide.downloadLabel ?? "Descargar guía PDF"} ↓</a> : null}
+                    </div>
+                  </div>
                 </article>
               ))}
 
