@@ -24,28 +24,28 @@ const audienceContent: Record<string, { title: string; lead: string; builder: st
   },
   empresa: {
     title: "Cuéntanos cómo gestionas hoy tus residuos.",
-    lead: "Podemos revisar línea base, PMIRS, múltiples sedes, orgánicos, gestores, logística, indicadores, tratamiento o trazabilidad sin obligarte a llegar con una solución predeterminada.",
+    lead: "Podemos trabajar línea base, PMIRS, múltiples sedes, orgánicos, gestores, logística, indicadores, tratamiento o trazabilidad. Si ya sabes cuál servicio necesitas, conservamos ese contexto desde el primer contacto.",
     builder: "empresa",
   },
   ph: {
     title: "Cuéntanos cuántas unidades o sedes quieres organizar.",
-    lead: "La conversación puede partir de diagnóstico, PMIRS por unidad, estandarización, información comparable y una lógica de red para seguimiento y decisiones.",
+    lead: "La conversación puede partir de PMIRS por unidad, caracterización, estandarización, información comparable y una lógica de red para seguimiento y decisiones.",
     builder: "ph",
   },
   planta: {
     title: "Cuéntanos sobre la planta que quieres recuperar o mejorar.",
-    lead: "Si la infraestructura existe, el primer paso es entender su estado técnico, suministro, proceso, personas, mantenimiento, datos y destino antes de decidir inversión o intervención.",
+    lead: "Podemos entrar por rehabilitación, dirección técnica, operación, prefactibilidad o ingeniería según el estado de la infraestructura y la decisión que ya tengas abierta.",
     builder: "planta",
   },
   wondergreen: {
     title: "Cuéntanos sobre tu cultivo o tu interés en Wondergreen.",
-    lead: "Cultivo, etapa, problema, análisis, referencia y canal comercial cambian la conversación. Podemos empezar por contexto técnico o por distribución.",
+    lead: "Cultivo, etapa, problema, análisis, referencia y canal comercial cambian la conversación. Podemos empezar por una referencia concreta, soporte técnico o distribución.",
     builder: "wondergreen",
   },
 };
 
 const preparation = [
-  ["Organizaciones", "Residuos y gestión", ["Ubicación y tipo de organización", "Qué ocurre hoy", "Datos o diagnósticos disponibles", "Principal decisión pendiente"]],
+  ["Organizaciones", "Residuos y gestión", ["Ubicación y tipo de organización", "Qué ocurre hoy", "Datos o evaluaciones disponibles", "Principal decisión pendiente"]],
   ["Plantas / proyectos", "Infraestructura y operación", ["Estado actual de la planta", "Corriente y suministro", "Restricción principal", "Documentos, planos o datos existentes"]],
   ["Agro / Wondergreen", "Cultivo y nutrición", ["Cultivo y etapa", "Área o número de plantas", "Objetivo o problema observado", "Análisis disponibles y manejo reciente"]],
 ] as const;
@@ -53,9 +53,9 @@ const preparation = [
 const routes = [
   ["01", "ESP / Prestador", "Preparación, rutas, aprovechamiento, infraestructura, operación y datos.", "/contacto?audience=esp", "Preparar conversación"],
   ["02", "Municipio", "PGIRS, proyectos, activos, prefactibilidad y decisiones territoriales.", "/contacto?audience=municipio", "Preparar conversación"],
-  ["03", "Empresa", "Diagnóstico, PMIRS, logística, tratamiento y trazabilidad.", "/contacto?audience=empresa", "Preparar conversación"],
-  ["04", "Propiedad horizontal / Institución", "Diagnóstico por unidad, PMIRS y lógica de red.", "/contacto?audience=ph", "Preparar conversación"],
-  ["05", "Planta / Operador", "Estado técnico, rehabilitación, optimización y dirección.", "/contacto?audience=planta", "Preparar conversación"],
+  ["03", "Empresa", "Línea base, PMIRS, logística, tratamiento y trazabilidad.", "/contacto?audience=empresa", "Preparar conversación"],
+  ["04", "Propiedad horizontal / Institución", "Caracterización, PMIRS por unidad, estandarización y lógica de red.", "/contacto?audience=ph", "Preparar conversación"],
+  ["05", "Planta / Operador", "Rehabilitación, optimización, dirección, operación e ingeniería.", "/contacto?audience=planta", "Preparar conversación"],
   ["06", "Wondergreen", "Cultivo, producto, soporte técnico o distribución.", "/contacto?audience=wondergreen", "Preparar conversación"],
 ] as const;
 
@@ -93,7 +93,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const query = await searchParams;
   const audience = normalizeAudience(firstParam(query.audience));
   const need = firstParam(query.need) ?? "";
-  const service = firstParam(query.service);
+  const service = firstParam(query.service)?.trim().slice(0, 180) || undefined;
   const source = firstParam(query.source);
   const crop = firstParam(query.cultivo);
   const inheritedContext = normalizeInheritedContext(firstParam(query.contexto));
@@ -101,7 +101,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const product = productSlug ? getWondergreenReference(productSlug) : undefined;
   const contextual = audienceContent[audience];
   const title = contextual?.title ?? (product ? `Cuéntanos el contexto de ${product.name}.` : "Cuéntanos qué quieres resolver.");
-  const lead = contextual?.lead ?? "No necesitas conocer el nombre de nuestro servicio. Empieza por la situación actual, la decisión que necesitas tomar y la información que ya existe.";
+  const lead = contextual?.lead ?? (service
+    ? `Ya conservamos el servicio que estabas revisando: ${service}. Completa solo el contexto que ayude a preparar una conversación útil.`
+    : "Si ya sabes qué servicio necesitas, puedes llegar directamente con esa referencia. Si no, empieza por la situación actual, la decisión que necesitas tomar y la información que ya existe.");
 
   return (
     <div className={styles.page}>
@@ -146,13 +148,14 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             <div className={styles.builderIntro}>
               <span className={styles.eyebrow}>Prepara tu caso</span>
               <h2 id="builder-title">Cuatro datos pueden llevar la conversación mucho más rápido al problema real.</h2>
-              <p>Este paso sirve para ordenar el contexto antes de hablar con el equipo. No sustituye un diagnóstico y no intenta recomendar automáticamente un servicio.</p>
+              <p>Este paso sirve para ordenar el contexto antes de hablar con el equipo. No sustituye una evaluación técnica, no cambia el servicio que ya elegiste y no intenta recomendar automáticamente otro.</p>
               <div className={styles.builderNote}><strong>Privacidad práctica.</strong> Evita incluir secretos industriales, datos personales sensibles o documentación confidencial en este primer resumen. Podemos definir después el canal adecuado para compartir información técnica.</div>
             </div>
             <ContactContextBuilder
               bookingUrl={publicSite.bookingUrl}
               initialAudience={contextual?.builder ?? audience}
               initialNeed={need}
+              initialService={service}
               initialProduct={product ? `${product.name}${product.formula ? ` ${product.formula}` : ""}` : undefined}
               initialCrop={crop}
               initialContext={inheritedContext}
@@ -186,15 +189,15 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
 
         <section className={`${styles.section} ${styles.soft}`}>
           <div className={`${styles.container} ${styles.officeGrid}`}>
-            <div><span className={styles.eyebrow}>Dónde estamos</span><h2>Medellín, Colombia.</h2><p className={styles.lead}>La sede pública es un punto de referencia corporativo. Los proyectos, diagnósticos y operaciones pueden desarrollarse en otros territorios según su alcance.</p></div>
+            <div><span className={styles.eyebrow}>Dónde estamos</span><h2>Medellín, Colombia.</h2><p className={styles.lead}>La sede pública es un punto de referencia corporativo. Los proyectos, evaluaciones y operaciones pueden desarrollarse en otros territorios según su alcance.</p></div>
             <aside className={styles.officeCard}><strong>{publicSite.office.line1}</strong><span>{publicSite.office.line2}</span><span>{publicSite.office.city}</span></aside>
           </div>
         </section>
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingGrid}`}>
-            <div><span className={styles.eyebrow}>Si todavía no sabes qué pedir</span><h2>Elige el problema antes que la solución.</h2></div>
-            <div><p>La ruta más segura es empezar por el contexto y dejar que el diagnóstico defina qué servicio, herramienta o intervención tiene sentido después.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones/diagnostico-caracterizacion">Empezar por diagnóstico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones">Explorar soluciones</Link></div></div>
+            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>El servicio primero. La orientación solo cuando todavía hace falta.</h2></div>
+            <div><p>Si ya reconoces lo que necesitas, vuelve al catálogo y abre directamente el servicio, producto o solución correspondiente. Si todavía existe incertidumbre, el orientador inicial puede ayudarte a ubicar una ruta sin sustituir una evaluación técnica ni convertirla en una prescripción.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Explorar servicios</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link></div></div>
           </div>
         </section>
       </main>
