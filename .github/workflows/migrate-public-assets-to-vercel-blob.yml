@@ -1,0 +1,165 @@
+name: migrate-public-assets-to-vercel-blob
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    if: contains(github.event.pull_request.body || '', '<!-- GREENATICS_BLOB_MIGRATION')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_NAME: greenatics-ops
+
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Require Vercel credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN"
+          test -n "$VERCEL_ORG_ID"
+
+      - name: Parse and validate ephemeral migration payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re, os
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          body = event.get('pull_request', {}).get('body') or ''
+          match = re.search(r'<!-- GREENATICS_BLOB_MIGRATION\s*(\{.*?\})\s*-->', body, re.S)
+          if not match:
+              raise SystemExit('migration payload marker not found')
+          payload = json.loads(match.group(1))
+          assets = payload.get('assets')
+          if not isinstance(assets, list) or not 1 <= len(assets) <= 30:
+              raise SystemExit('assets must contain 1..30 items')
+          allowed_types = {'application/pdf', 'image/webp'}
+          seen = set()
+          normalized = []
+          for asset in assets:
+              if not isinstance(asset, dict):
+                  raise SystemExit('asset must be object')
+              source = asset.get('source')
+              pathname = asset.get('pathname')
+              content_type = asset.get('contentType')
+              parsed = urlparse(source or '')
+              if parsed.scheme != 'https' or not parsed.hostname or not parsed.hostname.endswith('.oaiusercontent.com'):
+                  raise SystemExit('source host is not an approved ephemeral transfer host')
+              if not isinstance(pathname, str) or not pathname.startswith('greenatics-public/v1/') or '..' in pathname or pathname in seen:
+                  raise SystemExit('invalid or duplicate pathname')
+              if content_type not in allowed_types:
+                  raise SystemExit('unsupported content type')
+              seen.add(pathname)
+              normalized.append({'source': source, 'pathname': pathname, 'contentType': content_type})
+          Path('/tmp/assets.json').write_text(json.dumps({'assets': normalized}), encoding='utf-8')
+          print(f'Validated {len(normalized)} ephemeral assets without logging source URLs.')
+          PY
+
+      - name: Resolve canonical Vercel project and Blob credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_NAME?teamId=$VERCEL_ORG_ID" \
+            -o /tmp/project.json
+          project_id="$(jq -r '.id // empty' /tmp/project.json)"
+          test "${project_id#prj_}" != "$project_id"
+          echo "VERCEL_PROJECT_ID=$project_id" >> "$GITHUB_ENV"
+
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v10/projects/$project_id/env?decrypt=true&teamId=$VERCEL_ORG_ID" \
+            -o /tmp/project-env.json
+
+          value="$(jq -r '(.envs // [])[] | select(.key == "BLOB_READ_WRITE_TOKEN") | .value // empty' /tmp/project-env.json | head -n 1)"
+          test -n "$value"
+          echo "::add-mask::$value"
+          echo "BLOB_READ_WRITE_TOKEN=$value" >> "$GITHUB_ENV"
+          echo "Canonical project and linked Blob credential resolved without exposing secrets." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install minimal Blob SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blob-runner
+          cd /tmp/blob-runner
+          printf '{"type":"module","private":true}\n' > package.json
+          npm install --ignore-scripts --no-audit --no-fund @vercel/blob@latest
+
+      - name: Transfer and certify public assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/assets.json /tmp/blob-runner/assets.json
+          cat > /tmp/blob-runner/migrate.mjs <<'NODE'
+          import fs from 'node:fs';
+          import { put } from '@vercel/blob';
+
+          const { assets } = JSON.parse(fs.readFileSync(new URL('./assets.json', import.meta.url), 'utf8'));
+          const results = new Array(assets.length);
+          let cursor = 0;
+
+          async function transfer(asset) {
+            const source = await fetch(asset.source, { redirect: 'follow' });
+            if (!source.ok || !source.body) throw new Error(`source fetch failed for ${asset.pathname}: HTTP ${source.status}`);
+            const blob = await put(asset.pathname, source.body, {
+              access: 'public',
+              addRandomSuffix: false,
+              allowOverwrite: true,
+              contentType: asset.contentType,
+              cacheControlMaxAge: 31536000,
+              token: process.env.BLOB_READ_WRITE_TOKEN,
+            });
+            const publicResponse = await fetch(blob.url, { redirect: 'follow' });
+            if (!publicResponse.ok) throw new Error(`public verification failed for ${asset.pathname}: HTTP ${publicResponse.status}`);
+            const bytes = new Uint8Array(await publicResponse.arrayBuffer());
+            if (!bytes.length) throw new Error(`empty blob for ${asset.pathname}`);
+            if (asset.contentType === 'application/pdf') {
+              const magic = new TextDecoder().decode(bytes.slice(0, 4));
+              if (magic !== '%PDF') throw new Error(`invalid PDF magic for ${asset.pathname}`);
+            } else {
+              const riff = new TextDecoder().decode(bytes.slice(0, 4));
+              const webp = new TextDecoder().decode(bytes.slice(8, 12));
+              if (riff !== 'RIFF' || webp !== 'WEBP') throw new Error(`invalid WebP magic for ${asset.pathname}`);
+            }
+            return { pathname: asset.pathname, url: blob.url, contentType: asset.contentType, size: bytes.length };
+          }
+
+          async function worker() {
+            while (true) {
+              const index = cursor++;
+              if (index >= assets.length) return;
+              results[index] = await transfer(assets[index]);
+            }
+          }
+
+          await Promise.all(Array.from({ length: Math.min(3, assets.length) }, () => worker()));
+          fs.writeFileSync('/tmp/blob-results.json', JSON.stringify(results, null, 2));
+          for (const result of results) console.log(`PUBLIC_ASSET ${result.pathname} ${result.url} ${result.size}`);
+          NODE
+          cd /tmp/blob-runner
+          node migrate.mjs
+
+      - name: Migration summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(jq 'length' /tmp/blob-results.json)"
+          echo "Vercel Blob migration certified: $count assets." >> "$GITHUB_STEP_SUMMARY"
+          jq -r '.[] | "- `\(.pathname)` → \(.url) (\(.size) bytes)"' /tmp/blob-results.json >> "$GITHUB_STEP_SUMMARY"
