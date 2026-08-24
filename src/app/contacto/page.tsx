@@ -193,8 +193,8 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingGrid}`}>
-            <div><span className={styles.eyebrow}>Si todavía no sabes qué pedir</span><h2>Elige el problema antes que la solución.</h2></div>
-            <div><p>La ruta más segura es empezar por el contexto y dejar que el diagnóstico defina qué servicio, herramienta o intervención tiene sentido después.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones/diagnostico-caracterizacion">Empezar por diagnóstico</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones">Explorar soluciones</Link></div></div>
+            <div><span className={styles.eyebrow}>Si todavía no sabes qué pedir</span><h2>Usa el orientador cuando todavía no sabes qué solución revisar.</h2></div>
+            <div><p>Si ya identificaste un servicio, continúa directamente con esa conversación. Si todavía no sabes cuál corresponde, el orientador inicial ordena actor, necesidad y estado sin convertir esa orientación en un diagnóstico técnico cerrado.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones">Explorar soluciones</Link></div></div>
           </div>
         </section>
       </main>
