@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { HomeGardenStageVisual } from "@/components/home-garden-stage-visual";
 import {
   getHomeGardenProduct,
   homeGardenProducts,
@@ -46,10 +47,12 @@ export default async function HomeGardenProductPage({ params }: { params: Promis
                 <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/diagnostico">No sé si corresponde a mi planta</Link>
               </div>
             </div>
-            <aside className={styles.heroVisual}>
+            <aside className={styles.heroVisual} aria-label={`Identidad visual ${product.consumerName}`}>
               <p className={styles.heroNote}>PRESENTACIÓN DOMÉSTICA EN VALIDACIÓN</p>
-              <strong style={{ color: "white", fontFamily: "var(--display)", fontSize: "3.2rem", lineHeight: 1 }}>{product.technicalName}</strong>
-              <p style={{ color: "#d5e2dc", maxWidth: "26rem" }}>{product.formula ? `Fórmula técnica: ${product.formula}` : "Base orgánica para el sistema de suelo."}</p>
+              <HomeGardenStageVisual stage={product.id} size="hero" />
+              <p style={{ color: "#d5e2dc", maxWidth: "26rem" }}>
+                Referencia técnica: {product.technicalName}. El arte de línea identifica la familia aprobada; no representa un packshot específico de los formatos domésticos propuestos.
+              </p>
             </aside>
           </div>
         </section>
