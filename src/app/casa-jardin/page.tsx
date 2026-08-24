@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { HomeGardenKitStageRail } from "@/components/home-garden-kit-stage-rail";
+import { HomeGardenStageVisual } from "@/components/home-garden-stage-visual";
 import {
   homeGardenApplication,
   homeGardenFaq,
@@ -25,19 +27,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-const stageVisuals: Record<string, { src: string; alt: string }> = {
-  crece: { src: "/api/public-media/wondergreen-2grow", alt: "Línea Wondergreen 2Grow para crecimiento y recuperación" },
-  equilibra: { src: "/api/public-media/wondergreen-2balance", alt: "Línea Wondergreen 2Balance para equilibrio y mantenimiento" },
-  florece: { src: "/api/public-media/wondergreen-2bloom", alt: "Línea Wondergreen 2Bloom para prefloración y floración" },
-  fructifica: { src: "/api/public-media/wondergreen-2fruit", alt: "Línea Wondergreen 2Fruit para llenado y maduración" },
-};
-
 const contexts = [
   {
     number: "01",
     title: "Plantas en casa",
     copy: "Interior, balcón o terraza: explora kits organizados por uso y conserva la revisión de etapa y condición antes de aplicar.",
-    href: "#kits",
+    href: "/casa-jardin/kits",
     cta: "Ver kits para casa",
   },
   {
@@ -51,7 +46,7 @@ const contexts = [
     number: "03",
     title: "Jardín o vivero",
     copy: "Cuando conviven muchas plantas, la lógica común ayuda a ordenar decisiones sin asumir que todas están en la misma etapa o condición.",
-    href: "#etapas",
+    href: "/casa-jardin/productos",
     cta: "Ver productos por etapa",
   },
 ] as const;
@@ -70,8 +65,8 @@ export default function CasaJardinPage() {
         <div className={styles.container}>
           <span>Casa & Jardín</span>
           <div>
-            <a href="#etapas">Productos</a>
-            <a href="#kits">Kits</a>
+            <Link href="/casa-jardin/productos">Productos</Link>
+            <Link href="/casa-jardin/kits">Kits</Link>
             <a href="#contextos">Para quién</a>
             <a href="#seguridad">Antes de aplicar</a>
             <a href="#diagnostico">Orientador</a>
@@ -92,8 +87,8 @@ export default function CasaJardinPage() {
                 Casa & Jardín organiza Wondergreen en productos por etapa y kits por uso para que puedas entender la oferta antes de decidir. Si la etapa o la condición de la planta no están claras, el orientador ayuda a revisar el siguiente paso sin convertir un síntoma en una receta.
               </p>
               <div className={styles.actions}>
-                <a className={`${styles.button} ${styles.primary}`} href="#etapas">Ver productos por etapa</a>
-                <a className={`${styles.button} ${styles.ghost}`} href="#kits">Ver kits</a>
+                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/productos">Ver productos por etapa</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/kits">Ver kits</Link>
                 <Link className={styles.textLink} href="/casa-jardin/diagnostico">No sé qué etapa corresponde →</Link>
                 <a className={styles.textLink} href="/api/public-resources/wondergreen-product-master" target="_blank" rel="noreferrer">Descargar catálogo Wondergreen ↓</a>
               </div>
@@ -126,33 +121,27 @@ export default function CasaJardinPage() {
               <span className={styles.eyebrow}>Productos · 4 etapas + suelo</span>
               <h2 id="stages-title">No necesita más. Necesita lo correcto.</h2>
               <p>COMPOST prepara la base. CRECE, EQUILIBRA, FLORECE y FRUCTIFICA traducen cuatro referencias sólidas Wondergreen ya existentes a una lectura doméstica por etapa. Explorar una etapa no equivale a recomendar fertilización: si hay exceso de agua, daño radicular, estrés severo o una señal sanitaria, primero se corrige o revisa esa condición.</p>
+              <Link className={styles.textLink} href="/casa-jardin/productos">Ver catálogo completo de productos →</Link>
             </div>
 
-            {homeGardenProducts.map((product, index) => {
-              const visual = stageVisuals[product.id];
-              return (
-                <article className={styles.stageRow} key={product.id}>
-                  <span className={styles.stageNumber}>{String(index + 1).padStart(2, "0")}</span>
-                  <div className={styles.stageIdentity}>
-                    <small>{product.id === "prepara" ? "Base del sistema" : "Etapa nutricional"}</small>
-                    <h3>{product.consumerName}</h3>
-                    <span className={styles.formula}>{product.formula ?? "Compost"}</span>
-                  </div>
-                  <div className={styles.stageVisual}>
-                    {visual ? (
-                      <Image src={visual.src} width={760} height={1074} alt={visual.alt} sizes="(max-width: 820px) 80vw, 28vw" unoptimized />
-                    ) : (
-                      <div className={styles.compostVisual} aria-label="Compost como base del sistema"><span>Suelo primero</span><strong>COMPOST</strong><small>Materia orgánica · acondicionamiento</small></div>
-                    )}
-                  </div>
-                  <div className={styles.stageCopy}>
-                    <p>{product.role}</p>
-                    <p><strong>{product.prompt}</strong></p>
-                    <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
-                  </div>
-                </article>
-              );
-            })}
+            {homeGardenProducts.map((product, index) => (
+              <article className={styles.stageRow} key={product.id}>
+                <span className={styles.stageNumber}>{String(index + 1).padStart(2, "0")}</span>
+                <div className={styles.stageIdentity}>
+                  <small>{product.id === "prepara" ? "Base del sistema" : "Etapa nutricional"}</small>
+                  <h3>{product.consumerName}</h3>
+                  <span className={styles.formula}>{product.formula ?? "Compost"}</span>
+                </div>
+                <div className={styles.stageVisual}>
+                  <HomeGardenStageVisual stage={product.id} size="card" showIdentity={false} />
+                </div>
+                <div className={styles.stageCopy}>
+                  <p>{product.role}</p>
+                  <p><strong>{product.prompt}</strong></p>
+                  <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
@@ -169,12 +158,16 @@ export default function CasaJardinPage() {
                   <div className={styles.kitIdentity}><small>{kit.audience}</small><h3>{kit.name}</h3><div className={styles.status}>Pre-lanzamiento · compra deshabilitada</div></div>
                   <p className={styles.kitPromise}>{kit.promise}</p>
                   <div className={styles.kitContents}>
+                    <HomeGardenKitStageRail stages={kit.pathway} label={`Composición visual de ${kit.name}`} />
                     <ul>{kit.contents.map((content) => <li key={content}>{content}</li>)}</ul>
                     <p>{kit.guardrail}</p>
                     <Link href={`/casa-jardin/kits/${kit.id}`}>Ver composición y ruta →</Link>
                   </div>
                 </article>
               ))}
+            </div>
+            <div className={styles.actions}>
+              <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/kits">Ver todos los kits →</Link>
             </div>
             <div className={styles.guardrail}>
               <strong>Trasplanta & Arranca no aparece como kit disponible.</strong>
@@ -243,7 +236,7 @@ export default function CasaJardinPage() {
                   <span className={styles.index}>{item.number}</span>
                   <h3>{item.title}</h3>
                   <p>{item.copy}</p>
-                  {item.href.startsWith("/") ? <Link href={item.href}>{item.cta} →</Link> : <a href={item.href}>{item.cta} →</a>}
+                  <Link href={item.href}>{item.cta} →</Link>
                 </article>
               ))}
             </div>
