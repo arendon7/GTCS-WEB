@@ -41,8 +41,6 @@ export default async function ProjectCasePage({ params }: Props) {
   const project = getPublicProject(slug);
   if (!project) notFound();
   const phases = project.slug === "tamesis" ? tamesisPhases : yarumalPhases;
-  const solutionHref = project.slug === "tamesis" ? "/soluciones/rehabilitacion" : "/soluciones/trazabilidad-datos";
-  const solutionLabel = project.slug === "tamesis" ? "Ver solución de rehabilitación" : "Conocer trazabilidad y GREENATICS OPS";
 
   return (
     <div className={`${styles.page} ${refresh.page}`}>
@@ -84,8 +82,8 @@ export default async function ProjectCasePage({ params }: Props) {
 
         <section className={styles.dark}>
           <div className={`${styles.container} ${styles.darkGrid}`}>
-            <div><span className={styles.eyebrow}>Truth lock</span><h2>Experiencia documentada no significa estado actual certificado.</h2></div>
-            <div><p>Cuando necesitemos publicar producción, toneladas tratadas, rendimiento, capacidad, inversión o impacto, cada valor deberá tener fuente, periodo, unidad, responsable y fecha de corte. Esta página preserva el aprendizaje sin convertir información histórica en una afirmación vigente.</p><Link className={`${styles.button} ${styles.light}`} href={solutionHref}>{solutionLabel}</Link></div>
+            <div><span className={styles.eyebrow}>De la evidencia a la solución</span><h2>El caso orienta una capacidad relacionada; no prescribe un alcance idéntico.</h2></div>
+            <div><p>{project.relatedSolution.context}</p><p>Experiencia documentada no significa estado actual certificado. Producción, toneladas tratadas, rendimiento, capacidad, inversión o impacto requieren fuente, periodo, unidad, responsable y fecha de corte antes de publicarse como resultado vigente.</p><Link className={`${styles.button} ${styles.light}`} href={project.relatedSolution.href}>{project.relatedSolution.label}</Link></div>
           </div>
         </section>
       </main>
