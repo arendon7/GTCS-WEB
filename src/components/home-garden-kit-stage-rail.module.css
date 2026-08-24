@@ -27,9 +27,14 @@
   letter-spacing: .06em;
 }
 
+.dark .item {
+  padding: 5px;
+  background: rgba(255, 255, 255, .96);
+}
+
 .dark .order {
-  background: rgba(255, 255, 255, .9);
-  color: #063d2c;
+  background: rgba(6, 61, 44, .9);
+  color: #fff;
 }
 
 @media (max-width: 560px) {
