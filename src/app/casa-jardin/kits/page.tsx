@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { HomeGardenKitStageRail } from "@/components/home-garden-kit-stage-rail";
 import { getHomeGardenProduct, visibleHomeGardenKits } from "@/data/home-garden";
 import styles from "../casa-jardin.module.css";
 
@@ -41,7 +42,7 @@ export default function HomeGardenKitsPage() {
                 El kit organiza opciones. No prescribe aplicaciones.
               </strong>
               <p style={{ color: "#d5e2dc", maxWidth: "26rem" }}>
-                PVP, cobertura, dosificador, empaque, etiquetado, stock y logística permanecen cerrados hasta completar validación comercial, técnica y regulatoria.
+                Las composiciones visuales usan artes aprobados de las líneas Wondergreen para identificar etapas. No son packshots finales de los futuros kits domésticos.
               </p>
             </aside>
           </div>
@@ -61,6 +62,7 @@ export default function HomeGardenKitsPage() {
             <div className={styles.kitGrid}>
               {visibleHomeGardenKits.map((kit) => (
                 <article className={styles.kitCard} key={kit.id}>
+                  <HomeGardenKitStageRail stages={kit.pathway} label={`Composición visual ${kit.name}`} />
                   <span className={styles.eyebrow}>{kit.audience}</span>
                   <h3>{kit.name}</h3>
                   <p><strong>{kit.promise}</strong></p>
