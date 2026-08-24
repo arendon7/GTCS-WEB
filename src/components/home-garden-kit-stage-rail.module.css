@@ -1,0 +1,44 @@
+.rail {
+  display: grid;
+  grid-template-columns: repeat(var(--rail-count, 4), minmax(0, 1fr));
+  gap: 8px;
+}
+
+.item {
+  position: relative;
+  min-width: 0;
+}
+
+.order {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  z-index: 3;
+  min-width: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 5px;
+  background: rgba(6, 61, 44, .88);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.dark .order {
+  background: rgba(255, 255, 255, .9);
+  color: #063d2c;
+}
+
+.dark :global(figcaption),
+.dark :global([data-home-garden-stage]) {
+  color: inherit;
+}
+
+@media (max-width: 560px) {
+  .rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
