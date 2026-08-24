@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { HomeGardenKitStageRail } from "@/components/home-garden-kit-stage-rail";
 import {
   getHomeGardenKit,
   getHomeGardenProduct,
@@ -46,9 +47,12 @@ export default async function HomeGardenKitPage({ params }: { params: Promise<{ 
                 <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/diagnostico">No sé si este kit encaja</Link>
               </div>
             </div>
-            <aside className={styles.heroVisual}>
+            <aside className={styles.heroVisual} aria-label={`Composición ${kit.name}`}>
               <p className={styles.heroNote}>COMPOSICIÓN V1 · SIN CHECKOUT</p>
-              <strong style={{ color: "white", fontFamily: "var(--display)", fontSize: "3rem", lineHeight: 1 }}>Un sistema por etapas, no una mezcla para aplicar de una vez.</strong>
+              <HomeGardenKitStageRail stages={kit.pathway} label={`Etapas incluidas en ${kit.name}`} tone="dark" />
+              <p style={{ color: "#d5e2dc", maxWidth: "28rem" }}>
+                Los artes identifican las líneas Wondergreen que componen la ruta. No son packshots finales del kit ni implican aplicación simultánea.
+              </p>
             </aside>
           </div>
         </section>
