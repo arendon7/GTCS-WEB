@@ -5,7 +5,7 @@ import { HomeGardenKitVisualBand } from "@/components/home-garden-kit-visual-ban
 
 export const metadata: Metadata = {
   title: "Casa y Jardín | Wondergreen · Greenatics",
-  description: "Sistema Wondergreen para plantas, jardín, huerta y vivero: diagnóstico orientativo, nutrición por etapas, productos, kits en pre-lanzamiento y guías prácticas.",
+  description: "Productos Wondergreen por etapa y kits Casa & Jardín para plantas, huerta y vivero, con guías prácticas y orientación segura cuando la etapa o condición no están claras.",
   alternates: { canonical: "/casa-jardin" },
   robots: {
     index: false,
