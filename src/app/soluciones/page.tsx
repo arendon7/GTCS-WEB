@@ -54,49 +54,72 @@ const serviceFamilies = [
     number: "01",
     title: "Caracterización y línea base",
     copy: "Mediciones, caracterización, mapa de flujos, brechas y criterios de decisión cuando el proyecto necesita información de partida verificable.",
-    href: "/soluciones/diagnostico-caracterizacion",
+    offers: [
+      { label: "Diagnóstico y caracterización de residuos orgánicos", href: "/soluciones/diagnostico-caracterizacion" },
+    ],
   },
   {
     number: "02",
     title: "Planeación y programas",
     copy: "PGIRS, PMIRS, programas internos, matrices, hojas de ruta, responsables, indicadores e implementación según el actor y el alcance.",
-    href: "/soluciones/pmirs",
+    offers: [
+      { label: "PGIRS · formulación, actualización y fortalecimiento operativo", href: "/soluciones/pgirs" },
+      { label: "PMIRS y planes internos de gestión de residuos", href: "/soluciones/pmirs" },
+    ],
   },
   {
     number: "03",
     title: "Gestión jurídica y regulatoria",
     copy: "Obligaciones, competencias, conceptos, contratos, trámites y soporte regulatorio para que la decisión técnica tenga una ruta jurídica clara.",
-    href: "/soluciones/gestion-juridica-regulatoria",
+    offers: [
+      { label: "Gestión jurídica y regulatoria para residuos, aseo y proyectos", href: "/soluciones/gestion-juridica-regulatoria" },
+    ],
   },
   {
     number: "04",
     title: "Rutas y logística",
     copy: "Diseño de rutas y microrrutas, frecuencias, puntos, pilotos, protocolos, datos operativos y criterios de escalamiento.",
-    href: "/soluciones/rutas-selectivas",
+    offers: [
+      { label: "Diseño e implementación de rutas selectivas y microrrutas", href: "/soluciones/rutas-selectivas" },
+      { label: "Pilotos logísticos con motocarguero y toma de datos", href: "/soluciones/motocarguero" },
+    ],
   },
   {
     number: "05",
     title: "Plantas y tratamiento",
     copy: "Prefactibilidad, ingeniería, construcción, rehabilitación, puesta en marcha y optimización según la madurez y el problema real del sistema.",
-    href: "/soluciones/infraestructura-plantas",
+    offers: [
+      { label: "Prefactibilidad de plantas y sistemas de tratamiento y valorización", href: "/soluciones/prefactibilidad" },
+      { label: "Factibilidad, APU e ingeniería de detalle", href: "/soluciones/factibilidad-ingenieria" },
+      { label: "Diseño, construcción e implementación de plantas", href: "/soluciones/plantas-nuevas" },
+      { label: "Diagnóstico, rehabilitación y puesta en marcha de infraestructura existente", href: "/soluciones/rehabilitacion" },
+    ],
   },
   {
     number: "06",
     title: "Dirección técnica y operación asistida",
     copy: "Protocolos, programación, mantenimiento, calidad, personas, inventarios, informes y fortalecimiento sostenido de la operación.",
-    href: "/soluciones/direccion-operacion",
+    offers: [
+      { label: "Dirección técnica y coordinación de operación", href: "/soluciones/direccion-operacion" },
+      { label: "Operación integral de plantas de tratamiento y valorización", href: "/soluciones/operacion-integral" },
+      { label: "Gestión, recolección y tratamiento de residuos orgánicos para generadores", href: "/soluciones/recoleccion-tratamiento" },
+    ],
   },
   {
     number: "07",
     title: "Datos, trazabilidad y OPS",
     copy: "Captura, indicadores, evidencia, lotes, inventarios y seguimiento para convertir la actividad operativa en información útil para decidir.",
-    href: "/soluciones/trazabilidad-datos",
+    offers: [
+      { label: "Trazabilidad digital, indicadores y GREENATICS OPS", href: "/soluciones/trazabilidad-datos" },
+    ],
   },
   {
     number: "08",
     title: "Valorización y desarrollo de productos",
     copy: "Especificaciones, control, documentación, ruta regulatoria, presentación y preparación comercial para convertir una salida en un producto vendible.",
-    href: "/soluciones/valorizacion-productos",
+    offers: [
+      { label: "Valorización y desarrollo de productos", href: "/soluciones/valorizacion-productos" },
+    ],
   },
 ];
 
@@ -158,19 +181,28 @@ export default function SolutionsPage() {
             <div className={styles.sectionHead}>
               <div>
                 <span className={styles.eyebrow}>Qué puedes contratar</span>
-                <h2 id="services-title">Ocho familias para contratar actividades, entregables y capacidad de ejecución.</h2>
+                <h2 id="services-title">Ocho familias. Servicios concretos que puedes abrir y revisar en profundidad.</h2>
               </div>
-              <p>Cada familia conduce a una ruta concreta. La página de detalle explica primero qué recibe el cliente y después qué actividades puede incluir el servicio.</p>
+              <p>La familia ayuda a ubicar la necesidad, pero no es el destino final. Cada servicio abre su alcance, entregables, actividades, límites, evidencia disponible y siguiente paso comercial.</p>
             </div>
 
             <div className={styles.serviceList}>
               {serviceFamilies.map((family) => (
-                <Link className={styles.serviceRow} href={family.href} key={family.number}>
-                  <span className={styles.index}>{family.number}</span>
-                  <h3>{family.title}</h3>
-                  <p>{family.copy}</p>
-                  <span className={styles.arrow} aria-hidden="true">→</span>
-                </Link>
+                <article className={styles.serviceFamily} key={family.number}>
+                  <div className={styles.serviceFamilyIntro}>
+                    <span className={styles.index}>{family.number}</span>
+                    <h3>{family.title}</h3>
+                    <p>{family.copy}</p>
+                  </div>
+                  <nav className={styles.serviceOfferList} aria-label={`Servicios de ${family.title}`}>
+                    {family.offers.map((offer) => (
+                      <Link className={styles.serviceOffer} href={offer.href} key={offer.href}>
+                        <strong>{offer.label}</strong>
+                        <span aria-hidden="true">→</span>
+                      </Link>
+                    ))}
+                  </nav>
+                </article>
               ))}
             </div>
           </div>
