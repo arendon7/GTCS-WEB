@@ -10,6 +10,11 @@ export type PublicProject = {
   publicationContext: string;
   capabilities: Array<[string,string]>;
   learnings: Array<[string,string]>;
+  relatedSolution: {
+    href: `/soluciones/${string}`;
+    label: string;
+    context: string;
+  };
 };
 
 export const publicProjects: PublicProject[] = [
@@ -34,6 +39,11 @@ export const publicProjects: PublicProject[] = [
       ["El producto empieza en la materia prima", "La calidad de las salidas depende de recepción, separación, proceso y control; no solo de una formulación final."],
       ["Operar es un sistema", "Proceso, personas, activos, inventarios, calidad y datos deben trabajar juntos."],
     ],
+    relatedSolution: {
+      href: "/soluciones/trazabilidad-datos",
+      label: "Conocer trazabilidad y GREENATICS OPS",
+      context: "Este caso documenta cómo los registros de recepción, lotes, mantenimiento, producto e inventarios pueden convertirse progresivamente en una capa de trazabilidad útil para la operación.",
+    },
   },
   {
     slug: "tamesis",
@@ -57,6 +67,11 @@ export const publicProjects: PublicProject[] = [
       ["Escalar después de estabilizar", "La capacidad nominal no sustituye evidencia sobre suministro, proceso, personal y destino."],
       ["Infraestructura y biología se condicionan", "Drenajes, cubiertas, energía, equipos y lixiviados afectan directamente el control del proceso."],
     ],
+    relatedSolution: {
+      href: "/soluciones/rehabilitacion",
+      label: "Ver solución de rehabilitación",
+      context: "Este caso documenta la necesidad de separar brechas de infraestructura, proceso, personal, suministro y operación antes de definir adecuaciones o escalamiento.",
+    },
   },
 ];
 
