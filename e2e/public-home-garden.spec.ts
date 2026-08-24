@@ -1,7 +1,29 @@
 import { test, expect } from "@playwright/test";
 
-test("Casa Jardín and Vivero exposes stage system with real Wondergreen visuals and without checkout", async ({ page }) => {
+test("Casa Jardín and Vivero leads with products and kits while keeping safe orientation secondary", async ({ page }) => {
   await page.goto("/casa-jardin");
+
+  await expect(page.getByRole("heading", { name: "Nutrición por etapas para tus plantas.", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ver productos por etapa", exact: true }).first()).toHaveAttribute("href", "#etapas");
+  await expect(page.getByRole("link", { name: "Ver kits", exact: true }).first()).toHaveAttribute("href", "#kits");
+  await expect(page.getByRole("link", { name: "No sé qué etapa corresponde →", exact: true })).toHaveAttribute("href", "/casa-jardin/diagnostico");
+
+  const hierarchy = await page.evaluate(() => {
+    const stages = document.querySelector("#etapas");
+    const kits = document.querySelector("#kits");
+    const diagnostic = document.querySelector("#diagnostico");
+    if (!stages || !kits || !diagnostic) return { stagesBeforeDiagnostic: false, kitsBeforeDiagnostic: false };
+    return {
+      stagesBeforeDiagnostic: Boolean(stages.compareDocumentPosition(diagnostic) & Node.DOCUMENT_POSITION_FOLLOWING),
+      kitsBeforeDiagnostic: Boolean(kits.compareDocumentPosition(diagnostic) & Node.DOCUMENT_POSITION_FOLLOWING),
+    };
+  });
+  expect(hierarchy).toEqual({ stagesBeforeDiagnostic: true, kitsBeforeDiagnostic: true });
+
+  await expect(page.getByRole("heading", { name: "Kits por uso. Etapas separadas, no una receta universal.", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A veces, la mejor dosis es no fertilizar todavía.", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "¿No sabes qué etapa corresponde?", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Usar orientador", exact: true })).toHaveAttribute("href", "/casa-jardin/diagnostico");
 
   await expect(page.getByRole("img", { name: /Sistema Wondergreen por etapas/i })).toHaveAttribute("src", "/api/public-media/wondergreen-system-stages");
   await expect(page.getByRole("link", { name: /Descargar catálogo Wondergreen/i })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master");
