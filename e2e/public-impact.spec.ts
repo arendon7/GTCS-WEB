@@ -27,3 +27,12 @@ test("impact page links back to governed project cases", async ({ page }) => {
   await expect(page).toHaveURL(/\/proyectos\/yarumal$/);
   await expect(page.getByRole("heading", { name: "Yarumal", exact: true })).toBeVisible();
 });
+
+test("impact closes the evidence loop toward documented projects and solutions", async ({ page }) => {
+  await page.goto("/impacto");
+
+  await expect(page.getByRole("heading", { name: /La evidencia pública debe llevar al caso que la explica/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ver proyectos documentados", exact: true })).toHaveAttribute("href", "/proyectos");
+  await expect(page.getByRole("link", { name: "Ver soluciones", exact: true })).toHaveAttribute("href", "/soluciones");
+  await expect(page.getByText("En validación", { exact: true })).toHaveCount(6);
+});
