@@ -36,13 +36,14 @@ export default async function HomeGardenProductPage({ params }: { params: Promis
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
-              <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin#etapas">← Volver al sistema</Link>
+              <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/productos">← Volver a productos</Link>
               <span className={styles.eyebrow}>Wondergreen Casa & Jardín · {product.id === "prepara" ? "suelo" : "etapa"}</span>
               <h1>{product.consumerName}</h1>
               <p className={styles.lead}>{product.role}</p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Confirmar si es tu etapa</Link>
-                <Link className={`${styles.button} ${styles.ghost}`} href={`/wondergreen/productos/${product.technicalSlug}`}>Ver Product Truth técnico</Link>
+                <Link className={`${styles.button} ${styles.primary}`} href={`/wondergreen/productos/${product.technicalSlug}`}>Ver Product Truth técnico</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/kits">Ver kits por uso</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/diagnostico">No sé si corresponde a mi planta</Link>
               </div>
             </div>
             <aside className={styles.heroVisual}>
