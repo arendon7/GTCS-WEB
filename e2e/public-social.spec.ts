@@ -4,6 +4,7 @@ const routes = [
   "/soluciones/gestion-juridica-regulatoria",
   "/soluciones/valorizacion-productos",
   "/wondergreen",
+  "/wondergreen/tecnologia",
   "/wondergreen/cultivos",
   "/wondergreen/cultivos/cafe",
   "/recursos",
