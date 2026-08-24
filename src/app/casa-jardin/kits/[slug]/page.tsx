@@ -36,12 +36,14 @@ export default async function HomeGardenKitPage({ params }: { params: Promise<{ 
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div>
-              <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin#kits">← Volver a kits</Link>
+              <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/kits">← Volver a kits</Link>
               <span className={styles.eyebrow}>Wondergreen Casa & Jardín · kit de pre-lanzamiento</span>
               <h1>{kit.name}</h1>
               <p className={styles.lead}>{kit.audience}. <strong>{kit.promise}</strong></p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/casa-jardin/diagnostico">Confirmar si encaja contigo</Link>
+                <a className={`${styles.button} ${styles.primary}`} href="#ruta-kit">Ver productos del kit</a>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/productos">Explorar productos por etapa</Link>
+                <Link className={`${styles.button} ${styles.ghost}`} href="/casa-jardin/diagnostico">No sé si este kit encaja</Link>
               </div>
             </div>
             <aside className={styles.heroVisual}>
@@ -68,7 +70,7 @@ export default async function HomeGardenKitPage({ params }: { params: Promise<{ 
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.soft}`}>
+        <section className={`${styles.section} ${styles.soft}`} id="ruta-kit">
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Ruta del kit</span><h2>Cada etapa se usa cuando corresponde.</h2></div>
@@ -81,7 +83,7 @@ export default async function HomeGardenKitPage({ params }: { params: Promise<{ 
                   <article key={stage}>
                     <strong>{String(index + 1).padStart(2, "0")} · {product?.consumerName ?? stage}</strong>
                     <p>{product?.role}</p>
-                    {product ? <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa →</Link> : null}
+                    {product ? <Link href={`/casa-jardin/productos/${product.id}`}>Ver producto →</Link> : null}
                   </article>
                 );
               })}
