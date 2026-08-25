@@ -17,12 +17,14 @@ const publicLanguageContracts = [
   {
     path: "/wondergreen",
     forbidden: [
-      /Product Master público/i,
+      /Product Master/i,
       /Product Truth/i,
       /Truth lock/i,
       /la web separa dos recorridos/i,
       /Finder V1/i,
       /arquitectura de producto y decisión/i,
+      /reconciliad[ao]s?/i,
+      /gobernad[ao]s?/i,
     ],
     required: [
       /Nutrición que trabaja con el suelo/i,
@@ -33,11 +35,16 @@ const publicLanguageContracts = [
   {
     path: "/casa-jardin",
     forbidden: [
-      /Product Truth técnico/i,
-      /composición V1 ya gobernada/i,
+      /Product Truth/i,
+      /\bV1\b/i,
+      /\bhandoff\b/i,
+      /\bSKUs?\b/i,
+      /\bguardrails?\b/i,
       /dependencias/i,
       /formatos propuestos/i,
-      /reconciliadas/i,
+      /reconciliad[ao]s?/i,
+      /gobernad[ao]s?/i,
+      /arquitectura navegable/i,
     ],
     required: [
       /Pre-lanzamiento/i,
