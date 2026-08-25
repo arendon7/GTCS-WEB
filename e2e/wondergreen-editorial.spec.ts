@@ -12,7 +12,7 @@ test("Wondergreen uses the canonical public shell without duplicate chrome", asy
     await expect(header.getByRole("navigation", { name: "Navegación pública" })).toBeVisible();
   }
   await expect(page.getByRole("navigation", { name: "Navegación Wondergreen" })).toBeVisible();
-  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
 });
 
 test("Wondergreen subnavigation exposes products before orientation while preserving governed destinations", async ({ page }) => {
