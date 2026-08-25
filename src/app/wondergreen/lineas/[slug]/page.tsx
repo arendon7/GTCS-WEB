@@ -18,6 +18,13 @@ function formatLabel(format: string) {
   return format === "solid" ? "Sólido" : format === "liquid" ? "Líquido" : format;
 }
 
+function publicStatusLabel(status: string) {
+  if (status === "commercial-reconciled") return "Estado comercial confirmado";
+  if (status === "technical-portfolio") return "Portafolio técnico · condición comercial por confirmar";
+  if (status === "development") return "En desarrollo · no disponible comercialmente";
+  return "Estado por confirmar";
+}
+
 function uniqueGuides(line: NonNullable<ReturnType<typeof getWondergreenProductLine>>) {
   const byId = new Map<string, ReturnType<typeof getWondergreenProductDocuments>["guides"][number]>();
   for (const reference of getWondergreenLineReferences(line)) {
@@ -106,7 +113,7 @@ export default async function WondergreenLinePage({ params }: Props) {
             <div className={styles.referenceGrid}>
               {references.map((reference) => (
                 <Link className={styles.referenceCard} href={`/wondergreen/productos/${reference.slug}`} key={reference.slug}>
-                  <div className={styles.referenceTop}><span>{reference.publicStatus}</span><small>{formatLabel(reference.format)}</small></div>
+                  <div className={styles.referenceTop}><span>{publicStatusLabel(reference.truthStatus)}</span><small>{formatLabel(reference.format)}</small></div>
                   <h3>{reference.name}</h3>
                   {reference.formula ? <strong className={styles.formula}>{reference.formula}</strong> : null}
                   <p>{reference.role}</p>
