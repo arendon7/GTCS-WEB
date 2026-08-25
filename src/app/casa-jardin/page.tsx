@@ -58,6 +58,14 @@ const diagnosticQuestions = [
   ["04", "¿Cuántas y de qué tamaño?", "Cantidad y tamaño de matera se capturan sin convertirlos todavía en una dosis automática."],
 ] as const;
 
+const publicKitNotes: Record<string, string> = {
+  "plantas-verdes": "Composición prevista para pre-lanzamiento. Precio, presentaciones, dosificador, QR y checkout permanecen bloqueados hasta completar las validaciones comercial, técnica y regulatoria.",
+  "plantas-con-flor": "La composición prevista no promete inducir floración y no sustituye la evaluación de luz, agua, edad, especie o sanidad.",
+  "mi-huerta": "La composición prevista representa etapas; no significa aplicar todos los productos simultáneamente ni garantiza floración, cuajado o cosecha.",
+  "casa-completa": "La composición prevista reúne cuatro etapas, pero no significa usarlas juntas. Cada planta se orienta según su etapa y condición.",
+  "casa-completa-xl": "La composición prevista sigue sin cobertura, PVP, stock, empaque y logística confirmados para venta.",
+};
+
 export default function CasaJardinPage() {
   return (
     <div className={styles.page}>
@@ -94,7 +102,7 @@ export default function CasaJardinPage() {
               </div>
               <div className={styles.heroTruth}>
                 <span>Pre-lanzamiento</span>
-                <strong>Las referencias Wondergreen que soportan las etapas tienen Product Truth técnico. Los formatos domésticos y kits siguen en pre-lanzamiento; PVP, checkout y dosis universales permanecen bloqueados hasta cerrar sus dependencias.</strong>
+                <strong>Las referencias Wondergreen que soportan las etapas cuentan con documentación técnica vigente. Los formatos domésticos y kits siguen en pre-lanzamiento; PVP, checkout y dosis universales permanecen bloqueados hasta completar las validaciones comerciales, técnicas y regulatorias.</strong>
               </div>
             </div>
 
@@ -138,7 +146,7 @@ export default function CasaJardinPage() {
                 <div className={styles.stageCopy}>
                   <p>{product.role}</p>
                   <p><strong>{product.prompt}</strong></p>
-                  <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y formatos propuestos →</Link>
+                  <Link href={`/casa-jardin/productos/${product.id}`}>Ver etapa y presentaciones previstas →</Link>
                 </div>
               </article>
             ))}
@@ -149,7 +157,7 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Kits Casa & Jardín · pre-lanzamiento</span><h2>Kits por uso. Etapas separadas, no una receta universal.</h2></div>
-              <p>Los kits visibles conservan la composición V1 ya gobernada y reúnen etapas para contextos concretos. Tener varios productos en un kit no significa aplicarlos juntos. No tienen checkout ni PVP público: dosificador, empaque, etiquetado, stock, logística y condición regulatoria de las presentaciones domésticas todavía deben cerrarse.</p>
+              <p>Los kits visibles reúnen una composición definida para pre-lanzamiento y organizan etapas para contextos concretos. Tener varios productos en un kit no significa aplicarlos juntos. No tienen checkout ni PVP público: dosificador, empaque, etiquetado, stock, logística y condición regulatoria de las presentaciones domésticas todavía deben cerrarse.</p>
             </div>
             <div className={styles.kitList}>
               {visibleHomeGardenKits.map((kit, index) => (
@@ -160,7 +168,7 @@ export default function CasaJardinPage() {
                   <div className={styles.kitContents}>
                     <HomeGardenKitStageRail stages={kit.pathway} label={`Composición visual de ${kit.name}`} />
                     <ul>{kit.contents.map((content) => <li key={content}>{content}</li>)}</ul>
-                    <p>{kit.guardrail}</p>
+                    <p>{publicKitNotes[kit.id] ?? "Composición de pre-lanzamiento sujeta a validaciones antes de habilitar compra."}</p>
                     <Link href={`/casa-jardin/kits/${kit.id}`}>Ver composición y ruta →</Link>
                   </div>
                 </article>
@@ -247,7 +255,7 @@ export default function CasaJardinPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Cómo aplicar</span><h2>Ni de más. Ni a ojo.</h2></div>
-              <p>La frecuencia y equivalencia doméstica del dosificador todavía no están reconciliadas. Publicarlas como universales hoy sería convertir una herramienta orientativa en una receta sin validar.</p>
+              <p>La frecuencia y equivalencia doméstica del dosificador todavía no están validadas. Publicarlas como universales hoy sería convertir una herramienta orientativa en una receta sin validar.</p>
             </div>
             <div className={styles.applicationFlow}>
               {homeGardenApplication.map((item, index) => (
@@ -297,15 +305,15 @@ export default function CasaJardinPage() {
             <div className={styles.releaseCopy}>
               <span className={styles.eyebrow}>Estado de lanzamiento</span>
               <h2>El catálogo puede recorrerse. La tienda todavía no.</h2>
-              <p>Productos, formatos propuestos, kits, orientador y guías ya tienen arquitectura navegable. Compra, precios, dosis y cobertura se habilitan únicamente cuando sus dependencias estén reconciliadas.</p>
+              <p>Productos, presentaciones previstas, kits, orientador y guías ya pueden consultarse. Compra, precios, dosis y cobertura se habilitan únicamente cuando estén validados los requisitos comerciales, técnicos, regulatorios y operativos.</p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen">Ver Wondergreen técnico</Link>
+                <Link className={`${styles.button} ${styles.primary}`} href="/wondergreen">Ver Wondergreen</Link>
                 <Link className={`${styles.button} ${styles.ghost}`} href="/contacto">Hablar con Greenatics</Link>
               </div>
             </div>
             <div className={styles.releaseStatus}>
               <div className={styles.releaseGroup}>
-                <strong>Ya está gobernado</strong>
+                <strong>Ya está definido</strong>
                 <ul>{readyHomeGardenLaunchItems.map((item) => <li key={item.id}><strong>{item.publicLabel}.</strong> {item.publicCopy}</li>)}</ul>
               </div>
               <div className={styles.releaseGroup}>
