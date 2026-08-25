@@ -1,0 +1,229 @@
+name: publish-greenatics-web-release-20260825
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/publish-greenatics-web-release-20260825.yml
+
+permissions:
+  contents: read
+  statuses: write
+
+concurrency:
+  group: greenatics-hosted-pilot-production
+  cancel-in-progress: false
+
+jobs:
+  publish-and-certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact release commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "GREENATICS web release from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mark release pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$DEPLOY_GIT_SHA" \
+            -d "{\"state\":\"pending\",\"context\":\"greenatics/web-release\",\"description\":\"Publicando develop en greenatics-ops\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null
+
+      - name: Require deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for GREENATICS production release."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Canonical quality gate
+        run: |
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Certify hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Deploy full OPS preview
+        id: preview
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify stable OPS origin and provenance
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Certify critical public routes in production
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -u -o pipefail
+          base="${APP_BASE_URL%/}"
+          failures=0
+          counter=0
+
+          check_route() {
+            local path="$1"
+            local marker="$2"
+            counter=$((counter + 1))
+            local outfile="/tmp/greenatics-route-${counter}.body"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            echo "$path -> HTTP $status · $bytes bytes · marker='$marker'"
+
+            if [ "$status" != "200" ]; then
+              echo "::error::$path failed production smoke (HTTP $status)."
+              failures=$((failures + 1))
+              return
+            fi
+            if [ "$bytes" -lt 200 ]; then
+              echo "::error::$path returned only $bytes bytes."
+              failures=$((failures + 1))
+              return
+            fi
+            if ! grep -Fq "$marker" "$outfile"; then
+              echo "::error::$path did not contain release marker '$marker'."
+              failures=$((failures + 1))
+              return
+            fi
+
+            echo "- PASS: $path (HTTP 200, $bytes bytes, marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          echo "### Public production smoke" >> "$GITHUB_STEP_SUMMARY"
+          check_route "/" "Transformamos residuos en vida."
+          check_route "/soluciones" "Servicios para convertir necesidades de gestión en resultados concretos."
+          check_route "/soluciones/rehabilitacion" "Diagnóstico, rehabilitación y puesta en marcha de infraestructura existente"
+          check_route "/wondergreen" "Nutrición que trabaja con el suelo."
+          check_route "/wondergreen/productos" "Productos concretos, formulación por formulación."
+          check_route "/wondergreen/lineas" "Una identidad por línea. Una ficha exacta por referencia."
+          check_route "/wondergreen/lineas/2grow" "2Grow"
+          check_route "/wondergreen/tecnologia" "Organomineral. Oclusión. Lenta liberación."
+          check_route "/wondergreen/cultivos" "El cultivo cambia la pregunta."
+          check_route "/casa-jardin" "Nutrición por etapas para tus plantas."
+          check_route "/proyectos" "Proyectos"
+          check_route "/biblioteca" "Biblioteca"
+          check_route "/nosotros" "Diseñamos sistemas que tienen que funcionar en la vida real"
+          check_route "/contacto" "Cuéntanos qué quieres resolver."
+          check_route "/sitemap.xml" "https://greenatics.com.co/wondergreen"
+          check_route "/robots.txt" "Disallow: /app"
+
+          if [ "$failures" -ne 0 ]; then
+            echo "::error::Production public smoke failed on $failures route(s)."
+            exit 1
+          fi
+
+      - name: Release summary
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+          UNIQUE_ORIGIN: ${{ steps.production.outputs.unique_deployment_url }}
+        shell: bash
+        run: |
+          echo "Stable public/OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Unique deployment: $UNIQUE_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published develop commit: $DEPLOY_GIT_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, backend, preview, production provenance and semantic public route smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mark release success
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$DEPLOY_GIT_SHA" \
+            -d "{\"state\":\"success\",\"context\":\"greenatics/web-release\",\"description\":\"greenatics-ops publicado y certificado\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null
+
+      - name: Mark release failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$DEPLOY_GIT_SHA" \
+            -d "{\"state\":\"failure\",\"context\":\"greenatics/web-release\",\"description\":\"falló la certificación/publicación web\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null

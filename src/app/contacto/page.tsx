@@ -89,12 +89,18 @@ function normalizeInheritedContext(value: string | undefined) {
   return value?.trim().slice(0, 480) || undefined;
 }
 
+function publicProductStatus(status: string) {
+  if (status === "commercial-reconciled") return "Estado comercial confirmado";
+  if (status === "technical-portfolio") return "Portafolio técnico · condición comercial por confirmar";
+  if (status === "development") return "En desarrollo · no disponible comercialmente";
+  return "Estado por confirmar";
+}
+
 export default async function ContactPage({ searchParams }: { searchParams: Promise<ContactSearchParams> }) {
   const query = await searchParams;
   const audience = normalizeAudience(firstParam(query.audience));
   const need = firstParam(query.need) ?? "";
   const service = firstParam(query.service)?.trim().slice(0, 180) || undefined;
-  const source = firstParam(query.source);
   const crop = firstParam(query.cultivo);
   const inheritedContext = normalizeInheritedContext(firstParam(query.contexto));
   const productSlug = firstParam(query.producto);
@@ -115,9 +121,8 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
               <span className={styles.eyebrow}>Contacto Greenatics · conversación con contexto</span>
               <h1>{title}</h1>
               <p className={styles.lead}>{lead}</p>
-              {(source || service || product || crop || inheritedContext) ? (
+              {(service || product || crop || inheritedContext) ? (
                 <div className={styles.contextLine} aria-label="Contexto heredado de navegación">
-                  {source ? <span><strong>Origen:</strong> {source}</span> : null}
                   {service ? <span><strong>Servicio:</strong> {service}</span> : null}
                   {product ? <span><strong>Producto:</strong> {product.name}{product.formula ? ` ${product.formula}` : ""}</span> : null}
                   {crop ? <span><strong>Cultivo:</strong> {crop}</span> : null}
@@ -138,7 +143,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
           <section className={`${styles.section} ${styles.soft}`} aria-label="Contexto de la consulta Wondergreen">
             <div className={`${styles.container} ${styles.productContext}`}>
               <div><span className={styles.eyebrow}>Referencia identificada</span><h2>{product.name}{product.formula ? ` · ${product.formula}` : ""}</h2><p>Conservamos la referencia para no reiniciar la conversación desde cero. Disponibilidad, versión, dosis y recomendación final siguen dependiendo del contexto real del cultivo o del canal comercial.</p></div>
-              <div className={styles.productMeta}><strong>{product.publicStatus}</strong><span>{product.stage}</span><Link href={`/wondergreen/productos/${product.slug}`}>Volver a la ficha →</Link></div>
+              <div className={styles.productMeta}><strong>{publicProductStatus(product.truthStatus)}</strong><span>{product.stage}</span><Link href={`/wondergreen/productos/${product.slug}`}>Volver a la ficha →</Link></div>
             </div>
           </section>
         ) : null}
@@ -196,8 +201,8 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
 
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingGrid}`}>
-            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>El servicio primero. La orientación solo cuando todavía hace falta.</h2></div>
-            <div><p>Si ya reconoces lo que necesitas, vuelve al catálogo y abre directamente el servicio, producto o solución correspondiente. Si todavía existe incertidumbre, el orientador inicial puede ayudarte a ubicar una ruta sin sustituir una evaluación técnica ni convertirla en una prescripción.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Explorar servicios</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link></div></div>
+            <div><span className={styles.eyebrow}>Siguiente paso</span><h2>Si ya sabes qué necesitas, podemos empezar por ahí.</h2></div>
+            <div><p>Explora directamente el servicio, producto o solución que te interesa. Si todavía necesitas ubicar la ruta adecuada, el orientador inicial puede ayudarte a ordenar la situación antes de conversar con el equipo.</p><div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href="/soluciones">Explorar servicios</Link><Link className={`${styles.button} ${styles.ghost}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link></div></div>
           </div>
         </section>
       </main>

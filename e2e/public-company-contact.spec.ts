@@ -23,18 +23,18 @@ test("contact page starts with context without forcing diagnosis or a service na
   await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toBeVisible();
   await expect(page.getByText(/Este paso no envía información a Greenatics/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Preparar conversación/i }).first()).toHaveAttribute("href", /\/contacto\?audience=/);
-  await expect(page.getByRole("heading", { name: "El servicio primero. La orientación solo cuando todavía hace falta." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Si ya sabes qué necesitas, podemos empezar por ahí." })).toBeVisible();
   await expect(page.getByRole("link", { name: "Explorar servicios", exact: true })).toHaveAttribute("href", "/soluciones");
   await expect(page.getByRole("link", { name: "Usar orientador inicial", exact: true })).toHaveAttribute("href", "/soluciones/diagnostico-inicial");
   await expect(page.getByRole("link", { name: "Empezar por diagnóstico", exact: true })).toHaveCount(0);
 });
 
-test("contact page inherits audience and need context without inventing a recommendation", async ({ page }) => {
+test("contact page inherits audience and need context without exposing internal source metadata", async ({ page }) => {
   await page.goto("/contacto?audience=planta&need=planta&source=soluciones");
 
   await expect(page.getByRole("heading", { name: /Cuéntanos sobre la planta que quieres recuperar o mejorar/i })).toBeVisible();
-  const inherited = page.getByLabel("Contexto heredado de navegación");
-  await expect(inherited.locator("span").filter({ hasText: "Origen:" })).toContainText("soluciones");
+  await expect(page.getByLabel("Contexto heredado de navegación")).toHaveCount(0);
+  await expect(page.getByText(/Origen:/)).toHaveCount(0);
   await expect(page.getByLabel("¿Desde qué contexto nos escribes?")).toHaveValue("planta");
   await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toHaveValue("planta");
 
@@ -54,6 +54,7 @@ test("contact page preserves an exact service from a commercial solution route",
 
   const inherited = page.getByLabel("Contexto heredado de navegación");
   await expect(inherited.locator("span").filter({ hasText: "Servicio:" })).toContainText(service);
+  await expect(page.getByText(/Origen:/)).toHaveCount(0);
   await expect(page.getByLabel("Servicio recibido de la navegación")).toContainText(service);
 
   await page.getByLabel("¿Desde qué contexto nos escribes?").selectOption("planta");
@@ -72,6 +73,7 @@ test("contact page preserves an exact Wondergreen product context", async ({ pag
   await expect(page.getByRole("heading", { name: /2Grow Sólido/i })).toBeVisible();
   const inherited = page.getByLabel("Contexto heredado de navegación");
   await expect(inherited.locator("span").filter({ hasText: "Producto:" })).toContainText("2Grow Sólido");
+  await expect(page.getByText("Estado comercial confirmado").first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Volver a la ficha/i })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
 });
 

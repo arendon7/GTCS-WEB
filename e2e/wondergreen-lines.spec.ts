@@ -23,13 +23,13 @@ test("Wondergreen exposes visual line families before requiring an exact formula
   await expect(page.getByText(/no trasladamos automáticamente una formulación, tecnología/i)).toBeVisible();
 });
 
-test("2Grow line separates family identity from exact solid and liquid Product Truth", async ({ page }) => {
+test("2Grow line separates family identity from exact solid and liquid product truth", async ({ page }) => {
   await page.goto("/wondergreen/lineas/2grow");
 
   await expect(page.getByRole("heading", { name: "2Grow", exact: true })).toBeVisible();
   await expect(page.getByRole("img", { name: "Identidad visual aprobada de la línea Wondergreen 2Grow" })).toBeVisible();
   await expect(page.getByText("3 referencias documentadas", { exact: true })).toBeVisible();
-  await expect(page.getByText("2 comerciales reconciliadas", { exact: true })).toBeVisible();
+  await expect(page.getByText("2 con estado comercial confirmado", { exact: true })).toBeVisible();
 
   await expect(page.getByRole("link", { name: /2Grow Sólido/ })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
   const liquid100 = page.getByRole("link").filter({ hasText: "2Grow Líquido" }).filter({ hasText: "100-20-20" });
@@ -47,13 +47,18 @@ test("2Grow line separates family identity from exact solid and liquid Product T
 
   await expect(page.getByRole("link", { name: "Profundizar en tecnología" })).toHaveAttribute("href", "/wondergreen/tecnologia");
   await expect(page.getByText(/no significa compartir automáticamente una característica tecnológica/i)).toBeVisible();
+
+  const consult = page.getByRole("link", { name: "Consultar línea" });
+  await expect(consult).toHaveAttribute("href", /audience=wondergreen/);
+  await expect(consult).toHaveAttribute("href", /source=wondergreen-linea/);
+  await expect(consult).toHaveAttribute("href", /contexto=/);
 });
 
 test("product catalog exposes line exploration while keeping exact products primary", async ({ page }) => {
   await page.goto("/wondergreen/productos");
   await expect(page.getByRole("link", { name: "Explorar líneas de producto →" })).toHaveAttribute("href", "/wondergreen/lineas");
   await expect(page.getByRole("link", { name: "Líneas Wondergreen" })).toHaveAttribute("href", "/wondergreen/lineas");
-  await expect(page.getByRole("heading", { name: "Empieza por los productos comercialmente reconciliados." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Empieza por las referencias con estado comercial confirmado." })).toBeVisible();
 });
 
 test("line routes have canonical metadata and are included in sitemap", async ({ page, request }) => {

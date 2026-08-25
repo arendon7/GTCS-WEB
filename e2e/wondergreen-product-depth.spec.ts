@@ -4,7 +4,7 @@ test("Wondergreen catalog starts with commercial products and keeps orientation 
   await page.goto("/wondergreen/productos");
 
   await expect(page.getByRole("heading", { name: "Productos concretos, formulación por formulación." })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("link", { name: /Encontrar mi programa/ })).toHaveAttribute("href", "/wondergreen/finder");
 
   const growCard = page.getByRole("link", { name: /2Grow Sólido/ }).first();
@@ -35,5 +35,5 @@ test("Wondergreen product page exposes presentations plus open and download PDF 
   await expect(main.getByRole("link", { name: /Descargar catálogo PDF/ })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master?download=1");
   await expect(main.getByRole("link", { name: /Descargar guía PDF/ }).first()).toHaveAttribute("href", /\?download=1$/);
   await expect(main.getByRole("heading", { name: "Ficha técnica específica" })).toBeVisible();
-  await expect(main.getByText("Pendiente de vincular master público", { exact: true })).toBeVisible();
+  await expect(main.getByText("Pendiente de vincular documento público", { exact: true })).toBeVisible();
 });

@@ -4,7 +4,7 @@ test("Wondergreen product catalog exposes governed references with commercial pr
   await page.goto("/wondergreen/productos");
 
   await expect(page.getByRole("heading", { name: "Productos concretos, formulación por formulación." })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("8 referencias", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /2Grow Sólido/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Extracto de Neem/ })).toHaveCount(0);
@@ -30,8 +30,8 @@ test("catalog browser filters by search, commercial truth and format without cha
   await expect(page.getByRole("link", { name: /Extracto de Neem/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /2Grow Sólido/ })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Volver a comerciales" }).click();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Volver a referencias confirmadas" }).click();
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("link", { name: /2Grow Sólido/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Extracto de Neem/ })).toHaveCount(0);
 
@@ -40,13 +40,13 @@ test("catalog browser filters by search, commercial truth and format without cha
   await expect(page.getByRole("link", { name: /2Grow Sólido/ })).toHaveCount(0);
 });
 
-test("commercial product page shows reconciled state and approved line artwork without inventing a packshot", async ({ page }) => {
+test("commercial product page shows public commercial state and approved line artwork without inventing a packshot", async ({ page }) => {
   await page.goto("/wondergreen/productos/2grow-solido-15-3-3");
 
   await expect(page.locator('div[data-tone="grow"]').first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /2Grow Sólido/ })).toBeVisible();
-  await expect(page.getByText("Referencia comercial reconciliada").first()).toBeVisible();
-  await expect(page.getByText("Reconciliada", { exact: true })).toBeVisible();
+  await expect(page.getByText("Estado comercial confirmado").first()).toBeVisible();
+  await expect(page.getByText("Confirmada", { exact: true })).toBeVisible();
   await expect(page.getByRole("img", { name: "Identidad visual aprobada de la línea Wondergreen 2Grow" })).toBeVisible();
   await expect(page.getByText(/No se presenta como packshot específico/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Manual de uso Wondergreen" })).toHaveAttribute("href", "/biblioteca/manual-uso-wondergreen");
@@ -56,12 +56,13 @@ test("product consultation preserves the exact governed reference into contact",
   await page.goto("/wondergreen/productos/2grow-solido-15-3-3");
 
   const consult = page.getByRole("link", { name: "Consultar esta referencia" });
-  await expect(consult).toHaveAttribute("href", "/contacto?producto=2grow-solido-15-3-3#wondergreen");
+  await expect(consult).toHaveAttribute("href", "/contacto?producto=2grow-solido-15-3-3&source=wondergreen-producto");
   await consult.click();
 
   await expect(page.getByRole("heading", { name: "Cuéntanos el contexto de 2Grow Sólido." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "2Grow Sólido · 15-3-3" })).toBeVisible();
-  await expect(page.getByText("Referencia comercial reconciliada").first()).toBeVisible();
+  await expect(page.getByText("Estado comercial confirmado").first()).toBeVisible();
+  await expect(page.getByText(/Origen:/)).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Volver a la ficha/ })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
   await expect(page.getByRole("link", { name: "Agendar reunión", exact: true }).first()).toHaveAttribute("href", /^https:\/\/outlook\.office\.com\//);
 });
@@ -78,7 +79,7 @@ test("technical bioinput page does not pretend to be commercially available", as
 
   await expect(page.locator('div[data-tone="botanical"]').first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /Extracto de Neem/ })).toBeVisible();
-  await expect(page.getByText(/Portafolio técnico · ficha\/registro por reconciliar/).first()).toBeVisible();
+  await expect(page.getByText("Portafolio técnico · condición comercial por confirmar").first()).toBeVisible();
   await expect(page.getByText("Requiere confirmación", { exact: true })).toBeVisible();
   await expect(page.getByText("Consultar", { exact: true })).toBeVisible();
 });
