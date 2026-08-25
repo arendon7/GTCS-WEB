@@ -2,7 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { type ActivityTemplate, type CollectionRoute, type EquipmentMasterOption, type EquipmentProcessAssignment, type MaterialSource, type MaterialSourceKind, type MaterialTypeMaster, type MeasurementUnit, type OperationalMasterSnapshot, type OperationalProcess, type OperationalTool, type SimpleMasterKind } from "@/lib/operational-master-data";
 import { createClient } from "@/lib/supabase/client";
 
-type UnitRow = { code:string; name:string; symbol:string; category:MeasurementUnit["category"]; active:boolean };
 type SimpleRow = { id:string; plant_id:string; code:string; name:string; active:boolean };
 type TemplateRow = SimpleRow & { process_id:string; default_unit_code?:string|null; requires_quantity:boolean; requires_lot:boolean; requires_equipment:boolean; allows_unplanned:boolean };
 type SourceRow = SimpleRow & { source_kind:MaterialSourceKind };
