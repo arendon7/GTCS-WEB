@@ -4,7 +4,7 @@ test("Wondergreen product catalog exposes governed references with commercial pr
   await page.goto("/wondergreen/productos");
 
   await expect(page.getByRole("heading", { name: "Productos concretos, formulación por formulación." })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("8 referencias", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /2Grow Sólido/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Extracto de Neem/ })).toHaveCount(0);
@@ -30,8 +30,8 @@ test("catalog browser filters by search, commercial truth and format without cha
   await expect(page.getByRole("link", { name: /Extracto de Neem/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /2Grow Sólido/ })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Volver a comerciales" }).click();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Volver a referencias confirmadas" }).click();
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("link", { name: /2Grow Sólido/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Extracto de Neem/ })).toHaveCount(0);
 
