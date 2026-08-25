@@ -7,7 +7,7 @@ export const publicSite = {
   publicDomainTarget: "https://greenatics.com.co",
   legacyIndexedDomain: "https://greenatics.org",
   description:
-    "Greenatics conecta gestión de residuos, ingeniería, operación, Wondergreen, conocimiento y datos para devolver valor al territorio y al suelo.",
+    "Greenatics conecta gestión integral de residuos, ingeniería, operación, Wondergreen, conocimiento y datos para devolver valor al territorio y al suelo.",
   office: {
     line1: "Cra 43b # 14–51 · Oficina 204",
     line2: "Centro Empresarial Alcalá",
@@ -44,7 +44,7 @@ export const publicFooterNav = [
     links: [
       { href: "/nosotros", label: "Nosotros" },
       { href: "/contacto", label: "Hablar con nosotros" },
-      { href: "/app", label: "Ingresar" },
+      { href: "/app", label: "GREENATICS OPS" },
     ],
   },
 ] as const;
