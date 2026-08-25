@@ -46,6 +46,7 @@ export default async function WondergreenLinePage({ params }: Props) {
   const guides = uniqueGuides(line);
   const catalog = references[0] ? getWondergreenProductDocuments(references[0]).catalog : null;
   const commercialCount = references.filter((reference) => reference.truthStatus === "commercial-reconciled").length;
+  const lineContactContext = `Interés en la línea Wondergreen ${line.family}. Quiero revisar referencias, presentaciones y disponibilidad aplicables a mi caso.`;
 
   return (
     <div className={styles.page}>
@@ -65,11 +66,11 @@ export default async function WondergreenLinePage({ params }: Props) {
               <p className={styles.lead}>{line.headline} {line.description}</p>
               <div className={styles.lineMeta}>
                 <span>{references.length} referencias documentadas</span>
-                <span>{commercialCount} comerciales reconciliadas</span>
+                <span>{commercialCount} con estado comercial confirmado</span>
               </div>
               <div className={styles.actions}>
                 <a className={`${styles.button} ${styles.primary}`} href="#referencias">Ver referencias</a>
-                <Link className={styles.button} href="/wondergreen/productos">Ver Product Master</Link>
+                <Link className={styles.button} href="/wondergreen/productos">Ver catálogo completo</Link>
               </div>
             </div>
             {artwork ? (
@@ -84,14 +85,14 @@ export default async function WondergreenLinePage({ params }: Props) {
         <section className={`${styles.section} ${styles.white}`}>
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <div><span className={styles.eyebrow}>Cómo leer la línea</span><h2>La identidad es común. La verdad técnica sigue siendo individual.</h2></div>
-              <p>Una misma familia puede contener sólidos y líquidos, formulaciones distintas y estados comerciales diferentes. Por eso esta página organiza la línea, pero cada referencia conserva su propia ficha pública.</p>
+              <div><span className={styles.eyebrow}>Cómo leer la línea</span><h2>La identidad es común. La información técnica sigue siendo individual.</h2></div>
+              <p>Una misma familia puede contener sólidos y líquidos, formulaciones distintas y estados comerciales diferentes. Esta página organiza la línea; cada referencia conserva su propia ficha con formulación, presentaciones y documentación.</p>
             </div>
             <div className={styles.truthPanel}>
               <div className={styles.truthRow}><span>Familia</span><strong>{line.family}</strong></div>
-              <div className={styles.truthRow}><span>Referencias en Product Master</span><strong>{references.length}</strong></div>
-              <div className={styles.truthRow}><span>Estado comercial</span><strong>{commercialCount} reconciliadas · {references.length - commercialCount} por confirmar o técnicas</strong></div>
-              <div className={styles.truthRow}><span>Regla de lectura</span><strong>Fórmula, formato, presentación y documentación se confirman en la referencia exacta.</strong></div>
+              <div className={styles.truthRow}><span>Referencias documentadas</span><strong>{references.length}</strong></div>
+              <div className={styles.truthRow}><span>Estado comercial</span><strong>{commercialCount} confirmadas · {references.length - commercialCount} técnicas o en validación</strong></div>
+              <div className={styles.truthRow}><span>Antes de elegir</span><strong>Confirma fórmula, formato, presentación, estado y documentación en la referencia exacta.</strong></div>
             </div>
           </div>
         </section>
@@ -100,7 +101,7 @@ export default async function WondergreenLinePage({ params }: Props) {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Referencias de {line.family}</span><h2>Abre el producto exacto que quieres revisar.</h2></div>
-              <p>Las referencias comerciales aparecen junto a las técnicas o pendientes de reconciliación, pero nunca comparten estado por asociación de familia.</p>
+              <p>Las referencias con estado comercial confirmado aparecen junto a referencias técnicas o todavía en validación. Cada una conserva su propio estado y no hereda condiciones por pertenecer a la misma familia.</p>
             </div>
             <div className={styles.referenceGrid}>
               {references.map((reference) => (
@@ -147,7 +148,7 @@ export default async function WondergreenLinePage({ params }: Props) {
         <section className={styles.closing}>
           <div className={`${styles.container} ${styles.closingInner}`}>
             <div><span className={styles.eyebrow}>Siguiente paso</span><h2>Elige una referencia exacta o conversa sobre la línea {line.family}.</h2></div>
-            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href={`/contacto?linea=${encodeURIComponent(line.slug)}&source=wondergreen-linea#wondergreen`}>Consultar línea</Link><Link className={styles.button} href="/wondergreen/productos">Ver productos</Link></div>
+            <div className={styles.actions}><Link className={`${styles.button} ${styles.primary}`} href={`/contacto?audience=wondergreen&source=wondergreen-linea&contexto=${encodeURIComponent(lineContactContext)}`}>Consultar línea</Link><Link className={styles.button} href="/wondergreen/productos">Ver productos</Link></div>
           </div>
         </section>
       </main>
