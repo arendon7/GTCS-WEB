@@ -26,7 +26,7 @@ test("solutions hub exposes concrete services inside every commercial family bef
   await expect(page.getByRole("img", { name: "Vista aérea documentada del caso Greenatics en Yarumal", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Ver servicios y entregables", exact: true })).toHaveAttribute("href", "#servicios");
 
-  await expect(page.getByRole("heading", { name: "Ocho familias. Servicios concretos que puedes abrir y revisar en profundidad." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ocho familias de servicio para necesidades distintas." })).toBeVisible();
   for (const family of [
     "Caracterización y línea base",
     "Planeación y programas",
