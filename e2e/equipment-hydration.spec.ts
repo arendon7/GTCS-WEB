@@ -21,7 +21,7 @@ test("equipment detail hydrates deterministically when client and server clocks 
   await page.goto("/equipment/eq-tam-bp01");
 
   await expect(page.getByRole("heading", { name: "BP-01 · Bomba peristáltica" })).toBeVisible();
-  await expect(page.getByText("Obstrucción recurrente", { exact: true })).toBeVisible();
+  await expect(page.getByText("Obstrucción recurrente", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Fuera de servicio", { exact: true })).toBeVisible();
 
   // React reports hydration mismatches during/just after hydration. Yield once so
