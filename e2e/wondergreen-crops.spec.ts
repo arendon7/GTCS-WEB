@@ -14,7 +14,7 @@ test("Wondergreen exposes exact liquid portfolio and technical statuses", async 
   await expect(portfolio.getByText("2Grow Líquido · referencia nitrogenada · 200-0-0", { exact: true })).toBeVisible();
   await expect(portfolio.getByText(/Portafolio técnico · disponibilidad por confirmar/)).toBeVisible();
   await expect(portfolio.getByText("2Bloom Líquido · 30-80-30", { exact: true })).toBeVisible();
-  await expect(portfolio.getByText(/Portafolio técnico · condición comercial por reconciliar/)).toBeVisible();
+  await expect(portfolio.getByText(/Portafolio técnico · condición comercial por confirmar/)).toBeVisible();
 });
 
 test("crop library exposes the five initial programs", async ({ page }) => {
