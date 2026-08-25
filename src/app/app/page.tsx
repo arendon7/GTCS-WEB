@@ -11,7 +11,7 @@ export default async function InternalAppHome() {
   return (
     <AppShell>
       <TodayDashboard initialNowIso={initialNowIso} />
-      <MaintenanceHome />
+      <MaintenanceHome initialNowIso={initialNowIso} />
       <CompostHome />
     </AppShell>
   );
