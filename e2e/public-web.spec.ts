@@ -2,14 +2,14 @@ import { test, expect } from "@playwright/test";
 
 async function digitalEntry(page: import("@playwright/test").Page) {
   const header = page.getByRole("banner");
-  const desktopEntry = header.getByRole("link", { name: "Ingresar", exact: true });
+  const desktopEntry = header.getByRole("link", { name: "GREENATICS OPS", exact: true });
   if (await desktopEntry.isVisible()) return desktopEntry;
 
   await header.getByRole("button", { name: "Abrir navegación" }).click();
-  return page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true });
+  return page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "GREENATICS OPS", exact: true });
 }
 
-test("public home presents Greenatics and exposes the digital bridge", async ({ page }) => {
+test("public home presents Greenatics and exposes the explicit OPS bridge", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("main")).toHaveCount(1);
@@ -18,7 +18,7 @@ test("public home presents Greenatics and exposes the digital bridge", async ({ 
   await expect(await digitalEntry(page)).toHaveAttribute("href", "/app");
   await expect(page.getByRole("heading", { name: "Una marca. Tres formas claras de entrar." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Nutrición que trabaja con el suelo." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "La operación también necesita una capa digital." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Datos para operar, seguir y decidir." })).toBeVisible();
 });
 
 test("Wondergreen exposes commercial products, full portfolio and governed technology narrative", async ({ page }) => {
