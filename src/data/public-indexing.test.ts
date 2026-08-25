@@ -9,6 +9,7 @@ import { services } from "./services";
 import { strategicPrograms } from "./strategic-programs";
 import { publicProjects } from "./projects-public";
 import { wondergreenCrops } from "./wondergreen-crops";
+import { wondergreenProductLines } from "./wondergreen-product-lines";
 import { wondergreenReferences } from "./wondergreen-public";
 
 describe("public navigation and indexing contract", () => {
@@ -21,7 +22,7 @@ describe("public navigation and indexing contract", () => {
   it("builds a sitemap from governed indexed public data only", () => {
     const entries = sitemap();
     const urls = entries.map((item) => item.url);
-    const expectedCount = publicStaticRoutes.length + audienceSolutionPaths.length + intentSolutionPaths.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenReferences.length;
+    const expectedCount = publicStaticRoutes.length + audienceSolutionPaths.length + intentSolutionPaths.length + strategicPrograms.length + services.length + publicProjects.length + wondergreenCrops.length + wondergreenProductLines.length + wondergreenReferences.length;
 
     expect(entries).toHaveLength(expectedCount);
     for (const path of [
@@ -39,6 +40,7 @@ describe("public navigation and indexing contract", () => {
       "/soluciones/diagnostico-caracterizacion",
       "/proyectos/yarumal",
       "/wondergreen/cultivos/cafe",
+      "/wondergreen/lineas/2grow",
       "/wondergreen/productos/2grow-solido-15-3-3",
       "/wondergreen/productos/extracto-neem",
     ]) {
