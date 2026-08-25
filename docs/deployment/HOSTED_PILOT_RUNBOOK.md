@@ -257,36 +257,68 @@ Además del smoke RLS de solo lectura, el piloto funcional debe comprobar con se
 10. consumo superior al lote es rechazado;
 11. cerrar sesión invalida navegación protegida.
 
-## 12. Producción OPS
-`.github/workflows/hosted-pilot-production-refresh.yml` es el único dispatcher recuperado para refresh estable de OPS.
+## 12. Producción canónica
+`.github/workflows/publish-greenatics-web.yml` es el único dispatcher manual canónico autorizado para publicar el origen estable `https://greenatics-ops.vercel.app`.
 
-Antes de Production exige:
+El antiguo `hosted-pilot-production-refresh.yml` se retiró como dispatcher para evitar dos rutas manuales de producción. Los workflows con fecha (`publish-once-*`, `publish-greenatics-web-release-*`, `repair-public-resource-runtime-*`) son evidencia histórica de releases o reparaciones puntuales; no son el procedimiento operativo vigente y no deben editarse ni reutilizarse para una publicación ordinaria.
 
-1. typecheck;
-2. lint;
-3. unit tests;
-4. build;
-5. backend preflight steady-state;
-6. RLS Director/Támesis;
-7. RLS Director/Yarumal;
-8. Preview exacto;
-9. protected Preview preflight;
-10. deployment estable;
-11. preflight humano del origen resultante.
+### Inicio de un release
+Antes de abrir GitHub Actions:
 
-No crea, modifica ni elimina usuarios o memberships.
+1. fusionar por PR únicamente con los cuatro checks canónicos verdes: `quality`, `database`, `browser (desktop-chromium)` y `browser (mobile-chromium)`;
+2. confirmar que `develop` contiene exactamente el candidato que se desea publicar;
+3. copiar el SHA completo de 40 caracteres del HEAD de `develop`;
+4. abrir el workflow **publish-greenatics-web**;
+5. ejecutar **Run workflow** desde `develop`;
+6. ingresar ese SHA completo en `release_sha`;
+7. escribir exactamente `PUBLISH-GREENATICS` en `confirm_production`.
+
+El workflow falla cerrado si el SHA tiene formato inválido, si el checkout no coincide o si `develop` avanzó después de copiar el SHA. En ese caso se debe iniciar un nuevo release desde el HEAD actual; no se debe forzar el deployment de un SHA obsoleto.
+
+### Gate de producción
+Antes de asignar el alias estable, el workflow exige en este orden:
+
+1. confirmación explícita y SHA = HEAD actual de `develop`;
+2. secretos de deployment, backend y UAT autenticado presentes;
+3. typecheck;
+4. lint;
+5. unit tests;
+6. build de producción;
+7. backend preflight `TAM,YAR`;
+8. aislamiento RLS Director vs Operario Támesis;
+9. aislamiento RLS Director vs Operario Yarumal;
+10. deployment full-ops Preview del mismo SHA;
+11. protected Preview preflight;
+12. deployment estable full-ops;
+13. provenance del origen estable: `develop` + SHA exacto;
+14. smoke semántico de rutas públicas críticas, sitemap y robots;
+15. status GitHub `greenatics/web-release = success` sobre el SHA publicado.
+
+No crea, modifica ni elimina usuarios, perfiles o memberships. Las credenciales de UAT se consumen únicamente como secretos.
+
+### Cierre del release
+Un release se considera publicado únicamente cuando:
+
+- el workflow completo termina `success`;
+- `greenatics/web-release` está en `success` para el SHA exacto;
+- el resumen reporta el origen estable y el deployment único;
+- provenance confirma `develop` y el SHA esperado;
+- los smokes semánticos de producción terminan PASS.
+
+Un merge a `develop` por sí solo **no** publica producción.
 
 ## 13. Gate de promoción
 Antes de asociar dominio o promover un release:
 
-- CI de PR verde (`quality`, `database`, desktop y mobile);
+- CI de PR verde (`quality`, `database`, desktop y mobile`);
 - `public-only` Preview PASS para el SHA exacto cuando se modifica superficie pública;
 - `full-ops` Preview PASS para cambios internos;
-- UAT autenticado PASS en steady-state;
+- UAT autenticado/RLS PASS en steady-state;
 - smoke funcional aprobado;
 - redirects Auth configurados;
 - ningún secreto presente en Git, bundle cliente, proyecto público o logs;
 - web pública validada anónimamente;
-- release candidate explícito desde `develop`.
+- release candidate explícito desde `develop`;
+- publicación únicamente por `publish-greenatics-web.yml` con SHA exacto y confirmación explícita.
 
 SharePoint permanece como fuente documental e histórica durante la transición. GREENATICS OPS es el sistema transaccional; la integración documental añade referencias/lectura sin devolver las transacciones diarias a SharePoint.

@@ -32,6 +32,13 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
+      PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+      PILOT_DIRECTOR_PLANTS: TAM,YAR
 
     steps:
       - name: Checkout requested release SHA
@@ -89,7 +96,7 @@ jobs:
             -d "{\"state\":\"pending\",\"context\":\"greenatics/web-release\",\"description\":\"Publicando SHA confirmado en greenatics-ops\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
             >/dev/null
 
-      - name: Require deployment secrets
+      - name: Require deployment and authenticated UAT secrets
         shell: bash
         run: |
           set -euo pipefail
@@ -99,7 +106,13 @@ jobs:
             VERCEL_ORG_ID \
             NEXT_PUBLIC_SUPABASE_URL \
             NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
-            SUPABASE_SECRET_KEY
+            SUPABASE_SECRET_KEY \
+            PILOT_DIRECTOR_EMAIL \
+            PILOT_DIRECTOR_PASSWORD \
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
           do
             if [ -z "${!name:-}" ]; then
               echo "::error::$name is not configured for GREENATICS production release."
@@ -120,6 +133,20 @@ jobs:
 
       - name: Certify hosted backend
         run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Certify Director vs Operario Támesis RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
+        run: npm run pilot:rls-smoke
 
       - name: Deploy full OPS preview
         id: preview
@@ -219,7 +246,7 @@ jobs:
           echo "Stable public/OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Unique deployment: $UNIQUE_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Published develop commit: $DEPLOY_GIT_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Manual confirmation, quality, backend, preview, production provenance and semantic public route smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Manual confirmation, quality, backend, TAM/YAR RLS, preview, production provenance and semantic public route smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Mark release success
         if: ${{ success() }}
