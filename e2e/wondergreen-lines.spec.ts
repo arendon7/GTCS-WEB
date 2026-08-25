@@ -32,7 +32,9 @@ test("2Grow line separates family identity from exact solid and liquid Product T
   await expect(page.getByText("2 comerciales reconciliadas", { exact: true })).toBeVisible();
 
   await expect(page.getByRole("link", { name: /2Grow Sólido/ })).toHaveAttribute("href", "/wondergreen/productos/2grow-solido-15-3-3");
-  await expect(page.getByRole("link", { name: /2Grow Líquido.*100-20-20/s })).toHaveAttribute("href", "/wondergreen/productos/2grow-liquido-100-20-20");
+  const liquid100 = page.getByRole("link").filter({ hasText: "2Grow Líquido" }).filter({ hasText: "100-20-20" });
+  await expect(liquid100).toHaveCount(1);
+  await expect(liquid100).toHaveAttribute("href", "/wondergreen/productos/2grow-liquido-100-20-20");
   await expect(page.getByRole("link", { name: /2Grow Líquido · referencia nitrogenada/ })).toHaveAttribute("href", "/wondergreen/productos/2grow-liquido-200-0-0");
 
   await expect(page.getByText("15-3-3", { exact: true })).toBeVisible();
