@@ -7,8 +7,8 @@ describe("GREENATICS manual production release workflow", () => {
   it("is manual-only and requires an explicit production confirmation", () => {
     expect(workflow).toContain("workflow_dispatch:");
     expect(workflow).not.toMatch(/^\s*push:\s*$/m);
-    expect(workflow).toContain('confirm_production:');
-    expect(workflow).toContain('PUBLISH-GREENATICS');
+    expect(workflow).toContain("confirm_production:");
+    expect(workflow).toContain("PUBLISH-GREENATICS");
   });
 
   it("publishes only the exact current develop head", () => {
@@ -32,7 +32,7 @@ describe("GREENATICS manual production release workflow", () => {
       '--expected-commit "$DEPLOY_GIT_SHA"',
       'check_route "/" "Transformamos residuos en vida."',
       'check_route "/robots.txt" "Disallow: /app"',
-      'context\\\":\\\"greenatics/web-release',
+      "greenatics/web-release",
     ]) {
       expect(workflow).toContain(marker);
     }
