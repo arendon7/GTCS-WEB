@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const workflow = readFileSync(".github/workflows/publish-greenatics-web.yml", "utf8");
+const workflowPath = ".github/workflows/publish-greenatics-web.yml";
+const workflow = readFileSync(workflowPath, "utf8");
 
 describe("GREENATICS manual production release workflow", () => {
   it("is manual-only and requires an explicit production confirmation", () => {
@@ -17,6 +18,30 @@ describe("GREENATICS manual production release workflow", () => {
     expect(workflow).toContain('develop_head="$(git rev-parse origin/develop)"');
     expect(workflow).toContain('if [ "$develop_head" != "$REQUESTED_SHA" ]');
     expect(workflow).toContain('DEPLOY_GIT_SHA=$REQUESTED_SHA');
+  });
+
+  it("requires authenticated TAM/YAR isolation before preview or production", () => {
+    for (const marker of [
+      "PILOT_DIRECTOR_EMAIL",
+      "PILOT_DIRECTOR_PASSWORD",
+      "PILOT_OPERATOR_TAM_EMAIL",
+      "PILOT_OPERATOR_TAM_PASSWORD",
+      "PILOT_OPERATOR_YAR_EMAIL",
+      "PILOT_OPERATOR_YAR_PASSWORD",
+      "PILOT_DIRECTOR_PLANTS: TAM,YAR",
+      "Certify Director vs Operario Támesis RLS isolation",
+      "PILOT_OPERATOR_PLANTS: TAM",
+      "Certify Director vs Operario Yarumal RLS isolation",
+      "PILOT_OPERATOR_PLANTS: YAR",
+      "npm run pilot:rls-smoke",
+    ]) {
+      expect(workflow).toContain(marker);
+    }
+
+    expect(workflow.indexOf("Certify Director vs Operario Támesis RLS isolation"))
+      .toBeLessThan(workflow.indexOf("Deploy full OPS preview"));
+    expect(workflow.indexOf("Certify Director vs Operario Yarumal RLS isolation"))
+      .toBeLessThan(workflow.indexOf("Deploy full OPS preview"));
   });
 
   it("keeps quality, hosted backend, preview, production provenance and semantic smoke as release gates", () => {
@@ -36,5 +61,17 @@ describe("GREENATICS manual production release workflow", () => {
     ]) {
       expect(workflow).toContain(marker);
     }
+  });
+
+  it("has exactly one manual workflow capable of stable production deployment", () => {
+    const manualProductionDispatchers = readdirSync(".github/workflows")
+      .filter((name) => /\.ya?ml$/.test(name))
+      .filter((name) => {
+        const source = readFileSync(`.github/workflows/${name}`, "utf8");
+        return source.includes("workflow_dispatch:") && source.includes("vercel-ops-production-deploy.mjs");
+      })
+      .sort();
+
+    expect(manualProductionDispatchers).toEqual(["publish-greenatics-web.yml"]);
   });
 });
