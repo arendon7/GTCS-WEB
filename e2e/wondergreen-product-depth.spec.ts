@@ -35,5 +35,5 @@ test("Wondergreen product page exposes presentations plus open and download PDF 
   await expect(main.getByRole("link", { name: /Descargar catálogo PDF/ })).toHaveAttribute("href", "/api/public-resources/wondergreen-product-master?download=1");
   await expect(main.getByRole("link", { name: /Descargar guía PDF/ }).first()).toHaveAttribute("href", /\?download=1$/);
   await expect(main.getByRole("heading", { name: "Ficha técnica específica" })).toBeVisible();
-  await expect(main.getByText("Pendiente de vincular master público", { exact: true })).toBeVisible();
+  await expect(main.getByText("Pendiente de vincular documento público", { exact: true })).toBeVisible();
 });
