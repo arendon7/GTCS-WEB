@@ -22,11 +22,11 @@ function timeLabel(iso?: string) {
   return bogotaTime.format(new Date(iso));
 }
 
-export function TodayDashboard() {
+export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
   const { activities, incidents, receptions, workers, ready, resetDemo } = useOpsStore();
   const { equipment, tickets } = useMaintenanceStore();
   const { piles, measurements } = useCompostStore();
-  const [nowIso, setNowIso] = useState(() => new Date().toISOString());
+  const [nowIso, setNowIso] = useState(initialNowIso);
 
   useEffect(() => {
     const update = () => setNowIso(new Date().toISOString());
