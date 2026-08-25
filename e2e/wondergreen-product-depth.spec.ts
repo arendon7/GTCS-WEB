@@ -4,7 +4,7 @@ test("Wondergreen catalog starts with commercial products and keeps orientation 
   await page.goto("/wondergreen/productos");
 
   await expect(page.getByRole("heading", { name: "Productos concretos, formulación por formulación." })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Comerciales reconciliadas" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Estado comercial confirmado" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("link", { name: /Encontrar mi programa/ })).toHaveAttribute("href", "/wondergreen/finder");
 
   const growCard = page.getByRole("link", { name: /2Grow Sólido/ }).first();
