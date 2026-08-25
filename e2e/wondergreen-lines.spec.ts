@@ -42,8 +42,8 @@ test("2Grow line separates family identity from exact solid and liquid Product T
   await expect(page.getByText("200-0-0", { exact: true })).toBeVisible();
   await expect(page.getByText("5 kg", { exact: true })).toBeVisible();
   await expect(page.getByText("40 kg", { exact: true })).toBeVisible();
-  await expect(page.getByText("1 L", { exact: true })).toBeVisible();
-  await expect(page.getByText("1000 L", { exact: true })).toBeVisible();
+  await expect(liquid100.getByText("1 L", { exact: true })).toBeVisible();
+  await expect(liquid100.getByText("1000 L", { exact: true })).toBeVisible();
 
   await expect(page.getByRole("link", { name: "Profundizar en tecnología" })).toHaveAttribute("href", "/wondergreen/tecnologia");
   await expect(page.getByText(/no significa compartir automáticamente una característica tecnológica/i)).toBeVisible();
