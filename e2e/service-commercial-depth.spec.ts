@@ -44,7 +44,7 @@ test("services without a directly governed case do not fabricate an evidence blo
   await expect(main.getByRole("heading", { name: "Támesis", exact: true })).toHaveCount(0);
 });
 
-test("service contact keeps the exact commercial context instead of restarting at diagnosis", async ({ page }) => {
+test("service contact keeps the exact commercial context without exposing internal source metadata", async ({ page }) => {
   await page.goto("/soluciones/trazabilidad-datos");
 
   const contact = page.getByRole("link", { name: "Solicitar conversación comercial", exact: true });
@@ -58,7 +58,7 @@ test("service contact keeps the exact commercial context instead of restarting a
 
   await contact.click();
   const inherited = page.getByLabel("Contexto heredado de navegación");
-  await expect(inherited).toContainText("Origen: solucion");
   await expect(inherited).toContainText("Servicio: Trazabilidad digital, indicadores y GREENATICS OPS");
   await expect(inherited).toContainText("Interés en Trazabilidad digital");
+  await expect(page.getByText(/Origen:/)).toHaveCount(0);
 });
