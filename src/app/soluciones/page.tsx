@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { publicCommercialMethod } from "@/data/public-method";
 import { getPrimaryProjectMedia } from "@/data/public-media";
 import catalog from "./solutions-catalog.module.css";
 import styles from "./solutions-v2.module.css";
@@ -124,14 +125,6 @@ const serviceFamilies = [
   },
 ];
 
-const process = [
-  ["01", "Entender", "Leer el problema, el resultado esperado, la información disponible y las restricciones del proyecto."],
-  ["02", "Definir el alcance", "Traducir la necesidad en actividades, entregables, responsables, exclusiones y criterios de cierre."],
-  ["03", "Implementar", "Ejecutar el alcance contratado: programas, rutas, adecuaciones, protocolos, puesta en marcha, operación o herramientas."],
-  ["04", "Acompañar", "Dirigir, medir, documentar y corregir con responsables y una cadencia de seguimiento definida."],
-  ["05", "Mejorar y valorizar", "Usar la evidencia para optimizar el sistema y abrir nuevas oportunidades de aprovechamiento cuando sean viables."],
-];
-
 const digitalCapabilities = [
   ["01", "Captura", "Datos de campo y operación donde ocurre la actividad."],
   ["02", "Trazabilidad", "Rutas, recepciones, procesos, lotes, inventarios y tareas."],
@@ -244,7 +237,7 @@ export default function SolutionsPage() {
               </p>
             </div>
             <div className={styles.processRail}>
-              {process.map(([number, title, copy]) => (
+              {publicCommercialMethod.map(([number, title, copy]) => (
                 <div className={styles.processStep} key={number}>
                   <span>{number}</span>
                   <div><strong>{title}</strong><p>{copy}</p></div>
@@ -284,11 +277,11 @@ export default function SolutionsPage() {
               <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Tecnología y datos</span>
               <h2 id="digital-title">La consultoría gana valor cuando la información sigue viva después del informe.</h2>
               <p>
-                GREENATICS OPS funciona como capa de operación y trazabilidad para procesos activos. La arquitectura deja espacio para incorporar herramientas de captura de campo y seguimiento sin convertir cada servicio en una aplicación aislada.
+                GREENATICS OPS funciona como capa de operación y trazabilidad para procesos activos. Registros, indicadores y seguimiento mantienen viva la información después de una intervención puntual y permiten sostener nuevas decisiones.
               </p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonLight}`} href="/soluciones/trazabilidad-datos">Ver trazabilidad y datos</Link>
-                <a className={`${styles.button} ${styles.buttonOutlineLight}`} href="/app">Ingresar</a>
+                <a className={`${styles.button} ${styles.buttonOutlineLight}`} href="/app">Ingresar a GREENATICS OPS</a>
               </div>
             </div>
             <div className={styles.digitalRail}>
