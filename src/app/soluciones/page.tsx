@@ -152,8 +152,8 @@ export default function SolutionsPage() {
                 <Link className={`${styles.button} ${styles.buttonGhost}`} href="/contacto">Hablar con Greenatics</Link>
               </div>
               <div className={styles.heroPrinciple}>
-                <span>Principio comercial</span>
-                <strong>Primero mostramos qué puede contratar el cliente. El diagnóstico se usa solo cuando hace falta aclarar el punto de partida.</strong>
+                <span>Cómo empezar</span>
+                <strong>Puedes entrar directamente al servicio que necesitas. El diagnóstico se incorpora solo cuando faltan datos para definir el punto de partida.</strong>
               </div>
             </div>
 
@@ -175,9 +175,9 @@ export default function SolutionsPage() {
             <div className={styles.sectionHead}>
               <div>
                 <span className={styles.eyebrow}>Qué puedes contratar</span>
-                <h2 id="services-title">Ocho familias. Servicios concretos que puedes abrir y revisar en profundidad.</h2>
+                <h2 id="services-title">Ocho familias de servicio para necesidades distintas.</h2>
               </div>
-              <p>La familia ayuda a ubicar la necesidad, pero no es el destino final. Cada servicio abre su alcance, entregables, actividades, límites, evidencia disponible y siguiente paso comercial.</p>
+              <p>Cada familia reúne servicios con alcance, entregables, actividades, límites, evidencia disponible y un siguiente paso comercial claro.</p>
             </div>
 
             <div className={styles.serviceList}>
@@ -299,7 +299,7 @@ export default function SolutionsPage() {
               <h2 id="final-cta-title">¿No sabes cuál de estas soluciones corresponde a tu caso?</h2>
             </div>
             <div>
-              <p>El orientador inicial organiza actor, necesidad y estado para sugerir qué servicio revisar. No es el producto principal de Greenatics y no sustituye el alcance comercial ni técnico que finalmente se contrate.</p>
+              <p>El orientador inicial organiza actor, necesidad y estado para sugerir qué servicio revisar. No sustituye el alcance comercial ni técnico que finalmente se contrate.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones/diagnostico-inicial">Usar orientador inicial</Link>
                 <Link className={`${styles.button} ${styles.buttonGhost}`} href="/contacto">Hablar con Greenatics</Link>

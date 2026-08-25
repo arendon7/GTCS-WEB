@@ -58,11 +58,11 @@ const finderSteps = [
 const bioFamilies = [
   ["01", "Microbiología y raíz", "Trichoderma · Micorrizas · Bacillus subtilis", "estado visible por referencia"],
   ["02", "Manejo biológico", "Beauveria · Metarhizium", "uso sujeto a evidencia y registro"],
-  ["03", "Extractos botánicos", "Extracto de Neem · Extracto Ajo–Ají", "ficha y aplicación gobernadas"],
+  ["03", "Extractos botánicos", "Extracto de Neem · Extracto Ajo–Ají", "ficha y aplicación sujetas a validación vigente"],
 ] as const;
 
 const knowledgeRoutes = [
-  ["01", "Programas por cultivo", "Etapa, objetivo, cautelas y referencias gobernadas para cada cultivo publicado.", "/wondergreen/cultivos", "Explorar cultivos"],
+  ["01", "Programas por cultivo", "Etapa, objetivo, cautelas y referencias documentadas para cada cultivo publicado.", "/wondergreen/cultivos", "Explorar cultivos"],
   ["02", "Deficiencias nutricionales", "Síntomas, confundidores y comprobaciones antes de asumir que todo se resuelve aplicando fertilizante.", "/biblioteca/guia-deficiencias", "Abrir guía"],
   ["03", "Criterios nutricionales", "Principios para leer contexto, análisis y decisiones sin convertir una guía en prescripción automática.", "/biblioteca/criterios-nutricionales", "Revisar criterios"],
   ["04", "Manual de uso", "Etapa, objetivo, formato, aplicación, seguimiento y ajuste dentro de una ruta técnica.", "/biblioteca/manual-uso-wondergreen", "Abrir manual"],
@@ -119,8 +119,8 @@ export default function WondergreenPage() {
                 <Link className={styles.textLink} href="/wondergreen/finder">No sé qué producto revisar →</Link>
               </div>
               <div className={styles.heroTruth}>
-                <span>Product Master público</span>
-                <strong>Composición, condición comercial, dosis y uso salen de la versión técnica vigente.</strong>
+                <span>Información técnica vigente</span>
+                <strong>Composición, condición comercial, dosis y uso se consultan desde la documentación técnica vigente de cada referencia.</strong>
               </div>
             </div>
 
@@ -170,7 +170,7 @@ export default function WondergreenPage() {
                 <span className={styles.eyebrow}>Elige tu nivel de profundidad</span>
                 <h2 id="router-title">Si ya sabes qué buscas, entra directo. Si no, te orientamos.</h2>
               </div>
-              <p>La web separa dos recorridos: quien conoce el producto puede abrirlo y llegar hasta su documentación; quien todavía tiene dudas puede entrar por cultivo, Casa & Jardín o Finder sin convertir la orientación en prescripción automática.</p>
+              <p>Si conoces el producto, puedes abrir su ficha y documentación. Si todavía tienes dudas, entra por cultivo, Casa & Jardín o Finder sin convertir la orientación en prescripción automática.</p>
             </div>
             <div className={styles.routerGrid}>
               {entryPaths.map((item) => (
@@ -193,7 +193,7 @@ export default function WondergreenPage() {
               <h2 id="definition-title">Un sistema de nutrición y manejo alrededor del suelo y del cultivo.</h2>
             </div>
             <div className={styles.editorialCopy}>
-              <p>Wondergreen reúne fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico bajo una misma arquitectura de producto y decisión.</p>
+              <p>Wondergreen reúne fertilizantes organominerales sólidos, referencias líquidas, compost, bioinsumos, conocimiento y acompañamiento técnico dentro de una misma propuesta de nutrición, manejo y seguimiento.</p>
               <p>El portafolio es una entrada comercial real. El contexto agronómico determina después cómo y cuándo una referencia puede convertirse en una recomendación específica.</p>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function WondergreenPage() {
                 <span className={styles.eyebrow}>Lenta liberación</span>
                 <h3>Una característica que debe estar vinculada a la referencia y versión que realmente la soporta.</h3>
                 <p>Wondergreen puede comunicar <strong>lenta liberación</strong> en las referencias y versiones donde esa característica esté documentada. La expresión no se extiende automáticamente a todo el portafolio sólido.</p>
-                <div className={styles.chapterLock}><strong>Truth lock.</strong><span> Lenta liberación describe una característica documentada del producto; no implica por sí sola una respuesta agronómica universal ni reemplaza la validación de uso en campo.</span></div>
+                <div className={styles.chapterLock}><strong>Alcance de esta característica.</strong><span> Lenta liberación describe una característica documentada del producto; no implica por sí sola una respuesta agronómica universal ni reemplaza la validación de uso en campo.</span></div>
               </div>
               <div className={styles.releaseVisual} aria-label="Representación conceptual de disponibilidad progresiva, no una curva experimental">
                 <div className={styles.releaseTrack}>
@@ -287,7 +287,7 @@ export default function WondergreenPage() {
             <div className={styles.finderIntro}>
               <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Orientación cuando hace falta</span>
               <h2 id="finder-title">Del contexto al seguimiento.</h2>
-              <p>El Finder V1 organiza cultivo, etapa y evidencia disponible dentro de los cinco programas publicados. Es una orientación técnica para quien todavía no sabe qué referencia revisar, no una prescripción automática, y se detiene cuando la etapa no está clara.</p>
+              <p>El Finder Wondergreen organiza cultivo, etapa y evidencia disponible dentro de los cinco programas publicados. Es una orientación técnica para quien todavía no sabe qué referencia revisar, no una prescripción automática, y se detiene cuando la etapa no está clara.</p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonLight}`} href="/wondergreen/finder">Abrir Finder Wondergreen</Link>
                 <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/biblioteca">Consultar guías</Link>
@@ -305,10 +305,10 @@ export default function WondergreenPage() {
           <div className={styles.container}>
             <div className={styles.portfolioHead}>
               <div>
-                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Portafolio completo · Product Master público</span>
+                <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Portafolio completo · estado por referencia</span>
                 <h2 id="portfolio-title">Fertilizantes y bioinsumos, con su estado visible.</h2>
               </div>
-              <p>Después de las referencias comerciales destacadas, el Product Master permite revisar también referencias técnicas o en desarrollo sin confundirlas con disponibilidad comercial.</p>
+              <p>Después de las referencias comerciales destacadas, el portafolio permite revisar también referencias técnicas o en desarrollo sin confundirlas con disponibilidad comercial.</p>
             </div>
 
             <div className={styles.portfolioColumns}>
@@ -376,7 +376,7 @@ export default function WondergreenPage() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <div><span className={styles.eyebrow}>Documentación y conocimiento</span><h2 id="knowledge-title">Profundiza desde el producto hasta el documento oficial.</h2></div>
-              <p>La web contextualiza y conecta. Las guías y PDF aprobados conservan su diseño y contenido como piezas documentales, mientras Product Truth gobierna la referencia exacta.</p>
+              <p>Las guías y PDF aprobados conservan su diseño y contenido como piezas documentales, y cada referencia mantiene su información técnica vigente.</p>
             </div>
             <div className={styles.knowledgeGrid}>
               {knowledgeRoutes.map(([number, title, copy, href, cta]) => (

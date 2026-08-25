@@ -60,16 +60,16 @@ test("Casa Jardín and Vivero leads with products and kits while keeping safe or
   await expect(page.getByRole("link", { name: "Ver todos los kits →", exact: true })).toHaveAttribute("href", "/casa-jardin/kits");
   await expect(page.getByRole("link", { name: "Ver catálogo completo de productos →", exact: true })).toHaveAttribute("href", "/casa-jardin/productos");
 
-  await expect(page.getByText("Ya está gobernado", { exact: true })).toBeVisible();
+  await expect(page.getByText("Ya está definido", { exact: true })).toBeVisible();
   await expect(page.getByText("Falta cerrar antes de activar ecommerce", { exact: true })).toBeVisible();
-  await expect(page.getByText(/Costo total y PVP gobernado/i)).toBeVisible();
+  await expect(page.getByText(/Costo total y PVP por definir/i)).toBeVisible();
   await expect(page.getByText(/Kit Trasplanta & Arranca · bloqueado/i)).toBeVisible();
 
   await expect(page.getByRole("button", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /comprar/i })).toHaveCount(0);
   await expect(page.getByText(/\$\s*[0-9]/)).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Kit Trasplanta & Arranca", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /Ver etapa y formatos propuestos/i }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Ver etapa y presentaciones previstas/i }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Ver composición y ruta/i }).first()).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
 });
