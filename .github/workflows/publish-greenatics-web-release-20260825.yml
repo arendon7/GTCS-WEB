@@ -130,44 +130,55 @@ jobs:
           set -u -o pipefail
           base="${APP_BASE_URL%/}"
           failures=0
+          counter=0
 
           check_route() {
             local path="$1"
-            local outfile="/tmp/greenatics-route.html"
+            local marker="$2"
+            counter=$((counter + 1))
+            local outfile="/tmp/greenatics-route-${counter}.body"
             local status
             status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
             local bytes=0
             [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
-            echo "$path -> HTTP $status · $bytes bytes"
-            if [ "$status" != "200" ] || [ "$bytes" -lt 500 ]; then
-              echo "::error::$path failed production smoke (HTTP $status, $bytes bytes)."
+            echo "$path -> HTTP $status · $bytes bytes · marker='$marker'"
+
+            if [ "$status" != "200" ]; then
+              echo "::error::$path failed production smoke (HTTP $status)."
               failures=$((failures + 1))
-            else
-              echo "- PASS: $path (HTTP 200, $bytes bytes)" >> "$GITHUB_STEP_SUMMARY"
+              return
             fi
+            if [ "$bytes" -lt 200 ]; then
+              echo "::error::$path returned only $bytes bytes."
+              failures=$((failures + 1))
+              return
+            fi
+            if ! grep -Fq "$marker" "$outfile"; then
+              echo "::error::$path did not contain release marker '$marker'."
+              failures=$((failures + 1))
+              return
+            fi
+
+            echo "- PASS: $path (HTTP 200, $bytes bytes, marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
           }
 
           echo "### Public production smoke" >> "$GITHUB_STEP_SUMMARY"
-          for path in \
-            / \
-            /soluciones \
-            /soluciones/rehabilitacion \
-            /wondergreen \
-            /wondergreen/productos \
-            /wondergreen/lineas \
-            /wondergreen/lineas/2grow \
-            /wondergreen/tecnologia \
-            /wondergreen/cultivos \
-            /casa-jardin \
-            /proyectos \
-            /biblioteca \
-            /nosotros \
-            /contacto \
-            /sitemap.xml \
-            /robots.txt
-          do
-            check_route "$path"
-          done
+          check_route "/" "Transformamos residuos en vida."
+          check_route "/soluciones" "Servicios para convertir necesidades de gestión en resultados concretos."
+          check_route "/soluciones/rehabilitacion" "Diagnóstico, rehabilitación y puesta en marcha de infraestructura existente"
+          check_route "/wondergreen" "Nutrición que trabaja con el suelo."
+          check_route "/wondergreen/productos" "Productos concretos, formulación por formulación."
+          check_route "/wondergreen/lineas" "Una identidad por línea. Una ficha exacta por referencia."
+          check_route "/wondergreen/lineas/2grow" "2Grow"
+          check_route "/wondergreen/tecnologia" "Organomineral. Oclusión. Lenta liberación."
+          check_route "/wondergreen/cultivos" "El cultivo cambia la pregunta."
+          check_route "/casa-jardin" "Nutrición por etapas para tus plantas."
+          check_route "/proyectos" "Proyectos"
+          check_route "/biblioteca" "Biblioteca"
+          check_route "/nosotros" "Diseñamos sistemas que tienen que funcionar en la vida real"
+          check_route "/contacto" "Cuéntanos qué quieres resolver."
+          check_route "/sitemap.xml" "https://greenatics.com.co/wondergreen"
+          check_route "/robots.txt" "Disallow: /app"
 
           if [ "$failures" -ne 0 ]; then
             echo "::error::Production public smoke failed on $failures route(s)."
@@ -183,7 +194,7 @@ jobs:
           echo "Stable public/OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Unique deployment: $UNIQUE_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
           echo "Published develop commit: $DEPLOY_GIT_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Quality, backend, preview, production provenance and public route smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, backend, preview, production provenance and semantic public route smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Mark release success
         if: ${{ success() }}
