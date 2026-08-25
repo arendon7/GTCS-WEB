@@ -46,6 +46,13 @@ function normalize(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
 
+function publicStatusLabel(status: WondergreenTruthStatus) {
+  if (status === "commercial-reconciled") return "Estado comercial confirmado";
+  if (status === "technical-portfolio") return "Portafolio técnico · condición comercial por confirmar";
+  if (status === "development") return "En desarrollo · no disponible comercialmente";
+  return "Estado por confirmar";
+}
+
 function matchesFormat(reference: WondergreenReference, filter: FormatFilter) {
   if (filter === "all") return true;
   if (filter === "bioinput") return reference.line === "bioinput";
@@ -166,7 +173,7 @@ export function ProductCatalogBrowser() {
                 const artwork = getWondergreenProductArtwork(item);
                 return (
                   <Link className={styles.productCard} data-tone={tone} href={`/wondergreen/productos/${item.slug}`} key={item.slug}>
-                    <div className={styles.cardTop}><span>{item.publicStatus}</span><small>{item.format}</small></div>
+                    <div className={styles.cardTop}><span>{publicStatusLabel(item.truthStatus)}</span><small>{item.format}</small></div>
                     {artwork ? (
                       <>
                         <Image className={depth.cardArtwork} src={artwork.href} alt={artwork.alt} width={720} height={450} sizes="(max-width: 640px) 92vw, (max-width: 900px) 45vw, 30vw" unoptimized />
