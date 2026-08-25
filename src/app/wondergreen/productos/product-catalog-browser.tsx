@@ -28,7 +28,7 @@ const groups = [
 ] as const;
 
 const statusOptions: { value: StatusFilter; label: string }[] = [
-  { value: "commercial-reconciled", label: "Comerciales reconciliadas" },
+  { value: "commercial-reconciled", label: "Estado comercial confirmado" },
   { value: "all", label: "Todo el portafolio" },
   { value: "technical-portfolio", label: "Portafolio técnico" },
   { value: "development", label: "Desarrollo" },
@@ -95,7 +95,7 @@ export function ProductCatalogBrowser() {
           <div className={styles.browserHeading}>
             <div>
               <span className={styles.eyebrow}>Portafolio Wondergreen</span>
-              <h2>Empieza por los productos comercialmente reconciliados.</h2>
+              <h2>Empieza por las referencias con estado comercial confirmado.</h2>
               <span className={depth.commercialNote}>Después puedes abrir el portafolio técnico y las referencias en desarrollo sin mezclarlas con disponibilidad comercial.</span>
             </div>
             <p>Busca por nombre, familia, formulación, etapa o función. Cada referencia abre una página propia con presentaciones, documentación pública vinculada y condición comercial.</p>
@@ -147,8 +147,8 @@ export function ProductCatalogBrowser() {
 
           <div className={styles.resultBar} aria-live="polite">
             <strong>{filtered.length} {filtered.length === 1 ? "referencia" : "referencias"}</strong>
-            <span>de {wondergreenReferences.length} en el Product Master público</span>
-            {(query || status !== "commercial-reconciled" || format !== "all") ? <button type="button" onClick={clearFilters}>Volver a comerciales</button> : null}
+            <span>de {wondergreenReferences.length} referencias documentadas</span>
+            {(query || status !== "commercial-reconciled" || format !== "all") ? <button type="button" onClick={clearFilters}>Volver a referencias confirmadas</button> : null}
           </div>
         </div>
       </section>
@@ -190,9 +190,9 @@ export function ProductCatalogBrowser() {
           <div className={styles.container}>
             <span className={styles.eyebrow}>Sin coincidencias</span>
             <h2>No encontramos una referencia con esos filtros.</h2>
-            <p>Esto no significa que debas escoger otro producto automáticamente. Vuelve al portafolio comercial o entra por cultivo para revisar el contexto agronómico.</p>
+            <p>Esto no significa que debas escoger otro producto automáticamente. Vuelve a las referencias con estado comercial confirmado o entra por cultivo para revisar el contexto agronómico.</p>
             <div className={styles.emptyActions}>
-              <button type="button" onClick={clearFilters}>Ver referencias comerciales</button>
+              <button type="button" onClick={clearFilters}>Ver referencias confirmadas</button>
               <Link href="/wondergreen/cultivos">Buscar por cultivo →</Link>
             </div>
           </div>
