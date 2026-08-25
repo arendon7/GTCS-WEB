@@ -37,7 +37,7 @@ test("public home uses the canonical shell V2 and real routes", async ({ page },
     await expect(dialog.getByRole("button", { name: /Recursos/ })).toBeVisible();
     await expect(dialog.getByRole("link", { name: "Nosotros", exact: true })).toHaveAttribute("href", "/nosotros");
     await expect(dialog.getByRole("link", { name: "Hablar con nosotros", exact: true })).toHaveAttribute("href", "/contacto");
-    await expect(dialog.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+    await expect(dialog.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
   } else {
     const nav = header.getByRole("navigation", { name: "Navegación pública" });
     await expect(nav).toBeVisible();
@@ -47,12 +47,12 @@ test("public home uses the canonical shell V2 and real routes", async ({ page },
     await expect(nav.getByRole("link", { name: "Recursos", exact: true })).toHaveAttribute("href", "/recursos");
     await expect(nav.getByRole("link", { name: "Nosotros", exact: true })).toHaveAttribute("href", "/nosotros");
     await expect(header.getByRole("link", { name: "Hablar con nosotros", exact: true })).toHaveAttribute("href", "/contacto");
-    await expect(header.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+    await expect(header.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
   }
 
   await expect(footer.getByRole("link", { name: "Recursos", exact: true })).toHaveAttribute("href", "/recursos");
   await expect(footer.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
-  await expect(footer.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+  await expect(footer.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
 });
 
 test("Resources groups Biblioteca, Proyectos and Impacto without returning them to the primary nav", async ({ page }, testInfo) => {
@@ -97,7 +97,7 @@ test("nested public routes inherit the same shell", async ({ page }, testInfo) =
   await expect(page.getByRole("heading", { name: /Diagnóstico y caracterización/i })).toBeVisible();
   await expect(footer.getByText(/Centro Empresarial Alcalá/)).toBeVisible();
   await expect(footer.getByRole("link", { name: "Casa & Jardín", exact: true })).toHaveAttribute("href", "/casa-jardin");
-  await expect(footer.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+  await expect(footer.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
 });
 
 test("every governed public route renders exactly one shared shell", async ({ page }, testInfo) => {
@@ -115,7 +115,7 @@ test("every governed public route renders exactly one shared shell", async ({ pa
     }
 
     await expect(footer.getByRole("link", { name: "Casa & Jardín", exact: true }), `${route} should expose the household route in the shared footer`).toHaveAttribute("href", "/casa-jardin");
-    await expect(footer.getByRole("link", { name: "Ingresar", exact: true }), `${route} should expose the digital bridge`).toHaveAttribute("href", "/app");
+    await expect(footer.getByRole("link", { name: "GREENATICS OPS", exact: true }), `${route} should expose the digital bridge`).toHaveAttribute("href", "/app");
   }
 });
 
