@@ -3,12 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { HomeProjectEvidence } from "@/components/public-home-evidence-crops";
 import { PublicShell } from "@/components/public-shell";
+import { publicCommercialMethod } from "@/data/public-method";
 import styles from "./public-home-v2.module.css";
 
 export const metadata: Metadata = {
   title: "Greenatics | Transformamos residuos en vida",
   description:
-    "Greenatics diseña sistemas que conectan residuos, tecnología, operación, datos y valorización para devolver valor al territorio y a los sistemas productivos.",
+    "Greenatics diseña e implementa soluciones de gestión integral de residuos que conectan planeación, infraestructura, operación, datos y valorización para devolver valor al territorio y a los sistemas productivos.",
   alternates: { canonical: "/" },
 };
 
@@ -17,7 +18,7 @@ const universes = [
     number: "01",
     kicker: "Organizaciones",
     title: "Soluciones para organizaciones",
-    copy: "Planeación, regulación, rutas, plantas, dirección técnica, operación, datos y valorización convertidos en actividades y entregables concretos.",
+    copy: "Planeación, soporte jurídico-regulatorio, rutas, plantas, dirección técnica, operación, datos y valorización con actividades, entregables y límites de alcance definidos.",
     href: "/soluciones",
     cta: "Explorar soluciones",
   },
@@ -25,7 +26,7 @@ const universes = [
     number: "02",
     kicker: "Agro",
     title: "Wondergreen",
-    copy: "Productos, nutrición organomineral, bioinsumos, programas por cultivo, guías y acompañamiento técnico dentro de una misma lógica de suelo y seguimiento.",
+    copy: "Fertilizantes organominerales, bioinsumos, programas por cultivo, guías y acompañamiento técnico para conectar nutrición, suelo y seguimiento.",
     href: "/wondergreen",
     cta: "Descubrir Wondergreen",
   },
@@ -33,17 +34,10 @@ const universes = [
     number: "03",
     kicker: "Hogar · jardín · huerta",
     title: "Casa & Jardín",
-    copy: "Productos por etapa, kits y guías para plantas de casa, jardines, huertas y viveros, con un orientador disponible cuando la etapa o condición todavía no están claras.",
+    copy: "Productos por etapa, kits y guías para plantas de casa, jardines, huertas y viveros, con orientación cuando la etapa o condición todavía no están claras.",
     href: "/casa-jardin",
     cta: "Explorar Casa & Jardín",
   },
-];
-
-const operatingLogic = [
-  ["01", "Entender", "Objetivo, contexto, restricciones, operación existente e información disponible para definir el punto de partida."],
-  ["02", "Diseñar", "Ruta técnica, jurídica, operativa y económica adecuada al problema real."],
-  ["03", "Implementar", "Protocolos, infraestructura, acompañamiento, puesta en marcha o dirección técnica según el alcance."],
-  ["04", "Medir y mejorar", "Trazabilidad, indicadores, seguimiento y nuevas decisiones sobre información verificable."],
 ];
 
 const resourceLinks = [
@@ -57,14 +51,14 @@ const resourceLinks = [
   {
     number: "02",
     title: "Proyectos y casos",
-    copy: "Experiencia documentada en territorio, separando evidencia histórica de afirmaciones sobre estado actual.",
+    copy: "Experiencia documentada en territorio, con contexto suficiente para entender alcance y aprendizaje.",
     href: "/proyectos",
     cta: "Ver proyectos",
   },
   {
     number: "03",
     title: "Impacto",
-    copy: "Indicadores públicos solo cuando cuentan con fuente, periodo, metodología y aprobación suficientes.",
+    copy: "Indicadores públicos respaldados por fuente, periodo y metodología antes de convertirse en una cifra comunicada.",
     href: "/impacto",
     cta: "Ver impacto",
   },
@@ -83,7 +77,7 @@ export default function Home() {
                 Transformamos residuos <em>en vida.</em>
               </h1>
               <p className={styles.heroLead}>
-                Diseñamos sistemas que conectan residuos, tecnología, operación y datos para devolver valor al territorio y a los sistemas productivos.
+                Diseñamos e implementamos soluciones de gestión integral de residuos que conectan planeación, infraestructura, operación, datos y valorización para devolver valor al territorio y a los sistemas productivos.
               </p>
               <div className={styles.actions}>
                 <Link className={`${styles.button} ${styles.buttonPrimary}`} href="/soluciones">Soluciones para organizaciones</Link>
@@ -91,8 +85,10 @@ export default function Home() {
               </div>
               <div className={styles.capabilityLine} aria-label="Capacidades Greenatics">
                 <span>Planeación</span>
+                <span>Regulación</span>
                 <span>Infraestructura</span>
                 <span>Operación</span>
+                <span>Datos</span>
                 <span>Valorización</span>
               </div>
             </div>
@@ -122,7 +118,7 @@ export default function Home() {
                 <h2 id="home-universes-title">Una marca. Tres formas claras de entrar.</h2>
               </div>
               <p>
-                La web separa las soluciones para organizaciones, la línea agro Wondergreen y la experiencia Casa & Jardín para que cada visitante llegue rápido a la oferta que le corresponde.
+                Elige la ruta según lo que necesitas: servicios para organizaciones, nutrición y bioinsumos para el agro, o productos y guías para casa, jardín y huerta.
               </p>
             </div>
 
@@ -145,16 +141,16 @@ export default function Home() {
         <section className={styles.identity} aria-labelledby="home-identity-title">
           <div className={`${styles.container} ${styles.identityGrid}`}>
             <div className={styles.identityIntro}>
-              <span className={styles.eyebrow}>Qué es Greenatics</span>
+              <span className={styles.eyebrow}>Cómo trabajamos</span>
               <h2 id="home-identity-title">Conectamos la decisión técnica con la ejecución.</h2>
               <p>
-                Greenatics trabaja sobre el sistema completo: entender el residuo o la necesidad, definir una ruta viable, acompañar su implementación y sostener decisiones con operación y datos. No toda solución exige construir o asumir la operación completa; el alcance se define según el contexto.
+                Podemos intervenir una fase puntual o articular varias. El alcance parte del resultado que se necesita, define responsabilidades y entregables, y usa la evidencia de la implementación para acompañar, corregir y mejorar.
               </p>
               <Link className={styles.textLink} href="/soluciones">Conocer cómo trabajamos →</Link>
             </div>
 
             <div className={styles.logicRail} aria-label="Lógica de trabajo Greenatics">
-              {operatingLogic.map(([number, title, copy]) => (
+              {publicCommercialMethod.map(([number, title, copy]) => (
                 <div className={styles.logicStep} key={number}>
                   <span>{number}</span>
                   <div>
@@ -183,12 +179,12 @@ export default function Home() {
 
             <div className={styles.wondergreenCopy}>
               <p>
-                Wondergreen organiza el portafolio alrededor del suelo, la nutrición, la biología, el cultivo y el seguimiento. En las referencias sólidas que correspondan, la explicación técnica parte de la matriz organomineral, la oclusión y la lenta liberación documentada para esa versión, sin convertir una característica del producto en una promesa agronómica universal.
+                Wondergreen conecta productos, programas por cultivo y soporte técnico alrededor del suelo, la nutrición y el seguimiento. Las características de cada referencia se publican con su soporte documental y la profundidad sobre organomineral, oclusión y lenta liberación se consulta en la ruta de tecnología.
               </p>
               <div className={styles.wondergreenLinks} aria-label="Profundizar en Wondergreen">
                 <Link href="/wondergreen/productos">Productos →</Link>
                 <Link href="/wondergreen/cultivos">Cultivos →</Link>
-                <Link href="/biblioteca">Guías →</Link>
+                <Link href="/wondergreen/tecnologia">Tecnología →</Link>
                 <Link href="/wondergreen/finder">Encontrar mi programa →</Link>
               </div>
             </div>
@@ -200,14 +196,14 @@ export default function Home() {
         <section className={styles.digital} aria-labelledby="home-digital-title">
           <div className={`${styles.container} ${styles.digitalGrid}`}>
             <div>
-              <span className={styles.eyebrow}>Tecnología y datos</span>
-              <h2 id="home-digital-title">La operación también necesita una capa digital.</h2>
+              <span className={styles.eyebrow}>GREENATICS OPS</span>
+              <h2 id="home-digital-title">Datos para operar, seguir y decidir.</h2>
               <p>
-                GREENATICS OPS conecta datos operativos, trazabilidad y seguimiento para los procesos que ya están en ejecución. La arquitectura digital de Greenatics está pensada para crecer con nuevas herramientas de captura en campo y acompañamiento sin fragmentar la experiencia del cliente.
+                GREENATICS OPS es la capa operativa para procesos que ya están en ejecución: conecta registros, trazabilidad, indicadores y seguimiento para convertir actividad de campo en información utilizable.
               </p>
               <div className={styles.actions}>
-                <a className={`${styles.button} ${styles.buttonDark}`} href="/app">Ingresar</a>
-                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/soluciones">Ver soluciones con datos</Link>
+                <a className={`${styles.button} ${styles.buttonDark}`} href="/app">Ingresar a GREENATICS OPS</a>
+                <Link className={`${styles.button} ${styles.buttonGhost}`} href="/soluciones/trazabilidad-datos">Ver soluciones con datos</Link>
               </div>
             </div>
 
@@ -228,7 +224,7 @@ export default function Home() {
                 <h2 id="home-resources-title">Conocimiento, experiencia e impacto en un mismo lugar.</h2>
               </div>
               <p>
-                El contenido técnico y la evidencia se organizan como soporte a la decisión, no como una colección aislada de documentos y cifras.
+                Guías, casos e indicadores respaldan decisiones concretas y permiten profundizar sin interrumpir la ruta comercial principal.
               </p>
             </div>
 
@@ -250,16 +246,16 @@ export default function Home() {
         <section className={styles.closing} aria-labelledby="home-closing-title">
           <div className={`${styles.container} ${styles.closingGrid}`}>
             <div>
-              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Greenatics</span>
-              <h2 id="home-closing-title">Elige una solución y profundiza hasta el alcance que necesitas.</h2>
+              <span className={`${styles.eyebrow} ${styles.eyebrowLight}`}>Siguiente paso</span>
+              <h2 id="home-closing-title">Convirtamos tu necesidad en un alcance concreto.</h2>
             </div>
             <div>
               <p>
-                Puedes entrar directamente por servicios para organizaciones, productos Wondergreen o Casa & Jardín. Si todavía no sabes qué ruta corresponde, cada universo conserva herramientas de orientación sin convertirlas en la oferta principal.
+                Si ya sabes qué servicio necesitas, revisa su alcance y entregables. Si necesitas aterrizar el punto de partida, cuéntanos el contexto y definimos el siguiente paso sin convertir el diagnóstico en una barrera de entrada.
               </p>
               <div className={styles.actions}>
-                <Link className={`${styles.button} ${styles.buttonLight}`} href="/soluciones">Explorar soluciones</Link>
-                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/contacto">Hablar con nosotros</Link>
+                <Link className={`${styles.button} ${styles.buttonLight}`} href="/contacto">Hablar con Greenatics</Link>
+                <Link className={`${styles.button} ${styles.buttonOutlineLight}`} href="/soluciones">Explorar soluciones</Link>
               </div>
             </div>
           </div>

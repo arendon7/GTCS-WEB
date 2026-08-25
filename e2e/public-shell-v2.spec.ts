@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("desktop shell exposes direct commercial solutions and closes with Escape", async ({ page }, testInfo) => {
+test("desktop shell exposes direct commercial solutions, explicit OPS and closes with Escape", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "desktop shell contract");
   await page.goto("/");
 
@@ -11,6 +11,7 @@ test("desktop shell exposes direct commercial solutions and closes with Escape",
   await expect(nav.getByRole("link", { name: "Casa & Jardín", exact: true })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Recursos", exact: true })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Nosotros", exact: true })).toBeVisible();
+  await expect(header.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
 
   await header.getByRole("button", { name: "Abrir menú Soluciones" }).click();
   const menu = header.getByRole("group", { name: "Menú Soluciones" });
@@ -29,7 +30,7 @@ test("desktop shell exposes direct commercial solutions and closes with Escape",
   await expect(menu).toHaveCount(0);
 });
 
-test("mobile shell uses a two-level drawer with direct services and optional orientation", async ({ page }, testInfo) => {
+test("mobile shell uses a two-level drawer with direct services, explicit OPS and optional orientation", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile-chromium", "mobile shell contract");
   await page.goto("/");
 
@@ -42,7 +43,7 @@ test("mobile shell uses a two-level drawer with direct services and optional ori
   await expect(dialog.getByRole("link", { name: "Wondergreen", exact: true })).toBeVisible();
   await expect(dialog.getByRole("link", { name: "Casa & Jardín", exact: true })).toBeVisible();
   await expect(dialog.getByRole("link", { name: "Hablar con nosotros", exact: true })).toHaveAttribute("href", "/contacto");
-  await expect(dialog.getByRole("link", { name: "Ingresar", exact: true })).toHaveAttribute("href", "/app");
+  await expect(dialog.getByRole("link", { name: "GREENATICS OPS", exact: true })).toHaveAttribute("href", "/app");
 
   await dialog.getByRole("button", { name: /Soluciones/ }).click();
   await expect(dialog.getByText("Elige el servicio que necesitas o entra por tu tipo de organización.", { exact: true })).toBeVisible();

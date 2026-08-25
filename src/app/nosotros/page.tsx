@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { publicCommercialMethod } from "@/data/public-method";
 import { getPrimaryProjectMedia } from "@/data/public-media";
 import styles from "./about-v2.module.css";
 
@@ -16,14 +17,6 @@ const capabilities = [
   ["Dirección y operación", "Protocolos, personas, mantenimiento, calidad, inventarios, coordinación y mejora continua sin asumir que Greenatics debe operar todo directamente."],
   ["Valorización y agro", "Wondergreen conecta suelo, nutrición organomineral, líquidos, compost, bioinsumos, conocimiento y desarrollo de destinos para materiales aprovechados."],
   ["Tecnología y datos", "GREENATICS OPS y futuras herramientas digitales convierten actividades, lotes, activos, evidencias e indicadores en información utilizable."],
-] as const;
-
-const method = [
-  ["01", "Entender", "Leer el resultado que se necesita, la situación actual, la información disponible, las restricciones y las responsabilidades involucradas."],
-  ["02", "Definir el alcance", "Traducir la necesidad en actividades, entregables, responsables, exclusiones y criterios de cierre antes de ejecutar."],
-  ["03", "Implementar", "Ejecutar programas, protocolos, ingeniería, logística, operación o herramientas concretas según el alcance contratado."],
-  ["04", "Acompañar", "Dirigir, medir y corregir sin confundir seguimiento técnico con una obligación de operar todos los activos."],
-  ["05", "Mejorar y valorizar", "Usar la evidencia para optimizar el sistema y encontrar mejores destinos para los recursos recuperados."],
 ] as const;
 
 const principles = [
@@ -89,7 +82,7 @@ export default function AboutPage() {
               <p>No vendemos una tecnología ni un diagnóstico como respuesta universal. Si el problema y la información ya están claros, podemos entrar directamente al servicio; cuando faltan datos críticos, la línea base se incorpora como una actividad del alcance.</p>
             </div>
             <div className={styles.method}>
-              {method.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
+              {publicCommercialMethod.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
             </div>
           </div>
         </section>

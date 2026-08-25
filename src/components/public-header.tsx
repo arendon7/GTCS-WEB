@@ -181,7 +181,7 @@ export function PublicHeader() {
         </div>
         <div className={styles.mobileActions}>
           <Link className={styles.mobileTalk} href="/contacto" onClick={closeMobile}>Hablar con nosotros</Link>
-          <a className={styles.mobileEnter} href="/app" onClick={closeMobile}>Ingresar</a>
+          <a className={styles.mobileEnter} href="/app" onClick={closeMobile}>GREENATICS OPS</a>
         </div>
       </>
     );
@@ -273,7 +273,7 @@ export function PublicHeader() {
 
         <div className={styles.actions}>
           <Link className={styles.contact} href="/contacto">Hablar con nosotros</Link>
-          <a className={styles.ops} href="/app">Ingresar</a>
+          <a className={styles.ops} href="/app">GREENATICS OPS</a>
           <button
             ref={menuButtonRef}
             className={styles.menuToggle}

@@ -57,9 +57,9 @@ test("health exposes only safe deployment provenance and the canonical public or
   expect(body.deployment.commit).toBeNull();
 });
 
-test("HOME content CTA crosses the public-to-OPS document boundary", async ({ page }) => {
+test("HOME content CTA crosses the public-to-OPS document boundary with an explicit product name", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("main").getByRole("link", { name: "Ingresar", exact: true }).click();
+  await page.getByRole("main").getByRole("link", { name: "Ingresar a GREENATICS OPS", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
 });

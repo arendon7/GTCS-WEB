@@ -58,7 +58,7 @@ export function HomeProjectEvidence() {
   return (
     <section className={styles.evidence} aria-labelledby="home-evidence-title">
       <div className={`${styles.container} ${styles.evidenceGrid}`}>
-        <div className={styles.visualStack} aria-label="Evidencia visual conciliada del caso Yarumal">
+        <div className={styles.visualStack} aria-label="Evidencia visual documentada del caso Yarumal">
           <figure className={`${styles.figure} ${styles.primaryFigure}`}>
             <Image src={primary.src} alt={primary.alt} width={1200} height={900} sizes="(max-width: 900px) 100vw, 54vw" />
             <figcaption>{primary.caption}</figcaption>
@@ -70,26 +70,25 @@ export function HomeProjectEvidence() {
             </figure>
           ) : null}
           <div className={styles.mediaSeal} aria-hidden="true">
-            <span>02</span>
+            <span>{String(evidence.length).padStart(2, "0")}</span>
             <strong>registros</strong>
-            <small>conciliados</small>
+            <small>publicados</small>
           </div>
         </div>
 
         <div className={styles.evidenceCopy}>
           <span className={styles.eyebrow}>Experiencia que deja evidencia</span>
           <h2 id="home-evidence-title">Proyecto, operación y aprendizaje en territorio.</h2>
-          <p>La web incorpora material real de los proyectos para explicar lo que Greenatics ha construido y aprendido. Las fotografías históricas documentan experiencia; no se usan para afirmar capacidad, producción o estado actual sin una fuente vigente y aprobada.</p>
+          <p>Los proyectos publicados muestran cómo Greenatics ha conectado decisiones técnicas, infraestructura, operación y aprendizaje en territorio. El caso Yarumal se presenta como registro histórico documentado, con su contexto y sin usar una fotografía como afirmación automática sobre el estado actual.</p>
           <dl className={styles.evidenceFacts}>
             <div><dt>Caso</dt><dd>Yarumal</dd></div>
-            <div><dt>Medios publicados</dt><dd>{evidence.length} activos conciliados</dd></div>
-            <div><dt>Alcance</dt><dd>Evidencia histórica del proyecto</dd></div>
+            <div><dt>Registro visual</dt><dd>{evidence.length} evidencias publicadas</dd></div>
+            <div><dt>Contexto</dt><dd>Histórico documentado</dd></div>
           </dl>
           <div className={styles.evidenceActions}>
             <Link href="/proyectos/yarumal">Ver caso Yarumal →</Link>
             <Link href="/proyectos">Explorar proyectos →</Link>
           </div>
-          <p className={styles.truthNote}><strong>Media truth:</strong> si una planta o cultivo todavía no tiene fotografía validada, la web conserva el espacio editorial sin sustituirla por una imagen genérica.</p>
         </div>
       </div>
     </section>

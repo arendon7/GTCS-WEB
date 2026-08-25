@@ -9,14 +9,14 @@ async function jsonLdByType(page: import("@playwright/test").Page, type: string)
 
 async function clickDigitalBridge(page: import("@playwright/test").Page) {
   const header = page.getByRole("banner");
-  const desktopEntry = header.getByRole("link", { name: "Ingresar", exact: true });
+  const desktopEntry = header.getByRole("link", { name: "GREENATICS OPS", exact: true });
   if (await desktopEntry.isVisible()) {
     await desktopEntry.click();
     return;
   }
 
   await header.getByRole("button", { name: "Abrir navegación" }).click();
-  await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "Ingresar", exact: true }).click();
+  await page.getByRole("dialog", { name: "Navegación Greenatics" }).getByRole("link", { name: "GREENATICS OPS", exact: true }).click();
 }
 
 test("solutions hub exposes concrete services inside every commercial family before orientation", async ({ page }) => {
