@@ -35,7 +35,7 @@ test("release gate: known service reaches contact with the exact commercial cont
 
   const inherited = page.getByLabel("Contexto heredado de navegación");
   await expect(inherited.getByText(/Servicio:/)).toBeVisible();
-  await expect(inherited).toContainText("Rehabilitación");
+  await expect(inherited).toContainText(/Diagnóstico, rehabilitación y puesta en marcha de infraestructura existente/i);
   await expect(page.getByText(/Origen:/)).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Agendar reunión", exact: true }).first()).toHaveAttribute("href", /^https:\/\/outlook\.office\.com\//);
 });
