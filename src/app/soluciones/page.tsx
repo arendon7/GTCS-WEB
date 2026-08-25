@@ -3,14 +3,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { publicCommercialMethod } from "@/data/public-method";
 import { getPrimaryProjectMedia } from "@/data/public-media";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import catalog from "./solutions-catalog.module.css";
 import styles from "./solutions-v2.module.css";
 
+const title = "Soluciones | Greenatics";
+const description =
+  "Servicios de planeación, regulación, logística, plantas, dirección técnica, operación, datos, valorización y caracterización para ESP, municipios, empresas, instituciones y operadores.";
+
 export const metadata: Metadata = {
-  title: "Soluciones | Greenatics",
-  description:
-    "Servicios de planeación, regulación, logística, plantas, dirección técnica, operación, datos, valorización y caracterización para ESP, municipios, empresas, instituciones y operadores.",
+  title,
+  description,
   alternates: { canonical: "/soluciones" },
+  ...publicSocialMetadata({ title, description, path: "/soluciones" }),
 };
 
 const audiences = [
