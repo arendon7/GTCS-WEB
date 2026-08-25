@@ -80,7 +80,7 @@ test("Wondergreen hero uses the approved soil message and makes product discover
   await expect(hero.getByRole("link", { name: "Ver productos" })).toHaveAttribute("href", "/wondergreen/productos");
   await expect(hero.getByRole("link", { name: "Explorar cultivos y guías" })).toHaveAttribute("href", "/wondergreen/cultivos");
   await expect(hero.getByRole("link", { name: /No sé qué producto revisar/ })).toHaveAttribute("href", "/wondergreen/finder");
-  await expect(hero.getByText("Product Master público", { exact: true })).toBeVisible();
+  await expect(hero.getByText("Información técnica vigente", { exact: true })).toBeVisible();
 });
 
 test("Wondergreen places real commercial products before explanatory and orientative layers", async ({ page }) => {
