@@ -4,13 +4,18 @@ import Link from "next/link";
 import { HomeProjectEvidence } from "@/components/public-home-evidence-crops";
 import { PublicShell } from "@/components/public-shell";
 import { publicCommercialMethod } from "@/data/public-method";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "./public-home-v2.module.css";
 
+const title = "Greenatics | Transformamos residuos en vida";
+const description =
+  "Greenatics diseña e implementa soluciones de gestión integral de residuos que conectan planeación, infraestructura, operación, datos y valorización para devolver valor al territorio y a los sistemas productivos.";
+
 export const metadata: Metadata = {
-  title: "Greenatics | Transformamos residuos en vida",
-  description:
-    "Greenatics diseña e implementa soluciones de gestión integral de residuos que conectan planeación, infraestructura, operación, datos y valorización para devolver valor al territorio y a los sistemas productivos.",
+  title,
+  description,
   alternates: { canonical: "/" },
+  ...publicSocialMetadata({ title, description, path: "/" }),
 };
 
 const universes = [
