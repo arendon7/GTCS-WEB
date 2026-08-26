@@ -189,6 +189,7 @@ jobs:
             local marker="$2"
             counter=$((counter + 1))
             local outfile="/tmp/greenatics-route-${counter}.body"
+            local textfile="/tmp/greenatics-route-${counter}.visible.txt"
             local status
             status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
             local bytes=0
@@ -205,13 +206,15 @@ jobs:
               failures=$((failures + 1))
               return
             fi
-            if ! grep -Fq "$marker" "$outfile"; then
-              echo "::error::$path did not contain release marker '$marker'."
+
+            node scripts/http-visible-text.mjs "$outfile" > "$textfile"
+            if ! grep -Fq "$marker" "$textfile"; then
+              echo "::error::$path did not contain visible release marker '$marker'."
               failures=$((failures + 1))
               return
             fi
 
-            echo "- PASS: $path (HTTP 200, $bytes bytes, marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
+            echo "- PASS: $path (HTTP 200, $bytes bytes, visible marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
           }
 
           echo "### Public production smoke" >> "$GITHUB_STEP_SUMMARY"
