@@ -25,6 +25,7 @@ export type PublicLeadValidationCode =
   | "invalid_request_id"
   | "name_required"
   | "invalid_email"
+  | "invalid_phone"
   | "contact_required"
   | "invalid_audience"
   | "invalid_need"
@@ -59,6 +60,7 @@ export function validatePublicLeadSubmission(input: unknown): ValidationResult {
   const phoneResult = cleanOptional(raw.phone, 40);
   if (emailResult.tooLong || phoneResult.tooLong) return { ok: false, code: "field_too_long" };
   if (emailResult.value && !emailPattern.test(emailResult.value)) return { ok: false, code: "invalid_email" };
+  if (phoneResult.value && phoneResult.value.length < 7) return { ok: false, code: "invalid_phone" };
   if (!emailResult.value && !phoneResult.value) return { ok: false, code: "contact_required" };
 
   const audience = typeof raw.audience === "string" ? raw.audience : "";
@@ -106,6 +108,7 @@ export function validatePublicLeadSubmission(input: unknown): ValidationResult {
 export function publicLeadValidationMessage(code: PublicLeadValidationCode) {
   if (code === "name_required") return "Indica tu nombre para enviar la consulta.";
   if (code === "invalid_email") return "Revisa el correo electrónico.";
+  if (code === "invalid_phone") return "Revisa el número de teléfono.";
   if (code === "contact_required") return "Indica un correo o teléfono para poder contactarte.";
   if (code === "invalid_audience") return "Selecciona desde qué contexto nos escribes.";
   if (code === "invalid_need") return "Selecciona qué necesitas resolver primero.";
