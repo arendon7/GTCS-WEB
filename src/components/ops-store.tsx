@@ -93,6 +93,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
     setAccess(nextAccess);
     setWorkers(snapshot.workers);
     setActivities(snapshot.activities);
+    setIncidents(snapshot.incidents);
     setReceptions(snapshot.receptions);
     setBackend({ mode: "supabase", status: "ready" });
     setReady(true);
