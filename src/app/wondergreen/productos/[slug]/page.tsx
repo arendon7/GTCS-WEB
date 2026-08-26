@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { WondergreenProductJsonLd } from "@/components/wondergreen-product-json-ld";
 import {
   getWondergreenProductArtwork,
   getWondergreenProductCrops,
@@ -68,6 +69,7 @@ export default async function WondergreenProductPage({ params }: { params: Promi
 
   return (
     <div className={styles.page} data-tone={visualTone}>
+      <WondergreenProductJsonLd reference={reference} publicStatus={publicStatus} />
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
