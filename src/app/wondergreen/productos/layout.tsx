@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
 const title = "Productos Wondergreen | Portafolio técnico y comercial";
@@ -11,14 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function WondergreenProductsDiscoveryLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <BreadcrumbJsonLd items={[
-        { name: "Greenatics", path: "/" },
-        { name: "Wondergreen", path: "/wondergreen" },
-        { name: "Productos", path },
-      ]} />
-      {children}
-    </>
-  );
+  return children;
 }
