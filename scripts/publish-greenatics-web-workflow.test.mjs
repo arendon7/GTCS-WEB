@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { normalizeResponseText } from "./http-visible-text.mjs";
 
 const workflowPath = ".github/workflows/publish-greenatics-web.yml";
 const workflow = readFileSync(workflowPath, "utf8");
@@ -61,6 +62,28 @@ describe("GREENATICS manual production release workflow", () => {
     ]) {
       expect(workflow).toContain(marker);
     }
+  });
+
+  it("checks semantic markers against normalized visible response text", () => {
+    expect(workflow).toContain('node scripts/http-visible-text.mjs "$outfile" > "$textfile"');
+    expect(workflow).toContain('grep -Fq "$marker" "$textfile"');
+    expect(workflow).not.toContain('grep -Fq "$marker" "$outfile"');
+
+    const renderedHome = [
+      "<main>",
+      "<h1>Transformamos residuos <em>en vida.</em></h1>",
+      "<script>Transformamos residuos en vida. hidden hydration payload</script>",
+      "<style>.fake::after { content: 'Transformamos residuos en vida.'; }</style>",
+      "</main>",
+    ].join("");
+    const visibleHome = normalizeResponseText(renderedHome);
+
+    expect(visibleHome).toContain("Transformamos residuos en vida.");
+    expect(visibleHome).not.toContain("hidden hydration payload");
+    expect(visibleHome).not.toContain(".fake::after");
+    expect(normalizeResponseText("User-agent: *\nDisallow: /app\n")).toContain("Disallow: /app");
+    expect(normalizeResponseText("<url><loc>https://greenatics.com.co/wondergreen</loc></url>"))
+      .toContain("https://greenatics.com.co/wondergreen");
   });
 
   it("has exactly one manual workflow capable of stable production deployment", () => {
