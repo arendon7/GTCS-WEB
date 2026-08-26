@@ -206,7 +206,7 @@ export function ContactContextBuilder({ bookingUrl, initialAudience = "", initia
       </label>
 
       <div className={styles.actions}>
-        <button className={`${styles.button} ${styles.primary}`} type="submit" disabled={submitState === "submitting" || submitState === "success"}>{submitState === "submitting" ? "Enviando…" : submitState === "success" ? "Consulta enviada" : "Enviar consulta"}</button>
+        <button className={`${styles.button} ${styles.primary}`} type="submit" disabled={submitState === "submitting" || submitState === "success"}>{submitState === "submitting" ? "Enviando…" : submitState === "success" ? "Enviado" : "Enviar consulta"}</button>
         <button className={`${styles.button} ${styles.ghost}`} type="button" onClick={prepareContext}>Preparar contexto</button>
         <a className={`${styles.button} ${styles.ghost}`} href={bookingUrl} target="_blank" rel="noreferrer">Agendar sin preparar</a>
       </div>
@@ -215,7 +215,7 @@ export function ContactContextBuilder({ bookingUrl, initialAudience = "", initia
       {prepared ? (
         <div className={styles.prepared} aria-live="polite">
           <h3>Contexto preparado.</h3>
-          <p>Úsalo como guía al agendar o al iniciar la conversación. Nada se ha enviado todavía por esta acción.</p>
+          <p>Úsalo como guía al agendar o al iniciar la conversación. Nada se ha enviado todavía. Esta acción solo prepara el resumen local.</p>
           <textarea className={styles.summary} value={summary} readOnly aria-label="Resumen preparado para la conversación" />
           <div className={styles.actions}><button className={`${styles.button} ${styles.ghost}`} type="button" onClick={copySummary}>Copiar contexto</button><a className={`${styles.button} ${styles.primary}`} href={bookingUrl} target="_blank" rel="noreferrer">Agendar reunión</a></div>
           <div className={styles.copyStatus} aria-live="polite">{copyStatus}</div>
