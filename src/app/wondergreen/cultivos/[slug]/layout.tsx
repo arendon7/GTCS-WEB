@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { getWondergreenCropDocument } from "@/data/wondergreen-crop-documents";
 import { getWondergreenCrop } from "@/data/wondergreen-crops";
 import { publicSocialMetadata } from "@/lib/public-social-metadata";
 
@@ -12,8 +13,11 @@ export async function generateMetadata({ params }: Pick<Props, "params">): Promi
   const { slug } = await params;
   const crop = getWondergreenCrop(slug);
   if (!crop) return {};
+  const guide = getWondergreenCropDocument(slug);
   const title = `${crop.name} | Programa Wondergreen`;
-  const description = `${crop.headline} Programa orientativo por etapa, contexto del lote y seguimiento.`;
+  const description = guide
+    ? `${crop.headline} Consulta el programa navegable y abre la guía Wondergreen completa en PDF.`
+    : `${crop.headline} Programa por etapa, contexto del lote y seguimiento.`;
   const path = `/wondergreen/cultivos/${crop.slug}` as `/${string}`;
   return {
     alternates: { canonical: path },
