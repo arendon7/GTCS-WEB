@@ -84,6 +84,8 @@ describe("GREENATICS manual production release workflow", () => {
     expect(normalizeResponseText("User-agent: *\nDisallow: /app\n")).toContain("Disallow: /app");
     expect(normalizeResponseText("<url><loc>https://greenatics.com.co/wondergreen</loc></url>"))
       .toContain("https://greenatics.com.co/wondergreen");
+    expect(normalizeResponseText("<p>Rutas &amp; logística&nbsp;operativa</p>"))
+      .toBe("Rutas & logística operativa");
   });
 
   it("has exactly one manual workflow capable of stable production deployment", () => {
