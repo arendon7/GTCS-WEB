@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 const namedEntities = new Map([
   ["amp", "&"],
@@ -28,7 +29,8 @@ export function normalizeResponseText(source) {
     .trim();
 }
 
-if (process.argv[1]?.endsWith("http-visible-text.mjs")) {
+const invokedPath = process.argv[1];
+if (invokedPath && import.meta.url === pathToFileURL(invokedPath).href) {
   const inputPath = process.argv[2];
   if (!inputPath) {
     console.error("Usage: node scripts/http-visible-text.mjs <response-body-file>");
