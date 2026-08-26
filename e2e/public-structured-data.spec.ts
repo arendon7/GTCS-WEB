@@ -61,7 +61,7 @@ test("technical Wondergreen reference stays non-transactional in Product structu
   expect(product).toBeTruthy();
   expect(product?.name).toBe("2Grow Líquido · referencia nitrogenada");
   expect(product?.url).toBe("https://greenatics.com.co/wondergreen/productos/2grow-liquido-200-0-0");
-  expect(propertyValue(product, "Estado público")).toBe("Portafolio técnico · disponibilidad por confirmar");
+  expect(propertyValue(product, "Estado público")).toBe("Portafolio técnico · condición comercial por confirmar");
   expect(product?.offers).toBeUndefined();
   expect(product?.aggregateRating).toBeUndefined();
   expect(product?.review).toBeUndefined();
