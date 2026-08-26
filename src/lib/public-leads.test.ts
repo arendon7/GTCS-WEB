@@ -25,9 +25,9 @@ describe("public lead validation", () => {
     expect(result.value.context).toBe("Interés heredado");
   });
 
-  it("requires at least one contact channel", () => {
-    const result = validatePublicLeadSubmission({ ...base, email: "", phone: "" });
-    expect(result).toEqual({ ok: false, code: "contact_required" });
+  it("requires at least one valid contact channel", () => {
+    expect(validatePublicLeadSubmission({ ...base, email: "", phone: "" })).toEqual({ ok: false, code: "contact_required" });
+    expect(validatePublicLeadSubmission({ ...base, email: "", phone: "123" })).toEqual({ ok: false, code: "invalid_phone" });
   });
 
   it("rejects consent gaps and unknown public taxonomy", () => {
