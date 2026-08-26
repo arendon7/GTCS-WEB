@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import { ProductCatalogBrowser } from "./product-catalog-browser";
 import styles from "./catalog.module.css";
 
+const title = "Productos Wondergreen | Portafolio técnico y comercial";
+const description = "Explora fertilizantes sólidos y líquidos Wondergreen por línea, formulación, presentación, estado comercial y documentación pública vinculada.";
+
 export const metadata: Metadata = {
-  title: "Productos Wondergreen | Portafolio técnico y comercial",
-  description: "Explora fertilizantes sólidos y líquidos Wondergreen por línea, formulación, presentación, estado comercial y documentación pública vinculada.",
+  title,
+  description,
   alternates: { canonical: "/wondergreen/productos" },
+  ...publicSocialMetadata({ title, description, path: "/wondergreen/productos" }),
 };
 
 export default function WondergreenProductsPage() {
@@ -14,6 +20,11 @@ export default function WondergreenProductsPage() {
 
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Wondergreen", path: "/wondergreen" },
+        { name: "Productos", path: "/wondergreen/productos" },
+      ]} />
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>

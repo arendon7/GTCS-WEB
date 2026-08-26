@@ -1,17 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import { DiagnosticRouter } from "./diagnostic-router";
 import styles from "./diagnostic-initial.module.css";
 
+const title = "Diagnóstico inicial | Greenatics";
+const description = "Orientador inicial para identificar contexto, necesidad y estado actual antes de elegir una solución Greenatics.";
+
 export const metadata: Metadata = {
-  title: "Diagnóstico inicial | Greenatics",
-  description: "Orientador inicial para identificar contexto, necesidad y estado actual antes de elegir una solución Greenatics.",
+  title,
+  description,
   alternates: { canonical: "/soluciones/diagnostico-inicial" },
+  ...publicSocialMetadata({ title, description, path: "/soluciones/diagnostico-inicial" }),
 };
 
 export default function InitialDiagnosticPage() {
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Soluciones", path: "/soluciones" },
+        { name: "Diagnóstico inicial", path: "/soluciones/diagnostico-inicial" },
+      ]} />
       <main>
         <section className={styles.hero}>
           <div className={styles.heroAccent} aria-hidden="true" />

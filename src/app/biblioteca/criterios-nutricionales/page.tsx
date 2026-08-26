@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { wondergreenCrops } from "@/data/wondergreen-crops";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "../library.module.css";
 
+const title = "Criterios de revisión nutricional | Greenatics";
+const description =
+  "Criterios técnicos para revisar suelo, etapa, densidad, historial de fertilización y objetivo productivo antes de orientar un programa Wondergreen.";
+
 export const metadata: Metadata = {
-  title: "Criterios de revisión nutricional | Greenatics",
-  description:
-    "Criterios técnicos para revisar suelo, etapa, densidad, historial de fertilización y objetivo productivo antes de orientar un programa Wondergreen.",
+  title,
+  description,
   alternates: { canonical: "/biblioteca/criterios-nutricionales" },
+  ...publicSocialMetadata({ title, description, path: "/biblioteca/criterios-nutricionales" }),
 };
 
 const criteria = [
@@ -21,6 +27,11 @@ const criteria = [
 export default function NutritionalReviewCriteriaPage() {
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Biblioteca", path: "/biblioteca" },
+        { name: "Criterios de revisión nutricional", path: "/biblioteca/criterios-nutricionales" },
+      ]} />
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>

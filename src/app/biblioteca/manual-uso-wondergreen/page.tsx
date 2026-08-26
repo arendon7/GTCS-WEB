@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { fieldApplicationRules, fieldChecklist } from "@/data/wondergreen-crops";
+import { publicSocialMetadata } from "@/lib/public-social-metadata";
 import styles from "../library.module.css";
 
+const title = "Manual de uso Wondergreen | Greenatics";
+const description =
+  "Ruta práctica para preparar, aplicar, registrar y hacer seguimiento al uso de Wondergreen sin convertir una guía general en una receta universal.";
+
 export const metadata: Metadata = {
-  title: "Manual de uso Wondergreen | Greenatics",
-  description:
-    "Ruta práctica para preparar, aplicar, registrar y hacer seguimiento al uso de Wondergreen sin convertir una guía general en una receta universal.",
+  title,
+  description,
   alternates: { canonical: "/biblioteca/manual-uso-wondergreen" },
+  ...publicSocialMetadata({ title, description, path: "/biblioteca/manual-uso-wondergreen" }),
 };
 
 const route = [
@@ -31,6 +37,11 @@ const avoid = [
 export default function WondergreenUseManualPage() {
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Biblioteca", path: "/biblioteca" },
+        { name: "Manual de uso Wondergreen", path: "/biblioteca/manual-uso-wondergreen" },
+      ]} />
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>
