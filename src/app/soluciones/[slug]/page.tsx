@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { ServiceJsonLd } from "@/components/service-json-ld";
 import { publicProjects } from "@/data/projects-public";
 import { getService, services } from "@/data/services";
 import styles from "../solutions.module.css";
@@ -45,6 +46,7 @@ export default async function SolutionDetailPage({ params }: Props) {
         { name: "Soluciones", path: "/soluciones" },
         { name: service.name, path: servicePath },
       ]} />
+      <ServiceJsonLd service={service} />
       <main>
         <section className={styles.detailHero}>
           <div className={styles.heroAccent} aria-hidden="true" />
