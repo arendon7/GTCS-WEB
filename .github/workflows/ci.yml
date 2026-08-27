@@ -23,6 +23,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run content governance browser gate
         run: npm run test:content
+      - name: Run navigation keyboard and mobile gate
+        run: npm run test:navigation
       - name: Run desktop and mobile visual smoke
         run: npm run test:visual
       - name: Run accessibility gate
