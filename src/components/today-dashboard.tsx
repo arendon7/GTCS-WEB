@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { StatusPill } from "@/components/status-pill";
 import { useOpsStore } from "@/components/ops-store";
 import { useMaintenanceStore } from "@/components/maintenance-store";
 import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics } from "@/lib/analytics";
 import { getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
+import { canResolveIncident } from "@/lib/incident-resolution";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
 import { getTodaySourceControl } from "@/lib/today-source-control";
 
@@ -24,10 +25,14 @@ function timeLabel(iso?: string) {
 }
 
 export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
-  const { activities, incidents, receptions, workers, backend, ready, refresh, resetDemo } = useOpsStore();
+  const { activities, incidents, receptions, workers, access, backend, ready, refresh, resetDemo, resolveIncident } = useOpsStore();
   const { equipment, tickets } = useMaintenanceStore();
   const { piles, measurements } = useCompostStore();
   const [nowIso, setNowIso] = useState(initialNowIso);
+  const [resolutionTarget, setResolutionTarget] = useState<string>();
+  const [resolutionNote, setResolutionNote] = useState("");
+  const [resolutionError, setResolutionError] = useState<string>();
+  const [resolving, setResolving] = useState(false);
 
   useEffect(() => {
     const update = () => setNowIso(new Date().toISOString());
@@ -56,6 +61,32 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
     resetDemo();
   };
 
+  const beginResolution = (id: string) => {
+    setResolutionTarget(id);
+    setResolutionNote("");
+    setResolutionError(undefined);
+  };
+
+  const cancelResolution = () => {
+    setResolutionTarget(undefined);
+    setResolutionNote("");
+    setResolutionError(undefined);
+  };
+
+  const submitResolution = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!resolutionTarget || resolving) return;
+    setResolving(true);
+    setResolutionError(undefined);
+    const result = await resolveIncident(resolutionTarget, resolutionNote);
+    setResolving(false);
+    if (!result.ok) {
+      setResolutionError(result.error);
+      return;
+    }
+    cancelResolution();
+  };
+
   return <>
     <header className="page-header">
       <div><p className="eyebrow capitalize">{dayLabel}</p><h1>Operación de hoy</h1><p className="lede">Qué se debía hacer, qué está ocurriendo y qué necesita atención.</p></div>
@@ -79,7 +110,20 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
         <div className="section-head"><div><p className="eyebrow">Atención</p><h2>Excepciones</h2></div><strong className="alert-count">{currentAttentionCount}</strong></div>
         <div className="alert-list">
           {activeMaintenance.map((ticket) => { const asset = equipment.find((item) => item.id === ticket.equipmentId); return <Link className="alert-row no-underline" href={`/equipment/${ticket.equipmentId}`} key={`maintenance-${ticket.id}`}><StatusPill status={ticket.severity}/><strong>{asset ? `${asset.code} · ${asset.name}` : "Equipo"} · {ticket.title}</strong><span>{ticket.status === "repairing" ? "En reparación" : "Detenido"} · {ticket.plant}</span></Link>; })}
-          {openIncidents.map((incident) => <div className="alert-row" key={incident.id}><StatusPill status={incident.severity}/><strong>{incident.title}</strong><span>{incident.detail} · {incident.plant}</span></div>)}
+          {openIncidents.map((incident) => {
+            const mayResolve = canResolveIncident(backend, access, incident.plantId);
+            const editing = resolutionTarget === incident.id;
+            return <div className="alert-row" key={incident.id} data-incident-id={incident.id}>
+              <StatusPill status={incident.severity}/><strong>{incident.title}</strong><span>{incident.detail} · {incident.plant}</span>
+              {mayResolve && !editing ? <button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" onClick={() => beginResolution(incident.id)}>Resolver</button> : null}
+              {mayResolve && editing ? <form className="mt-2 grid gap-2" aria-label={`Resolver ${incident.title}`} onSubmit={submitResolution}>
+                <label className="text-xs font-semibold" htmlFor={`resolution-${incident.id}`}>Cómo se resolvió</label>
+                <textarea id={`resolution-${incident.id}`} className="min-h-20 rounded-xl border border-[var(--line)] bg-white p-3 text-sm" maxLength={500} value={resolutionNote} onChange={(event) => setResolutionNote(event.target.value)} placeholder="Describe la acción realizada y el resultado." />
+                {resolutionError ? <p className="text-xs font-semibold text-[var(--red)]" role="alert">{resolutionError}</p> : null}
+                <div className="flex flex-wrap gap-2"><button className="button primary" type="submit" disabled={resolving}>{resolving ? "Resolviendo…" : "Confirmar resolución"}</button><button className="button secondary" type="button" disabled={resolving} onClick={cancelResolution}>Cancelar</button></div>
+              </form> : null}
+            </div>;
+          })}
           {nonConforming.map((reception)=><Link className="alert-row no-underline" href="/receptions" key={reception.id}><span className="status-pill status-medium">{statusLabel[reception.acceptance]}</span><strong>{reception.lotCode} · {getRejectionPct(reception).toFixed(1)} % rechazo</strong><span>{reception.generator} · {reception.plant}</span></Link>)}
           {delayed.map((activity) => <Link className="alert-row no-underline" href={`/activities/${activity.id}`} key={activity.id}><StatusPill status={activity.status}/><strong>{activity.title}</strong><span>Actividad programada pendiente · {activity.plant}</span></Link>)}
           {!currentAttentionCount && <p className="quiet">Sin excepciones abiertas.</p>}
