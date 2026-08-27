@@ -21,7 +21,7 @@ test("contact page starts with context without forcing diagnosis or a service na
   await expect(page.getByRole("heading", { name: /Cuatro datos pueden llevar la conversación mucho más rápido/i })).toBeVisible();
   await expect(page.getByLabel("¿Desde qué contexto nos escribes?")).toBeVisible();
   await expect(page.getByLabel("¿Qué necesitas resolver primero?")).toBeVisible();
-  await expect(page.getByText(/Este paso no envía información a Greenatics/i)).toBeVisible();
+  await expect(page.getByText(/Puedes preparar y copiar el contexto sin enviarlo/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /Preparar conversación/i }).first()).toHaveAttribute("href", /\/contacto\?audience=/);
   await expect(page.getByRole("heading", { name: "Si ya sabes qué necesitas, podemos empezar por ahí." })).toBeVisible();
   await expect(page.getByRole("link", { name: "Explorar servicios", exact: true })).toHaveAttribute("href", "/soluciones");
