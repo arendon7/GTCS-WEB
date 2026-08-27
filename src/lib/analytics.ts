@@ -84,7 +84,8 @@ function inPeriod(iso: string | undefined, period: DashboardPeriod) { if (!iso) 
 export function overlapMinutes(startIso: string | undefined, endIso: string | undefined, period: DashboardPeriod, nowIso: string) { if (!startIso) return 0; const { startMs, endMs } = periodBounds(period); const start = Math.max(new Date(startIso).getTime(), startMs); const end = Math.min(new Date(endIso ?? nowIso).getTime(), endMs); return Math.max(0, (end - start) / 60_000); }
 function filterPlant<T extends { plantId: string }>(items: T[], plantId: PlantFilter) { return plantId === "all" ? items : items.filter((item) => item.plantId === plantId); }
 function pct(numerator: number, denominator: number) { return denominator > 0 ? (numerator / denominator) * 100 : 0; }
-function isNonConforming(receipt: ReceptionRecord) { return receipt.acceptance === "conditioned" || receipt.acceptance === "rejected"; }
+function isNonConforming(receipt: ReceptionRecord) { return receptionAttentionStatuses.has(receipt.acceptance); }
+const receptionAttentionStatuses = new Set<ReceptionRecord["acceptance"]>(["conditioned", "partial_rejection", "rejected"]);
 function hasKnownRejection(receipt: ReceptionRecord) { return receipt.rejectionKnown !== false; }
 function isMaintenanceOpenAtPeriodEnd(ticket: MaintenanceTicket, period: DashboardPeriod) {
   const { endMs } = periodBounds(period);
