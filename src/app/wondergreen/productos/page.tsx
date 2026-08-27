@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { ProductCatalogBrowser } from "./product-catalog-browser";
 import styles from "./catalog.module.css";
 
@@ -14,6 +15,11 @@ export default function WondergreenProductsPage() {
 
   return (
     <div className={styles.page}>
+      <BreadcrumbJsonLd items={[
+        { name: "Greenatics", path: "/" },
+        { name: "Wondergreen", path: "/wondergreen" },
+        { name: "Productos", path: "/wondergreen/productos" },
+      ]} />
       <main>
         <section className={styles.hero}>
           <div className={`${styles.container} ${styles.heroGrid}`}>

@@ -9,6 +9,7 @@ import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics } from "@/lib/analytics";
 import { getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
+import { getTodaySourceControl } from "@/lib/today-source-control";
 
 function Metric({ label, value, note }: { label: string; value: string; note: string }) {
   return <div className="metric-block"><span>{label}</span><strong>{value}</strong><small>{note}</small></div>;
@@ -23,7 +24,7 @@ function timeLabel(iso?: string) {
 }
 
 export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
-  const { activities, incidents, receptions, workers, ready, resetDemo } = useOpsStore();
+  const { activities, incidents, receptions, workers, backend, ready, refresh, resetDemo } = useOpsStore();
   const { equipment, tickets } = useMaintenanceStore();
   const { piles, measurements } = useCompostStore();
   const [nowIso, setNowIso] = useState(initialNowIso);
@@ -45,6 +46,15 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
   const activeMaintenance = tickets.filter((ticket) => ticket.status !== "closed");
   const currentAttentionCount = activeMaintenance.length + openIncidents.length + nonConforming.length + delayed.length;
   const dayLabel = dayFormatter.format(new Date(nowIso));
+  const sourceControl = getTodaySourceControl(backend, ready);
+
+  const handleSourceAction = () => {
+    if (sourceControl.action === "refresh") {
+      void refresh().catch(() => undefined);
+      return;
+    }
+    resetDemo();
+  };
 
   return <>
     <header className="page-header">
@@ -78,7 +88,7 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
     </div>
 
     <section className="panel plant-panel" id="estado-plantas">
-      <div className="section-head"><div><p className="eyebrow">Plantas</p><h2>Estado operativo</h2></div><div className="flex items-center gap-3"><Link className="text-xs font-semibold text-[var(--green)]" href="/dashboard">Abrir dashboard</Link><span className="quiet">{ready ? "Persistencia local activa" : "Cargando estado…"}</span><button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" onClick={resetDemo}>Restablecer demo</button></div></div>
+      <div className="section-head"><div><p className="eyebrow">Plantas</p><h2>Estado operativo</h2></div><div className="flex items-center gap-3"><Link className="text-xs font-semibold text-[var(--green)]" href="/dashboard">Abrir dashboard</Link><span className="quiet">{sourceControl.label}</span><button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" onClick={handleSourceAction}>{sourceControl.actionLabel}</button></div></div>
       <div className="plant-table"><div className="plant-row plant-head"><span>Planta</span><span>Recibido</span><span>Rechazo</span><span>Plan</span><span>Atención</span></div>{analytics.plantComparison.map((plant)=><div className="plant-row" key={plant.plantId}><strong>{plant.plant}</strong><span>{(plant.receivedKg/1000).toFixed(2)} t</span><span>{plant.rejectionPct.toFixed(1)} %</span><span>{plant.compliancePct.toFixed(0)} %</span><strong className={plant.attention ? "text-[var(--red)]" : "text-[var(--green)]"}>{plant.attention}</strong></div>)}</div>
     </section>
 
