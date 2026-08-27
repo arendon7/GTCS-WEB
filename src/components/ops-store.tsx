@@ -6,9 +6,11 @@ import type { ImportRun } from "@/lib/importer";
 import { buildCanonicalPromotion } from "@/lib/import-promotion";
 import { employees, seedActivities, seedIncidents, seedReceptions } from "@/lib/mock-data";
 import { getDataMode, isSupabaseConfigured } from "@/lib/data-mode";
+import { validateIncidentResolutionNote } from "@/lib/incident-resolution";
 import type { OpsBackendState, PlantAccess } from "@/lib/ops-data-contract";
 import type { OpsIdentity } from "@/lib/ops-session";
 import {
+  closeRemoteIncident,
   createRemoteReception,
   createRemoteUnplannedActivity,
   finishRemoteActivity,
@@ -41,6 +43,7 @@ type OpsStore = {
   ready: boolean;
   startActivity: (id: string, workerIds: string[]) => Promise<CreateResult>;
   finishActivity: (id: string, payload: FinishPayload) => Promise<Result>;
+  resolveIncident: (id: string, resolutionNote: string) => Promise<Result>;
   createActivity: (payload: NewActivityPayload) => Promise<CreateResult>;
   createReception: (payload: NewReceptionPayload) => Promise<CreateReceptionResult>;
   promoteHistoricalImport: (run: ImportRun) => PromotionResult;
@@ -93,6 +96,7 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
     setAccess(nextAccess);
     setWorkers(snapshot.workers);
     setActivities(snapshot.activities);
+    setIncidents(snapshot.incidents);
     setReceptions(snapshot.receptions);
     setBackend({ mode: "supabase", status: "ready" });
     setReady(true);
@@ -217,6 +221,27 @@ export function OpsStoreProvider({ children }: { children: ReactNode }) {
         const severity = payload.noveltyType === "safety" || payload.noveltyType === "equipment_failure" ? "high" : "medium";
         setIncidents((current) => [{ id: crypto.randomUUID(), activityId: activity.id, plantId: activity.plantId, plant: activity.plant, title: payload.noveltyType === "equipment_failure" ? `Falla reportada · ${activity.title}` : `Novedad · ${activity.title}`, detail: payload.novelty?.trim() || "Novedad reportada durante la actividad.", severity, equipment: activity.equipment, openedAt: actualEnd, status: "open" }, ...current]);
       }
+      return { ok: true };
+    },
+    async resolveIncident(id, resolutionNote) {
+      const incident = incidents.find((item) => item.id === id);
+      if (!incident) return { ok: false, error: "Incidente no encontrado." };
+      if (incident.status !== "open") return { ok: false, error: "El incidente ya está cerrado." };
+      const validation = validateIncidentResolutionNote(resolutionNote);
+      if (!validation.ok) return validation;
+
+      if (remoteMode) {
+        try {
+          await closeRemoteIncident(id, validation.value);
+          await reloadAfterRemoteMutation();
+          return { ok: true };
+        } catch (error) {
+          return failure(error, "No fue posible resolver el incidente.");
+        }
+      }
+
+      const closedAt = new Date().toISOString();
+      setIncidents((current) => current.map((item) => item.id === id ? { ...item, status: "closed", closedAt, resolutionNote: validation.value } : item));
       return { ok: true };
     },
     async createActivity(payload) {

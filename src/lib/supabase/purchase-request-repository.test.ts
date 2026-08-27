@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it, vi } from "vitest";
 import type { PlantAccess } from "@/lib/ops-data-contract";
-import { submitRemotePurchaseRequest } from "@/lib/supabase/purchase-request-repository";
+import { decideRemotePurchaseRequest, fulfillRemotePurchaseRequest, submitRemotePurchaseRequest } from "@/lib/supabase/purchase-request-repository";
 
 const access: PlantAccess[] = [{
   dbId: "plant-db-tam",
@@ -98,5 +98,71 @@ describe("purchase request repository write boundary", () => {
       estimatedAmountCop: 50000,
     }, client)).rejects.toThrow("No tienes acceso a la planta yarumal.");
     expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it("decides only through the governed transition RPC with the exact decision payload", async () => {
+    const { client, rpc } = rpcClient({ data: null, error: null });
+
+    await expect(decideRemotePurchaseRequest(
+      "request-approved",
+      "approved",
+      "Supervisor Támesis",
+      "Compra autorizada",
+      client,
+    )).resolves.toBeUndefined();
+
+    expect(rpc).toHaveBeenCalledTimes(1);
+    expect(rpc).toHaveBeenCalledWith("decide_purchase_request", {
+      p_request_id: "request-approved",
+      p_decision: "approved",
+      p_actor_name: "Supervisor Támesis",
+      p_note: "Compra autorizada",
+    });
+  });
+
+  it("maps an absent decision note to null without inventing content", async () => {
+    const { client, rpc } = rpcClient({ data: null, error: null });
+
+    await decideRemotePurchaseRequest("request-approved", "approved", "Director", undefined, client);
+
+    expect(rpc).toHaveBeenCalledWith("decide_purchase_request", expect.objectContaining({ p_note: null }));
+  });
+
+  it("fulfills through the governed RPC using the actual amount and returns the expense id", async () => {
+    const { client, rpc } = rpcClient({ data: "expense-real-1", error: null });
+
+    await expect(fulfillRemotePurchaseRequest({
+      requestId: "request-approved",
+      actor: "Supervisor Támesis",
+      supplierName: "Ferretería Real S.A.S.",
+      actualAmountCop: 185000,
+      documentDate: "2026-08-27",
+      documentRef: "FV-REAL-001",
+      note: "Monto final verificado",
+    }, client)).resolves.toBe("expense-real-1");
+
+    expect(rpc).toHaveBeenCalledTimes(1);
+    expect(rpc).toHaveBeenCalledWith("fulfill_purchase_request", {
+      p_request_id: "request-approved",
+      p_actor_name: "Supervisor Támesis",
+      p_supplier_name: "Ferretería Real S.A.S.",
+      p_actual_amount_cop: 185000,
+      p_document_date: "2026-08-27",
+      p_document_ref: "FV-REAL-001",
+      p_note: "Monto final verificado",
+    });
+  });
+
+  it("surfaces fulfillment rejection without fabricating an expense identifier", async () => {
+    const { client, rpc } = rpcClient({ data: null, error: { message: "Solo una solicitud aprobada puede convertirse en compra real" } });
+
+    await expect(fulfillRemotePurchaseRequest({
+      requestId: "request-closed",
+      actor: "Supervisor",
+      supplierName: "Proveedor",
+      actualAmountCop: 185000,
+      documentDate: "2026-08-27",
+    }, client)).rejects.toThrow("Solo una solicitud aprobada puede convertirse en compra real");
+    expect(rpc).toHaveBeenCalledTimes(1);
   });
 });

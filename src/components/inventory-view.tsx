@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useInventoryStore } from "@/components/inventory-store";
 import { useOpsStore } from "@/components/ops-store";
 import type { InventoryUnit } from "@/lib/inventory-domain";
+import { hasOperationalWriteAccess } from "@/lib/ops-write-access";
 
 const dateFmt=new Intl.DateTimeFormat("es-CO",{dateStyle:"medium",timeStyle:"short",timeZone:"America/Bogota"});
 const kindLabel={production:"Producción",dispatch:"Salida",adjustment_in:"Ajuste entrada",adjustment_out:"Ajuste salida"} as const;
@@ -21,6 +22,7 @@ export function InventoryView(){
   const [feedback,setFeedback]=useState("");
   const [busy,setBusy]=useState(false);
   const remoteMode=backend.mode==="supabase";
+  const canWriteInventory=hasOperationalWriteAccess(remoteMode,access);
   const canManageProducts=!remoteMode||access.some((plant)=>plant.role==="admin"||plant.role==="director");
   const canReconcile=!remoteMode||access.some((plant)=>reconciliationRoles.has(plant.role));
   const activeProducts=products.filter((item)=>item.active);
@@ -58,8 +60,9 @@ export function InventoryView(){
   }
 
   return <>
-    <header className="page-header"><div><p className="eyebrow">Kardex</p><h1>Inventario</h1><p className="lede">El saldo se calcula desde movimientos por planta, producto y lote. Los conteos físicos se concilian sin sobrescribir el historial.</p></div><div className="header-actions"><Link className="button secondary" href="/production">Ver producción</Link>{canReconcile&&<Link className="button secondary" href="/inventory/reconcile">Conciliar inventario</Link>}<Link className="button secondary" href="/inventory/dispatch">Registrar salida</Link><Link className="button primary" href="/production/new">Registrar producción</Link></div></header>
+    <header className="page-header"><div><p className="eyebrow">Kardex</p><h1>Inventario</h1><p className="lede">El saldo se calcula desde movimientos por planta, producto y lote. Los conteos físicos se concilian sin sobrescribir el historial.</p></div><div className="header-actions"><Link className="button secondary" href="/production">Ver producción</Link>{canReconcile&&<Link className="button secondary" href="/inventory/reconcile">Conciliar inventario</Link>}{canWriteInventory&&<Link className="button secondary" href="/inventory/dispatch">Registrar salida</Link>}{canWriteInventory&&<Link className="button primary" href="/production/new">Registrar producción</Link>}</div></header>
 
+    {!canWriteInventory&&remoteMode&&<p className="mb-4 rounded-xl bg-[var(--surface-soft)] p-4 text-sm text-[var(--muted)]">Modo solo lectura: puedes consultar el kardex, pero esta sesión no tiene una planta autorizada para registrar producción o salidas.</p>}
     {error&&<p className="mb-4 rounded-xl bg-[var(--red-soft)] p-4 text-sm font-semibold text-[var(--red)]" role="alert">{error}</p>}
     <section className="panel mb-4"><div className="section-head"><div><p className="eyebrow">Stock actual</p><h2>Productos disponibles</h2></div><div className="flex items-center gap-2"><span className="quiet">{sourceLabel}</span><button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" disabled={busy} onClick={refreshOrReset}>{busy?"Actualizando…":remoteMode?"Actualizar":"Restablecer demo"}</button></div></div>
       {stocks.length ? <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{stocks.map((stock)=><article className="rounded-xl border border-[var(--line)] p-4" key={`${stock.plantId}-${stock.productId}`}><span className="quiet">{stock.plant}</span><strong className="mt-1 block text-sm">{stock.productName}</strong><strong className="mt-3 block text-2xl">{stock.quantity.toLocaleString("es-CO")} {stock.unit}</strong><span className="mt-1 block text-xs text-[var(--muted)]">{stock.lots} lote{stock.lots===1?"":"s"} con saldo</span></article>)}</div> : <div className="rounded-xl border border-dashed border-[var(--line)] p-8 text-center"><strong className="block text-sm">Sin stock registrado</strong><p className="quiet mt-2">El inventario empezará cuando registres producción terminada.</p></div>}
