@@ -107,7 +107,7 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
       </section>
 
       <section className="panel" id="alertas">
-        <div className="section-head"><div><p className="eyebrow">Atención</p><h2>Excepciones</h2></div><strong className="alert-count">{currentAttentionCount}</strong></div>
+        <div className="section-head"><div><p className="eyebrow">Atención</p><h2>Excepciones</h2></div><div className="flex items-center gap-3"><Link className="text-xs font-semibold text-[var(--green)]" href="/incidents">Ver historial</Link><strong className="alert-count">{currentAttentionCount}</strong></div></div>
         <div className="alert-list">
           {activeMaintenance.map((ticket) => { const asset = equipment.find((item) => item.id === ticket.equipmentId); return <Link className="alert-row no-underline" href={`/equipment/${ticket.equipmentId}`} key={`maintenance-${ticket.id}`}><StatusPill status={ticket.severity}/><strong>{asset ? `${asset.code} · ${asset.name}` : "Equipo"} · {ticket.title}</strong><span>{ticket.status === "repairing" ? "En reparación" : "Detenido"} · {ticket.plant}</span></Link>; })}
           {openIncidents.map((incident) => {

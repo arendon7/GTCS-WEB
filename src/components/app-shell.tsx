@@ -15,7 +15,7 @@ import { useSettlementStore } from "@/components/settlement-store";
 import { canManageOperationalMasters } from "@/lib/operational-master-data";
 import { canManageHomeGardenReadiness } from "@/lib/home-garden-readiness-registry";
 
-const nav = [["Hoy", "/app"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Insumos", "/supplies"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Documentos", "/documents"], ["Registrar actividad", "/activities/new"], ["Alertas", "/app#alertas"]] as const;
+const nav = [["Hoy", "/app"], ["Calendario", "/calendar"], ["Recepciones", "/receptions"], ["Compostaje", "/compost"], ["Producción", "/production"], ["Inventario", "/inventory"], ["Insumos", "/supplies"], ["Ventas", "/sales"], ["Solicitudes", "/purchases"], ["Compras/Gastos", "/expenses"], ["Caja", "/cash"], ["Finanzas", "/finance"], ["Equipos", "/equipment"], ["Dashboard", "/dashboard"], ["Importaciones", "/imports"], ["Documentos", "/documents"], ["Registrar actividad", "/activities/new"], ["Alertas", "/incidents"]] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
