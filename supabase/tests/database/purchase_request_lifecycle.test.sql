@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(27);
 
 select ok(
   to_regprocedure('public.decide_purchase_request(uuid,text,text,text)') is not null,
