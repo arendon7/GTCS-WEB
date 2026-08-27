@@ -8,6 +8,9 @@
     "start": "next start",
     "check": "tsc --noEmit",
     "audit:static": "node scripts/audit-static.mjs",
+    "audit:content": "node scripts/audit-content-governance.mjs",
+    "test:content": "playwright test tests/content-governance.spec.ts",
+    "test:navigation": "playwright test tests/navigation.spec.ts",
     "test:visual": "playwright test tests/visual-smoke.spec.ts",
     "test:a11y": "playwright test tests/accessibility.spec.ts"
   },

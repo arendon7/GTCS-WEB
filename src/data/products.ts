@@ -1,5 +1,6 @@
 export type ProductCategory = "Acondicionador de suelo" | "Fertilizante organomineral" | "Bioinsumo";
 export type ProductFamily = "Compost" | "2GROW" | "2BALANCE" | "2BLOOM" | "2FRUIT" | "Bioinsumos";
+export type ProductPublicationLevel = "PORTAFOLIO_TECNICO" | "COMMERCIAL_RECONCILED" | "CHECKOUT_READY";
 
 export type Product = {
   slug: string;
@@ -14,6 +15,7 @@ export type Product = {
   presentations: string[];
   priceCop?: number;
   commercialStatus: "PRECIO_VALIDADO" | "PORTAFOLIO_TECNICO";
+  publicationLevel: ProductPublicationLevel;
   technicalRole: string;
   idealFor: string[];
   notes: string[];
@@ -32,6 +34,7 @@ export const products: Product[] = [
     presentations: ["5 kg", "40 kg"],
     priceCop: 20200,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Base orgánica para trabajar estructura, materia orgánica y condición general del suelo; su uso final depende del diagnóstico del lote.",
     idealFor: ["preparación de suelo", "huertas y cultivos", "programas de materia orgánica", "mezclas y manejo agronómico"],
     notes: ["El precio mostrado corresponde a la referencia pública reconciliada de 40 kg.", "Disponibilidad y recomendación agronómica se confirman antes de cerrar la compra."],
@@ -49,7 +52,8 @@ export const products: Product[] = [
     presentations: ["5 kg", "40 kg"],
     priceCop: 147400,
     commercialStatus: "PRECIO_VALIDADO",
-    technicalRole: "Combina una matriz orgánica con nutrición mineral en una presentación sólida peletizada/ocluida para programas donde predomina el objetivo vegetativo.",
+    publicationLevel: "COMMERCIAL_RECONCILED",
+    technicalRole: "Combina una matriz orgánica con nutrición mineral en una presentación sólida peletizada para programas donde predomina el objetivo vegetativo.",
     idealFor: ["establecimiento", "brotación", "crecimiento vegetativo", "recuperación después de estrés o poda según diagnóstico"],
     notes: ["No publicar dosis sin ficha técnica vigente.", "La selección final depende del cultivo, etapa, suelo y análisis disponibles."],
   },
@@ -66,6 +70,7 @@ export const products: Product[] = [
     presentations: ["5 kg", "40 kg"],
     priceCop: 147400,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Referencia equilibrada dentro del sistema Wondergreen para momentos en los que el programa no requiere priorizar una sola etapa fisiológica.",
     idealFor: ["mantenimiento", "nutrición balanceada", "programas generales ajustados por cultivo"],
     notes: ["No publicar dosis sin ficha técnica vigente.", "La recomendación debe cruzarse con análisis y manejo del lote."],
@@ -83,6 +88,7 @@ export const products: Product[] = [
     presentations: ["5 kg", "40 kg"],
     priceCop: 115500,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Referencia del sistema Wondergreen para acompañar el cambio desde predominio vegetativo hacia la fase reproductiva cuando el diagnóstico lo indique.",
     idealFor: ["transición reproductiva", "prefloración", "floración según programa agronómico"],
     notes: ["No constituye una promesa de floración.", "Dosis y momento dependen del cultivo y de la ficha vigente."],
@@ -100,8 +106,9 @@ export const products: Product[] = [
     presentations: ["5 kg", "40 kg"],
     priceCop: 121900,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Referencia del sistema Wondergreen para programas que desplazan el objetivo nutricional hacia la fase productiva.",
-    idealFor: ["cuajado y desarrollo según cultivo", "llenado", "fase productiva"],
+    idealFor: ["desarrollo según cultivo", "llenado", "fase productiva"],
     notes: ["No constituye una garantía de rendimiento o calibre.", "La selección final depende de etapa, carga, suelo, agua y análisis disponibles."],
   },
   {
@@ -117,6 +124,7 @@ export const products: Product[] = [
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
     priceCop: 17000,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Formato líquido para integrar la lógica 2GROW a programas donde la vía y el manejo permitan este tipo de aplicación.",
     idealFor: ["programas vegetativos", "manejo por etapas", "productores y canales que requieren formatos líquidos"],
     notes: ["El precio mostrado corresponde a 1 L; el cotizador contiene presentaciones públicas adicionales.", "La formulación y dosis deben leerse desde la ficha vigente."],
@@ -131,8 +139,9 @@ export const products: Product[] = [
     objective: "Referencia técnica adicional de la familia 2GROW con orientación nitrogenada dentro del Product Master.",
     stage: "Crecimiento vegetativo",
     presentation: "Portafolio técnico",
-    presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
+    presentations: ["3,75 L", "20 L", "200 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Amplía la familia de crecimiento cuando el programa requiera un enfoque nitrogenado; disponibilidad y condición comercial deben confirmarse.",
     idealFor: ["programas vegetativos", "casos definidos por recomendación técnica"],
     notes: ["Referencia visible como portafolio técnico, no como SKU disponible para checkout.", "Confirmar formulación comercial vigente, etiqueta y disponibilidad antes de cotizar."],
@@ -150,6 +159,7 @@ export const products: Product[] = [
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
     priceCop: 19100,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Formato líquido de la familia balanceada para programas ajustados a cultivo, suelo, agua y objetivo productivo.",
     idealFor: ["mantenimiento", "nutrición balanceada", "programas líquidos"],
     notes: ["El precio mostrado corresponde a 1 L.", "Compatibilidades, vía y dosis requieren ficha y recomendación vigentes."],
@@ -164,8 +174,9 @@ export const products: Product[] = [
     objective: "Referencia líquida de la familia 2BLOOM orientada a programas de transición reproductiva y floración.",
     stage: "Prefloración y floración",
     presentation: "Portafolio técnico",
-    presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
+    presentations: ["3,75 L", "20 L", "200 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Completa la arquitectura por etapas de Wondergreen en formato líquido, sujeta a reconciliación comercial antes de venta pública.",
     idealFor: ["transición reproductiva", "programas líquidos por etapa"],
     notes: ["No se publica precio ni se habilita checkout hasta consolidar Product Truth comercial.", "No constituye promesa de floración."],
@@ -183,6 +194,7 @@ export const products: Product[] = [
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
     priceCop: 18000,
     commercialStatus: "PRECIO_VALIDADO",
+    publicationLevel: "COMMERCIAL_RECONCILED",
     technicalRole: "Formato líquido de la familia 2FRUIT para integrar el objetivo productivo a programas técnicamente definidos.",
     idealFor: ["fase productiva", "llenado según cultivo", "programas líquidos"],
     notes: ["El precio mostrado corresponde a 1 L.", "No implica garantía de rendimiento; dosis y frecuencia dependen del diagnóstico."],
@@ -198,6 +210,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Herramienta de origen botánico; plagas objetivo, concentración, dosis, compatibilidades y condición regulatoria deben consultarse en la ficha vigente.",
     idealFor: ["programas de manejo integrado", "productores que buscan complementar herramientas agronómicas"],
     notes: ["No se publican blancos biológicos ni eficacia sin ficha/registro reconciliado.", "Precio y disponibilidad pendientes de Product Truth comercial."],
@@ -213,6 +226,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Herramienta botánica cuyo uso específico debe definirse por cultivo, objetivo, formulación y documentación vigente.",
     idealFor: ["programas de manejo integrado", "agricultura con enfoque preventivo y monitoreo"],
     notes: ["No se publican blancos ni dosis hasta validar ficha y condición regulatoria.", "No habilitado para checkout."],
@@ -228,6 +242,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Herramienta microbiológica; cepa, concentración, blancos, condiciones de aplicación y registro son datos críticos que deben provenir de la ficha vigente.",
     idealFor: ["programas de manejo biológico", "manejo integrado con monitoreo"],
     notes: ["La especie/cepa y los usos autorizados deben validarse antes de comunicación comercial específica.", "No habilitado para checkout."],
@@ -243,6 +258,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Herramienta microbiológica cuyo desempeño depende de la formulación, cepa, objetivo y condiciones de aplicación documentadas.",
     idealFor: ["programas de manejo biológico", "manejo integrado"],
     notes: ["No se comunican usos específicos sin ficha/registro reconciliado.", "No habilitado para checkout."],
@@ -258,6 +274,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Microorganismo de interés agronómico; cepa, concentración, objetivo, aplicación y compatibilidad deben corresponder a documentación vigente.",
     idealFor: ["programas biológicos", "manejo integrado"],
     notes: ["No atribuir control, promoción de crecimiento ni otros beneficios específicos sin respaldo del producto vigente.", "No habilitado para checkout."],
@@ -273,6 +290,7 @@ export const products: Product[] = [
     presentation: "Portafolio técnico",
     presentations: ["1 L", "5 L", "20 L"],
     commercialStatus: "PORTAFOLIO_TECNICO",
+    publicationLevel: "PORTAFOLIO_TECNICO",
     technicalRole: "Microorganismo cuyo uso agronómico debe definirse a partir de especie/cepa, concentración, cultivo, objetivo y documentación comercial vigente.",
     idealFor: ["programas de suelo", "manejo biológico", "manejo integrado"],
     notes: ["No se publican claims específicos hasta reconciliar ficha y registro.", "No habilitado para checkout."],
@@ -283,6 +301,10 @@ export const pricedProducts = products.filter((product) => product.commercialSta
 export const technicalPortfolio = products.filter((product) => product.commercialStatus === "PORTAFOLIO_TECNICO");
 export const bioinputs = products.filter((product) => product.category === "Bioinsumo");
 export const featuredProducts = products.filter((product) => ["compost-40kg", "2grow-solido-40kg", "2balance-solido-40kg", "2bloom-solido-40kg", "2fruit-solido-40kg"].includes(product.slug));
+
+export function isCheckoutReady(product: Product) {
+  return product.publicationLevel === "CHECKOUT_READY";
+}
 
 export function getProduct(slug: string) {
   return products.find((product) => product.slug === slug);

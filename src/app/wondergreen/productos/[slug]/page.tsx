@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { JsonLd } from "@/components/json-ld";
 import { ProductVisual } from "@/components/product-visual";
-import { getProduct, products } from "@/data/products";
+import { getProduct, isCheckoutReady, products } from "@/data/products";
 import { site } from "@/data/site";
 
 export function generateStaticParams() {
@@ -30,6 +30,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const productUrl = `${site.url}/wondergreen/productos/${product.slug}/`;
   const hasPublicPrice = typeof product.priceCop === "number";
+  const checkoutReady = isCheckoutReady(product);
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -43,10 +44,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     additionalProperty: [
       { "@type": "PropertyValue", name: "Formato", value: product.format },
       { "@type": "PropertyValue", name: "Presentaciones", value: product.presentations.join(", ") },
-      { "@type": "PropertyValue", name: "Estado comercial", value: hasPublicPrice ? "Precio público validado" : "Portafolio técnico; confirmar disponibilidad" },
+      { "@type": "PropertyValue", name: "Estado comercial", value: product.publicationLevel === "PORTAFOLIO_TECNICO" ? "Portafolio técnico; confirmar disponibilidad" : checkoutReady ? "Checkout habilitado" : "Precio público reconciliado; disponibilidad por confirmar" },
       ...(product.formula ? [{ "@type": "PropertyValue", name: "Referencia", value: product.formula }] : []),
     ],
-    ...(hasPublicPrice ? { offers: { "@type": "Offer", url: productUrl, priceCurrency: "COP", price: product.priceCop, seller: { "@id": `${site.url}/#organization` } } } : {}),
+    ...(checkoutReady && hasPublicPrice ? { offers: { "@type": "Offer", url: productUrl, priceCurrency: "COP", price: product.priceCop, seller: { "@id": `${site.url}/#organization` } } } : {}),
   };
 
   return (
@@ -62,9 +63,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <span className="eyebrow">{product.category} · {product.family}</span>
             <h1>{product.name}</h1>
             <p className="lead">{product.objective}</p>
-            <div className={`commercial-status ${hasPublicPrice ? "commercial-status--priced" : "commercial-status--technical"}`}><strong>{hasPublicPrice ? "Referencia comercial reconciliada" : "Portafolio técnico"}</strong><span>{hasPublicPrice ? "Tiene precio público de referencia. Inventario y logística se confirman antes de venta." : "La familia está documentada, pero precio, disponibilidad, etiqueta y/o condición regulatoria deben reconciliarse antes de venta pública."}</span></div>
+            <div className={`commercial-status ${hasPublicPrice ? "commercial-status--priced" : "commercial-status--technical"}`}><strong>{hasPublicPrice ? "Referencia comercial reconciliada" : "Portafolio técnico"}</strong><span>{hasPublicPrice ? "Tiene precio público de referencia. Inventario, logística y condición de venta se confirman antes de cerrar una operación." : "La familia está documentada, pero precio, disponibilidad, etiqueta y/o condición regulatoria deben reconciliarse antes de venta pública."}</span></div>
             <dl className="product-facts"><div><dt>Categoría</dt><dd>{product.category}</dd></div><div><dt>Formato</dt><dd>{product.format}</dd></div><div><dt>Etapa / objetivo</dt><dd>{product.stage}</dd></div>{product.formula ? <div><dt>Referencia</dt><dd>{product.formula}</dd></div> : null}</dl>
-            {hasPublicPrice ? <div className="price-panel"><div><small>Precio público de referencia · {product.presentation}</small><strong>{cop(product.priceCop!)}</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Consultar / comprar</a></div> : <div className="price-panel price-panel--technical"><div><small>Estado comercial</small><strong>Consultar</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Validar disponibilidad</a></div>}
+            {hasPublicPrice ? <div className="price-panel"><div><small>Precio público de referencia · {product.presentation}</small><strong>{cop(product.priceCop!)}</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Solicitar cotización</a></div> : <div className="price-panel price-panel--technical"><div><small>Estado comercial</small><strong>Consultar</strong></div><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Validar disponibilidad</a></div>}
           </div>
         </div>
       </section>
