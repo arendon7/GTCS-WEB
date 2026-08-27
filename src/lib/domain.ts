@@ -18,7 +18,7 @@ export type ActivityRecord = {
   deviationReason?:string;
   quantity?:number; unit?:ActivityUnit; noveltyType?:NoveltyType; novelty?:string; source:"scheduled"|"unplanned"|"historical"; provenance?:HistoricalProvenance;
 };
-export type IncidentRecord = { id:string; activityId:string; plantId:string; plant:string; title:string; detail:string; severity:AlertSeverity; equipment?:string; openedAt:string; status:"open"|"closed" };
+export type IncidentRecord = { id:string; activityId?:string; plantId:string; plant:string; title:string; detail:string; severity:AlertSeverity; equipment?:string; openedAt:string; closedAt?:string; resolutionNote?:string; status:"open"|"closed" };
 export type ReceptionLotDisposition = { decision:IntakeLotDispositionDecision; reason:string; decidedAt:string };
 export type ReceptionPhysicalLot = { id:string; initialMassKg:number; availableMassKg:number; status:PhysicalLotStatus; disposition?:ReceptionLotDisposition };
 export type ReceptionRecord = { id:string; plantId:string; plant:string; generator:string; route:string; wasteType:WasteType; netWeightKg:number; rejectionKg:number; rejectionKnown?:boolean; acceptedWeightKg?:number; improperWeightKg?:number; acceptance:AcceptanceStatus; observation?:string; startedAt:string; endedAt:string; lotCode:string; physicalLot?:ReceptionPhysicalLot; source:"demo"|"local"|"historical"; timePrecision?:"datetime"|"date_only"; provenance?:HistoricalProvenance };
