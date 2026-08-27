@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { canonicalPlantId,mapRemoteActivities,mapRemoteEmployee,mapRemoteReceipt,type PlantAccess } from "@/lib/ops-data-contract";
+import { canonicalPlantId,mapRemoteActivities,mapRemoteEmployee,mapRemoteIncident,mapRemoteReceipt,type PlantAccess } from "@/lib/ops-data-contract";
 
 const access:PlantAccess[]=[
   {dbId:"db-tam",plantId:"tamesis",code:"TAM",name:"Támesis",role:"operator"},
@@ -14,6 +14,15 @@ describe("ops remote data contract",()=>{
 
   it("maps visible remote employees",()=>{
     expect(mapRemoteEmployee({id:"emp-1",plant_id:"db-tam",display_name:"Nelson"},access)).toEqual({id:"emp-1",name:"Nelson",plantId:"tamesis",historical:undefined});
+  });
+
+  it("maps linked and independent remote incidents without inventing activity ids",()=>{
+    expect(mapRemoteIncident({id:"inc-1",activity_id:"act-1",plant_id:"db-tam",severity:"high",title:"Falla reportada",description:"Motor detenido",opened_at:"2026-08-26T20:00:00Z"},access)).toEqual({id:"inc-1",activityId:"act-1",plantId:"tamesis",plant:"Támesis",title:"Falla reportada",detail:"Motor detenido",severity:"high",openedAt:"2026-08-26T20:00:00Z",status:"open"});
+    expect(mapRemoteIncident({id:"inc-2",activity_id:null,plant_id:"db-yar",severity:"low",title:"Novedad independiente",description:null,opened_at:"2026-08-25T20:00:00Z",closed_at:"2026-08-26T10:00:00Z"},access)).toEqual({id:"inc-2",activityId:undefined,plantId:"yarumal",plant:"Yarumal",title:"Novedad independiente",detail:"Sin detalle registrado.",severity:"low",openedAt:"2026-08-25T20:00:00Z",status:"closed"});
+  });
+
+  it("rejects invalid remote incident severity",()=>{
+    expect(()=>mapRemoteIncident({id:"inc-bad",plant_id:"db-tam",severity:"critical",title:"Inválido",opened_at:"2026-08-26T20:00:00Z"},access)).toThrow(/severidad inválida/);
   });
 
   it("joins scheduled workers and actual tools",()=>{
