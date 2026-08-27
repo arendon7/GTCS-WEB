@@ -9,6 +9,7 @@ import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics } from "@/lib/analytics";
 import { getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
 import { canResolveIncident } from "@/lib/incident-resolution";
+import { hasOperationalWriteAccess } from "@/lib/ops-write-access";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
 import { getTodaySourceControl } from "@/lib/today-source-control";
 
@@ -33,6 +34,8 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
   const [resolutionNote, setResolutionNote] = useState("");
   const [resolutionError, setResolutionError] = useState<string>();
   const [resolving, setResolving] = useState(false);
+  const remoteMode=backend.mode==="supabase";
+  const canWriteOperations=hasOperationalWriteAccess(remoteMode,access);
 
   useEffect(() => {
     const update = () => setNowIso(new Date().toISOString());
@@ -90,8 +93,9 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
   return <>
     <header className="page-header">
       <div><p className="eyebrow capitalize">{dayLabel}</p><h1>Operación de hoy</h1><p className="lede">Qué se debía hacer, qué está ocurriendo y qué necesita atención.</p></div>
-      <div className="header-actions"><Link className="button secondary" href="/calendar">Ver calendario</Link><Link className="button secondary" href="/receptions/new">Registrar recepción</Link><Link className="button primary" href="/activities/new">Registrar actividad</Link></div>
+      <div className="header-actions"><Link className="button secondary" href="/calendar">Ver calendario</Link>{canWriteOperations&&<Link className="button secondary" href="/receptions/new">Registrar recepción</Link>}{canWriteOperations&&<Link className="button primary" href="/activities/new">Registrar actividad</Link>}</div>
     </header>
+    {!canWriteOperations&&remoteMode?<p className="mb-4 rounded-xl bg-[var(--surface-soft)] p-4 text-sm text-[var(--muted)]">Modo solo lectura para nuevas recepciones y actividades; los datos operativos visibles siguen disponibles.</p>:null}
 
     <section className="metrics-grid" aria-label="Indicadores de hoy">
       <Metric label="Recibido" value={`${(analytics.receivedKg/1000).toFixed(2)} t`} note={`${analytics.dataCounts.receptions} recepciones`} />
