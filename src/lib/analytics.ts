@@ -10,7 +10,7 @@ export type DashboardPeriod = { preset: DashboardPreset; anchorKey: string; star
 export type DashboardAnalyticsInput = { activities: ActivityRecord[]; receptions: ReceptionRecord[]; incidents: IncidentRecord[]; tickets: MaintenanceTicket[]; equipment: EquipmentRecord[]; piles: CompostPile[]; measurements: CompostMeasurement[]; workers: Worker[]; preset: DashboardPreset; anchorKey: string; plantId: PlantFilter; nowIso: string };
 export type RankedValue = { id: string; label: string; value: number; detail?: string };
 export type TrendPoint = { key: string; label: string; receivedKg: number; laborHours: number; downtimeMinutes: number };
-export type OperationalEvent = { id: string; at: string; plant: string; kind: "activity" | "reception" | "maintenance" | "compost"; title: string; detail: string };
+export type OperationalEvent = { id: string; at: string; plant: string; kind: "activity" | "reception" | "maintenance" | "compost" | "incident"; title: string; detail: string };
 export type PlantComparisonRow = { plantId: string; plant: string; receivedKg: number; rejectionPct: number; laborHours: number; compliancePct: number; downtimeMinutes: number; attention: number };
 export type DataQualityAlert = { id: string; severity: "warning" | "info"; title: string; detail: string; count: number };
 
@@ -61,12 +61,12 @@ function allOperationalKeys(input: Omit<DashboardAnalyticsInput, "preset" | "anc
   const keys = [
     ...input.activities.flatMap((item) => [item.plannedStart, item.actualStart, item.actualEnd].filter(Boolean) as string[]),
     ...input.receptions.flatMap((item) => [item.startedAt, item.endedAt]),
-    ...input.incidents.map((item) => item.openedAt),
+    ...input.incidents.flatMap((item) => [item.openedAt, item.closedAt].filter(Boolean) as string[]),
     ...input.tickets.flatMap((item) => [item.openedAt, item.repairStartedAt, item.closedAt].filter(Boolean) as string[]),
     ...input.piles.flatMap((item) => [item.startedAt, item.maturationStartedAt, item.closedAt].filter(Boolean) as string[]),
     ...input.measurements.map((item) => item.recordedAt),
   ].map(bogotaDateKey);
-  if (nowIso && (input.activities.some((item) => item.actualStart && !item.actualEnd) || input.tickets.some((item) => item.status !== "closed"))) keys.push(bogotaDateKey(nowIso));
+  if (nowIso && (input.activities.some((item) => item.actualStart && !item.actualEnd) || input.incidents.some((item) => item.status === "open") || input.tickets.some((item) => item.status !== "closed"))) keys.push(bogotaDateKey(nowIso));
   return keys.sort();
 }
 
@@ -84,12 +84,20 @@ function inPeriod(iso: string | undefined, period: DashboardPeriod) { if (!iso) 
 export function overlapMinutes(startIso: string | undefined, endIso: string | undefined, period: DashboardPeriod, nowIso: string) { if (!startIso) return 0; const { startMs, endMs } = periodBounds(period); const start = Math.max(new Date(startIso).getTime(), startMs); const end = Math.min(new Date(endIso ?? nowIso).getTime(), endMs); return Math.max(0, (end - start) / 60_000); }
 function filterPlant<T extends { plantId: string }>(items: T[], plantId: PlantFilter) { return plantId === "all" ? items : items.filter((item) => item.plantId === plantId); }
 function pct(numerator: number, denominator: number) { return denominator > 0 ? (numerator / denominator) * 100 : 0; }
-function isNonConforming(receipt: ReceptionRecord) { return receipt.acceptance === "conditioned" || receipt.acceptance === "rejected"; }
+function isNonConforming(receipt: ReceptionRecord) { return receptionAttentionStatuses.has(receipt.acceptance); }
+const receptionAttentionStatuses = new Set<ReceptionRecord["acceptance"]>(["conditioned", "partial_rejection", "rejected"]);
 function hasKnownRejection(receipt: ReceptionRecord) { return receipt.rejectionKnown !== false; }
 function isMaintenanceOpenAtPeriodEnd(ticket: MaintenanceTicket, period: DashboardPeriod) {
   const { endMs } = periodBounds(period);
   const openedMs = new Date(ticket.openedAt).getTime();
   const closedMs = ticket.closedAt ? new Date(ticket.closedAt).getTime() : undefined;
+  return openedMs < endMs && (closedMs === undefined || closedMs >= endMs);
+}
+function isIncidentOpenAtPeriodEnd(incident: IncidentRecord, period: DashboardPeriod) {
+  const { endMs } = periodBounds(period);
+  const openedMs = new Date(incident.openedAt).getTime();
+  if (incident.status === "closed" && !incident.closedAt) return false;
+  const closedMs = incident.closedAt ? new Date(incident.closedAt).getTime() : undefined;
   return openedMs < endMs && (closedMs === undefined || closedMs >= endMs);
 }
 function hasPlanningDeviation(activity: ActivityRecord) {
@@ -108,7 +116,7 @@ function summarizePlant(plantId: string, plantName: string, period: DashboardPer
   const receipts = input.receptions.filter((item) => item.plantId === plantId && inPeriod(item.endedAt, period));
   const knownRejectionReceipts = receipts.filter(hasKnownRejection);
   const tickets = input.tickets.filter((item) => item.plantId === plantId);
-  const incidents = input.incidents.filter((item) => item.plantId === plantId && item.status === "open" && inPeriod(item.openedAt, period));
+  const incidents = input.incidents.filter((item) => item.plantId === plantId && isIncidentOpenAtPeriodEnd(item, period));
   const scheduled = activities.filter((item) => item.source === "scheduled" && inPeriod(item.plannedStart, period));
   const compliant = scheduled.filter((item) => Boolean(item.actualStart) && !hasPlanningDeviation(item));
   const laborHours = activities.reduce((sum, item) => sum + overlapMinutes(item.actualStart, item.actualEnd, period, input.nowIso) * item.workerIds.length / 60, 0);
@@ -171,7 +179,7 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
     equipmentMap.set(ticket.equipmentId, row);
   }
 
-  const openIncidents = incidents.filter((item) => item.status === "open" && inPeriod(item.openedAt, period)).length;
+  const openIncidents = incidents.filter((item) => isIncidentOpenAtPeriodEnd(item, period)).length;
   const openMaintenanceAtPeriodEnd = tickets.filter((item) => isMaintenanceOpenAtPeriodEnd(item, period)).length;
   const closedPiles = piles.filter((item) => item.status === "closed" && inPeriod(item.closedAt, period));
   const averageClosedYieldPct = closedPiles.length ? closedPiles.reduce((sum, item) => sum + compostYieldPct(item), 0) / closedPiles.length : 0;
@@ -189,12 +197,14 @@ export function buildOperationalAnalytics(input: DashboardAnalyticsInput): Dashb
   const events: OperationalEvent[] = [
     ...activities.filter((item) => inPeriod(item.actualStart, period)).map((item) => ({ id: `activity-${item.id}`, at: item.actualStart!, plant: item.plant, kind: "activity" as const, title: item.title, detail: `${item.process} · ${item.workerIds.length} trabajador${item.workerIds.length === 1 ? "" : "es"}` })),
     ...periodReceipts.map((item) => ({ id: `reception-${item.id}`, at: item.endedAt, plant: item.plant, kind: "reception" as const, title: `Recepción ${item.lotCode}`, detail: `${(item.netWeightKg / 1000).toFixed(2)} t · ${item.generator}` })),
+    ...incidents.filter((item) => inPeriod(item.openedAt, period)).map((item) => ({ id: `incident-open-${item.id}`, at: item.openedAt, plant: item.plant, kind: "incident" as const, title: `Incidente: ${item.title}`, detail: `Abierto · ${item.detail}` })),
+    ...incidents.filter((item) => inPeriod(item.closedAt, period)).map((item) => ({ id: `incident-close-${item.id}`, at: item.closedAt!, plant: item.plant, kind: "incident" as const, title: `Incidente resuelto: ${item.title}`, detail: `Resuelto · ${item.resolutionNote?.trim() || "Resolución registrada."}` })),
     ...tickets.filter((item) => inPeriod(item.openedAt, period)).map((item) => ({ id: `maintenance-${item.id}`, at: item.openedAt, plant: item.plant, kind: "maintenance" as const, title: item.title, detail: item.status === "closed" ? "Mantenimiento cerrado" : "Mantenimiento abierto" })),
     ...piles.filter((item) => inPeriod(item.startedAt, period)).map((item) => ({ id: `compost-${item.id}`, at: item.startedAt, plant: item.plant, kind: "compost" as const, title: `Pila ${item.code}`, detail: `${item.initialWeightKg.toFixed(0)} kg iniciales` })),
   ].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()).slice(0, 30);
 
   const plantNames = new Map<string, string>();
-  for (const item of [...input.activities, ...input.receptions, ...input.tickets, ...input.piles]) plantNames.set(item.plantId, item.plant);
+  for (const item of [...input.activities, ...input.receptions, ...input.incidents, ...input.tickets, ...input.piles]) plantNames.set(item.plantId, item.plant);
   if (!plantNames.has("yarumal")) plantNames.set("yarumal", "Yarumal");
   if (!plantNames.has("tamesis")) plantNames.set("tamesis", "Támesis");
 

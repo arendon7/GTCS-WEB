@@ -12,6 +12,7 @@ export const protectedOpsRoutePrefixes = [
   "/expenses",
   "/finance",
   "/imports",
+  "/incidents",
   "/inventory",
   "/production",
   "/purchases",
