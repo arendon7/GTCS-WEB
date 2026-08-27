@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useInventoryStore } from "@/components/inventory-store";
 import { useOpsStore } from "@/components/ops-store";
 import type { InventoryUnit } from "@/lib/inventory-domain";
+import { hasOperationalWriteAccess } from "@/lib/ops-write-access";
 
 const dateFmt=new Intl.DateTimeFormat("es-CO",{dateStyle:"medium",timeStyle:"short",timeZone:"America/Bogota"});
 const kindLabel={production:"Producción",dispatch:"Salida",adjustment_in:"Ajuste entrada",adjustment_out:"Ajuste salida"} as const;
@@ -21,6 +22,7 @@ export function InventoryView(){
   const [feedback,setFeedback]=useState("");
   const [busy,setBusy]=useState(false);
   const remoteMode=backend.mode==="supabase";
+  const canWriteOperations=hasOperationalWriteAccess(remoteMode,access);
   const canManageProducts=!remoteMode||access.some((plant)=>plant.role==="admin"||plant.role==="director");
   const canReconcile=!remoteMode||access.some((plant)=>reconciliationRoles.has(plant.role));
   const activeProducts=products.filter((item)=>item.active);
@@ -58,7 +60,7 @@ export function InventoryView(){
   }
 
   return <>
-    <header className="page-header"><div><p className="eyebrow">Kardex</p><h1>Inventario</h1><p className="lede">El saldo se calcula desde movimientos por planta, producto y lote. Los conteos físicos se concilian sin sobrescribir el historial.</p></div><div className="header-actions"><Link className="button secondary" href="/production">Ver producción</Link>{canReconcile&&<Link className="button secondary" href="/inventory/reconcile">Conciliar inventario</Link>}<Link className="button secondary" href="/inventory/dispatch">Registrar salida</Link><Link className="button primary" href="/production/new">Registrar producción</Link></div></header>
+    <header className="page-header"><div><p className="eyebrow">Kardex</p><h1>Inventario</h1><p className="lede">El saldo se calcula desde movimientos por planta, producto y lote. Los conteos físicos se concilian sin sobrescribir el historial.</p></div><div className="header-actions"><Link className="button secondary" href="/production">Ver producción</Link>{canReconcile&&<Link className="button secondary" href="/inventory/reconcile">Conciliar inventario</Link>}{canWriteOperations?<><Link className="button secondary" href="/inventory/dispatch">Registrar salida</Link><Link className="button primary" href="/production/new">Registrar producción</Link></>:<span className="quiet">Modo solo lectura</span>}</div></header>
 
     {error&&<p className="mb-4 rounded-xl bg-[var(--red-soft)] p-4 text-sm font-semibold text-[var(--red)]" role="alert">{error}</p>}
     <section className="panel mb-4"><div className="section-head"><div><p className="eyebrow">Stock actual</p><h2>Productos disponibles</h2></div><div className="flex items-center gap-2"><span className="quiet">{sourceLabel}</span><button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" disabled={busy} onClick={refreshOrReset}>{busy?"Actualizando…":remoteMode?"Actualizar":"Restablecer demo"}</button></div></div>
