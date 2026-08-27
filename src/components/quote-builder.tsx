@@ -58,7 +58,7 @@ export function QuoteBuilder() {
 
       <aside className="quote-summary">
         <span className="eyebrow">Estimación</span>
-        <h2>{lines.length ? `${lines.length} referencia${lines.length === 1 ? "" : "s"}` : "Arma tu pedido"}</h2>
+        <h2>{lines.length ? `${lines.length} referencia${lines.length === 1 ? "" : "s"}` : "Arma tu estimación"}</h2>
         <div className="quote-lines">
           {lines.length ? lines.map(({ offer, quantity }) => (
             <div key={offer.id}><span>{quantity} × {offer.family} · {offer.presentation}</span><strong>{cop(offer.priceCop * quantity)}</strong></div>
