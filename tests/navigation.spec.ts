@@ -19,10 +19,7 @@ test.beforeEach(async ({ page }) => {
 test("header exposes the final public information architecture", async ({ page }, testInfo) => {
   const header = page.locator("header.site-header");
   await expect(header).toBeVisible();
-
   await expect(header.getByRole("link", { name: "Greenatics inicio" })).toBeVisible();
-  await expect(header.getByText("Casa y Jardín", { exact: true })).toBeVisible();
-  await expect(header.getByText("Próximamente", { exact: true })).toBeVisible();
 
   for (const label of draftLabels) {
     await expect(header.getByText(label, { exact: true })).toHaveCount(0);
@@ -31,23 +28,32 @@ test("header exposes the final public information architecture", async ({ page }
   if (testInfo.project.name === "desktop") {
     const desktop = header.locator("nav.desktop-nav");
     await expect(desktop).toBeVisible();
+    await expect(header.locator("details.mobile-menu")).toBeHidden();
     await expect(header.getByRole("link", { name: "Diagnóstico", exact: true })).toBeVisible();
     await expect(header.getByRole("link", { name: "Cotizar", exact: true })).toHaveCount(0);
+    await expect(desktop.getByRole("link", { name: "Casa y Jardín Próximamente", exact: true })).toBeVisible();
+    await expect(desktop.getByText("Próximamente", { exact: true })).toBeVisible();
 
     for (const label of ["Soluciones", "Wondergreen", "Recursos"]) {
       await expect(desktop.locator("summary", { hasText: label })).toBeVisible();
     }
-    await expect(desktop.getByRole("link", { name: /Nosotros/ })).toBeVisible();
+    await expect(desktop.getByRole("link", { name: "Nosotros", exact: true })).toBeVisible();
   } else {
     await expect(header.locator("nav.desktop-nav")).toBeHidden();
-    await expect(header.locator("details.mobile-menu > summary")).toBeVisible();
+    const menu = header.locator("details.mobile-menu");
+    await expect(menu.locator(":scope > summary")).toBeVisible();
+    await menu.locator(":scope > summary").click();
+    const panel = menu.locator(".mobile-menu-panel");
+    await expect(panel.getByRole("link", { name: "Casa y Jardín Próximamente", exact: true })).toBeVisible();
+    await expect(panel.getByText("Próximamente", { exact: true })).toBeVisible();
   }
 });
 
 test("desktop disclosure navigation works with keyboard", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "desktop navigation contract");
 
-  const solutions = page.locator("details.nav-group").filter({ has: page.locator("summary", { hasText: "Soluciones" }) });
+  const desktop = page.locator("nav.desktop-nav");
+  const solutions = desktop.locator("details.nav-group").filter({ has: desktop.locator("summary", { hasText: "Soluciones" }) });
   const summary = solutions.locator(":scope > summary");
   await summary.focus();
   await page.keyboard.press("Enter");
@@ -58,7 +64,7 @@ test("desktop disclosure navigation works with keyboard", async ({ page }, testI
   await page.keyboard.press("Enter");
   await expect(solutions).not.toHaveAttribute("open", "");
 
-  const resources = page.locator("details.nav-group").filter({ has: page.locator("summary", { hasText: "Recursos" }) });
+  const resources = desktop.locator("details.nav-group").filter({ has: desktop.locator("summary", { hasText: "Recursos" }) });
   await resources.locator(":scope > summary").focus();
   await page.keyboard.press("Space");
   await expect(resources).toHaveAttribute("open", "");
@@ -78,18 +84,18 @@ test("mobile navigation prioritizes diagnosis and supports nested groups", async
   await expect(panel.getByRole("link", { name: "Diagnóstico", exact: true })).toBeVisible();
   await expect(panel.getByRole("link", { name: "Acceso Greenatics", exact: true })).toBeVisible();
 
-  const solutions = panel.locator("details.mobile-nav-group").filter({ has: page.locator("summary", { hasText: "Soluciones" }) });
+  const solutions = panel.locator("details.mobile-nav-group").filter({ has: panel.locator("summary", { hasText: "Soluciones" }) });
   await solutions.locator(":scope > summary").click();
   await expect(solutions).toHaveAttribute("open", "");
   await expect(solutions.getByRole("link", { name: "Municipios y ESP", exact: true })).toBeVisible();
   await expect(solutions.getByRole("link", { name: "Todos los servicios", exact: true })).toBeVisible();
 
-  const wondergreen = panel.locator("details.mobile-nav-group").filter({ has: page.locator("summary", { hasText: "Wondergreen" }) });
+  const wondergreen = panel.locator("details.mobile-nav-group").filter({ has: panel.locator("summary", { hasText: "Wondergreen" }) });
   await wondergreen.locator(":scope > summary").click();
   await expect(wondergreen.getByRole("link", { name: "Cotizador", exact: true })).toBeVisible();
 
-  await expect(panel.getByRole("link", { name: /Casa y Jardín/ })).toBeVisible();
-  await expect(panel.getByRole("link", { name: /Nosotros/ })).toBeVisible();
+  await expect(panel.getByRole("link", { name: "Casa y Jardín Próximamente", exact: true })).toBeVisible();
+  await expect(panel.getByRole("link", { name: "Nosotros", exact: true })).toBeVisible();
 });
 
 test("final navigation destinations resolve without broken public links", async ({ page }, testInfo) => {
