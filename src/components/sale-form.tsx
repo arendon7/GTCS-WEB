@@ -7,6 +7,7 @@ import { useCommercialStore } from "@/components/commercial-store";
 import { useInventoryStore } from "@/components/inventory-store";
 import { useOpsStore } from "@/components/ops-store";
 import { saleTotalCop } from "@/lib/commercial-domain";
+import { operationalWritePlantOptions } from "@/lib/ops-write-access";
 
 const cop=new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0});
 
@@ -15,9 +16,10 @@ export function SaleForm(){
   const {recordSale}=useCommercialStore();
   const {lots}=useInventoryStore();
   const {access,backend}=useOpsStore();
+  const remoteMode=backend.mode==="supabase";
   const [plantId,setPlantId]=useState("tamesis");
-  const plantOptions=useMemo(()=>backend.mode==="supabase"?access.map((plant)=>({id:plant.plantId,name:plant.name})):[{id:"tamesis",name:"Támesis"},{id:"yarumal",name:"Yarumal"}],[access,backend.mode]);
-  const effectivePlantId=plantOptions.some((plant)=>plant.id===plantId)?plantId:plantOptions[0]?.id??plantId;
+  const plantOptions=useMemo(()=>operationalWritePlantOptions(remoteMode,access),[access,remoteMode]);
+  const effectivePlantId=plantOptions.some((plant)=>plant.id===plantId)?plantId:plantOptions[0]?.id??"";
   const availableLots=useMemo(()=>lots.filter((lot)=>lot.plantId===effectivePlantId&&lot.quantity>0),[lots,effectivePlantId]);
   const [lotKey,setLotKey]=useState("");
   const [customerName,setCustomerName]=useState("");
@@ -31,6 +33,7 @@ export function SaleForm(){
 
   async function save(){
     if(submitting)return;
+    if(!effectivePlantId){setFeedback("Tu sesión no tiene una planta habilitada para registrar ventas.");return;}
     if(!selected){setFeedback("No hay un lote con stock disponible en esta planta.");return;}
     setSubmitting(true);setFeedback("");
     try{
@@ -41,17 +44,18 @@ export function SaleForm(){
   }
 
   return <section className="panel mx-auto max-w-3xl"><div className="section-head"><div><p className="eyebrow">Comercial · salida por lote</p><h1 className="text-3xl">Registrar venta</h1><p className="lede">La venta y la salida de inventario están ligadas. El total se deriva de cantidad × precio unitario.</p></div><Link className="button secondary" href="/sales">Cancelar</Link></div>
+    {remoteMode&&backend.status==="ready"&&!plantOptions.length&&<div className="mb-5 rounded-xl bg-[var(--surface-soft)] p-4 text-sm text-[var(--muted)]"><strong className="text-[var(--ink)]">Modo solo lectura.</strong> Tu sesión no tiene una planta habilitada para registrar ventas.</div>}
     <div className="grid gap-5 md:grid-cols-2">
       <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Planta<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={effectivePlantId} onChange={(event)=>{setPlantId(event.target.value);setLotKey("");}} disabled={submitting||!plantOptions.length}>{plantOptions.map((plant)=><option value={plant.id} key={plant.id}>{plant.name}</option>)}</select></label>
       <label className="grid min-w-0 gap-2 text-xs font-bold text-[var(--muted)]">Lote con stock<select aria-label="Lote con stock" className="min-h-11 w-full min-w-0 max-w-full rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={selected?`${selected.productId}|${selected.lotCode}`:""} onChange={(event)=>setLotKey(event.target.value)} disabled={!availableLots.length||submitting}><option value="">Seleccionar lote</option>{availableLots.map((lot)=><option value={`${lot.productId}|${lot.lotCode}`} key={`${lot.productId}-${lot.lotCode}`}>{lot.lotCode} · {lot.productName} · {lot.quantity.toLocaleString("es-CO")} {lot.unit}</option>)}</select></label>
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Cliente<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={customerName} onChange={(event)=>setCustomerName(event.target.value)} placeholder="Nombre o razón social" disabled={submitting} /></label>
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Cantidad vendida {selected?`(${selected.unit})`:""}<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={quantity} onChange={(event)=>setQuantity(event.target.value)} placeholder="Ej. 60" disabled={submitting} /></label>
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Precio unitario COP {selected?`/ ${selected.unit}`:""}<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="numeric" value={unitPriceCop} onChange={(event)=>setUnitPriceCop(event.target.value)} placeholder="Ej. 2000" disabled={submitting} /></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Cliente<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={customerName} onChange={(event)=>setCustomerName(event.target.value)} placeholder="Nombre o razón social" disabled={submitting||!plantOptions.length} /></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Cantidad vendida {selected?`(${selected.unit})`:""}<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={quantity} onChange={(event)=>setQuantity(event.target.value)} placeholder="Ej. 60" disabled={submitting||!plantOptions.length} /></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Precio unitario COP {selected?`/ ${selected.unit}`:""}<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="numeric" value={unitPriceCop} onChange={(event)=>setUnitPriceCop(event.target.value)} placeholder="Ej. 2000" disabled={submitting||!plantOptions.length} /></label>
       <div className="rounded-xl bg-[var(--surface-soft)] p-4"><span className="quiet">Disponible en lote</span><strong className="mt-1 block text-2xl">{selected?`${selected.quantity.toLocaleString("es-CO")} ${selected.unit}`:"—"}</strong><span className="mt-1 block text-xs text-[var(--muted)]">{selected?.productName??"Sin stock disponible"}</span></div>
       <div className="rounded-xl bg-[var(--green-soft)] p-4"><span className="quiet">Total venta</span><strong className="mt-1 block text-2xl text-[var(--green-dark)]">{total>0?cop.format(total):"—"}</strong><span className="mt-1 block text-xs text-[var(--muted)]">Derivado; no editable</span></div>
-      <label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Observación <span className="font-normal">(opcional)</span><textarea className="min-h-24 rounded-lg border border-[var(--line)] p-3 text-sm text-[var(--ink)]" value={note} onChange={(event)=>setNote(event.target.value)} placeholder="Condición comercial o detalle operativo relevante" disabled={submitting} /></label>
+      <label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Observación <span className="font-normal">(opcional)</span><textarea className="min-h-24 rounded-lg border border-[var(--line)] p-3 text-sm text-[var(--ink)]" value={note} onChange={(event)=>setNote(event.target.value)} placeholder="Condición comercial o detalle operativo relevante" disabled={submitting||!plantOptions.length} /></label>
     </div>
-    {!availableLots.length&&<div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]">No hay stock disponible en esta planta. <Link className="font-semibold text-[var(--green)]" href="/production/new">Registrar producción</Link>.</div>}
+    {!availableLots.length&&plantOptions.length>0&&<div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]">No hay stock disponible en esta planta. <Link className="font-semibold text-[var(--green)]" href="/production/new">Registrar producción</Link>.</div>}
     <div className="mt-5 rounded-xl border border-dashed border-[var(--line)] p-4 text-xs text-[var(--muted)]"><strong className="text-[var(--ink)]">Al guardar:</strong> venta y salida del lote quedan en la misma transacción. Si no existe stock suficiente, ninguna de las dos se registra.</div>
     {feedback&&<p role="alert" className="mt-4 rounded-lg bg-[var(--red-soft)] p-3 text-sm font-semibold text-[var(--red)]">{feedback}</p>}
     <div className="mt-6 flex justify-end"><button className="button primary" type="button" onClick={save} disabled={!availableLots.length||submitting||!plantOptions.length}>{submitting?"Guardando venta…":"Guardar venta y descontar inventario"}</button></div>
