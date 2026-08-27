@@ -73,7 +73,7 @@ export const crops: Crop[] = [
       { moment: "Levante y formación", lines: ["Compost", "2GROW"], goal: "Construir base y acompañar establecimiento y desarrollo vegetativo." },
       { moment: "Mantenimiento", lines: ["2BALANCE"], goal: "Sostener continuidad entre fases sin mover el árbol hacia un extremo." },
       { moment: "Prefloración", lines: ["2BLOOM"], goal: "Acompañar la transición reproductiva con el árbol en condición adecuada." },
-      { moment: "Cuajado y llenado", lines: ["2FRUIT"], goal: "Sostener la fase productiva, calibre y desarrollo del fruto." },
+      { moment: "Cuajado y llenado", lines: ["2FRUIT"], goal: "Acompañar la fase productiva, el llenado y el desarrollo del fruto." },
       { moment: "Poscosecha", lines: ["2GROW"], goal: "Acompañar recuperación del árbol y nueva brotación." },
     ],
     cautions: ["No sobrerrecomendar solo por síntomas visuales.", "Revisar agua y potasio si el fruto pierde calibre o llenado.", "No aplicar producto pegado al cuello del árbol."],
@@ -105,7 +105,7 @@ export const crops: Crop[] = [
     context: "La base del programa está en Compost, 2GROW y 2BALANCE. 2GROW protagoniza recuperación y respuesta vegetativa; las líneas reproductivas no son el eje de esta guía.",
     stages: [
       { moment: "Suelo / arranque", lines: ["Compost"], goal: "Aportar base orgánica y acompañar recuperación de condición física del suelo." },
-      { moment: "Inicio de lluvias", lines: ["2GROW"], goal: "Impulsar recuperación, color y crecimiento vegetativo." },
+      { moment: "Inicio de lluvias", lines: ["2GROW"], goal: "Acompañar recuperación y crecimiento vegetativo según condición del potrero." },
       { moment: "Crecimiento activo", lines: ["2GROW"], goal: "Acompañar biomasa, brotación y desarrollo foliar." },
       { moment: "Sostenimiento", lines: ["2BALANCE"], goal: "Mantener continuidad después del empuje vegetativo." },
       { moment: "Tras corte o pastoreo", lines: ["2GROW", "2BALANCE"], goal: "Acompañar rebrote y recuperación según intensidad y humedad." },
