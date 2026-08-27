@@ -1,4 +1,5 @@
 import type { ExpenseCategory } from "@/lib/expense-domain";
+import type { PlantAccess } from "@/lib/ops-data-contract";
 
 export type PurchaseRequestStatus="submitted"|"approved"|"rejected"|"fulfilled";
 export type PurchaseRequestEventKind="submitted"|"approved"|"rejected"|"fulfilled";
@@ -9,6 +10,12 @@ export const purchaseRequestStatusLabel:Record<PurchaseRequestStatus,string>={
   rejected:"Rechazada",
   fulfilled:"Comprada / registrada",
 };
+
+const purchaseRequestManagementRoles = new Set<PlantAccess["role"]>(["supervisor","admin","director"]);
+
+export function canManagePurchaseRequest(access:PlantAccess[],plantId:string){
+  return access.some((membership)=>membership.plantId===plantId&&purchaseRequestManagementRoles.has(membership.role));
+}
 
 export type PurchaseRequestRecord={
   id:string;
