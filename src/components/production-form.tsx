@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCompostStore } from "@/components/compost-store";
 import { useInventoryStore } from "@/components/inventory-store";
 import { useOpsStore } from "@/components/ops-store";
+import { operationalWritePlantOptions } from "@/lib/ops-write-access";
 
 export function ProductionForm(){
   const router=useRouter();
@@ -21,16 +22,15 @@ export function ProductionForm(){
   const [note,setNote]=useState("");
   const [feedback,setFeedback]=useState("");
   const [busy,setBusy]=useState(false);
-  const plantOptions=useMemo(()=>backend.mode==="supabase"
-    ? access.map((plant)=>({id:plant.plantId,name:plant.name}))
-    : [{id:"tamesis",name:"Támesis"},{id:"yarumal",name:"Yarumal"}],[access,backend.mode]);
-  const effectivePlantId=plantOptions.some((plant)=>plant.id===plantId)?plantId:plantOptions[0]?.id??plantId;
+  const remoteMode=backend.mode==="supabase";
+  const plantOptions=useMemo(()=>operationalWritePlantOptions(remoteMode,access),[access,remoteMode]);
+  const effectivePlantId=plantOptions.some((plant)=>plant.id===plantId)?plantId:plantOptions[0]?.id??"";
   const effectiveProductId=availableProducts.some((item)=>item.id===productId)?productId:availableProducts[0]?.id??"";
   const product=products.find((item)=>item.id===effectiveProductId);
   const closedPiles=useMemo(()=>piles.filter((pile)=>pile.plantId===effectivePlantId&&pile.status==="closed"),[piles,effectivePlantId]);
 
   async function save(){
-    if(busy)return;
+    if(busy||!effectivePlantId)return;
     setBusy(true);setFeedback("");
     try{
       const result=await recordProduction({plantId:effectivePlantId,productId:effectiveProductId,quantity:Number(quantity),sourceProcess,sourcePileId:sourcePileId||undefined,note});
@@ -38,6 +38,8 @@ export function ProductionForm(){
       router.push("/production");
     }finally{setBusy(false);}
   }
+
+  if(remoteMode&&!plantOptions.length)return <section className="panel mx-auto max-w-3xl"><div className="section-head"><div><p className="eyebrow">Producto terminado</p><h1 className="text-3xl">Registrar producción</h1><p className="lede">Tu sesión puede consultar producción, pero no tiene permiso para registrar producto terminado en las plantas visibles.</p></div><Link className="button secondary" href="/production">Volver a producción</Link></div><p className="rounded-xl bg-[var(--surface-soft)] p-4 text-sm text-[var(--muted)]">Modo solo lectura. Solicita un rol operacional autorizado en la planta correspondiente si necesitas registrar producción.</p></section>;
 
   return <section className="panel mx-auto max-w-3xl"><div className="section-head"><div><p className="eyebrow">Producto terminado</p><h1 className="text-3xl">Registrar producción</h1><p className="lede">La cantidad se registra como medición independiente. La referencia vigente y el origen quedan congelados en el registro; una pila relacionada nunca copia su peso.</p></div><Link className="button secondary" href="/production">Cancelar</Link></div>
     <div className="grid gap-5 md:grid-cols-2">
