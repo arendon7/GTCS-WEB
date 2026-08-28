@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCompostStore } from "@/components/compost-store";
 import { useOpsStore } from "@/components/ops-store";
+import { operationalWritePlantOptions } from "@/lib/ops-write-access";
 import { bogotaDatetimeLocalToIso, bogotaDatetimeLocalValue } from "@/lib/time";
 
 export function CompostCreateForm() {
@@ -23,10 +24,9 @@ export function CompostCreateForm() {
   const [feedback, setFeedback] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const plantOptions = useMemo(() => backend.mode === "supabase"
-    ? access.map((plant) => ({ id: plant.plantId, name: plant.name }))
-    : [{ id: "tamesis", name: "Támesis" }, { id: "yarumal", name: "Yarumal" }], [access, backend.mode]);
-  const effectivePlantId = plantOptions.some((plant) => plant.id === plantId) ? plantId : plantOptions[0]?.id ?? plantId;
+  const remoteMode = backend.mode === "supabase";
+  const plantOptions = useMemo(() => operationalWritePlantOptions(remoteMode, access), [access, remoteMode]);
+  const effectivePlantId = plantOptions.some((plant) => plant.id === plantId) ? plantId : plantOptions[0]?.id ?? "";
   const eligible = useMemo(() => intakeLots.filter((lot) => lot.plantId === effectivePlantId && ["available", "in_process"].includes(lot.status) && lot.availableMassKg > 0), [effectivePlantId, intakeLots]);
   const quarantined = useMemo(() => intakeLots.filter((lot) => lot.plantId === effectivePlantId && lot.status === "quarantined"), [effectivePlantId, intakeLots]);
   const plantWorkers = useMemo(() => workers.filter((worker) => worker.plantId === effectivePlantId && !worker.historical), [effectivePlantId, workers]);
@@ -47,7 +47,7 @@ export function CompostCreateForm() {
   const toggleWorker = (id: string, checked: boolean) => setWorkerIds((current) => checked ? [...current, id] : current.filter((value) => value !== id));
 
   const save = async () => {
-    if (busy) return;
+    if (busy || !effectivePlantId) return;
     setBusy(true);
     setFeedback("");
     try {
@@ -70,6 +70,8 @@ export function CompostCreateForm() {
       setBusy(false);
     }
   };
+
+  if (remoteMode && plantOptions.length === 0) return <section className="panel mx-auto max-w-4xl"><div className="section-head"><div><p className="eyebrow">Compostaje 2.0</p><h1 className="text-3xl">Conformar pila</h1><p className="lede">Tu sesión puede consultar compostaje, pero no tiene permiso para conformar pilas en las plantas visibles.</p></div><Link className="button secondary" href="/compost">Volver a compostaje</Link></div><p className="rounded-xl bg-[var(--surface-soft)] p-4 text-sm text-[var(--muted)]">Modo solo lectura. Los lotes y pilas existentes continúan disponibles para consulta.</p></section>;
 
   return <section className="panel mx-auto max-w-4xl">
     <div className="section-head"><div><p className="eyebrow">Compostaje 2.0</p><h1 className="text-3xl">Conformar pila</h1><p className="lede">Asigna masa física disponible, responsables y variables reales de conformación. La suma de las asignaciones define el peso inicial de la pila.</p></div><Link className="button secondary" href="/compost">Cancelar</Link></div>

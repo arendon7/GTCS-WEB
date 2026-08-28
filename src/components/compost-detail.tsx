@@ -15,6 +15,7 @@ import {
   rangeStatusLabel,
   type CompostRangeStatus,
 } from "@/lib/compost-domain";
+import { canWriteOperationalRecord } from "@/lib/ops-write-access";
 import { bogotaDatetimeLocalToIso, bogotaDatetimeLocalValue, bogotaTime } from "@/lib/time";
 
 const eventLabels = { formation: "Conformación", turning: "Volteo", hydration: "Hidratación", other: "Otro" } as const;
@@ -43,6 +44,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   const plantWorkers = pile ? workers.filter((worker) => worker.plantId === pile.plantId && !worker.historical) : [];
   const workerNames = new Map(workers.map((worker) => [worker.id, worker.name]));
   const plantAccess = pile ? access.find((item) => item.plantId === pile.plantId) : undefined;
+  const canWritePile = backend.mode !== "supabase" || Boolean(pile && canWriteOperationalRecord(access, pile.plantId));
   const canConfigureRange = backend.mode !== "supabase" || Boolean(plantAccess && ["technical", "admin", "director"].includes(plantAccess.role));
   const rangeFormRef = useRef<HTMLFormElement>(null);
   const rangeFormKey = [
@@ -72,7 +74,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
 
   const latest = pileMeasurements[0];
   const saveMeasurement = async () => {
-    if (busy) return;
+    if (busy || !canWritePile) return;
     setBusy(true); setFeedback("");
     try {
       const result = await recordMeasurement({
@@ -88,7 +90,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   };
 
   const saveEvent = async () => {
-    if (busy) return;
+    if (busy || !canWritePile) return;
     setBusy(true); setFeedback("");
     try {
       const result = await recordEvent({
@@ -103,7 +105,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   };
 
   const saveRange = async (active: boolean) => {
-    if (busy) return;
+    if (busy || !canConfigureRange) return;
     const form = rangeFormRef.current;
     if (!form) return;
     const data = new FormData(form);
@@ -122,13 +124,13 @@ export function CompostDetail({ pileId }: { pileId: string }) {
   };
 
   const mature = async () => {
-    if (busy) return;
+    if (busy || !canWritePile) return;
     setBusy(true); setFeedback("");
     try { const result = await startMaturation(pile.id); setFeedback(result.ok ? "Pila pasada a maduración." : result.error); }
     finally { setBusy(false); }
   };
   const close = async () => {
-    if (busy) return;
+    if (busy || !canWritePile) return;
     setBusy(true); setFeedback("");
     try {
       const result = await closePile(pile.id, Number(finalWeight));
@@ -147,7 +149,9 @@ export function CompostDetail({ pileId }: { pileId: string }) {
       <div className="mt-5 border-t border-[var(--line)] pt-4"><span className="quiet">Origen físico asignado</span><div className="mt-2 grid gap-2 sm:grid-cols-2">{pileSources.length ? pileSources.map((source) => <div className="rounded-lg bg-[var(--surface-soft)] px-3 py-2 text-xs" key={source.intakeLotId}><strong>{source.lotCode}</strong><span className="ml-2 text-[var(--muted)]">{source.allocationConfirmed && source.allocatedMassKg !== undefined ? `${source.allocatedMassKg.toLocaleString("es-CO")} kg` : "Vínculo histórico · masa no inferida"}</span></div>) : <span className="text-xs text-[var(--muted)]">Sin asignación física v2; conserva trazabilidad histórica.</span>}</div></div>
     </section>
 
-    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl">
+    {pile.status !== "closed" && !canWritePile && <p className="panel mx-auto mt-4 max-w-5xl bg-[var(--surface-soft)] text-sm text-[var(--muted)]"><strong className="text-[var(--ink)]">Solo lectura.</strong> Tu rol puede consultar la pila, sus eventos y controles, pero no registrar intervenciones, mediciones ni transiciones en esta planta.</p>}
+
+    {pile.status !== "closed" && canWritePile && <section className="panel mx-auto mt-4 max-w-5xl">
       <div className="section-head"><div><p className="eyebrow">Evento operativo</p><h2>Volteo, hidratación u otra intervención</h2></div><span className="quiet">Responsables + tiempo + volumen</span></div>
       <div className="grid gap-4 md:grid-cols-3"><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Tipo<select className="min-h-11 rounded-lg border border-[var(--line)] bg-white px-3 text-sm text-[var(--ink)]" value={eventType} onChange={(event) => setEventType(event.target.value as typeof eventType)}><option value="turning">Volteo</option><option value="hydration">Hidratación</option><option value="other">Otro</option></select></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Inicio · hora Colombia<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" type="datetime-local" value={eventStartedAt} onChange={(event) => setEventStartedAt(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Fin · hora Colombia<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" type="datetime-local" value={eventEndedAt} onChange={(event) => setEventEndedAt(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)]">Volumen operado (m³) {eventType !== "turning" && <span className="font-normal">(opcional)</span>}<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={eventVolume} onChange={(event) => setEventVolume(event.target.value)} /></label><label className="grid gap-2 text-xs font-bold text-[var(--muted)] md:col-span-2">Observación <span className="font-normal">(opcional)</span><input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" value={eventNotes} onChange={(event) => setEventNotes(event.target.value)} /></label></div>
       <fieldset className="mt-4 grid gap-2"><legend className="mb-2 text-xs font-bold text-[var(--muted)]">Trabajadores</legend><div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">{plantWorkers.map((worker) => <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--line)] px-3 text-xs" key={worker.id}><input type="checkbox" checked={eventWorkerIds.includes(worker.id)} onChange={(event) => toggleEventWorker(worker.id, event.target.checked)} />{worker.name}</label>)}</div></fieldset>
@@ -155,7 +159,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
       <div className="mt-5 flex justify-end"><button className="button primary" type="button" disabled={busy} onClick={saveEvent}>{busy ? "Guardando…" : "Registrar evento"}</button></div>
     </section>}
 
-    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl">
+    {pile.status !== "closed" && canWritePile && <section className="panel mx-auto mt-4 max-w-5xl">
       <div className="section-head"><div><p className="eyebrow">Control técnico</p><h2>Temperatura y humedad</h2></div><span className="quiet">3–5 puntos + ambiente</span></div>
       <div className="grid gap-3 sm:grid-cols-3">{temps.map((value, index) => <label className="grid gap-2 text-xs font-bold text-[var(--muted)]" key={index}>Temperatura punto {index + 1} (°C)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={value} onChange={(event) => changeTemp(index, event.target.value)} /></label>)}</div>
       <div className="mt-3 flex gap-2">{temps.length < 5 && <button className="button secondary" type="button" disabled={busy} onClick={() => setTemps((current) => [...current, ""])}>+ Punto</button>}{temps.length > 3 && <button className="button secondary" type="button" disabled={busy} onClick={() => setTemps((current) => current.slice(0, -1))}>Quitar punto</button>}</div>
@@ -171,7 +175,7 @@ export function CompostDetail({ pileId }: { pileId: string }) {
       </form>
     </section>}
 
-    {pile.status !== "closed" && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Etapa</p><h2>{pile.status === "active" ? "Proceso activo" : "Maduración"}</h2></div>{pile.status === "active" ? <button className="button secondary" type="button" disabled={busy} onClick={mature}>{busy ? "Actualizando…" : "Pasar a maduración"}</button> : <span className="quiet">{Math.floor(maturationDays(pile, nowIso))} días en maduración</span>}</div>{pile.status === "maturing" && <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="grid grow gap-2 text-xs font-bold text-[var(--muted)]">Peso final medido (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={finalWeight} onChange={(event) => setFinalWeight(event.target.value)} /></label><button className="button primary" type="button" disabled={busy} onClick={close}>{busy ? "Cerrando…" : "Cerrar pila"}</button></div>}</section>}
+    {pile.status !== "closed" && canWritePile && <section className="panel mx-auto mt-4 max-w-5xl"><div className="section-head"><div><p className="eyebrow">Etapa</p><h2>{pile.status === "active" ? "Proceso activo" : "Maduración"}</h2></div>{pile.status === "active" ? <button className="button secondary" type="button" disabled={busy} onClick={mature}>{busy ? "Actualizando…" : "Pasar a maduración"}</button> : <span className="quiet">{Math.floor(maturationDays(pile, nowIso))} días en maduración</span>}</div>{pile.status === "maturing" && <div className="flex flex-col gap-3 sm:flex-row sm:items-end"><label className="grid grow gap-2 text-xs font-bold text-[var(--muted)]">Peso final medido (kg)<input className="min-h-11 rounded-lg border border-[var(--line)] px-3 text-sm text-[var(--ink)]" inputMode="decimal" value={finalWeight} onChange={(event) => setFinalWeight(event.target.value)} /></label><button className="button primary" type="button" disabled={busy} onClick={close}>{busy ? "Cerrando…" : "Cerrar pila"}</button></div>}</section>}
 
     {feedback && <p className="panel mx-auto mt-4 max-w-5xl bg-[var(--blue-soft)] text-sm font-semibold text-[var(--blue)]" role="status">{feedback}</p>}
 
