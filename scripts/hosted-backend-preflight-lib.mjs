@@ -1,7 +1,7 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { DEFAULT_PILOT_PLANT_CODES, normalizePilotPlantCodes } from "./pilot-plant-codes.mjs";
 
-export const HOSTED_SCHEMA_CONTRACT_VERSION = "0026";
+export const HOSTED_SCHEMA_CONTRACT_VERSION = "0051";
 
 export class BackendPreflightError extends Error {
   constructor(message) {

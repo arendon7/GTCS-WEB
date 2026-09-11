@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { BackendPreflightError, runHostedBackendPreflight } from "./hosted-backend-preflight-lib.mjs";
+import {
+  BackendPreflightError,
+  HOSTED_SCHEMA_CONTRACT_VERSION,
+  runHostedBackendPreflight,
+} from "./hosted-backend-preflight-lib.mjs";
 
 const env = {
   NEXT_PUBLIC_SUPABASE_URL: "https://sanitized-project.supabase.co",
@@ -15,7 +19,7 @@ function fakeClient(activeDirectors) {
   return {
     rpc: vi.fn(async () => ({
       data: [{
-        schema_contract: "0026",
+        schema_contract: HOSTED_SCHEMA_CONTRACT_VERSION,
         public_table_count: 30,
         rls_enabled_table_count: 30,
         pilot_plant_codes: ["TAM", "YAR"],
