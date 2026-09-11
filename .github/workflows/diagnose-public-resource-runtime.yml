@@ -1,0 +1,97 @@
+name: diagnose-public-resource-runtime
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/diagnose-public-resource-runtime.yml
+
+permissions:
+  contents: read
+
+jobs:
+  production-resource-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      APP_BASE_URL: https://greenatics-ops.vercel.app
+      SHAREPOINT_SITE_HOSTNAME: ${{ secrets.SHAREPOINT_SITE_HOSTNAME }}
+      SHAREPOINT_SITE_PATH: ${{ secrets.SHAREPOINT_SITE_PATH }}
+      SHAREPOINT_DRIVE_ID: ${{ secrets.SHAREPOINT_DRIVE_ID }}
+      SHAREPOINT_DOCUMENT_ROOT: ${{ secrets.SHAREPOINT_DOCUMENT_ROOT }}
+      SHAREPOINT_TENANT_ID: ${{ secrets.SHAREPOINT_TENANT_ID }}
+      SHAREPOINT_CLIENT_ID: ${{ secrets.SHAREPOINT_CLIENT_ID }}
+      SHAREPOINT_CLIENT_SECRET: ${{ secrets.SHAREPOINT_CLIENT_SECRET }}
+
+    steps:
+      - name: Report SharePoint secret presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            SHAREPOINT_SITE_HOSTNAME \
+            SHAREPOINT_SITE_PATH \
+            SHAREPOINT_DRIVE_ID \
+            SHAREPOINT_DOCUMENT_ROOT \
+            SHAREPOINT_TENANT_ID \
+            SHAREPOINT_CLIENT_ID \
+            SHAREPOINT_CLIENT_SECRET
+          do
+            if [ -n "${!name:-}" ]; then
+              echo "$name: PRESENT" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "$name: MISSING" >> "$GITHUB_STEP_SUMMARY"
+              missing=$((missing + 1))
+            fi
+          done
+          echo "SharePoint runtime variables missing: $missing/7" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check HOME
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 "$APP_BASE_URL/" -o /tmp/home.html
+          grep -Fq "Greenatics" /tmp/home.html
+
+      - name: Check Casa Jardin
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 "$APP_BASE_URL/casa-jardin" -o /tmp/casa.html
+          grep -Fq "Nutrición por etapas para tus plantas" /tmp/casa.html
+
+      - name: Check Casa Jardin Guias
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 "$APP_BASE_URL/casa-jardin/guias" -o /tmp/guias.html
+          grep -Fq "Guías para observar antes de aplicar" /tmp/guias.html
+
+      - name: Check Biblioteca
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 "$APP_BASE_URL/biblioteca" -o /tmp/biblioteca.html
+          grep -Fq "Biblioteca" /tmp/biblioteca.html
+
+      - name: Check public PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$APP_BASE_URL/api/public-resources/home-garden-guide-casa-jardin"
+          status="$(curl --silent --show-error --location --max-time 45 -o /tmp/guide.pdf -w '%{http_code}' "$url")"
+          echo "PDF HTTP status: $status" >> "$GITHUB_STEP_SUMMARY"
+          echo "PDF first bytes: $(head -c 4 /tmp/guide.pdf || true)" >> "$GITHUB_STEP_SUMMARY"
+          test "$status" = "200"
+          test "$(head -c 4 /tmp/guide.pdf)" = "%PDF"
+
+      - name: Check public WebP
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$APP_BASE_URL/api/public-media/home-garden-casa-jardin-cover"
+          status="$(curl --silent --show-error --location --max-time 45 -o /tmp/cover.webp -w '%{http_code}' "$url")"
+          echo "WebP HTTP status: $status" >> "$GITHUB_STEP_SUMMARY"
+          test "$status" = "200"
+          test "$(head -c 4 /tmp/cover.webp)" = "RIFF"
+          test "$(dd if=/tmp/cover.webp bs=1 skip=8 count=4 2>/dev/null)" = "WEBP"
