@@ -8,3 +8,8 @@ out/
 playwright-report/
 test-results/
 qa-screenshots/
+node_modules/
+.pnpm-store/
+.next/
+out/
+.env.local
