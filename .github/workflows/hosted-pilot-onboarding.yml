@@ -1,0 +1,159 @@
+# Default-branch dispatcher for initial GREENATICS OPS owners onboarding.
+# Runtime application source is always the canonical develop branch checked out below.
+name: hosted-pilot-onboarding
+
+on:
+  workflow_dispatch:
+    inputs:
+      director_email:
+        description: Email for the first Director invitation
+        required: true
+        type: string
+      director_name:
+        description: Display name for the first Director
+        required: true
+        type: string
+      admin_email:
+        description: Email for the initial Administrator invitation
+        required: true
+        type: string
+      admin_name:
+        description: Display name for the initial Administrator
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-onboarding
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-owners:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      DIRECTOR_EMAIL: ${{ inputs.director_email }}
+      DIRECTOR_NAME: ${{ inputs.director_name }}
+      ADMIN_EMAIL: ${{ inputs.admin_email }}
+      ADMIN_NAME: ${{ inputs.admin_name }}
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "Initial OPS owners onboarding from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate onboarding inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          [[ "$ADMIN_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          test "${#DIRECTOR_NAME}" -ge 2
+          test "${#DIRECTOR_NAME}" -le 120
+          test "${#ADMIN_NAME}" -ge 2
+          test "${#ADMIN_NAME}" -le 120
+          test "${DIRECTOR_EMAIL,,}" != "${ADMIN_EMAIL,,}"
+
+      - name: Require hosted pilot secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in VERCEL_TOKEN VERCEL_ORG_ID NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted pilot onboarding."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Unit gate stable OPS production deployer
+        run: npx vitest run scripts/vercel-ops-production-deploy.test.mjs
+
+      - name: Certify pristine hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR --require-no-director
+
+      - name: Deploy full OPS Preview
+        id: preview
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify stable human-accessible OPS origin
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Bootstrap first Director atomically
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/bootstrap-director.mjs --email "$DIRECTOR_EMAIL" --name "$DIRECTOR_NAME" --plants TAM,YAR
+
+      - name: Verify Director state after bootstrap
+        run: node scripts/hosted-director-postcheck.mjs
+
+      - name: Bootstrap initial Administrator with rollback
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/bootstrap-admin.mjs --email "$ADMIN_EMAIL" --name "$ADMIN_NAME" --plants TAM,YAR
+
+      - name: Onboarding summary
+        shell: bash
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+        run: |
+          echo "Initial Director invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Initial Administrator invitation created for TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Stable OPS origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Preview passed protected CI preflight and Production passed human-access preflight before invitations were created." >> "$GITHUB_STEP_SUMMARY"
+          echo "Both invited users must complete their email activation flows before interactive UAT." >> "$GITHUB_STEP_SUMMARY"

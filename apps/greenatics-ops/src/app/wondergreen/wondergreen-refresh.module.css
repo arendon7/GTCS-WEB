@@ -1,0 +1,35 @@
+.page {
+  --forest: #063d2c;
+  --forest-deep: #043022;
+  --green: #2f7d32;
+  --green-soft: #5d9c3a;
+  --lime: #7db43c;
+  --sun: #f4d944;
+  --paper: #f7faf8;
+  --cream: #eaf4e4;
+  --ink: #42584e;
+}
+
+.outlineLight {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.productRow {
+  transition: background-color 160ms ease, padding-left 160ms ease;
+}
+
+.productRow:hover {
+  padding-left: 10px;
+  background: rgba(125, 180, 60, 0.1);
+}
+
+.productRow:focus-visible {
+  background: rgba(244, 217, 68, 0.08);
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  .page nav[aria-label="Navegación Wondergreen"] {
+    top: 121px;
+  }
+}

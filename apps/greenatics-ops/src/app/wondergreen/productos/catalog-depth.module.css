@@ -1,0 +1,42 @@
+.commercialNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 8px 10px;
+  border: 1px solid rgba(6, 61, 44, .15);
+  background: rgba(255,255,255,.58);
+  color: #52675c;
+  font-size: .76rem;
+  font-weight: 750;
+}
+
+.cardArtwork {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
+  margin: 18px 0 4px;
+  border: 1px solid rgba(6, 61, 44, .12);
+  background: rgba(255,255,255,.72);
+}
+
+.cardIdentityWithArtwork {
+  margin-top: 18px !important;
+}
+
+.cardAssetLabel {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--product-accent);
+  font-size: .63rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+@media (max-width: 640px) {
+  .cardArtwork {
+    max-height: 260px;
+  }
+}

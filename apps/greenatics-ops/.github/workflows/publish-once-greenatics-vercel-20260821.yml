@@ -1,0 +1,345 @@
+name: publish-once-greenatics-vercel-20260821
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/publish-once-greenatics-vercel-20260821.yml
+
+permissions:
+  contents: read
+  statuses: write
+
+concurrency:
+  group: greenatics-hosted-pilot-production
+  cancel-in-progress: false
+
+jobs:
+  publish-production-once:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
+      PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+      PILOT_DIRECTOR_PLANTS: TAM,YAR
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact deployment commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "One-shot Vercel publication from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mark publication pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"pending\",\"context\":\"greenatics/vercel-publication\",\"description\":\"Publicando develop en greenatics-ops\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null
+
+      - name: Require deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted OPS production publication."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Resolve optional authenticated UAT
+        id: identity_uat
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          total=6
+          for name in \
+            PILOT_DIRECTOR_EMAIL \
+            PILOT_DIRECTOR_PASSWORD \
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
+          do
+            if [ -z "${!name:-}" ]; then
+              missing=$((missing + 1))
+            fi
+          done
+
+          if [ "$missing" -eq 0 ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Authenticated Director/Operario UAT: enabled." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$missing" -eq "$total" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Authenticated Director/Operario UAT skipped: its six identity secrets are not configured. Database RLS gates and hosted backend preflight remain mandatory."
+            echo "Authenticated Director/Operario UAT: SKIPPED (identity secrets not configured)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::Authenticated UAT identity secrets are only partially configured; configure all six or none."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Canonical quality gate
+        run: |
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Certify hosted backend
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Certify Director vs Operario Tamesis RLS isolation
+        if: ${{ steps.identity_uat.outputs.enabled == 'true' }}
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        if: ${{ steps.identity_uat.outputs.enabled == 'true' }}
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
+        run: npm run pilot:rls-smoke
+
+      - name: Deploy full OPS Preview
+        id: preview
+        run: npm run pilot:vercel-preview
+
+      - name: Inspect Vercel public-resource environment keys
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            -H "Accept: application/json" \
+            "https://api.vercel.com/v10/projects/$VERCEL_PROJECT_ID/env?teamId=$VERCEL_ORG_ID" \
+            -o /tmp/vercel-env.json
+
+          node <<'NODE'
+          const fs = require('fs');
+          const payload = JSON.parse(fs.readFileSync('/tmp/vercel-env.json', 'utf8'));
+          const rows = Array.isArray(payload) ? payload : Array.isArray(payload.envs) ? payload.envs : [];
+          const present = new Set(rows.map((row) => String(row?.key || '').trim()).filter(Boolean));
+          const required = [
+            'SHAREPOINT_SITE_HOSTNAME',
+            'SHAREPOINT_SITE_PATH',
+            'SHAREPOINT_DRIVE_ID',
+            'SHAREPOINT_DOCUMENT_ROOT',
+            'SHAREPOINT_TENANT_ID',
+            'SHAREPOINT_CLIENT_ID',
+            'SHAREPOINT_CLIENT_SECRET',
+          ];
+          const report = required.map((key) => `${key}: ${present.has(key) ? 'PRESENT' : 'MISSING'}`);
+          console.log('Vercel SharePoint/Graph env key inventory (values intentionally hidden):');
+          report.forEach((line) => console.log(line));
+          const summary = process.env.GITHUB_STEP_SUMMARY;
+          if (summary) fs.appendFileSync(summary, `\n### Vercel SharePoint/Graph env inventory\n${report.map((line) => `- ${line}`).join('\n')}\n`);
+          NODE
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.preview.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.preview.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: Deploy stable full OPS production
+        id: production
+        run: node scripts/vercel-ops-production-deploy.mjs
+
+      - name: Certify stable human-accessible OPS origin
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- \
+            --base-url "$APP_BASE_URL" \
+            --mode full-ops \
+            --expected-branch "$DEPLOY_GIT_REF" \
+            --expected-commit "$DEPLOY_GIT_SHA"
+
+      - name: Certify public editorial routes and assets
+        env:
+          APP_BASE_URL: ${{ steps.production.outputs.deployment_url }}
+        shell: bash
+        run: |
+          set -u -o pipefail
+          base="${APP_BASE_URL%/}"
+          failures=0
+
+          report_fail() {
+            echo "::error::$1"
+            echo "- FAIL: $1" >> "$GITHUB_STEP_SUMMARY"
+            failures=$((failures + 1))
+          }
+
+          check_html() {
+            local path="$1"
+            local marker="$2"
+            local outfile="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 45 -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            echo "HTML $path -> status=$status bytes=$bytes marker=$marker"
+            if [ "$status" != "200" ]; then report_fail "$path HTTP $status"; return; fi
+            if [ "$bytes" -lt 500 ]; then report_fail "$path devolvió solo $bytes bytes"; return; fi
+            if ! grep -Fq "$marker" "$outfile"; then report_fail "$path no contiene marker '$marker'"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, marker '$marker')" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          check_pdf() {
+            local path="$1"
+            local outfile="$2"
+            local headers="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 -D "$headers" -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0 magic=""
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            [ -f "$outfile" ] && magic="$(head -c 4 "$outfile" 2>/dev/null || true)"
+            local ctype="$(grep -i '^content-type:' "$headers" 2>/dev/null | tail -1 | tr -d '\r' || true)"
+            echo "PDF $path -> status=$status bytes=$bytes magic=$magic $ctype"
+            if [ "$status" != "200" ]; then
+              [ -f "$outfile" ] && { echo 'Response preview:'; head -c 240 "$outfile" | tr '\n' ' '; echo; }
+              report_fail "$path HTTP $status"
+              return
+            fi
+            if [ "$magic" != "%PDF" ]; then report_fail "$path no devolvió magic %PDF"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, PDF)" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          check_webp() {
+            local path="$1"
+            local outfile="$2"
+            local headers="$3"
+            local status
+            status="$(curl --silent --show-error --location --retry 3 --retry-delay 2 --max-time 60 -D "$headers" -w '%{http_code}' "$base$path" -o "$outfile" || printf '000')"
+            local bytes=0 riff="" webp=""
+            [ -f "$outfile" ] && bytes="$(wc -c < "$outfile")"
+            [ -f "$outfile" ] && riff="$(head -c 4 "$outfile" 2>/dev/null || true)"
+            [ -f "$outfile" ] && webp="$(dd if="$outfile" bs=1 skip=8 count=4 2>/dev/null || true)"
+            local ctype="$(grep -i '^content-type:' "$headers" 2>/dev/null | tail -1 | tr -d '\r' || true)"
+            echo "WEBP $path -> status=$status bytes=$bytes riff=$riff webp=$webp $ctype"
+            if [ "$status" != "200" ]; then
+              [ -f "$outfile" ] && { echo 'Response preview:'; head -c 240 "$outfile" | tr '\n' ' '; echo; }
+              report_fail "$path HTTP $status"
+              return
+            fi
+            if [ "$riff" != "RIFF" ] || [ "$webp" != "WEBP" ]; then report_fail "$path no devolvió un WebP válido"; return; fi
+            echo "- PASS: $path (HTTP 200, $bytes bytes, WebP)" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          echo "### Public editorial smoke" >> "$GITHUB_STEP_SUMMARY"
+          check_html "/" "Greenatics" /tmp/home.html
+          check_html "/casa-jardin" "Encontrar un punto de partida" /tmp/casa-jardin.html
+          check_html "/casa-jardin/guias" "Wondergreen" /tmp/casa-jardin-guias.html
+          check_html "/biblioteca" "Biblioteca" /tmp/biblioteca.html
+          check_pdf "/api/public-resources/home-garden-guide-casa-jardin" /tmp/guia-casa-jardin.pdf /tmp/pdf-headers.txt
+          check_webp "/api/public-media/home-garden-casa-jardin-cover" /tmp/guia-casa-jardin-cover.webp /tmp/webp-headers.txt
+
+          if [ "$failures" -ne 0 ]; then
+            echo "::error::Public editorial smoke terminó con $failures fallo(s)."
+            exit 1
+          fi
+          echo "Public editorial smoke: HOME, Casa & Jardin, Guias, Biblioteca, PDF and WebP PASS." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publication summary
+        shell: bash
+        env:
+          OPS_ORIGIN: ${{ steps.production.outputs.deployment_url }}
+          UNIQUE_ORIGIN: ${{ steps.production.outputs.unique_deployment_url }}
+          IDENTITY_UAT_ENABLED: ${{ steps.identity_uat.outputs.enabled }}
+        run: |
+          echo "Stable OPS/public origin: $OPS_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Unique deployment: $UNIQUE_ORIGIN" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published develop commit: $DEPLOY_GIT_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Quality, hosted backend, Preview, Production and public resource smoke passed." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$IDENTITY_UAT_ENABLED" = "true" ]; then
+            echo "Authenticated TAM/YAR RLS smoke: PASS." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Authenticated TAM/YAR RLS smoke: SKIPPED because identity secrets are not configured; database RLS/pgTAP remained mandatory in PR CI." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Mark publication success
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"success\",\"context\":\"greenatics/vercel-publication\",\"description\":\"greenatics-ops publicado y certificado\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null
+
+      - name: Mark publication failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -d "{\"state\":\"failure\",\"context\":\"greenatics/vercel-publication\",\"description\":\"Falló publicación o smoke de producción\",\"target_url\":\"https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID\"}" \
+            >/dev/null

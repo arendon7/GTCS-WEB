@@ -1,0 +1,211 @@
+/* ==========================================================================
+   GREENATICS · MOTION & IMPECCABLE DESIGN SYSTEM
+   Micro-interactions, Spring Physics, Tactile Feedback & Ambient Lighting
+   Inspired by Emil Kowalski & Modern Web Guidelines
+   ========================================================================== */
+
+:root {
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --duration-fast: 150ms;
+  --duration-normal: 260ms;
+  --duration-slow: 450ms;
+  --duration-spring: 500ms;
+}
+
+/* 1. Tactile & Physical Buttons */
+.btn-tactile,
+.button,
+a.button,
+button.button,
+[class*="__button"] {
+  position: relative;
+  transition: transform var(--duration-fast) var(--ease-smooth),
+              box-shadow var(--duration-fast) var(--ease-smooth),
+              background-color var(--duration-fast) ease,
+              border-color var(--duration-fast) ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.btn-tactile:hover,
+.button:hover,
+a.button:hover,
+button.button:hover,
+[class*="__button"]:hover {
+  transform: translateY(-1.5px);
+}
+
+.btn-tactile:active,
+.button:active,
+a.button:active,
+button.button:active,
+[class*="__button"]:active {
+  transform: translateY(0.5px) scale(0.985);
+  transition-duration: 60ms;
+}
+
+/* 2. Interactive Card Lift & Ambient Glow */
+.card-interactive,
+article.universe-card,
+article[class*="__card"],
+article[class*="__serviceCard"],
+article[class*="__door"] {
+  transition: transform var(--duration-normal) var(--ease-out-quint),
+              box-shadow var(--duration-normal) var(--ease-out-quint),
+              border-color var(--duration-normal) var(--ease-out-quint);
+  will-change: transform, box-shadow;
+}
+
+.card-interactive:hover,
+article.universe-card:hover,
+article[class*="__card"]:hover,
+article[class*="__serviceCard"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -15px rgba(0, 107, 69, 0.12),
+              0 0 0 1px rgba(0, 107, 69, 0.15);
+}
+
+/* 3. Smooth Accordion & Drawer Expansions */
+.animated-accordion-item {
+  border: 1px solid var(--line, #e2ebd9);
+  border-radius: 14px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: border-color var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth);
+  margin-bottom: 12px;
+}
+
+.animated-accordion-item[data-open="true"] {
+  border-color: var(--green-700, #008b4c);
+  box-shadow: 0 10px 30px -10px rgba(0, 107, 69, 0.1);
+}
+
+.animated-accordion-trigger {
+  width: 100%;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green-950, #0a2920);
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--duration-fast) ease;
+}
+
+.animated-accordion-trigger:hover {
+  color: var(--green-700, #008b4c);
+}
+
+.animated-accordion-chevron {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--duration-normal) var(--ease-spring);
+  transform-origin: center;
+  color: var(--green-700, #008b4c);
+}
+
+.animated-accordion-item[data-open="true"] .animated-accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.animated-accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-normal) var(--ease-smooth);
+}
+
+.animated-accordion-item[data-open="true"] .animated-accordion-body {
+  grid-template-rows: 1fr;
+}
+
+.animated-accordion-inner {
+  overflow: hidden;
+  padding: 0 24px 20px 24px;
+  color: var(--muted, #4a6358);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 4. Sliding Pill / Magnetic Tabs */
+.tab-slider-container {
+  display: inline-flex;
+  background: rgba(0, 107, 69, 0.06);
+  padding: 4px;
+  border-radius: 999px;
+  position: relative;
+  gap: 4px;
+  border: 1px solid rgba(0, 107, 69, 0.1);
+}
+
+.tab-slider-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted, #4a6358);
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color var(--duration-fast) ease;
+}
+
+.tab-slider-btn[data-active="true"] {
+  color: #ffffff;
+  background: var(--green-800, #006b45);
+  box-shadow: 0 4px 12px rgba(0, 107, 69, 0.25);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+/* 5. Floating Badge & Live Indicator Pulse */
+.live-pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #79c322;
+  box-shadow: 0 0 0 0 rgba(121, 195, 34, 0.7);
+  animation: pulseGreen 2s infinite var(--ease-smooth);
+}
+
+@keyframes pulseGreen {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(121, 195, 34, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(121, 195, 34, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(121, 195, 34, 0);
+  }
+}
+
+/* 6. Living SVG Graph Animation */
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+.svg-flow-line {
+  stroke-dasharray: 6 6;
+  animation: dashMove 1.5s linear infinite;
+}

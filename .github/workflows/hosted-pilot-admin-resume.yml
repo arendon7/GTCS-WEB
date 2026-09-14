@@ -1,0 +1,136 @@
+name: hosted-pilot-admin-resume
+
+on:
+  workflow_dispatch:
+    inputs:
+      director_email:
+        description: Existing Director email to verify
+        required: true
+        type: string
+      admin_email:
+        description: Administrator email to invite
+        required: true
+        type: string
+      admin_name:
+        description: Administrator display name
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-admin-resume
+  cancel-in-progress: false
+
+jobs:
+  resume-admin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      APP_BASE_URL: https://greenatics-ops.vercel.app
+      DIRECTOR_EMAIL: ${{ inputs.director_email }}
+      ADMIN_EMAIL: ${{ inputs.admin_email }}
+      ADMIN_NAME: ${{ inputs.admin_name }}
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate inputs and hosted secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          [[ "$ADMIN_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+          test "${#ADMIN_NAME}" -ge 2
+          test "${#ADMIN_NAME}" -le 120
+          test "${DIRECTOR_EMAIL,,}" != "${ADMIN_EMAIL,,}"
+          for name in NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY; do
+            test -n "${!name:-}"
+          done
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Certify stable OPS production
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run pilot:preflight -- --base-url "$APP_BASE_URL" --mode full-ops
+
+      - name: Verify existing Director TAM plus YAR
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createClient } from '@supabase/supabase-js';
+          const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+          const secret = process.env.SUPABASE_SECRET_KEY;
+          const email = process.env.DIRECTOR_EMAIL.trim().toLowerCase();
+          const admin = createClient(url, secret, { auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false } });
+          const { data: page, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+          if (usersError) throw usersError;
+          const user = page.users.find((candidate) => (candidate.email || '').toLowerCase() === email);
+          if (!user) throw new Error('Expected Director user is missing.');
+          const { data: memberships, error: membershipsError } = await admin
+            .from('plant_memberships')
+            .select('plant_id,role,active,plants!inner(code)')
+            .eq('user_id', user.id)
+            .eq('role', 'director')
+            .eq('active', true);
+          if (membershipsError) throw membershipsError;
+          const codes = new Set((memberships || []).map((row) => row.plants?.code));
+          if (!codes.has('TAM') || !codes.has('YAR')) throw new Error('Expected Director does not have active TAM+YAR memberships.');
+          console.log('Existing Director TAM+YAR: PASS');
+          NODE
+
+      - name: Bootstrap missing Administrator
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/bootstrap-admin.mjs --email "$ADMIN_EMAIL" --name "$ADMIN_NAME" --plants TAM,YAR
+
+      - name: Verify Administrator TAM plus YAR
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createClient } from '@supabase/supabase-js';
+          const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+          const secret = process.env.SUPABASE_SECRET_KEY;
+          const email = process.env.ADMIN_EMAIL.trim().toLowerCase();
+          const admin = createClient(url, secret, { auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false } });
+          const { data: page, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+          if (usersError) throw usersError;
+          const user = page.users.find((candidate) => (candidate.email || '').toLowerCase() === email);
+          if (!user) throw new Error('Administrator user is missing after bootstrap.');
+          const { data: memberships, error: membershipsError } = await admin
+            .from('plant_memberships')
+            .select('plant_id,role,active,plants!inner(code)')
+            .eq('user_id', user.id)
+            .eq('role', 'admin')
+            .eq('active', true);
+          if (membershipsError) throw membershipsError;
+          const codes = new Set((memberships || []).map((row) => row.plants?.code));
+          if (!codes.has('TAM') || !codes.has('YAR')) throw new Error('Administrator does not have active TAM+YAR memberships.');
+          console.log('Administrator TAM+YAR: PASS');
+          NODE
+
+      - name: Recovery summary
+        shell: bash
+        run: |
+          echo "Stable OPS origin: $APP_BASE_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "Existing Director verified on TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Administrator invitation created and verified on TAM + YAR." >> "$GITHUB_STEP_SUMMARY"

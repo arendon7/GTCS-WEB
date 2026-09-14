@@ -1,0 +1,154 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [develop]
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Canonical project files
+        run: |
+          test -f PRODUCT.md
+          test -f DESIGN.md
+          test -f AGENTS.md
+          test -f knowledge/memory.jsonl
+      - name: Validate JSONL memory
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for line in Path('knowledge/memory.jsonl').read_text().splitlines(): json.loads(line)
+          print('memory.jsonl OK')
+          PY
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Static and unit gates
+        run: |
+          npm run typecheck
+          npm run lint
+          npm test
+          npm run build
+      - name: Production private-header gate
+        run: |
+          set -euo pipefail
+          PORT=3101 npm run start > /tmp/greenatics-next-start.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3101/ >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/greenatics-next-start.log
+            exit 1
+          fi
+
+          check_private_headers() {
+            path="$1"
+            headers="$(curl -sS -D - -o /dev/null "http://127.0.0.1:3101${path}" | tr -d '\r')"
+            printf '%s\n' "$headers" | grep -Eiq '^x-robots-tag: noindex, nofollow, noarchive$'
+            printf '%s\n' "$headers" | grep -Eiq '^cache-control: .*no-store'
+            printf '%s\n' "$headers" | grep -Eiq '^pragma: no-cache$'
+          }
+
+          check_private_headers /login
+          check_private_headers /app
+
+  browser:
+    name: browser (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-chromium, mobile-chromium]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+      - name: Cache Playwright Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-1.62.0
+      - name: Install Chromium
+        timeout-minutes: 4
+        run: npx playwright install chromium
+      - name: Browser gates
+        timeout-minutes: 8
+        run: npx playwright test --project=${{ matrix.project }}
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: 2.84.2
+          github-token: ${{ github.token }}
+      - name: Initialize local Supabase project
+        run: |
+          if [ ! -f supabase/config.toml ]; then
+            supabase init
+          fi
+      - name: Apply migrations on fresh local Supabase
+        run: |
+          set -o pipefail
+          supabase start --debug 2>&1 | tee supabase-bootstrap.log
+      - name: Upload Supabase bootstrap diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-bootstrap-diagnostics
+          path: supabase-bootstrap.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Database RLS and transactional gates
+        run: |
+          set -o pipefail
+          supabase test db 2>&1 | tee supabase-test.log
+      - name: Upload pgTAP diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-pgtap-diagnostics
+          path: supabase-test.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Postgres lint
+        run: supabase db lint --local --level error
+      - name: Stop local Supabase
+        if: always()
+        run: supabase stop --no-backup || true

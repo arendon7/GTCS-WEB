@@ -1,0 +1,920 @@
+{
+  "communities": {
+    "0": [
+      "src_app_page",
+      "src_app_page_homepage",
+      "src_app_page_metadata",
+      "src_app_proyectos_page",
+      "src_app_proyectos_page_evidenceprinciples",
+      "src_app_proyectos_page_gallery",
+      "src_app_proyectos_page_metadata",
+      "src_app_proyectos_page_proyectospage",
+      "src_app_proyectos_yarumal_page",
+      "src_app_proyectos_yarumal_page_gallery",
+      "src_app_proyectos_yarumal_page_metadata",
+      "src_app_proyectos_yarumal_page_responsibilities",
+      "src_app_proyectos_yarumal_page_systemsteps",
+      "src_app_proyectos_yarumal_page_timeline",
+      "src_app_proyectos_yarumal_page_yarumalpage",
+      "src_app_soluciones_page",
+      "src_app_soluciones_page_capabilities",
+      "src_app_soluciones_page_metadata",
+      "src_app_soluciones_page_pathways",
+      "src_app_soluciones_page_solutionspage",
+      "src_app_soluciones_page_systemsteps",
+      "src_components_home_hero",
+      "src_components_home_hero_homehero",
+      "src_components_home_hero_profiles",
+      "src_components_home_hero_proofimages",
+      "src_components_home_territory_showcase",
+      "src_components_home_territory_showcase_galleries",
+      "src_components_home_territory_showcase_gallerykey",
+      "src_components_home_territory_showcase_hometerritoryshowcase",
+      "src_components_home_universes_bento",
+      "src_components_home_universes_bento_audiences",
+      "src_components_home_universes_bento_capabilities",
+      "src_components_home_universes_bento_homeuniversesbento",
+      "src_components_home_wondergreen_bridge",
+      "src_components_home_wondergreen_bridge_homewondergreenbridge",
+      "src_components_home_wondergreen_bridge_products",
+      "src_components_home_wondergreen_bridge_tools",
+      "src_data_claims",
+      "src_data_claims_getyarumalclaim",
+      "src_data_claims_impactclaim",
+      "src_data_claims_yarumalclaims"
+    ],
+    "1": [
+      "src_app_empresas_page",
+      "src_app_empresas_page_companiespage",
+      "src_app_empresas_page_evidence",
+      "src_app_empresas_page_metadata",
+      "src_app_empresas_page_segments",
+      "src_app_empresas_page_valuesteps",
+      "src_app_municipios_page",
+      "src_app_municipios_page_decisionaxes",
+      "src_app_municipios_page_metadata",
+      "src_app_municipios_page_moments",
+      "src_app_municipios_page_municipiospage",
+      "src_app_municipios_page_pilotsteps",
+      "src_app_parque_ambiental_page",
+      "src_app_parque_ambiental_page_configurations",
+      "src_app_parque_ambiental_page_environmentalparkpage",
+      "src_app_parque_ambiental_page_metadata",
+      "src_app_parque_ambiental_page_phases",
+      "src_app_parque_ambiental_page_questions",
+      "src_app_servicios_page",
+      "src_app_servicios_page_categories",
+      "src_app_servicios_page_categorycontent",
+      "src_app_servicios_page_metadata",
+      "src_app_servicios_page_servicespage",
+      "src_app_servicios_page_startingpoints",
+      "src_data_services",
+      "src_data_services_canonicalservices",
+      "src_data_services_companyservices",
+      "src_data_services_environmentalparkmodules",
+      "src_data_services_getservice",
+      "src_data_services_municipalservices",
+      "src_data_services_service",
+      "src_data_services_servicecategory",
+      "src_data_services_servicefamilies",
+      "src_data_services_serviceitem",
+      "src_data_services_services"
+    ],
+    "2": [
+      "axe_core_playwright",
+      "next",
+      "package",
+      "package_dependencies",
+      "package_dependencies_next",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_devdependencies",
+      "package_devdependencies_axe_core_playwright",
+      "package_devdependencies_playwright_test",
+      "package_devdependencies_types_node",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_audit_static",
+      "package_scripts_build",
+      "package_scripts_check",
+      "package_scripts_dev",
+      "package_scripts_start",
+      "package_scripts_test_a11y",
+      "package_scripts_test_visual",
+      "package_version",
+      "playwright_test",
+      "react",
+      "react_dom",
+      "types_node",
+      "types_react",
+      "types_react_dom",
+      "typescript"
+    ],
+    "3": [
+      "src_app_biblioteca_manual_uso_wondergreen_page",
+      "src_app_biblioteca_manual_uso_wondergreen_page_donot",
+      "src_app_biblioteca_manual_uso_wondergreen_page_equipment",
+      "src_app_biblioteca_manual_uso_wondergreen_page_metadata",
+      "src_app_biblioteca_manual_uso_wondergreen_page_wondergreenusemanualpage",
+      "src_app_sitemap",
+      "src_app_sitemap_dynamic",
+      "src_app_sitemap_sitemap",
+      "src_app_wondergreen_calculadora_page",
+      "src_app_wondergreen_calculadora_page_agronomiccalculatorpage",
+      "src_app_wondergreen_calculadora_page_calculatorcontent",
+      "src_app_wondergreen_calculadora_page_stages",
+      "src_app_wondergreen_cultivos_page",
+      "src_app_wondergreen_cultivos_page_cropspage",
+      "src_app_wondergreen_cultivos_page_metadata",
+      "src_app_wondergreen_cultivos_slug_page",
+      "src_app_wondergreen_cultivos_slug_page_cropdetailpage",
+      "src_app_wondergreen_cultivos_slug_page_generatemetadata",
+      "src_app_wondergreen_cultivos_slug_page_generatestaticparams",
+      "src_components_crop_dosage_calculator",
+      "src_components_crop_dosage_calculator_cropdosagecalculator",
+      "src_components_crops_interactive_showroom",
+      "src_components_crops_interactive_showroom_categories",
+      "src_components_crops_interactive_showroom_cropsinteractiveshowroom",
+      "src_data_crops",
+      "src_data_crops_crop",
+      "src_data_crops_cropdeficiency",
+      "src_data_crops_crops",
+      "src_data_crops_cropstage",
+      "src_data_crops_fieldapplicationrules",
+      "src_data_crops_fieldchecklist",
+      "src_data_crops_getcrop"
+    ],
+    "4": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_esnext",
+      "ref_next_dev_types_ts",
+      "ref_next_env_d_ts",
+      "ref_next_types_ts",
+      "ref_node_modules",
+      "ref_ts",
+      "ref_tsx",
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_esmoduleinterop",
+      "tsconfig_compileroptions_incremental",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_plugins",
+      "tsconfig_compileroptions_resolvejsonmodule",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_exclude",
+      "tsconfig_include"
+    ],
+    "5": [
+      "src_app_wondergreen_productos_slug_page",
+      "src_app_wondergreen_productos_slug_page_cop",
+      "src_app_wondergreen_productos_slug_page_generatemetadata",
+      "src_app_wondergreen_productos_slug_page_generatestaticparams",
+      "src_app_wondergreen_productos_slug_page_productpage",
+      "src_components_product_card",
+      "src_components_product_card_cop",
+      "src_components_product_card_family_tags",
+      "src_components_product_card_productcard",
+      "src_components_product_visual",
+      "src_components_product_visual_productvisual",
+      "src_components_product_visual_productvisualprops",
+      "src_data_product_media",
+      "src_data_product_media_canrenderpublicpackshot",
+      "src_data_product_media_getproductmedia",
+      "src_data_product_media_pending",
+      "src_data_product_media_productmedia",
+      "src_data_product_media_productmediaregistry",
+      "src_data_product_media_productmediastatus",
+      "src_data_products",
+      "src_data_products_getproduct",
+      "src_data_products_product",
+      "src_data_products_products",
+      "src_data_products_productslist",
+      "src_data_products_productspec"
+    ],
+    "6": [
+      "src_app_wondergreen_page",
+      "src_app_wondergreen_page_metadata",
+      "src_app_wondergreen_page_wondergreenpage",
+      "src_components_agro_enterprise_roi",
+      "src_components_agro_enterprise_roi_agroenterpriseroi",
+      "src_components_crop_deficiency_viewer",
+      "src_components_crop_deficiency_viewer_cropdeficiencyviewer",
+      "src_components_crop_deficiency_viewer_deficiencies",
+      "src_components_crop_deficiency_viewer_deficiency",
+      "src_components_crop_library_grid",
+      "src_components_crop_library_grid_croplibrarygrid",
+      "src_components_crop_library_grid_croplist",
+      "src_components_fertilizer_comparison_table",
+      "src_components_fertilizer_comparison_table_comparisonrows",
+      "src_components_fertilizer_comparison_table_fertilizercomparisontable",
+      "src_components_slow_release_chart",
+      "src_components_slow_release_chart_slowreleasechart",
+      "src_components_soil_simulator",
+      "src_components_soil_simulator_soilprofile",
+      "src_components_soil_simulator_soils",
+      "src_components_soil_simulator_soilsimulator",
+      "src_components_wondergreen_packshots",
+      "src_components_wondergreen_packshots_products",
+      "src_components_wondergreen_packshots_wondergreenpackshots"
+    ],
+    "7": [
+      "src_app_app_page",
+      "src_app_app_page_apppage",
+      "src_app_app_page_architecture",
+      "src_app_app_page_datachain",
+      "src_app_app_page_metadata",
+      "src_app_app_page_roles",
+      "src_components_ops_workstation_demo",
+      "src_components_ops_workstation_demo_equipment",
+      "src_components_ops_workstation_demo_inventory",
+      "src_components_ops_workstation_demo_logentries",
+      "src_components_ops_workstation_demo_moduleid",
+      "src_components_ops_workstation_demo_modules",
+      "src_components_ops_workstation_demo_opsworkstationdemo",
+      "src_components_ops_workstation_demo_plantid",
+      "src_components_ops_workstation_demo_receptions",
+      "src_components_ops_workstation_demo_scenarios",
+      "src_components_ops_workstation_demo_status",
+      "src_components_ops_workstation_demo_table"
+    ],
+    "8": [
+      "src_app_impacto_page",
+      "src_app_impacto_page_governancesteps",
+      "src_app_impacto_page_impactopage",
+      "src_app_impacto_page_metadata",
+      "src_components_esg_calculator",
+      "src_components_esg_calculator_esgcalculator",
+      "src_components_impact_calculator",
+      "src_components_impact_calculator_formatcurrency",
+      "src_components_impact_calculator_formatnumber",
+      "src_components_impact_calculator_impactcalculator",
+      "src_components_impact_calculator_profileconfig",
+      "src_components_impact_calculator_profiles",
+      "src_components_impact_calculator_profiletype",
+      "src_components_ops_interactive_preview",
+      "src_components_ops_interactive_preview_opsinteractivepreview",
+      "src_components_ops_interactive_preview_routeoptions"
+    ],
+    "9": [
+      "src_app_biblioteca_guia_deficiencias_page",
+      "src_app_biblioteca_guia_deficiencias_page_deficiencyguidepage",
+      "src_app_biblioteca_guia_deficiencias_page_metadata",
+      "src_app_biblioteca_guia_deficiencias_page_quickrules",
+      "src_app_biblioteca_huertas_page",
+      "src_app_biblioteca_huertas_page_contexts",
+      "src_app_biblioteca_huertas_page_gardensguidepage",
+      "src_app_biblioteca_huertas_page_metadata",
+      "src_app_biblioteca_huertas_page_route",
+      "src_components_article_json_ld",
+      "src_components_article_json_ld_articlejsonld",
+      "src_components_article_json_ld_articlejsonldprops",
+      "src_data_knowledge_deficiencycrops",
+      "src_data_site_site"
+    ],
+    "10": [
+      "scripts_audit_static",
+      "scripts_audit_static_errors",
+      "scripts_audit_static_htmlfiles",
+      "scripts_audit_static_localtargetexists",
+      "scripts_audit_static_manifestfile",
+      "scripts_audit_static_normalizepathname",
+      "scripts_audit_static_pagepathfromfile",
+      "scripts_audit_static_robotsfile",
+      "scripts_audit_static_root",
+      "scripts_audit_static_sitemapfile",
+      "scripts_audit_static_sitemappaths",
+      "scripts_audit_static_walk",
+      "scripts_audit_static_warnings"
+    ],
+    "11": [
+      "src_app_biblioteca_catalogo_wondergreen_page",
+      "src_app_biblioteca_catalogo_wondergreen_page_decisionsteps",
+      "src_app_biblioteca_catalogo_wondergreen_page_metadata",
+      "src_app_biblioteca_catalogo_wondergreen_page_outsidecatalog",
+      "src_app_biblioteca_catalogo_wondergreen_page_productrows",
+      "src_app_biblioteca_catalogo_wondergreen_page_wondergreencatalogguidepage",
+      "src_data_knowledge",
+      "src_data_knowledge_deficiencycrop",
+      "src_data_knowledge_deficiencyrow",
+      "src_data_knowledge_portfoliofamilies",
+      "src_data_products_bioinputs",
+      "src_data_products_pricedproducts",
+      "src_data_products_technicalportfolio"
+    ],
+    "12": [
+      "src_app_nosotros_page",
+      "src_app_nosotros_page_metadata",
+      "src_app_nosotros_page_nosotrospage",
+      "src_app_nosotros_page_principles",
+      "src_app_nosotros_page_teamdisciplines",
+      "src_app_nosotros_page_timelinemilestones",
+      "src_components_gallery_evidence",
+      "src_components_gallery_evidence_galleryevidence",
+      "src_components_gallery_evidence_plantimages",
+      "src_components_gallery_evidence_routeimages",
+      "src_components_verified_metrics_matrix",
+      "src_components_verified_metrics_matrix_metrics",
+      "src_components_verified_metrics_matrix_verifiedmetricsmatrix"
+    ],
+    "13": [
+      "src_app_wondergreen_cotizador_page",
+      "src_app_wondergreen_cotizador_page_metadata",
+      "src_app_wondergreen_cotizador_page_quotepage",
+      "src_components_quote_builder",
+      "src_components_quote_builder_cop",
+      "src_components_quote_builder_parseweightkg",
+      "src_components_quote_builder_presetpackage",
+      "src_components_quote_builder_presets",
+      "src_components_quote_builder_quotebuilder",
+      "src_data_catalog",
+      "src_data_catalog_catalogoffer",
+      "src_data_catalog_catalogoffers"
+    ],
+    "14": [
+      "src_app_casa_jardin_page",
+      "src_app_casa_jardin_page_casajardinpage",
+      "src_app_casa_jardin_page_domesticdeficiencies",
+      "src_app_casa_jardin_page_metadata",
+      "src_app_casa_jardin_page_spacekits",
+      "src_app_casa_jardin_page_stages",
+      "src_components_casa_jardin_interactive",
+      "src_components_casa_jardin_interactive_casajardininteractive",
+      "src_components_casa_jardin_interactive_diagnosticmatrix",
+      "src_components_casa_jardin_interactive_diagnosticresult",
+      "src_components_casa_jardin_interactive_potsizes"
+    ],
+    "15": [
+      "src_app_layout",
+      "src_app_layout_metadata",
+      "src_app_layout_organizationschema",
+      "src_app_layout_rootlayout",
+      "src_app_layout_viewport",
+      "src_app_layout_websiteschema",
+      "src_components_floating_action_bar",
+      "src_components_floating_action_bar_floatingactionbar",
+      "src_components_site_footer",
+      "src_components_site_footer_footergroups",
+      "src_components_site_footer_sitefooter"
+    ],
+    "16": [
+      "src_app_servicios_slug_page",
+      "src_app_servicios_slug_page_categoryprocess",
+      "src_app_servicios_slug_page_clientinputs",
+      "src_app_servicios_slug_page_generatemetadata",
+      "src_app_servicios_slug_page_generatestaticparams",
+      "src_app_servicios_slug_page_servicedetailpage",
+      "src_components_breadcrumb_json_ld",
+      "src_components_breadcrumb_json_ld_breadcrumbitem",
+      "src_components_json_ld",
+      "src_components_json_ld_jsonld",
+      "src_components_json_ld_jsonldvalue"
+    ],
+    "17": [
+      "src_components_site_header",
+      "src_components_site_header_siteheader",
+      "src_components_universal_search_modal",
+      "src_components_universal_search_modal_searchindex",
+      "src_components_universal_search_modal_searchitem",
+      "src_components_universal_search_modal_universalsearchmodal",
+      "src_data_site",
+      "src_data_site_navitem",
+      "src_data_site_primarynav"
+    ],
+    "18": [
+      "src_app_proyectos_tamesis_page",
+      "src_app_proyectos_tamesis_page_consolidation",
+      "src_app_proyectos_tamesis_page_gallery",
+      "src_app_proyectos_tamesis_page_metadata",
+      "src_app_proyectos_tamesis_page_operatingrecords",
+      "src_app_proyectos_tamesis_page_systemsteps",
+      "src_app_proyectos_tamesis_page_tamesispage"
+    ],
+    "19": [
+      "src_app_tecnologia_page",
+      "src_app_tecnologia_page_anaerobicstages",
+      "src_app_tecnologia_page_delivery",
+      "src_app_tecnologia_page_metadata",
+      "src_app_tecnologia_page_outputs",
+      "src_app_tecnologia_page_principles",
+      "src_app_tecnologia_page_technologypage"
+    ],
+    "20": [
+      "src_components_diagnostic_router",
+      "src_components_diagnostic_router_diagnosticrouter",
+      "src_components_diagnostic_router_needs",
+      "src_components_diagnostic_router_profileitem",
+      "src_components_diagnostic_router_profiles",
+      "src_components_diagnostic_router_routeresult",
+      "src_components_diagnostic_router_routes"
+    ],
+    "21": [
+      "src_components_library_explorer",
+      "src_components_library_explorer_categories",
+      "src_components_library_explorer_category",
+      "src_components_library_explorer_libraryexplorer",
+      "src_data_library",
+      "src_data_library_libraryresource",
+      "src_data_library_libraryresources"
+    ],
+    "22": [
+      "src_app_wondergreen_hogar_page",
+      "src_app_wondergreen_hogar_page_metadata",
+      "src_app_wondergreen_hogar_page_stages",
+      "src_app_wondergreen_hogar_page_wondergreenhomepage",
+      "src_components_breadcrumb_json_ld_breadcrumbjsonld",
+      "src_data_knowledge_homekitfamilies"
+    ],
+    "23": [
+      "scripts_prepare_pages",
+      "scripts_prepare_pages_outdir",
+      "scripts_prepare_pages_replacements",
+      "scripts_prepare_pages_textextensions",
+      "scripts_prepare_pages_walk"
+    ],
+    "24": [
+      "src_app_biblioteca_pastos_gramineas_page",
+      "src_app_biblioteca_pastos_gramineas_page_fieldquestions",
+      "src_app_biblioteca_pastos_gramineas_page_metadata",
+      "src_app_biblioteca_pastos_gramineas_page_pasturesknowledgepage",
+      "src_app_biblioteca_pastos_gramineas_page_system"
+    ],
+    "25": [
+      "src_app_acceso_page",
+      "src_app_acceso_page_accessportalpage",
+      "src_app_acceso_page_platform",
+      "src_app_acceso_page_platforms"
+    ],
+    "26": [
+      "src_app_biblioteca_page",
+      "src_app_biblioteca_page_bibliotecapage",
+      "src_app_biblioteca_page_documentitem",
+      "src_app_biblioteca_page_documents"
+    ],
+    "27": [
+      "src_app_contacto_page",
+      "src_components_interactive_contact_form",
+      "src_components_interactive_contact_form_interactivecontactform",
+      "src_components_interactive_contact_form_profileoptions"
+    ],
+    "28": [
+      "src_app_faq_page",
+      "src_app_faq_page_faqitem",
+      "src_app_faq_page_faqpage",
+      "src_app_faq_page_faqs"
+    ],
+    "29": [
+      "src_app_soluciones_auditoria_sui_page",
+      "src_app_soluciones_auditoria_sui_page_auditoriasuipage",
+      "src_app_soluciones_auditoria_sui_page_checkitem",
+      "src_app_soluciones_auditoria_sui_page_checkitems"
+    ],
+    "30": [
+      "src_app_soluciones_biogas_energia_page",
+      "src_app_soluciones_biogas_energia_page_biogasenergiapage",
+      "src_app_soluciones_biogas_energia_page_substrates",
+      "src_app_soluciones_biogas_energia_page_substratetype"
+    ],
+    "31": [
+      "src_app_wondergreen_balance_cn_page",
+      "src_app_wondergreen_balance_cn_page_balancecnpage",
+      "src_app_wondergreen_balance_cn_page_biomasssource",
+      "src_app_wondergreen_balance_cn_page_sources"
+    ],
+    "32": [
+      "src_app_wondergreen_calendario_agricola_page",
+      "src_app_wondergreen_calendario_agricola_page_calendardata",
+      "src_app_wondergreen_calendario_agricola_page_calendarioagricolapage",
+      "src_app_wondergreen_calendario_agricola_page_cropcalendardata"
+    ],
+    "33": [
+      "src_app_wondergreen_compatibilidad_page",
+      "src_app_wondergreen_compatibilidad_page_availableinputs",
+      "src_app_wondergreen_compatibilidad_page_compatibilidadpage",
+      "src_app_wondergreen_compatibilidad_page_inputitem"
+    ],
+    "34": [
+      "src_app_wondergreen_quiz_deficiencias_page",
+      "src_app_wondergreen_quiz_deficiencias_page_questionitem",
+      "src_app_wondergreen_quiz_deficiencias_page_quizdeficienciaspage",
+      "src_app_wondergreen_quiz_deficiencias_page_quizquestions"
+    ],
+    "35": [
+      "src_app_wondergreen_valorizacion_pecuaria_page",
+      "src_app_wondergreen_valorizacion_pecuaria_page_livestocktype",
+      "src_app_wondergreen_valorizacion_pecuaria_page_livestocktypes",
+      "src_app_wondergreen_valorizacion_pecuaria_page_valorizacionpecuariapage"
+    ],
+    "36": [
+      "src_components_cycle_diagram",
+      "src_components_cycle_diagram_cyclediagram",
+      "src_components_cycle_diagram_phasedetail",
+      "src_components_cycle_diagram_phases"
+    ],
+    "37": [
+      "src_components_plant_isometric_visualizer",
+      "src_components_plant_isometric_visualizer_plantisometricvisualizer",
+      "src_components_plant_isometric_visualizer_station",
+      "src_components_plant_isometric_visualizer_stations"
+    ],
+    "38": [
+      "src_app_biblioteca_glosario_page",
+      "src_app_biblioteca_glosario_page_glosariopage",
+      "src_app_biblioteca_glosario_page_terms"
+    ],
+    "39": [
+      "src_app_biblioteca_layout",
+      "src_app_biblioteca_layout_bibliotecalayout",
+      "src_app_biblioteca_layout_metadata"
+    ],
+    "40": [
+      "src_app_diagnostico_page",
+      "src_app_diagnostico_page_diagnosticopage",
+      "src_app_diagnostico_page_profiles"
+    ],
+    "41": [
+      "src_app_legal_privacidad_page",
+      "src_app_legal_privacidad_page_metadata",
+      "src_app_legal_privacidad_page_privacidadpage"
+    ],
+    "42": [
+      "src_app_legal_terminos_page",
+      "src_app_legal_terminos_page_metadata",
+      "src_app_legal_terminos_page_terminospage"
+    ],
+    "43": [
+      "src_app_manifest",
+      "src_app_manifest_dynamic",
+      "src_app_manifest_manifest"
+    ],
+    "44": [
+      "src_app_recursos_page",
+      "src_app_recursos_page_metadata",
+      "src_app_recursos_page_recursospage"
+    ],
+    "45": [
+      "src_app_robots",
+      "src_app_robots_dynamic",
+      "src_app_robots_robots"
+    ],
+    "46": [
+      "src_app_wondergreen_fitosanidad_page",
+      "src_app_wondergreen_fitosanidad_page_fitosanidadpage",
+      "src_app_wondergreen_fitosanidad_page_plagues"
+    ],
+    "47": [
+      "src_components_brand_name",
+      "src_components_brand_name_brandname",
+      "src_components_brand_name_brandnameprops"
+    ],
+    "48": [
+      "src_components_esp_campaign_gallery",
+      "src_components_esp_campaign_gallery_campaigncards",
+      "src_components_esp_campaign_gallery_espcampaigngallery"
+    ],
+    "49": [
+      "src_components_esp_system_visualizer",
+      "src_components_esp_system_visualizer_espsystemvisualizer",
+      "src_components_esp_system_visualizer_links"
+    ],
+    "50": [
+      "src_components_ui_animated_accordion",
+      "src_components_ui_animated_accordion_accordionitem",
+      "src_components_ui_animated_accordion_animatedaccordion"
+    ],
+    "51": [
+      "src_components_ui_tab_slider",
+      "src_components_ui_tab_slider_taboption",
+      "src_components_ui_tab_slider_tabslider"
+    ],
+    "52": [
+      "src_data_impact",
+      "src_data_impact_publicimpactmetric",
+      "src_data_impact_publicimpactmetrics"
+    ],
+    "53": [
+      "tests_visual_smoke_spec",
+      "tests_visual_smoke_spec_routes",
+      "tests_visual_smoke_spec_screenshotroutes"
+    ],
+    "54": [
+      "next_config",
+      "next_config_nextconfig"
+    ],
+    "55": [
+      "next_env_d",
+      "next_env_d_rationale_6"
+    ],
+    "56": [
+      "src_app_huella_page",
+      "src_app_huella_page_huellacarbonopage"
+    ],
+    "57": [
+      "src_app_not_found",
+      "src_app_not_found_notfound"
+    ],
+    "58": [
+      "src_app_soluciones_beneficio_tributario_page",
+      "src_app_soluciones_beneficio_tributario_page_beneficiotributariopage"
+    ],
+    "59": [
+      "src_app_soluciones_flota_recoleccion_page",
+      "src_app_soluciones_flota_recoleccion_page_flotarecoleccionpage"
+    ],
+    "60": [
+      "src_app_soluciones_podas_municipales_page",
+      "src_app_soluciones_podas_municipales_page_podasmunicipalespage"
+    ],
+    "61": [
+      "src_app_soluciones_riesgo_lixiviados_page",
+      "src_app_soluciones_riesgo_lixiviados_page_riesgolixiviadospage"
+    ],
+    "62": [
+      "src_app_soluciones_vertimiento_cero_page",
+      "src_app_soluciones_vertimiento_cero_page_vertimientoceropage"
+    ],
+    "63": [
+      "src_app_soluciones_viabilidad_municipal_page",
+      "src_app_soluciones_viabilidad_municipal_page_viabilidadmunicipalpage"
+    ],
+    "64": [
+      "src_app_wondergreen_analisis_agua_page",
+      "src_app_wondergreen_analisis_agua_page_analisisaguapage"
+    ],
+    "65": [
+      "src_app_wondergreen_analisis_suelo_page",
+      "src_app_wondergreen_analisis_suelo_page_soilanalysispage"
+    ],
+    "66": [
+      "src_app_wondergreen_balance_bases_page",
+      "src_app_wondergreen_balance_bases_page_balancebasespage"
+    ],
+    "67": [
+      "src_app_wondergreen_beneficio_cafe_page",
+      "src_app_wondergreen_beneficio_cafe_page_beneficiocafepage"
+    ],
+    "68": [
+      "src_app_wondergreen_calibracion_aspersores_page",
+      "src_app_wondergreen_calibracion_aspersores_page_calibracionaspersorespage"
+    ],
+    "69": [
+      "src_app_wondergreen_costo_unidad_nutriente_page",
+      "src_app_wondergreen_costo_unidad_nutriente_page_costounidadnutrientepage"
+    ],
+    "70": [
+      "src_app_wondergreen_encalamiento_page",
+      "src_app_wondergreen_encalamiento_page_encalamientopage"
+    ],
+    "71": [
+      "src_app_wondergreen_logistica_flete_page",
+      "src_app_wondergreen_logistica_flete_page_logisticafletepage"
+    ],
+    "72": [
+      "src_components_esp_route_optimizer",
+      "src_components_esp_route_optimizer_esprouteoptimizer"
+    ],
+    "73": [
+      "tests_accessibility_spec",
+      "tests_accessibility_spec_routes"
+    ],
+    "74": [
+      "playwright_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06097560975609756,
+    "1": 0.06722689075630252,
+    "2": 0.0625,
+    "3": 0.0967741935483871,
+    "4": 0.07142857142857142,
+    "5": 0.13666666666666666,
+    "6": 0.10869565217391304,
+    "7": 0.11764705882352941,
+    "8": 0.16666666666666666,
+    "9": 0.18681318681318682,
+    "10": 0.16666666666666666,
+    "11": 0.16666666666666666,
+    "12": 0.1794871794871795,
+    "13": 0.24242424242424243,
+    "14": 0.2,
+    "15": 0.21818181818181817,
+    "16": 0.23636363636363636,
+    "17": 0.2777777777777778,
+    "18": 0.2857142857142857,
+    "19": 0.2857142857142857,
+    "20": 0.2857142857142857,
+    "21": 0.3333333333333333,
+    "22": 0.3333333333333333,
+    "23": 0.4,
+    "24": 0.4,
+    "25": 0.5,
+    "26": 0.5,
+    "27": 0.6666666666666666,
+    "28": 0.5,
+    "29": 0.5,
+    "30": 0.5,
+    "31": 0.5,
+    "32": 0.5,
+    "33": 0.5,
+    "34": 0.5,
+    "35": 0.5,
+    "36": 0.5,
+    "37": 0.5,
+    "38": 0.6666666666666666,
+    "39": 0.6666666666666666,
+    "40": 0.6666666666666666,
+    "41": 0.6666666666666666,
+    "42": 0.6666666666666666,
+    "43": 0.6666666666666666,
+    "44": 0.6666666666666666,
+    "45": 0.6666666666666666,
+    "46": 0.6666666666666666,
+    "47": 0.6666666666666666,
+    "48": 0.6666666666666666,
+    "49": 0.6666666666666666,
+    "50": 0.6666666666666666,
+    "51": 0.6666666666666666,
+    "52": 0.6666666666666666,
+    "53": 0.6666666666666666,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0
+  },
+  "gods": [
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 16
+    },
+    {
+      "id": "src_data_site_site",
+      "label": "site",
+      "degree": 13
+    },
+    {
+      "id": "src_components_breadcrumb_json_ld_breadcrumbjsonld",
+      "label": "BreadcrumbJsonLd()",
+      "degree": 10
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 8
+    },
+    {
+      "id": "src_data_claims_yarumalclaims",
+      "label": "yarumalClaims",
+      "degree": 8
+    },
+    {
+      "id": "src_components_article_json_ld_articlejsonld",
+      "label": "ArticleJsonLd()",
+      "degree": 6
+    },
+    {
+      "id": "src_components_json_ld_jsonld",
+      "label": "JsonLd()",
+      "degree": 6
+    },
+    {
+      "id": "tsconfig_include",
+      "label": "include",
+      "degree": 6
+    },
+    {
+      "id": "src_components_product_visual_productvisual",
+      "label": "ProductVisual()",
+      "degree": 5
+    },
+    {
+      "id": "src_data_crops_crops",
+      "label": "crops",
+      "degree": 5
+    }
+  ],
+  "surprises": [
+    {
+      "source": "generateMetadata()",
+      "target": "getCrop()",
+      "source_files": [
+        "src/app/wondergreen/cultivos/[slug]/page.tsx",
+        "src/data/crops.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "CropDetailPage()",
+      "target": "getCrop()",
+      "source_files": [
+        "src/app/wondergreen/cultivos/[slug]/page.tsx",
+        "src/data/crops.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "generateMetadata()",
+      "target": "getProduct()",
+      "source_files": [
+        "src/app/wondergreen/productos/[slug]/page.tsx",
+        "src/data/products.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "ProductPage()",
+      "target": "getProduct()",
+      "source_files": [
+        "src/app/wondergreen/productos/[slug]/page.tsx",
+        "src/data/products.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "ProductVisual()",
+      "target": "canRenderPublicPackshot()",
+      "source_files": [
+        "src/components/product-visual.tsx",
+        "src/data/product-media.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `yarumalClaims` connect `Community 0` to `Community 8`, `Community 1`?",
+      "why": "High betweenness centrality (0.035) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `site` connect `Community 9` to `Community 3`, `Community 5`, `Community 11`, `Community 13`, `Community 15`, `Community 16`, `Community 17`, `Community 22`, `Community 24`?",
+      "why": "High betweenness centrality (0.032) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `BreadcrumbJsonLd()` connect `Community 22` to `Community 3`, `Community 5`, `Community 9`, `Community 11`, `Community 16`, `Community 24`?",
+      "why": "High betweenness centrality (0.018) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `nextConfig`, `name`, `version` to the rest of the system?",
+      "why": "246 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06097560975609756 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06722689075630252 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0625 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

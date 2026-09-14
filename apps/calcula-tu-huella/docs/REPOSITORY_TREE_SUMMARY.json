@@ -1,0 +1,11 @@
+{
+  "total_files": 392,
+  "total_bytes": 3086389,
+  "tree_sha256": "3426df9209dbf72ec4e7d592e367f4ad778fc04efdd3c05d40daa69194ad3da9",
+  "binary_files": [
+    "docs/visual/01_identidad_visual.png",
+    "docs/visual/02_landing_dashboard.png",
+    "docs/visual/03_inventario.png",
+    "docs/visual/04_calculo_reportes.png"
+  ]
+}

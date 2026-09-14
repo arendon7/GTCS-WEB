@@ -1,0 +1,33 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { runtimeLinks } from "@/lib/runtime-links";
+
+export const metadata: Metadata = {
+  title: "Acceso a plataformas Greenatics",
+  description: "Centro de acceso a las plataformas Greenatics: OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
+  alternates: { canonical: "/acceso/" },
+};
+
+const environments = [
+  { code: "OPS", name: "GREENATICS OPS", status: "Demostración pública disponible", copy: "La demostración permite recorrer bitácora, recepción, procesos, mantenimiento, inventarios e indicadores con datos ilustrativos. Los entornos de operación se configuran por organización, planta y rol.", publicHref: "/app/", publicCta: "Abrir demostración", access: "Solicitar implementación", accessHref: "/contacto/?interes=greenatics-ops" },
+  { code: "CO₂", name: "Calcula tu Huella", status: "Estimador público disponible", copy: "Explora escenarios de emisiones y conoce la plataforma completa para inventarios, fuentes, cargas CSV/XLSX, validación, evidencias, historial y reportes climáticos.", publicHref: "/huella/", publicCta: "Abrir landing de Huella", access: "Solicitar acceso", accessHref: "/contacto/?interes=calcula-tu-huella" },
+  { code: "RED", name: "GREENATICS Red", status: "Estación navegable v5 · datos demo", copy: "Recorre una estación territorial con Proyecto 360, generadores, rutas, FIELD, QA/QC, PMIRS, indicadores, evidencias y coordinación. El acceso productivo requiere backend, roles y permisos configurados.", publicHref: "/red/app/", publicCta: "Explorar estación Red", access: "Diseñar implementación", accessHref: "/contacto/?interes=greenatics-red" },
+  { code: "AG", name: "AGROWAY", status: "Aplicación privada en evolución", copy: "Aplicación de trazabilidad agrícola para registrar productor, finca, lote, ciclo, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha.", publicHref: "/agroway/", publicCta: "Conocer AGROWAY", access: "Consultar acceso", accessHref: "/contacto/?interes=agroway" },
+  { code: "SANA", name: "SANA", status: "Ecosistema en estructuración", copy: "Ecosistema para estructurar y acompañar inversión en proyectos productivos con datos de AGROWAY, ciencia Greenatics, soluciones Wondergreen y seguimiento de campo.", publicHref: "/sana/", publicCta: "Conocer SANA", access: "Hablar sobre SANA", accessHref: "/contacto/?interes=sana" },
+] as const;
+
+const isLocalRuntime = (url: string) => /localhost|127\.0\.0\.1/.test(url);
+
+export default function AccessPage() {
+  return (
+    <>
+      <section className="access-v4-hero"><div className="container"><span className="eyebrow eyebrow--light">Acceso a entornos Greenatics</span><h1>La demostración es pública. La operación real requiere un entorno configurado.</h1><p className="lead">OPS, Calcula tu Huella, Red, AGROWAY y SANA manejan información operacional, territorial, ambiental, agronómica, productiva y de acompañamiento. Por eso el acceso productivo se habilita únicamente dentro de una implementación acordada, con organización, roles y alcance definidos.</p><div className="button-row"><Link className="button button--light" href="/plataforma/">Abrir Centro Greenatics</Link><Link className="button button--outline-light" href="/contacto/?interes=plataformas">Solicitar acceso</Link></div></div></section>
+
+      <section className="access-v4-environments" aria-labelledby="access-environments-title"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Entornos disponibles</span><h2 id="access-environments-title">Una entrada común para productos distintos.</h2></div><p>OPS controla la planta; Huella organiza la gestión climática; Red coordina territorio y PMIRS; AGROWAY registra la trazabilidad agrícola en campo; SANA articula esa información con la ciencia Greenatics, las soluciones Wondergreen y los proyectos productivos. En desarrollo local, las demostraciones pueden abrirse en un puerto propio del mismo workspace; el estado de cada tarjeta indica qué estás viendo.</p></div><div className="access-v4-environments__grid">{environments.map((environment) => { const runtimeHref = environment.code === "OPS" ? runtimeLinks.ops : environment.code === "CO₂" ? runtimeLinks.huella : environment.code === "RED" ? runtimeLinks.red : ""; const publicHref = runtimeHref || environment.publicHref; const publicCta = runtimeHref ? `Abrir ${environment.name}` : environment.publicCta; const runtimeState = runtimeHref ? isLocalRuntime(runtimeHref) ? "Runtime local disponible" : "Runtime conectado" : environment.status; return <article key={environment.code}><span>{environment.code}</span><small>{runtimeState}</small><h3>{environment.name}</h3><p>{environment.copy}</p><div className="button-row"><Link className="button button--dark" href={publicHref} aria-label={`${publicCta}: ${environment.name}`}>{publicCta}</Link><Link className="button button--ghost" href={environment.accessHref} aria-label={`${environment.access}: ${environment.name}`}>{environment.access}</Link></div></article>; })}</div></div></section>
+
+      <section className="access-v4-process"><div className="container"><div><span className="eyebrow eyebrow--light">Cómo se habilita</span><h2>El acceso empieza por el proceso, no por una contraseña genérica.</h2></div><ol><li><span>01</span><strong>Alcance</strong><p>Organización, plantas o proyectos, usuarios, módulos y decisiones que debe soportar.</p></li><li><span>02</span><strong>Configuración</strong><p>Catálogos, roles, permisos, flujos, datos iniciales, indicadores y entregables.</p></li><li><span>03</span><strong>Adopción</strong><p>Formación, acompañamiento, revisión de calidad y mejora de la captura.</p></li><li><span>04</span><strong>Continuidad</strong><p>Soporte, ajustes, nuevos módulos y gobierno de reportes según el contrato.</p></li></ol><Link className="button button--light" href="/plataforma/usuarios/">Administrar usuarios y roles →</Link></div></section>
+
+      <section className="access-v4-truth"><div className="container access-v4-truth__grid"><div><span className="eyebrow">Qué no hacemos en esta página</span><h2>No simulamos una autenticación que no está conectada al entorno productivo.</h2></div><div><p>Esta ruta explica cómo funciona el acceso. No solicita ni almacena contraseñas y no promete conexiones activas con básculas, sensores, SUI, sistemas financieros o bases privadas que no formen parte de una implementación vigente.</p><Link href="/contacto/?interes=plataformas">Hablar sobre una implementación →</Link></div></div></section>
+    </>
+  );
+}

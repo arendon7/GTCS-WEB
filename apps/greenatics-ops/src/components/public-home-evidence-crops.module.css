@@ -1,0 +1,460 @@
+.container {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.crops {
+  padding: 112px 0 104px;
+  background: #e9eee4;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cropHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  gap: 70px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+
+.cropHeading h2,
+.evidenceCopy h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-size: clamp(3rem, 5vw, 5.3rem);
+}
+
+.cropIntro p,
+.evidenceCopy > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
+.cropIntro a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 16px;
+  color: var(--green);
+  font-weight: 800;
+  border-bottom: 1px solid currentColor;
+}
+
+.cropGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cropCard {
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 24px;
+  border-right: 1px solid var(--line);
+  text-decoration: none;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.cropCard:first-child {
+  padding-left: 0;
+}
+
+.cropCard:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.cropCard:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+.cropCard:focus-visible,
+.cropRouter a:focus-visible,
+.evidenceActions a:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 4px;
+}
+
+.cropTopline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 42px;
+}
+
+.cropTopline span {
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.cropTopline small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.cropCard h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(2rem, 2.5vw, 2.65rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.cropCard p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.cropCard strong {
+  margin-top: auto;
+  color: var(--green);
+  font-size: 0.82rem;
+}
+
+.cropRouter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  padding-top: 26px;
+}
+
+.cropRouter > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.cropRouter span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.cropActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+}
+
+.cropActions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--green);
+  font-weight: 800;
+  border-bottom: 1px solid currentColor;
+}
+
+.evidence {
+  padding: 116px 0;
+  background: var(--cream);
+}
+
+.evidenceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
+  gap: 78px;
+  align-items: center;
+}
+
+.visualStack {
+  position: relative;
+  min-height: 650px;
+  padding: 0 84px 72px 0;
+}
+
+.figure {
+  margin: 0;
+  background: var(--forest-deep);
+  color: var(--white);
+  box-shadow: 0 22px 55px rgba(11, 36, 28, 0.12);
+}
+
+.figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.figure figcaption {
+  padding: 12px 16px;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.primaryFigure {
+  border-left: 8px solid var(--sun);
+}
+
+.primaryFigure img {
+  aspect-ratio: 4 / 3;
+}
+
+.secondaryFigure {
+  position: absolute;
+  width: min(48%, 360px);
+  right: 0;
+  bottom: 0;
+  border-left: 6px solid var(--lime);
+}
+
+.secondaryFigure img {
+  aspect-ratio: 4 / 3;
+}
+
+.mediaSeal {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  width: 118px;
+  height: 118px;
+  display: grid;
+  align-content: center;
+  gap: 0;
+  padding: 16px;
+  background: var(--forest);
+  color: var(--white);
+  border-top: 5px solid var(--lime);
+}
+
+.mediaSeal span {
+  font-family: var(--display);
+  font-size: 2.5rem;
+  line-height: 0.9;
+}
+
+.mediaSeal strong,
+.mediaSeal small {
+  font-size: 0.67rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mediaSeal small {
+  color: #b8c9bf;
+}
+
+.evidenceCopy > p {
+  margin-top: 24px;
+}
+
+.evidenceFacts {
+  margin: 30px 0 22px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.evidenceFacts > div {
+  min-height: 62px;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidenceFacts > div:last-child {
+  border-bottom: 0;
+}
+
+.evidenceFacts dt {
+  color: var(--muted);
+  font-size: 0.69rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.evidenceFacts dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.evidenceActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.evidenceActions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--green);
+  font-weight: 800;
+  border-bottom: 1px solid currentColor;
+}
+
+.truthNote {
+  margin-top: 28px !important;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.78rem !important;
+  line-height: 1.6 !important;
+}
+
+@media (max-width: 1060px) {
+  .cropHeading,
+  .evidenceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cropGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cropCard,
+  .cropCard:first-child,
+  .cropCard:last-child {
+    min-height: 280px;
+    padding: 26px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cropCard:nth-child(even) {
+    border-right: 0;
+  }
+
+  .cropCard:last-child {
+    grid-column: 1 / -1;
+    border-right: 0;
+  }
+
+  .visualStack {
+    max-width: 840px;
+  }
+}
+
+@media (max-width: 760px) {
+  .container {
+    width: min(100% - 28px, 1240px);
+  }
+
+  .crops,
+  .evidence {
+    padding: 84px 0;
+  }
+
+  .cropHeading {
+    gap: 28px;
+  }
+
+  .cropGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cropCard,
+  .cropCard:first-child,
+  .cropCard:last-child {
+    grid-column: auto;
+    min-height: 0;
+    padding: 24px 0;
+    border-right: 0;
+  }
+
+  .cropTopline {
+    margin-bottom: 22px;
+  }
+
+  .cropCard strong {
+    margin-top: 18px;
+  }
+
+  .cropRouter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .visualStack {
+    min-height: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  .secondaryFigure {
+    position: static;
+    width: 78%;
+    justify-self: end;
+  }
+
+  .mediaSeal {
+    left: 12px;
+    bottom: 46px;
+    width: 96px;
+    height: 96px;
+  }
+
+  .evidenceGrid {
+    gap: 44px;
+  }
+
+  .evidenceFacts > div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+    padding: 12px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .cropActions,
+  .evidenceActions {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .secondaryFigure {
+    width: 88%;
+  }
+
+  .mediaSeal {
+    position: static;
+    width: 100%;
+    height: auto;
+    grid-template-columns: auto auto auto;
+    align-items: baseline;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cropCard {
+    transition: none;
+  }
+
+  .cropCard:hover {
+    transform: none;
+  }
+}

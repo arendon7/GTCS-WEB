@@ -1,0 +1,62 @@
+.section {
+  --forest: #063d2c;
+  --green: #2f7d32;
+  --lime: #7db43c;
+  --paper: #f7faf8;
+  --cream: #f6f3e9;
+  --ink: #17382d;
+  --muted: #5c7168;
+  --line: rgba(6, 61, 44, .15);
+  padding: 96px 0 104px;
+  background: #f1f4ec;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+}
+
+.container { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+.heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .56fr); gap: 52px; align-items: end; margin-bottom: 42px; }
+.eyebrow { color: var(--green); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.heading h2 { max-width: 780px; margin: 12px 0 0; font-family: var(--display); font-size: clamp(2.5rem, 4.8vw, 4.8rem); font-weight: 600; line-height: .98; letter-spacing: -.035em; }
+.heading p { margin: 0; color: var(--muted); line-height: 1.72; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { min-height: 590px; display: grid; grid-template-rows: 300px 1fr auto; background: #fff; border: 1px solid var(--line); overflow: hidden; }
+.visualStrip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 1px; padding: 18px; background: var(--forest); overflow: hidden; }
+.stageVisual { position: relative; min-width: 0; overflow: hidden; background: var(--cream); border: 1px solid rgba(255,255,255,.16); }
+.stageVisual img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: top center; }
+.stageVisual > span:not(:first-child), .stageVisual > span:only-child { position: absolute; left: 10px; right: 10px; bottom: 10px; padding: 7px 8px; background: rgba(6,61,44,.88); color: #fff; font-size: .64rem; font-weight: 900; letter-spacing: .06em; text-align: center; }
+.compostVisual { display: flex; flex-direction: column; justify-content: end; gap: 6px; padding: 18px 14px; background: linear-gradient(160deg,#e7ddc7,#f7f2e7 62%,#dce9d2); }
+.compostVisual span { color: #8b6d46; font-family: var(--display); font-size: 3rem; line-height: .85; }
+.compostVisual strong { color: #5f492f; font-size: .95rem; letter-spacing: .05em; }
+.compostVisual small { color: #745f45; }
+
+.cardBody { padding: 28px 30px 26px; }
+.audience { display: block; color: var(--green); font-size: .67rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+.kitName { display: block; margin: 12px 0 10px; font-family: var(--display); font-size: 2.2rem; font-weight: 600; line-height: 1; }
+.promise { margin: 0 0 20px; color: var(--muted); line-height: 1.65; }
+.pathway { padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--forest) !important; font-size: .75rem; font-weight: 900; letter-spacing: .04em; }
+.cardBody a { display: inline-block; margin-top: 12px; color: var(--forest); font-weight: 850; text-decoration: none; }
+.status { padding: 16px 30px; background: #edf5e8; color: var(--green); border-top: 1px solid var(--line); font-size: .7rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+
+.guardrail { display: grid; grid-template-columns: 1fr 1fr auto; gap: 26px; align-items: center; margin-top: 28px; padding: 24px 26px; background: #fff8d9; border-left: 6px solid #f4d944; }
+.guardrail span { display: block; color: #8a7317; font-size: .67rem; font-weight: 900; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 7px; }
+.guardrail strong { color: var(--forest); line-height: 1.35; }
+.guardrail p { margin: 0; color: var(--muted); line-height: 1.6; }
+.guardrail a { color: var(--forest); font-weight: 850; text-decoration: none; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .heading, .guardrail { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  .card { min-height: 0; }
+}
+
+@media (max-width: 620px) {
+  .section { padding: 72px 0 78px; }
+  .container { width: min(100% - 28px, 1180px); }
+  .visualStrip { min-height: 250px; padding: 12px; }
+  .card { grid-template-rows: 250px 1fr auto; }
+  .cardBody { padding: 24px 22px; }
+  .kitName { font-size: 1.9rem; }
+  .status { padding: 14px 22px; }
+  .guardrail { padding: 22px; }
+}

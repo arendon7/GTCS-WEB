@@ -1,0 +1,60 @@
+.showcase {
+  --forest: #063d2c;
+  --green: #2f7d32;
+  --lime: #7db43c;
+  --ink: #263b32;
+  --muted: #65776e;
+  --paper: #f7faf8;
+  --line: rgba(6, 61, 44, .15);
+  --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  padding: 88px 0 96px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.container { width: min(1240px, calc(100% - 48px)); margin: 0 auto; }
+.heading { display: grid; grid-template-columns: 1fr .72fr; gap: 64px; align-items: end; margin-bottom: 38px; }
+.eyebrow { display: inline-block; margin-bottom: 14px; color: var(--green); font-size: .69rem; font-weight: 850; text-transform: uppercase; letter-spacing: .13em; }
+.heading h2 { margin: 0; max-width: 12ch; font-family: var(--display); font-size: clamp(2.7rem, 5vw, 5rem); font-weight: 600; line-height: .98; letter-spacing: -.04em; }
+.headingCopy p { margin: 0 0 16px; color: var(--muted); line-height: 1.65; }
+.headingCopy a { color: var(--green); font-weight: 850; text-decoration: none; }
+
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.card { min-width: 0; display: flex; flex-direction: column; color: inherit; text-decoration: none; background: var(--paper); border-right: 1px solid var(--line); transition: transform .18s ease, background-color .18s ease; }
+.card:last-child { border-right: 0; }
+.card:hover { transform: translateY(-3px); background: #fff; }
+.card:focus-visible { outline: 3px solid #f4d944; outline-offset: 4px; }
+.artwork { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center; border-bottom: 1px solid var(--line); background: #fff; }
+.cardBody { min-height: 330px; padding: 22px; display: flex; flex-direction: column; }
+.cardBody > span { color: var(--green); font-size: .64rem; font-weight: 850; text-transform: uppercase; letter-spacing: .07em; }
+.identity { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 12px; }
+.identity strong { font-family: var(--display); font-size: 2rem; color: var(--forest); letter-spacing: -.04em; }
+.identity em { font-style: normal; font-size: .78rem; font-weight: 850; color: var(--green); }
+.cardBody h3 { margin: 0; font-family: var(--display); font-size: 1.5rem; line-height: 1.05; font-weight: 600; letter-spacing: -.03em; }
+.cardBody p { color: var(--muted); line-height: 1.55; font-size: .86rem; }
+.meta { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.meta small { color: var(--muted); line-height: 1.4; }
+.meta b { color: var(--green); font-size: .82rem; }
+.truthLock { margin-top: 26px; padding: 18px 20px; display: grid; grid-template-columns: .55fr 1.45fr; gap: 28px; background: #eaf4e4; border-left: 4px solid var(--lime); }
+.truthLock strong { color: var(--forest); }
+.truthLock span { color: var(--muted); line-height: 1.55; }
+
+@media (max-width: 1050px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card:nth-child(2) { border-right: 0; }
+  .card:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+
+@media (max-width: 760px) {
+  .container { width: min(100% - 28px, 1240px); }
+  .showcase { padding: 68px 0 74px; }
+  .heading { grid-template-columns: 1fr; gap: 20px; }
+  .grid { grid-template-columns: 1fr; }
+  .card,
+  .card:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--line); }
+  .card:last-child { border-bottom: 0; }
+  .cardBody { min-height: 0; }
+  .artwork { max-height: 360px; object-fit: cover; }
+  .truthLock { grid-template-columns: 1fr; gap: 8px; }
+}

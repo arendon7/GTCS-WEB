@@ -1,0 +1,118 @@
+# Default-branch dispatcher for the authenticated GREENATICS OPS pilot UAT.
+# Runtime source is always the canonical develop branch checked out below.
+name: hosted-pilot-uat
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: greenatics-hosted-pilot-uat
+  cancel-in-progress: false
+
+jobs:
+  multiuser-uat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PILOT_PREVIEW_MODE: full-ops
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      DEPLOY_GIT_REF: develop
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
+      PILOT_DIRECTOR_EMAIL: ${{ secrets.PILOT_DIRECTOR_EMAIL }}
+      PILOT_DIRECTOR_PASSWORD: ${{ secrets.PILOT_DIRECTOR_PASSWORD }}
+      PILOT_OPERATOR_TAM_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+      PILOT_OPERATOR_TAM_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+      PILOT_OPERATOR_YAR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+      PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+      PILOT_DIRECTOR_PLANTS: TAM,YAR
+
+    steps:
+      - name: Checkout canonical develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve exact UAT commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          test "${#sha}" -eq 40
+          echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
+          echo "Authenticated UAT from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require hosted UAT secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in \
+            VERCEL_TOKEN \
+            VERCEL_ORG_ID \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SECRET_KEY \
+            PILOT_DIRECTOR_EMAIL \
+            PILOT_DIRECTOR_PASSWORD \
+            PILOT_OPERATOR_TAM_EMAIL \
+            PILOT_OPERATOR_TAM_PASSWORD \
+            PILOT_OPERATOR_YAR_EMAIL \
+            PILOT_OPERATOR_YAR_PASSWORD
+          do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is not configured for hosted pilot UAT."
+              missing=1
+            fi
+          done
+          test "$missing" -eq 0
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Certify hosted backend state
+        run: npm run pilot:backend-preflight -- --plants TAM,YAR
+
+      - name: Certify Director vs Operario Támesis RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_TAM_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_TAM_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: TAM
+        run: npm run pilot:rls-smoke
+
+      - name: Certify Director vs Operario Yarumal RLS isolation
+        env:
+          PILOT_OPERATOR_EMAIL: ${{ secrets.PILOT_OPERATOR_YAR_EMAIL }}
+          PILOT_OPERATOR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
+          PILOT_OPERATOR_PLANTS: YAR
+        run: npm run pilot:rls-smoke
+
+      - name: Deploy exact full OPS Preview
+        id: deploy
+        run: npm run pilot:vercel-preview
+
+      - name: Certify protected deployed Preview
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+          VERCEL_PROJECT_ID: ${{ steps.deploy.outputs.project_id }}
+        run: npm run pilot:vercel-preflight
+
+      - name: UAT summary
+        shell: bash
+        run: |
+          echo "Hosted multiuser UAT gate: PASS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Director expected scope: TAM + YAR." >> "$GITHUB_STEP_SUMMARY"
+          echo "Operario Támesis expected scope: TAM; explicit YAR read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
+          echo "Operario Yarumal expected scope: YAR; explicit TAM read denied by RLS." >> "$GITHUB_STEP_SUMMARY"
+          echo "No user credentials are accepted as workflow inputs or printed in logs." >> "$GITHUB_STEP_SUMMARY"

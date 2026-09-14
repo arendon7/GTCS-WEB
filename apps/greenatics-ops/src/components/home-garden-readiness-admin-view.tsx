@@ -1,0 +1,273 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useOpsStore } from "@/components/ops-store";
+import { homeGardenEvidenceRules, type HomeGardenEvidenceGateId } from "@/data/home-garden-evidence";
+import { homeGardenPlannedSkuCandidates } from "@/data/home-garden-sku-launch-matrix";
+import {
+  buildHomeGardenReadinessRegistry,
+  canAppendHomeGardenEvidence,
+  canManageHomeGardenReadiness,
+  getNextHomeGardenEvidenceKind,
+  homeGardenGateLabels,
+  homeGardenLaneLabels,
+  homeGardenLaunchEvidenceKinds,
+  type HomeGardenEvidenceDisposition,
+  type HomeGardenLaunchEvidenceKind,
+  type HomeGardenLaunchEvidenceRevision,
+  type HomeGardenReadinessRegistryItem,
+} from "@/lib/home-garden-readiness-registry";
+import {
+  appendHomeGardenLaunchEvidence,
+  loadHomeGardenLaunchEvidence,
+} from "@/lib/supabase/home-garden-readiness-repository";
+
+type Feedback = { kind: "ok" | "error"; text: string } | null;
+type RegistryFilter = "all" | "pending" | "ready";
+type GateFilter = "all" | HomeGardenEvidenceGateId;
+
+const dispositionLabels: Record<HomeGardenEvidenceDisposition, string> = {
+  draft: "Borrador / por revisar",
+  verified: "Verificada",
+  rejected: "Rechazada / reabre gate",
+  superseded: "Superada",
+};
+
+const requirementStatusLabels = {
+  ready: "LISTA",
+  missing: "FALTA",
+  "needs-review": "REVISAR",
+} as const;
+
+function GatePill({ closed, label }: { closed: boolean; label: string }) {
+  return <span className={`status-pill ${closed ? "status-normal" : "status-planned"}`}>{closed ? "✓" : "○"} {label}</span>;
+}
+
+export function HomeGardenReadinessAdminView() {
+  const { backend, access } = useOpsStore();
+  const authorized = useMemo(() => access.some((item) => canManageHomeGardenReadiness(item.role)), [access]);
+  const allowedEvidenceKinds = useMemo(
+    () => homeGardenLaunchEvidenceKinds.filter((kind) => access.some((item) => canAppendHomeGardenEvidence(item.role, kind))),
+    [access],
+  );
+  const [revisions, setRevisions] = useState<HomeGardenLaunchEvidenceRevision[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [filter, setFilter] = useState<RegistryFilter>("all");
+  const [gateFilter, setGateFilter] = useState<GateFilter>("all");
+
+  const [candidateId, setCandidateId] = useState(homeGardenPlannedSkuCandidates[0]?.id ?? "");
+  const [evidenceKind, setEvidenceKind] = useState<HomeGardenLaunchEvidenceKind>("laboratory-report");
+  const [disposition, setDisposition] = useState<HomeGardenEvidenceDisposition>("draft");
+  const [title, setTitle] = useState("");
+  const [sourceReference, setSourceReference] = useState("");
+  const [sourceDate, setSourceDate] = useState("");
+  const [sameReference, setSameReference] = useState(false);
+  const [samePresentation, setSamePresentation] = useState(false);
+  const [completeForGate, setCompleteForGate] = useState(false);
+  const [note, setNote] = useState("");
+
+  const effectiveEvidenceKind = allowedEvidenceKinds.includes(evidenceKind)
+    ? evidenceKind
+    : allowedEvidenceKinds[0] ?? "laboratory-report";
+
+  const load = useCallback(async () => {
+    if (backend.mode !== "supabase" || !authorized) {
+      setRevisions([]);
+      return;
+    }
+    setLoading(true);
+    try {
+      setRevisions(await loadHomeGardenLaunchEvidence());
+      setFeedback(null);
+    } catch (error) {
+      setFeedback({ kind: "error", text: error instanceof Error ? error.message : "No fue posible cargar el registro." });
+    } finally {
+      setLoading(false);
+    }
+  }, [authorized, backend.mode]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void load(), 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
+
+  const registry = useMemo(() => buildHomeGardenReadinessRegistry(revisions), [revisions]);
+  const visibleItems = useMemo(() => registry.items.filter((item) => {
+    if (filter === "ready" && !item.commerceReady) return false;
+    if (filter === "pending" && item.commerceReady) return false;
+    if (gateFilter !== "all" && item.gates[gateFilter]) return false;
+    return true;
+  }), [filter, gateFilter, registry.items]);
+  const selectedRule = homeGardenEvidenceRules.find((rule) => rule.kind === effectiveEvidenceKind);
+
+  function prepareNextEvidence(item: HomeGardenReadinessRegistryItem, gate: HomeGardenEvidenceGateId) {
+    const nextKind = getNextHomeGardenEvidenceKind(item, gate);
+    if (!nextKind) {
+      setFeedback({ kind: "error", text: "Este criterio no tiene una siguiente evidencia registrable pendiente." });
+      return;
+    }
+    if (!access.some((entry) => canAppendHomeGardenEvidence(entry.role, nextKind))) {
+      setFeedback({ kind: "error", text: `Tu rol puede consultar ${homeGardenGateLabels[gate]}, pero no registrar la evidencia pendiente.` });
+      return;
+    }
+
+    setCandidateId(item.id);
+    setEvidenceKind(nextKind);
+    setDisposition("draft");
+    setTitle("");
+    setSourceReference("");
+    setSourceDate("");
+    setSameReference(false);
+    setSamePresentation(false);
+    setCompleteForGate(false);
+    setNote("");
+    setFeedback(null);
+    window.requestAnimationFrame(() => document.getElementById("home-garden-evidence-form")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  async function saveEvidence() {
+    if (!access.some((item) => canAppendHomeGardenEvidence(item.role, effectiveEvidenceKind))) {
+      setFeedback({ kind: "error", text: "Tu rol no puede registrar este tipo de evidencia." });
+      return;
+    }
+    if (disposition !== "verified" && completeForGate) {
+      setFeedback({ kind: "error", text: "Solo una revisión verificada puede declararse completa para un gate." });
+      return;
+    }
+    if (!candidateId || !title.trim() || !sourceReference.trim() || !note.trim()) {
+      setFeedback({ kind: "error", text: "Completa presentación, título, referencia fuente y criterio de evaluación." });
+      return;
+    }
+    setSaving(true);
+    try {
+      await appendHomeGardenLaunchEvidence({
+        candidateId,
+        evidenceKind: effectiveEvidenceKind,
+        disposition,
+        title: title.trim(),
+        sourceReference: sourceReference.trim(),
+        sourceDate: sourceDate || undefined,
+        sameReference,
+        samePresentation,
+        completeForGate,
+        note: note.trim(),
+      });
+      setTitle("");
+      setSourceReference("");
+      setSourceDate("");
+      setSameReference(false);
+      setSamePresentation(false);
+      setCompleteForGate(false);
+      setNote("");
+      await load();
+      setFeedback({ kind: "ok", text: "Nueva revisión registrada. El readiness se recalculó con la evidencia vigente." });
+    } catch (error) {
+      setFeedback({ kind: "error", text: error instanceof Error ? error.message : "No fue posible registrar la evidencia." });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (backend.mode !== "supabase") return <section className="panel"><p className="eyebrow">Wondergreen · B2C</p><h1>Readiness de lanzamiento</h1><p className="lede">Este registro interno solo funciona contra Supabase. El modo local no simula evidencia regulatoria, comercial ni financiera.</p></section>;
+  if (!authorized) return <section className="panel"><p className="eyebrow">Wondergreen · B2C</p><h1>Readiness de lanzamiento</h1><p className="lede">Tu rol no administra evidencia corporativa de lanzamiento.</p></section>;
+
+  return <div className="grid gap-4">
+    <header className="page-header">
+      <div>
+        <p className="eyebrow">Wondergreen · Casa, Jardín y Vivero</p>
+        <h1>Readiness de lanzamiento B2C</h1>
+        <p className="lede">Registro interno por presentación. Product Truth permanece canónico en código; aquí solo se registra evidencia secundaria de lanzamiento mediante revisiones append-only.</p>
+      </div>
+      <div className="header-actions">
+        <select aria-label="Filtro readiness" className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={filter} onChange={(event) => setFilter(event.target.value as RegistryFilter)}>
+          <option value="all">Todas</option><option value="pending">Pendientes</option><option value="ready">Listas para comercio</option>
+        </select>
+        <select aria-label="Filtro por gate" className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={gateFilter} onChange={(event) => setGateFilter(event.target.value as GateFilter)}>
+          <option value="all">Todos los frentes</option>{registry.workstreams.map((workstream) => <option key={workstream.gate} value={workstream.gate}>{workstream.label} · {workstream.openCount} abiertas</option>)}
+        </select>
+        <button className="button secondary" type="button" disabled={loading} onClick={() => void load()}>{loading ? "Actualizando…" : "Actualizar"}</button>
+      </div>
+    </header>
+
+    {feedback ? <p role="status" className={`rounded-xl p-4 text-sm font-semibold ${feedback.kind === "error" ? "bg-[var(--red-soft)] text-[var(--red)]" : "bg-[var(--surface-soft)] text-[var(--green)]"}`}>{feedback.text}</p> : null}
+
+    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <article className="panel"><span className="quiet text-xs">Presentaciones propuestas</span><strong className="mt-2 block text-3xl">{registry.summary.total}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Listas para comercio</span><strong className="mt-2 block text-3xl">{registry.summary.commerceReady}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Presentaciones pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.pending}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Cierres pendientes</span><strong className="mt-2 block text-3xl">{registry.summary.openGateInstances}</strong></article>
+      <article className="panel"><span className="quiet text-xs">Evidencia huérfana</span><strong className="mt-2 block text-3xl">{registry.summary.orphanEvidence}</strong></article>
+    </section>
+
+    <section className="panel">
+      <div className="section-head"><div><p className="eyebrow">Priorización</p><h2>Bloqueadores por frente</h2><p className="quiet mt-1">Cada cifra representa presentaciones con ese criterio de lanzamiento abierto. El carril indica la función responsable del tipo de cierre, no una persona asignada.</p></div><span className="quiet">{registry.summary.openGateInstances} cierres pendientes</span></div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {registry.workstreams.map((workstream) => <article className="rounded-xl border border-[var(--line)] p-4" key={workstream.gate}>
+          <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{workstream.label}</strong><span className="quiet mt-1 block text-xs">Carril: {homeGardenLaneLabels[workstream.lane]}</span></div><span className={`status-pill ${workstream.openCount === 0 ? "status-normal" : "status-planned"}`}>{workstream.openCount === 0 ? "CERRADO" : `${workstream.openCount} ABIERTAS`}</span></div>
+          <div className="mt-3 flex gap-4 text-xs"><span><b>{workstream.closedCount}</b> cerradas</span><span><b>{workstream.openCount}</b> pendientes</span><span><b>{workstream.total}</b> total</span></div>
+          {workstream.openCount > 0 ? <button className="button secondary mt-3" type="button" onClick={() => { setGateFilter(workstream.gate); setFilter("pending"); }}>Ver presentaciones afectadas</button> : <p className="quiet mt-3 text-xs">No bloquea ninguna presentación.</p>}
+        </article>)}
+      </div>
+    </section>
+
+    {registry.orphanEvidence.length ? <section className="panel border border-[var(--red)]"><p className="eyebrow">Deriva detectada</p><h2>Evidencia sin candidato vigente</h2><p className="quiet mt-1">No se aplica silenciosamente a otra presentación. Debe reconciliarse.</p><ul className="mt-3 grid gap-2 text-sm">{registry.orphanEvidence.map((item) => <li key={item.id}><strong>{item.candidateId}</strong> · {item.evidenceKind} · rev. {item.revisionNo}</li>)}</ul></section> : null}
+
+    <section className="panel scroll-mt-4" id="home-garden-evidence-form">
+      <div className="section-head"><div><p className="eyebrow">Nueva revisión</p><h2>Anexar evidencia gobernada</h2><p className="quiet mt-1">Guarda una referencia interna al documento; no pegues enlaces firmados, tokens ni credenciales. Los tipos disponibles dependen de tu rol.</p></div></div>
+      <div className="grid gap-3 lg:grid-cols-3">
+        <label className="grid gap-1 text-xs font-semibold">Presentación<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={candidateId} onChange={(event) => setCandidateId(event.target.value)}>{homeGardenPlannedSkuCandidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.consumerName} · {candidate.plannedVariant} · {candidate.id}</option>)}</select></label>
+        <label className="grid gap-1 text-xs font-semibold">Tipo de evidencia<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={effectiveEvidenceKind} onChange={(event) => setEvidenceKind(event.target.value as HomeGardenLaunchEvidenceKind)}>{allowedEvidenceKinds.map((kind) => { const rule = homeGardenEvidenceRules.find((item) => item.kind === kind); return <option key={kind} value={kind}>{rule?.label ?? kind}</option>; })}</select></label>
+        <label className="grid gap-1 text-xs font-semibold">Estado<select className="min-h-10 rounded-lg border border-[var(--line)] bg-white px-3 text-sm" value={disposition} onChange={(event) => { const next = event.target.value as HomeGardenEvidenceDisposition; setDisposition(next); if (next !== "verified") setCompleteForGate(false); }}>{Object.entries(dispositionLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label className="grid gap-1 text-xs font-semibold lg:col-span-2">Título<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Ej. Registro/etiqueta CRECE 500 g · revisión agosto" /></label>
+        <label className="grid gap-1 text-xs font-semibold">Fecha fuente<input type="date" className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={sourceDate} onChange={(event) => setSourceDate(event.target.value)} /></label>
+        <label className="grid gap-1 text-xs font-semibold lg:col-span-3">Referencia fuente<input className="min-h-10 rounded-lg border border-[var(--line)] px-3 text-sm" value={sourceReference} onChange={(event) => setSourceReference(event.target.value)} placeholder="Nombre de archivo, ruta interna o URL privada estable sin tokens" /></label>
+        <label className="grid gap-1 text-xs font-semibold lg:col-span-3">Criterio / nota<textarea className="min-h-24 rounded-lg border border-[var(--line)] p-3 text-sm" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Qué se verificó, qué falta o por qué esta revisión reabre/cierra un gate." /></label>
+      </div>
+      {selectedRule ? <div className="mt-4 rounded-xl bg-[var(--surface-soft)] p-4 text-xs"><strong>{selectedRule.label}</strong><p className="mt-1"><b>Soporta:</b> {selectedRule.supports.join(" · ")}</p><p className="mt-1"><b>No demuestra:</b> {selectedRule.doesNotProve.join(" · ")}</p></div> : null}
+      <div className="mt-4 flex flex-wrap gap-4 text-xs">
+        <label className="flex items-center gap-2"><input type="checkbox" checked={sameReference} onChange={(event) => setSameReference(event.target.checked)} />Misma referencia técnica</label>
+        <label className="flex items-center gap-2"><input type="checkbox" checked={samePresentation} onChange={(event) => setSamePresentation(event.target.checked)} />Misma presentación</label>
+        <label className="flex items-center gap-2"><input type="checkbox" checked={completeForGate} disabled={disposition !== "verified"} onChange={(event) => setCompleteForGate(event.target.checked)} />Completa para el gate evaluado {disposition !== "verified" ? "(requiere estado Verificada)" : ""}</label>
+      </div>
+      <button className="button primary mt-4" type="button" disabled={saving || !allowedEvidenceKinds.length} onClick={() => void saveEvidence()}>{saving ? "Registrando…" : "Registrar nueva revisión"}</button>
+    </section>
+
+    <section className="grid gap-3">
+      <div className="section-head"><div><p className="eyebrow">Presentaciones</p><h2>{gateFilter === "all" ? "Matriz por presentación" : `Pendientes · ${homeGardenGateLabels[gateFilter]}`}</h2><p className="quiet mt-1">Mostrando {visibleItems.length} de {registry.items.length} presentaciones.</p></div>{gateFilter !== "all" ? <button className="button secondary" type="button" onClick={() => setGateFilter("all")}>Quitar filtro de frente</button> : null}</div>
+      {visibleItems.map((item) => {
+        const nextKind = gateFilter === "all" ? undefined : getNextHomeGardenEvidenceKind(item, gateFilter);
+        const canPrepare = nextKind ? access.some((entry) => canAppendHomeGardenEvidence(entry.role, nextKind)) : false;
+        const nextRule = nextKind ? homeGardenEvidenceRules.find((rule) => rule.kind === nextKind) : undefined;
+        return <article className="panel" key={item.id}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div><p className="eyebrow">{item.consumerName} · {item.plannedVariant}</p><h2>{item.technicalName}{item.formula ? ` · ${item.formula}` : ""}</h2><p className="quiet mt-1 text-xs">{item.id} · Product Truth: {item.technicalSlug}</p></div>
+            <span className={`status-pill ${item.commerceReady ? "status-normal" : "status-planned"}`}>{item.commerceReady ? "LISTO PARA COMERCIO" : `${item.missingGates.length} GATES ABIERTOS`}</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">{(Object.entries(item.gates) as Array<[keyof typeof item.gates, boolean]>).map(([gate, closed]) => <GatePill key={gate} closed={closed} label={homeGardenGateLabels[gate]} />)}</div>
+
+          {gateFilter !== "all" ? <div className="mt-4 rounded-xl border border-[var(--line)] p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3"><div><strong className="text-sm">Qué falta · {homeGardenGateLabels[gateFilter]}</strong><p className="quiet mt-1 text-xs">El estado se deriva exclusivamente de la última revisión vigente por tipo de evidencia.</p></div>{nextKind ? <span className="quiet text-xs">Siguiente: {nextRule?.label ?? nextKind}</span> : null}</div>
+            <div className="mt-3 grid gap-2">
+              {item.gateEvidence[gateFilter].map((state) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={state.kind}>
+                <div className="flex flex-wrap items-center justify-between gap-2"><strong>{state.label}</strong><span className={`status-pill ${state.status === "ready" ? "status-normal" : "status-planned"}`}>{requirementStatusLabels[state.status]}</span></div>
+                <p className="mt-1">{state.reason}</p>
+                {state.latestRevision ? <p className="quiet mt-1">Rev. {state.latestRevision.revisionNo} · {dispositionLabels[state.latestRevision.disposition]}</p> : null}
+              </div>)}
+            </div>
+            {nextKind && canPrepare ? <button className="button secondary mt-3" type="button" onClick={() => prepareNextEvidence(item, gateFilter)}>Preparar registro · {nextRule?.label ?? nextKind}</button> : null}
+            {nextKind && !canPrepare ? <p className="quiet mt-3 text-xs">Tu rol puede consultar este bloqueo, pero el siguiente registro corresponde al carril {homeGardenLaneLabels[registry.workstreams.find((workstream) => workstream.gate === gateFilter)?.lane ?? "admin-director"]}.</p> : null}
+            {!nextKind ? <p className="quiet mt-3 text-xs">No hay otra evidencia registrable pendiente para este criterio.</p> : null}
+          </div> : null}
+
+          <div className="mt-4 border-t border-[var(--line)] pt-4">
+            <strong className="text-sm">Evidencia vigente</strong>
+            {item.latestEvidence.length ? <div className="mt-2 grid gap-2">{item.latestEvidence.map((evidence) => <div className="rounded-lg bg-[var(--surface-soft)] p-3 text-xs" key={evidence.id}><div className="flex flex-wrap justify-between gap-2"><strong>{homeGardenEvidenceRules.find((rule) => rule.kind === evidence.evidenceKind)?.label ?? evidence.evidenceKind} · {dispositionLabels[evidence.disposition]}</strong><span>rev. {evidence.revisionNo}</span></div><p className="mt-1">{evidence.title}</p><p className="quiet mt-1 break-all">Fuente interna: {evidence.sourceReference}</p><p className="mt-1">{evidence.note}</p></div>)}</div> : <p className="quiet mt-2 text-xs">Sin evidencia registrada para esta presentación.</p>}
+          </div>
+        </article>;
+      })}
+      {!visibleItems.length ? <section className="panel"><p className="quiet">No hay presentaciones que coincidan con los filtros actuales.</p></section> : null}
+    </section>
+  </div>;
+}
