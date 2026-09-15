@@ -1,4 +1,10 @@
-const cleanRuntimeUrl = (value: string | undefined) => value?.trim().replace(/\/$/, "") || "";
+const allowLocalRuntimeLinks = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ALLOW_LOCAL_RUNTIME_LINKS === "true";
+
+const cleanRuntimeUrl = (value: string | undefined) => {
+  const url = value?.trim().replace(/\/$/, "") || "";
+  if (!allowLocalRuntimeLinks && /localhost|127\.0\.0\.1/.test(url)) return "";
+  return url;
+};
 
 export const runtimeLinks = {
   huella: cleanRuntimeUrl(process.env.NEXT_PUBLIC_HUELLA_APP_URL),

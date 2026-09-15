@@ -52,6 +52,8 @@ Las variables no contienen secretos. No deben apuntar a dominios provisionales s
 
 Antes de compilar un build que active enlaces externos, ejecuta `npm run qa:runtime-config`. El gate permite variables vacías para demos locales y rechaza URLs inválidas, credenciales embebidas, queries, fragmentos y dominios de ejemplo.
 
+El build de publicación también debe pasar `npm run qa:public-output`. Los destinos locales de `.env.local` se permiten durante `next dev`, pero se ignoran automáticamente en una compilación de producción para no incrustar `localhost` en el artefacto compartible.
+
 ## Fuente de verdad
 Ver `docs/knowledge/`. No se deben inventar formulaciones, dosis, registros, resultados, claims ni activos de marca.
 

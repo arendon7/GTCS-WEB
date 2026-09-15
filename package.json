@@ -9,6 +9,7 @@
     "start": "next start",
     "check": "tsc --noEmit",
     "audit:static": "node scripts/audit-static.mjs",
+    "qa:public-output": "node scripts/check-public-output.mjs",
     "qa:runtime-config": "node scripts/check-runtime-config.mjs",
     "qa:ecosystem": "node scripts/check-local-ecosystem.mjs",
     "qa:entrypoints": "node scripts/check-local-entrypoints.mjs",
