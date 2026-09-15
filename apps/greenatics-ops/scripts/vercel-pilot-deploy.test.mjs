@@ -51,6 +51,9 @@ function successfulFetch({ projectName, deploymentUrl }) {
     if (method === "POST" && parsed.pathname === "/v11/projects") {
       return jsonResponse({ id: "prj_greenatics_test", name: projectName });
     }
+    if (method === "PATCH" && parsed.pathname === "/v9/projects/prj_greenatics_test") {
+      return jsonResponse({ id: "prj_greenatics_test", name: projectName, rootDirectory: "apps/greenatics-ops" });
+    }
     if (method === "POST" && parsed.pathname === "/v10/projects/prj_greenatics_test/env") {
       return jsonResponse({ created: [] });
     }
@@ -177,6 +180,9 @@ describe("Vercel hosted pilot preview deployment", () => {
     expect(envCall.body.every((item) => JSON.stringify(item.target) === JSON.stringify(["preview"]))).toBe(true);
     expect(envCall.body.find((item) => item.key === "NEXT_PUBLIC_DATA_MODE")?.value).toBe("supabase");
     expect(envCall.body.find((item) => item.key === "SUPABASE_SECRET_KEY")?.type).toBe("sensitive");
+
+    const rootDirectoryCall = calls.find((call) => call.method === "PATCH" && call.parsed.pathname === "/v9/projects/prj_greenatics_test");
+    expect(rootDirectoryCall.body).toEqual({ rootDirectory: "apps/greenatics-ops" });
   });
 
   it("reuses the canonical project and fails closed on a terminal deployment state", async () => {

@@ -4,6 +4,7 @@ const PROJECT_BY_MODE = Object.freeze({
   "public-only": "greenatics-public-preview",
   "full-ops": "greenatics-ops",
 });
+const OPS_ROOT_DIRECTORY = "apps/greenatics-ops";
 const TERMINAL_FAILURE_STATES = new Set(["BLOCKED", "CANCELED", "ERROR"]);
 
 export class VercelPilotError extends Error {
@@ -176,6 +177,17 @@ export async function ensureVercelPilotProject(config, { fetchImpl = fetch } = {
   return Object.freeze({ ...validateProject(created, config.projectName), created: true });
 }
 
+async function configureVercelPilotProjectRoot(config, project, { fetchImpl = fetch } = {}) {
+  if (config.mode !== "full-ops") return project;
+
+  // The repository also contains the static public site; OPS must build from its own Next.js app.
+  const updated = await vercelRequest(config, fetchImpl, `/v9/projects/${encodeURIComponent(project.id)}`, {
+    method: "PATCH",
+    body: { rootDirectory: OPS_ROOT_DIRECTORY },
+  });
+  return Object.freeze({ ...validateProject(updated, config.projectName), created: project.created });
+}
+
 function previewEnvironmentVariables(config) {
   if (config.mode === "public-only") {
     return [
@@ -316,7 +328,8 @@ export async function runVercelPilotPreviewDeployment({
   pollIntervalMs,
 } = {}) {
   const config = parseVercelPilotConfig(env);
-  const project = await ensureVercelPilotProject(config, { fetchImpl });
+  const provisionedProject = await ensureVercelPilotProject(config, { fetchImpl });
+  const project = await configureVercelPilotProjectRoot(config, provisionedProject, { fetchImpl });
   const environment = await upsertVercelPilotPreviewEnvironment(config, project, { fetchImpl });
   const createdDeployment = await createVercelPilotPreviewDeployment(config, project, { fetchImpl });
   const deployment = await waitForVercelPilotDeployment(config, createdDeployment, {
