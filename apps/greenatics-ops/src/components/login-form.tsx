@@ -18,11 +18,12 @@ export function LoginForm({ accessMode, initialFeedback = "" }: { accessMode: Op
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState(initialFeedback);
   const [feedbackKind, setFeedbackKind] = useState<FeedbackKind>("error");
-  const [busyAction, setBusyAction] = useState<"login" | "recovery" | null>(null);
+  const [busyAction, setBusyAction] = useState<"login" | "recovery" | "demo" | null>(null);
   const localBypass = accessMode === "local-bypass";
   const remoteAuth = accessMode === "supabase-auth";
   const configurationBlocked = accessMode === "configuration-block";
   const configured = remoteAuth && isSupabaseConfigured();
+  const remoteDemoAvailable = remoteAuth && configured && process.env.NEXT_PUBLIC_DEMO_LOGIN_ENABLED === "true" && Boolean(process.env.NEXT_PUBLIC_DEMO_LOGIN_EMAIL) && Boolean(process.env.NEXT_PUBLIC_DEMO_LOGIN_PASSWORD);
 
   const showError = (message: string) => {
     setFeedbackKind("error");
@@ -65,9 +66,29 @@ export function LoginForm({ accessMode, initialFeedback = "" }: { accessMode: Op
     }
   };
 
+  const enterDemo = async () => {
+    if (localBypass) {
+      router.replace(safeOpsNext(new URLSearchParams(window.location.search).get("next")));
+      router.refresh();
+      return;
+    }
+    if (!remoteDemoAvailable) return showError("El acceso demo remoto no está habilitado en este entorno.");
+    setBusyAction("demo");
+    setFeedback("");
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({ email: process.env.NEXT_PUBLIC_DEMO_LOGIN_EMAIL!, password: process.env.NEXT_PUBLIC_DEMO_LOGIN_PASSWORD! });
+      if (error) return showError("El acceso demo no está disponible en este momento.");
+      router.replace(safeOpsNext(new URLSearchParams(window.location.search).get("next")));
+      router.refresh();
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
   return <section className="panel mx-auto max-w-md">
     <div className="mb-6"><p className="eyebrow">GREENATICS OPS</p><h1 className="text-3xl">Acceso interno</h1><p className="lede">Ingreso del equipo operativo y administrativo.</p></div>
-    {localBypass && <div className="mb-5 rounded-xl bg-[var(--green-soft)] p-4 text-sm text-[var(--green-dark)]"><strong>Modo local de desarrollo.</strong><span className="mt-1 block">El acceso local solo se habilita en desarrollo, CI o demos aisladas autorizadas; no funciona como fallback de producción.</span></div>}
+    {localBypass && <div className="mb-5 rounded-xl bg-[var(--green-soft)] p-4 text-sm text-[var(--green-dark)]"><strong>Demo local disponible.</strong><span className="mt-1 block">Puedes recorrer la operación con datos aislados de demostración. Este acceso no abre una cuenta productiva ni sustituye la autenticación remota.</span><button className="button primary mt-4 w-full" type="button" onClick={() => void enterDemo()} disabled={busyAction !== null}>{busyAction === "demo" ? "Abriendo demo…" : "Entrar al demo OPS"}</button></div>}
     {configurationBlocked && <div className="mb-5 rounded-xl bg-[var(--amber-soft)] p-4 text-sm text-[var(--amber)]" role="status"><strong>OPS está protegido en este deployment.</strong><span className="mt-1 block">La web pública puede funcionar, pero el acceso interno permanece bloqueado hasta configurar Supabase Auth para este entorno.</span></div>}
     {remoteAuth && !configured && <div className="mb-5 rounded-xl bg-[var(--amber-soft)] p-4 text-sm text-[var(--amber)]"><strong>Acceso remoto pendiente de configuración.</strong><span className="mt-1 block">Faltan URL y publishable key del proyecto Supabase en el cliente.</span></div>}
     <div className="grid gap-4">
@@ -76,6 +97,6 @@ export function LoginForm({ accessMode, initialFeedback = "" }: { accessMode: Op
     </div>
     <div className="mt-3 text-right"><button className="text-sm font-semibold text-[var(--green-dark)] underline underline-offset-4 disabled:opacity-50" disabled={busyAction !== null || !remoteAuth || !configured} type="button" onClick={() => void requestPasswordRecovery()}>{busyAction === "recovery" ? "Enviando enlace…" : "Definir o recuperar contraseña"}</button></div>
     {feedback && <p className={`mt-4 rounded-lg p-3 text-sm font-semibold ${feedbackKind === "success" ? "bg-[var(--green-soft)] text-[var(--green-dark)]" : "bg-[var(--red-soft)] text-[var(--red)]"}`} role={feedbackKind === "error" ? "alert" : "status"}>{feedback}</p>}
-    <div className="mt-6 flex items-center justify-between gap-3"><a className="button secondary" href={greenaticsPublicUrl}>Volver a Greenatics</a><button className="button primary" disabled={busyAction !== null || !remoteAuth || !configured} type="button" onClick={submit}>{busyAction === "login" ? "Ingresando…" : "Ingresar"}</button></div>
+    <div className="mt-6 flex items-center justify-between gap-3"><a className="button secondary" href={greenaticsPublicUrl}>Volver a Greenatics</a><div className="flex gap-2"><button className="button secondary" type="button" onClick={() => void enterDemo()} disabled={busyAction !== null || (!localBypass && !remoteDemoAvailable)}>{busyAction === "demo" ? "Abriendo…" : "Demo"}</button><button className="button primary" disabled={busyAction !== null || !remoteAuth || !configured} type="button" onClick={submit}>{busyAction === "login" ? "Ingresando…" : "Ingresar"}</button></div></div>
   </section>;
 }

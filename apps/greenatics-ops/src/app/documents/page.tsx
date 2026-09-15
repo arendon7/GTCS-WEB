@@ -54,16 +54,19 @@ function PendingIntegration() {
   );
 }
 
-function AccessProblem({ reason }: { reason: "membership" | "backend" }) {
+function AccessProblem({ reason }: { reason: "membership" | "application" | "backend" }) {
   const membership = reason === "membership";
+  const application = reason === "application";
   return (
     <section className="panel mx-auto max-w-3xl" role="alert">
       <p className="eyebrow">Centro documental</p>
-      <h1 className="text-3xl">{membership ? "Acceso documental no habilitado" : "No fue posible validar el acceso"}</h1>
+      <h1 className="text-3xl">{membership || application ? "Acceso documental no habilitado" : "No fue posible validar el acceso"}</h1>
       <p className="lede mt-3">
         {membership
           ? "Tu sesión existe, pero no tiene una membresía activa sobre una planta activa. SharePoint no se consulta en este estado."
-          : "No se pudo comprobar tu membresía operacional. Por seguridad, SharePoint no se consulta mientras esa validación esté incompleta."}
+          : application
+            ? "Tu cuenta tiene una sesión y una planta activa, pero GREENATICS OPS no está habilitado para ella. Solicita el permiso a un administrador."
+            : "No se pudo comprobar tu membresía operacional. Por seguridad, SharePoint no se consulta mientras esa validación esté incompleta."}
       </p>
     </section>
   );
@@ -176,6 +179,8 @@ export default async function DocumentsPage({ searchParams }: { searchParams: Do
         redirect("/login?next=%2Fdocuments");
       case "membership":
         return <AppShell><AccessProblem reason="membership" /></AppShell>;
+      case "application":
+        return <AppShell><AccessProblem reason="application" /></AppShell>;
       case "backend":
         return <AppShell><AccessProblem reason="backend" /></AppShell>;
     }

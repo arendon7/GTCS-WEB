@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 type ManagedPlant = { plantId: string; code: string; name: string; managerRole: "admin" | "director" };
 type MembershipRow = { user_id: string; display_name: string; plant_id: string; plant_name: string; role: OpsAccessRole; active: boolean };
+type AppAccessRow = { user_id: string; app_code: string; enabled: boolean };
 type JoinedPlant = { id: string; code: string; name: string; active: boolean };
 type OwnMembershipRow = { plant_id: string; role: "admin" | "director"; plants: JoinedPlant | JoinedPlant[] | null };
 
@@ -59,16 +60,25 @@ export async function GET() {
   const { data, error } = await context.supabase.rpc("admin_memberships_for_managed_plants");
   if (error) return noStoreJson({ ok: false, error: "No fue posible cargar membresías." }, 500);
   const memberships = (data ?? []) as unknown as MembershipRow[];
+  const { data: appData, error: appError } = await context.supabase.rpc("admin_app_access_for_managed_plants");
+  if (appError) return noStoreJson({ ok: false, error: "No fue posible cargar accesos por aplicación." }, 500);
+  const appAccessByUser = new Map<string, string[]>();
+  for (const row of (appData ?? []) as unknown as AppAccessRow[]) {
+    if (!row.enabled) continue;
+    const current = appAccessByUser.get(row.user_id) ?? [];
+    current.push(row.app_code);
+    appAccessByUser.set(row.user_id, current);
+  }
   const userIds = new Set(memberships.map((row) => row.user_id));
 
   const admin = createAdminClient();
   const { data: userData, error: userError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (userError) return noStoreJson({ ok: false, error: "No fue posible cargar usuarios de Auth." }, 500);
   const emailById = new Map(userData.users.filter((user) => userIds.has(user.id)).map((user) => [user.id, user.email ?? ""]));
-  const users = new Map<string, { id: string; email: string; displayName: string; memberships: Array<{ plantId: string; plantName: string; role: OpsAccessRole; active: boolean }> }>();
+  const users = new Map<string, { id: string; email: string; displayName: string; appAccess: string[]; memberships: Array<{ plantId: string; plantName: string; role: OpsAccessRole; active: boolean }> }>();
 
   for (const row of memberships) {
-    const current = users.get(row.user_id) ?? { id: row.user_id, email: emailById.get(row.user_id) ?? "", displayName: row.display_name, memberships: [] };
+    const current = users.get(row.user_id) ?? { id: row.user_id, email: emailById.get(row.user_id) ?? "", displayName: row.display_name, appAccess: appAccessByUser.get(row.user_id) ?? [], memberships: [] };
     current.memberships.push({ plantId: row.plant_id, plantName: row.plant_name, role: row.role, active: row.active });
     users.set(row.user_id, current);
   }
@@ -100,10 +110,11 @@ export async function POST(request: NextRequest) {
   const invitedUserId = data.user?.id;
   if (!invitedUserId) return noStoreJson({ ok: false, error: "Supabase no devolvió el usuario invitado." }, 502);
 
-  const { error: membershipError } = await context.supabase.rpc("admin_set_user_memberships", {
+  const { error: membershipError } = await context.supabase.rpc("admin_set_user_workspace", {
     target_user: invitedUserId,
     target_display_name: parsed.value.displayName,
     assignments: parsed.value.assignments,
+    app_codes: parsed.value.appAccess,
   });
   if (membershipError) {
     await admin.auth.admin.deleteUser(invitedUserId);
@@ -123,10 +134,11 @@ export async function PATCH(request: NextRequest) {
   const authorizationError = authorizeAssignments(parsed.value.assignments, context.managedPlants);
   if (authorizationError) return noStoreJson({ ok: false, error: authorizationError }, 403);
 
-  const { error } = await context.supabase.rpc("admin_set_user_memberships", {
+  const { error } = await context.supabase.rpc("admin_set_user_workspace", {
     target_user: parsed.value.userId,
     target_display_name: parsed.value.displayName,
     assignments: parsed.value.assignments,
+    app_codes: parsed.value.appAccess,
   });
   if (error) return noStoreJson({ ok: false, error: "No fue posible actualizar las membresías." }, 500);
   return noStoreJson({ ok: true });

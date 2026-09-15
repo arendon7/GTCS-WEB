@@ -14,13 +14,16 @@ export async function OpsRouteGuard({ children }: { children: ReactNode }) {
   const userId = claimsData?.claims?.sub;
   if (claimsError || !userId) redirect("/login");
 
-  const [{ data: profile, error: profileError }, { data: membership, error: membershipError }] = await Promise.all([
+  const [{ data: profile, error: profileError }, { data: membership, error: membershipError }, { data: appAccess, error: appAccessError }] = await Promise.all([
     supabase.from("profiles").select("active").eq("id", userId).maybeSingle(),
     supabase.from("plant_memberships").select("plant_id").eq("user_id", userId).eq("active", true).limit(1).maybeSingle(),
+    supabase.from("application_access").select("app_code").eq("user_id", userId).eq("app_code", "ops").eq("enabled", true).maybeSingle(),
   ]);
 
   if (profileError || !profile?.active) redirect("/login?reason=inactive-profile");
   if (membershipError || !membership) redirect("/login?reason=no-plant-access");
+  if (appAccessError) redirect("/login?reason=configuration");
+  if (!appAccess) redirect("/login?reason=no-app-access");
 
   return children;
 }

@@ -41,9 +41,9 @@ export default function PlatformUsersPage() {
             <span className="eyebrow eyebrow--light">Administración de acceso</span>
             <h1>Una identidad para cada equipo. Un alcance claro para cada decisión.</h1>
             <p className="lead">Administra organizaciones, usuarios, roles y accesos de OPS, Huella, Red, AGROWAY y SANA desde un solo lugar. La consola conserva el principio de mínimo privilegio: cada persona ve y modifica únicamente lo que su responsabilidad requiere.</p>
-            <div className="button-row"><button className="button button--light" type="button" onClick={invite}>+ Invitar usuario</button>{runtimeLinks.ops ? <a className="button button--outline-light" href={`${runtimeLinks.ops}/admin/users`}>Abrir administración OPS</a> : null}<Link className="button button--outline-light" href="/acceso/">Ver accesos</Link></div>
+            <div className="button-row"><button className="button button--light" type="button" onClick={invite}>+ Ver flujo de invitación</button><a className="button button--outline-light" href={runtimeLinks.ops ? `${runtimeLinks.ops}/admin/users` : "/acceso/?interes=greenatics-ops"}>Abrir administración OPS</a><Link className="button button--outline-light" href="/acceso/">Ver accesos</Link></div>
           </div>
-          <aside className="platform-admin__hero-card"><span>Estado del centro</span><strong>Arquitectura lista para identidad central</strong><p>La interfaz está preparada para conectar autenticación, organizaciones, roles, sesiones y auditoría sin compartir datos entre espacios por accidente.</p><div><i /><span>Políticas base · activas</span></div><div><i /><span>Separación por organización · activa</span></div><div><i /><span>Persistencia productiva · por conectar</span></div></aside>
+          <aside className="platform-admin__hero-card"><span>Estado del centro</span><strong>Identidad y permisos en un solo workspace</strong><p>Esta vista explica el modelo de administración. La gestión real de cuentas se realiza en la consola autenticada de OPS, con invitaciones, plantas, roles y herramientas habilitadas.</p><div><i /><span>Políticas base · activas</span></div><div><i /><span>Separación por organización · activa</span></div><div><i /><span>Administración real · consola OPS</span></div></aside>
         </div>
       </section>
 
@@ -58,7 +58,7 @@ export default function PlatformUsersPage() {
           </div>
 
           <div className="platform-admin__lower-grid"><article><span className="eyebrow">Roles base</span><h3>Permisos comprensibles antes de asignar.</h3><div className="platform-admin__role"><strong>Administrador general</strong><span>Organizaciones, usuarios, políticas y auditoría.</span></div><div className="platform-admin__role"><strong>Dirección de operación</strong><span>OPS, Red, reportes y decisiones del proyecto asignado.</span></div><div className="platform-admin__role"><strong>Analista o responsable de lote</strong><span>Captura, consulta y evidencia dentro de su alcance.</span></div></article><article className="platform-admin__audit"><span className="eyebrow eyebrow--light">Auditoría de acceso</span><h3>Lo importante también queda registrado.</h3><p>Invitaciones, cambios de rol, suspensiones, accesos y exportaciones deben conservar actor, organización, fecha, motivo y objeto afectado.</p><button type="button" onClick={() => setNotice("Registro de auditoría preparado para consultar eventos por organización, persona, plataforma y periodo.")}>Abrir registro de eventos →</button></article></div>
-          <p className="platform-admin__notice" role="status">{notice}</p>
+          <p className="platform-admin__notice" role="status">{notice} Para crear o modificar usuarios reales, usa <a href={runtimeLinks.ops ? `${runtimeLinks.ops}/admin/users` : "/acceso/?interes=greenatics-ops"}>Administración OPS</a>.</p>
         </div>
       </section>
     </main>

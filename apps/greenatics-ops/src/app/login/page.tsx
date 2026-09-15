@@ -8,6 +8,7 @@ function authFeedback(authError?: string, reason?: string) {
   const code = authError || reason;
   if (code === "inactive-profile") return "Tu perfil está inactivo. Contacta a dirección.";
   if (code === "no-plant-access") return "Tu cuenta no tiene acceso activo a una planta. Contacta a dirección.";
+  if (code === "no-app-access") return "Tu cuenta está activa, pero GREENATICS OPS no está habilitado para ella. Contacta a un administrador.";
   return "";
 }
 

@@ -1,5 +1,7 @@
 import type { OpsAccessRole } from "@/lib/ops-data-contract";
 
+export type GreenaticsAppCode = "ops" | "huella" | "red" | "agroway" | "sana";
+
 export type UserMembershipAssignment = {
   plantId: string;
   role: OpsAccessRole;
@@ -10,15 +12,18 @@ export type InviteUserInput = {
   email: string;
   displayName: string;
   assignments: UserMembershipAssignment[];
+  appAccess: GreenaticsAppCode[];
 };
 
 export type UpdateUserMembershipInput = {
   userId: string;
   displayName: string;
   assignments: UserMembershipAssignment[];
+  appAccess: GreenaticsAppCode[];
 };
 
 const roles = new Set<OpsAccessRole>(["operator", "supervisor", "technical", "maintenance", "admin", "director"]);
+const applications = new Set<GreenaticsAppCode>(["ops", "huella", "red", "agroway", "sana"]);
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -52,7 +57,9 @@ export function validateInviteUserInput(value: unknown): ValidationResult<Invite
   if (displayName.length < 2 || displayName.length > 120) return { ok: false, error: "Nombre visible inválido." };
   const assignments = validateAssignments(candidate.assignments);
   if (!assignments.ok) return assignments;
-  return { ok: true, value: { email, displayName, assignments: assignments.value } };
+  const appAccess = validateAppAccess(candidate.appAccess);
+  if (!appAccess.ok) return appAccess;
+  return { ok: true, value: { email, displayName, assignments: assignments.value, appAccess: appAccess.value } };
 }
 
 export function validateUpdateUserInput(value: unknown): ValidationResult<UpdateUserMembershipInput> {
@@ -64,5 +71,18 @@ export function validateUpdateUserInput(value: unknown): ValidationResult<Update
   if (displayName.length < 2 || displayName.length > 120) return { ok: false, error: "Nombre visible inválido." };
   const assignments = validateAssignments(candidate.assignments);
   if (!assignments.ok) return assignments;
-  return { ok: true, value: { userId, displayName, assignments: assignments.value } };
+  const appAccess = validateAppAccess(candidate.appAccess);
+  if (!appAccess.ok) return appAccess;
+  return { ok: true, value: { userId, displayName, assignments: assignments.value, appAccess: appAccess.value } };
+}
+
+export function validateAppAccess(value: unknown): ValidationResult<GreenaticsAppCode[]> {
+  if (!Array.isArray(value) || value.length < 1 || value.length > applications.size) return { ok: false, error: "Selecciona al menos una aplicación." };
+  const seen = new Set<GreenaticsAppCode>();
+  for (const item of value) {
+    if (typeof item !== "string" || !applications.has(item as GreenaticsAppCode)) return { ok: false, error: "Aplicación inválida." };
+    if (seen.has(item as GreenaticsAppCode)) return { ok: false, error: "Una aplicación no puede aparecer dos veces." };
+    seen.add(item as GreenaticsAppCode);
+  }
+  return { ok: true, value: [...seen] };
 }

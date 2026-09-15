@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export type OpsServerAccess =
   | { ok: true; mode: "local-bypass"; userId: null }
   | { ok: true; mode: "supabase-auth"; userId: string }
-  | { ok: false; reason: "configuration" | "session" | "membership" | "backend" };
+  | { ok: false; reason: "configuration" | "session" | "membership" | "application" | "backend" };
 
 type JoinedPlant = { active?: boolean };
 type MembershipRow = { plant_id?: string; plants?: JoinedPlant | JoinedPlant[] | null };
@@ -40,6 +40,17 @@ export async function getOpsServerAccess(): Promise<OpsServerAccess> {
   if (!hasActivePlantMembership((data ?? []) as unknown as MembershipRow[])) {
     return { ok: false, reason: "membership" };
   }
+
+  const { data: appAccess, error: appAccessError } = await supabase
+    .from("application_access")
+    .select("app_code")
+    .eq("user_id", user.id)
+    .eq("app_code", "ops")
+    .eq("enabled", true)
+    .maybeSingle();
+
+  if (appAccessError) return { ok: false, reason: "backend" };
+  if (!appAccess) return { ok: false, reason: "application" };
 
   return { ok: true, mode, userId: user.id };
 }
