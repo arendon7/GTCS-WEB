@@ -2,20 +2,21 @@
 
 ## Decisión de dirección
 
-Greenatics será la puerta única de entrada, la marca de hosting y el contexto común de sus herramientas. Eso no significa convertir todos los productos en una sola pantalla ni copiar sus bases de datos: cada aplicación conserva su dominio, reglas y ritmo de evolución, mientras comparte una capa controlada de identidad, organizaciones, permisos, navegación, auditoría y enlaces de contexto.
+Greenatics será la puerta única de entrada, la marca de hosting y el contexto común de sus herramientas. La experiencia preferida será un solo dominio con rutas coherentes: el usuario entra por Greenatics, cambia de herramienta sin abandonar la marca y vuelve siempre al Centro Greenatics. Eso no significa convertir todos los productos en una sola pantalla ni copiar sus bases de datos: cada aplicación conserva su runtime, reglas y ritmo de evolución, mientras comparte una capa controlada de identidad, organizaciones, permisos, navegación, auditoría y enlaces de contexto.
 
-La web institucional actual es un sitio Next.js con exportación estática. Es adecuada para contenido público, demos y portal de entrada, pero no debe recibir directamente el backend de Calcula tu Huella ni inventar una conexión productiva para OPS. La consolidación debe añadir servicios ejecutables detrás del mismo dominio o de subdominios Greenatics con contratos explícitos.
+La web institucional actual es un sitio Next.js con exportación estática. Es adecuada para contenido público, demos y portal de entrada, pero no debe recibir directamente el backend de Calcula tu Huella ni inventar una conexión productiva para OPS. La consolidación preferida añade servicios ejecutables detrás del mismo dominio mediante un gateway o reverse proxy; los subdominios Greenatics quedan como alternativa si el proveedor no soporta rutas, cookies y headers de forma segura.
 
 ## Mapa propuesto
 
 ```text
-greenatics.com/                 Sitio público institucional y comercial
-greenatics.com/plataforma/      Centro único de aplicaciones
-greenatics.com/app/             Demo pública y futura entrada OPS
-greenatics.com/huella/          Estimador público y futura entrada Huella
-greenatics.com/red/             Explicación pública de GREENATICS Red
-greenatics.com/red/app/         Estación navegable Red, futura app productiva
-greenatics.com/acceso/          Modelo de acceso y solicitud de implementación
+greenatics.com.co/              Sitio público institucional y comercial
+greenatics.com.co/plataforma/   Centro único de aplicaciones
+greenatics.com.co/app/          Entrada pública y futura entrada autenticada OPS
+greenatics.com.co/huella/       Landing, estimador y futura entrada Huella
+greenatics.com.co/huella/app/   Runtime autenticado de Huella cuando exista staging
+greenatics.com.co/red/          Explicación pública de GREENATICS Red
+greenatics.com.co/red/app/      Estación y futura app productiva Red
+greenatics.com.co/acceso/       Modelo de acceso y solicitud de implementación
 
 app.greenatics.com              Portal autenticado productivo, cuando exista identidad central
 ops.greenatics.com              Servicio OPS o ruta protegida equivalente
@@ -23,7 +24,7 @@ huella.greenatics.com            Servicio FastAPI de Calcula tu Huella o ruta pr
 red.greenatics.com               Servicio Red cuando tenga persistencia y operación real
 ```
 
-La decisión final entre rutas y subdominios depende del proveedor de despliegue, cookies, CORS, DNS y política de sesiones. En ambos casos el usuario debe percibir una sola plataforma Greenatics y no cuatro productos desconectados.
+La decisión operativa preferida es usar rutas bajo `greenatics.com.co`; la decisión final depende del proveedor de despliegue, cookies, CORS, DNS y política de sesiones. En ambos casos el usuario debe percibir una sola plataforma Greenatics y no cuatro productos desconectados. Las variables `NEXT_PUBLIC_*_APP_URL` permiten activar un runtime externo sin alterar las landings ni publicar secretos.
 
 ## Estado real de los productos
 
@@ -75,7 +76,7 @@ Ejemplo: Red puede indicar que un proyecto requiere control de recepción; OPS p
 ### Fase de aplicaciones
 
 - Desplegar el portal autenticado y los servicios con un proveedor que soporte runtime persistente, variables secretas, PostgreSQL administrado, almacenamiento privado y workers.
-- Usar un reverse proxy o gateway bajo Greenatics para que las aplicaciones compartan dominio, TLS, headers y observabilidad.
+- Usar un reverse proxy o gateway bajo Greenatics para que las aplicaciones compartan dominio, TLS, headers y observabilidad. Cada prefijo debe tener límites explícitos de cookies, caché, CSRF, CORS y logs.
 - Mantener Calcula tu Huella como servicio FastAPI hasta completar una migración probada; no reescribir su backend dentro de Next.js por apariencia de unidad.
 - Definir si OPS se recupera desde una rama/código productivo existente o si el demo actual se convierte en el primer frontend del backend que falta localizar.
 

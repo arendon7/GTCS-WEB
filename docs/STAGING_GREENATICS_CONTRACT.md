@@ -4,6 +4,8 @@ Este documento convierte la siguiente fase del plan en una lista ejecutable. No 
 
 ## Topología propuesta
 
+La experiencia pública se consolidará bajo un único dominio Greenatics. La separación que sigue es de runtime y datos, no de marca: las landings y el Centro permanecen en el sitio estático, mientras los servicios autenticados se montan detrás de rutas protegidas del mismo origen cuando el gateway esté disponible.
+
 | Superficie | Origen | Estado | Regla |
 | --- | --- | --- | --- |
 | Sitio público | Next.js Greenatics | Disponible en `localhost:3001` | Solo contenido, demos y enlaces públicos |
@@ -12,7 +14,19 @@ Este documento convierte la siguiente fase del plan en una lista ejecutable. No 
 | GREENATICS OPS | Next.js + Supabase | Incorporado, gates locales aprobados | Runtime separado con RLS y membresías por planta |
 | GREENATICS Red | Next.js navegable | Prototipo | Persistencia y permisos antes de operación real |
 
-Dominios objetivo, sujetos a decisión de proveedor:
+Rutas canónicas preferidas:
+
+```text
+greenatics.com.co/             sitio público y portal
+greenatics.com.co/plataforma/  centro de aplicaciones
+greenatics.com.co/app/         entrada OPS
+greenatics.com.co/huella/      landing y estimador público
+greenatics.com.co/huella/app/  runtime autenticado de Huella
+greenatics.com.co/red/         explicación de Red
+greenatics.com.co/red/app/     runtime Red
+```
+
+Subdominios alternativos, solo si el proveedor lo exige:
 
 ```text
 greenatics.com             sitio público y portal
@@ -38,7 +52,7 @@ NEXT_PUBLIC_OPS_APP_URL=https://ops-staging.greenatics.com
 NEXT_PUBLIC_RED_APP_URL=https://red-staging.greenatics.com
 ```
 
-Una variable vacía conserva el fallback público actual. Estas URLs no deben habilitarse hasta completar los gates de autenticación, permisos, salud, backup y UAT.
+Una variable vacía conserva el fallback público actual. Una URL puede apuntar a una ruta del mismo dominio o a un subdominio Greenatics, pero no debe habilitarse hasta completar los gates de autenticación, permisos, salud, backup y UAT. La web pública no guarda sesiones ni consulta directamente las bases privadas.
 
 Antes del build público, ejecutar `npm run qa:runtime-config`. El gate permite las tres variables vacías durante el desarrollo y rechaza destinos malformados o inseguros. Su aprobación no sustituye el preflight funcional del runtime.
 

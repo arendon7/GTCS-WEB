@@ -34,6 +34,8 @@ La web pública se mantiene estática y separada de los runtimes de las aplicaci
 
 La función de cada ruta, su audiencia, mensaje, evidencia y CTA está registrada en `docs/knowledge/WEB_EDITORIAL_MATRIX_V1.md`. Úsala antes de crear nuevas secciones o repetir una promesa existente.
 
+El último corte de publicación y las puertas pendientes de los runtimes están en `docs/RELEASE_READINESS_2026-09-14.md`.
+
 Para trabajar con las aplicaciones locales levantadas, consulta `docs/LOCAL_GREENATICS_ECOSYSTEM.md` y ejecuta `pnpm qa:ecosystem`.
 
 ### Enlaces de runtime
