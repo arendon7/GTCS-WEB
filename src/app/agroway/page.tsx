@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ToolAccessRail } from "@/components/tool-access-rail";
 
 export const metadata: Metadata = {
   title: "AGROWAY | Trazabilidad agrícola para el ecosistema SANA",
@@ -92,6 +93,15 @@ export default function AgrowayPage() {
           </aside>
         </div>
       </section>
+
+      <ToolAccessRail
+        id="agroway"
+        name="AGROWAY"
+        status="Aplicación privada en evolución"
+        copy="AGROWAY es la aplicación de trazabilidad agrícola: registra productor, finca, lote, diagnóstico, plan, abastecimiento, aplicación, evidencia, seguimiento y cosecha. Aquí se explica su alcance; el acceso operativo se habilita por proyecto, organización y rol."
+        accessHref="/contacto/?interes=agroway"
+        accessLabel="Consultar acceso a AGROWAY"
+      />
 
       <section className="agroway-v1-intro">
         <div className="container agroway-v1-intro__grid">

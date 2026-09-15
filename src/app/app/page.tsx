@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { OpsWorkstationDemo } from "@/components/ops-workstation-demo";
+import { ToolAccessRail } from "@/components/tool-access-rail";
+import { runtimeLinks } from "@/lib/runtime-links";
 
 export const metadata: Metadata = {
   title: "GREENATICS OPS | Sistema operacional para plantas",
@@ -98,6 +100,17 @@ export default function AppPage() {
           </aside>
         </div>
       </section>
+
+      <ToolAccessRail
+        id="ops"
+        name="GREENATICS OPS"
+        status={runtimeLinks.ops ? "Runtime operativo disponible" : "Demostración pública disponible"}
+        copy="Esta landing presenta la arquitectura completa de OPS. Desde aquí puedes recorrer la demostración y, si el entorno está disponible, entrar a la estación operativa separada. Los datos de demo no representan una planta conectada."
+        runtimeHref={runtimeLinks.ops || undefined}
+        runtimeLabel="Entrar a la estación OPS"
+        accessHref="/contacto/?interes=greenatics-ops"
+        accessLabel="Solicitar implementación"
+      />
 
       <section className="gt-ops-ribbon" aria-label="Capacidades transversales de Greenatics OPS">
         <div className="container">

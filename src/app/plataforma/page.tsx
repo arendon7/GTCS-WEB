@@ -129,13 +129,10 @@ export default function PlatformPage() {
                   : application.code === "RED"
                     ? runtimeLinks.red
                     : "";
-              const href = configuredUrl || application.route;
-              const cta = configuredUrl
-                ? `Abrir ${application.code === "CO₂" ? "Calcula tu Huella" : application.code === "RED" ? "Red" : "OPS"}`
-                : application.cta;
               const state = configuredUrl
                 ? isLocalRuntime(configuredUrl) ? "Runtime local disponible" : "Runtime conectado"
                 : application.state;
+              const runtimeName = application.code === "CO₂" ? "Calcula tu Huella" : application.code === "RED" ? "Red" : "OPS";
 
               return (
                 <article className={`platform-v4-card platform-v4-card--${application.accent}`} key={application.code}>
@@ -143,7 +140,14 @@ export default function PlatformPage() {
                   <h3>{application.name}</h3>
                   <p>{application.copy}</p>
                   <div className="platform-v4-card__scope">{application.scope}</div>
-                  <Link className="text-link" href={href}>{cta} <span aria-hidden="true">↗</span></Link>
+                  <div className="platform-v4-card__actions">
+                    <Link className="text-link" href={application.route}>{application.cta} <span aria-hidden="true">↗</span></Link>
+                    {configuredUrl ? (
+                      <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar a {runtimeName} <span aria-hidden="true">↗</span></a>
+                    ) : (
+                      <Link className="text-link text-link--secondary" href={`/acceso/?interes=${application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : "sana"}`}>Solicitar acceso <span aria-hidden="true">→</span></Link>
+                    )}
+                  </div>
                 </article>
               );
             })}

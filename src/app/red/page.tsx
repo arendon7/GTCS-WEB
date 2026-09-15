@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ToolAccessRail } from "@/components/tool-access-rail";
+import { runtimeLinks } from "@/lib/runtime-links";
 import "./red-v4.css";
 
 export const metadata: Metadata = {
@@ -40,6 +42,17 @@ export default function RedPage() {
           <figure><Image src="/projects/routes/route-evidence-03.webp" alt="Equipo realizando recolección diferenciada de residuos orgánicos en territorio" fill priority sizes="(max-width: 900px) 100vw, 48vw" /><figcaption><strong>La ruta es una fuente de información.</strong><span>La operación territorial deja registros que pueden alimentar decisiones, no sólo reportes de cumplimiento.</span></figcaption></figure>
         </div>
       </section>
+
+      <ToolAccessRail
+        id="red"
+        name="GREENATICS Red"
+        status={runtimeLinks.red ? "Estación navegable disponible" : "Solución configurable"}
+        copy="Esta landing explica la solución completa: Proyecto 360, FIELD, QA/QC, hallazgos, línea base, PMIRS STUDIO y PMIRS VIVO. La estación navegable permite explorar la experiencia; la operación productiva se configura con datos, roles y permisos del proyecto."
+        runtimeHref={runtimeLinks.red || undefined}
+        runtimeLabel="Entrar a la estación Red"
+        accessHref="/contacto/?interes=red"
+        accessLabel="Diseñar la implementación"
+      />
 
       <section className="red-v4-sequence"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Una cadena de trabajo</span><h2>Red no termina cuando termina la recolección.</h2></div><p>La microrruta es una capacidad dentro de un sistema más amplio. La información capturada en el territorio se revisa, se interpreta y se convierte en un plan que puede seguirse en el tiempo.</p></div><ol>{redSequence.map(([number, title, copy]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}</ol></div></section>
 

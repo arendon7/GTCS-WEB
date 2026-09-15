@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ToolAccessRail } from "@/components/tool-access-rail";
 import "./sana-v1.css";
 
 export const metadata: Metadata = {
@@ -46,6 +47,15 @@ export default function SanaPage() {
           <figure className="sana-v1-hero__image"><Image src="/projects/tamesis/paisaje-tamesis.jpg" alt="Paisaje productivo del proyecto Támesis" fill priority sizes="(max-width: 760px) 100vw, 46vw" /><figcaption><span>Campo · ciencia · inversión</span><strong>Los proyectos se entienden mejor cuando su historia se puede seguir.</strong></figcaption></figure>
         </div>
       </section>
+
+      <ToolAccessRail
+        id="sana"
+        name="SANA"
+        status="Ecosistema en estructuración"
+        copy="SANA no es la aplicación de captura: es el ecosistema que usa los datos relacionados de AGROWAY, la ciencia de Greenatics y las soluciones Wondergreen para estructurar, acompañar y evaluar proyectos productivos."
+        accessHref="/contacto/?interes=sana"
+        accessLabel="Hablar sobre SANA"
+      />
 
       <section className="sana-v1-definition"><div className="container sana-v1-definition__grid"><div><span className="eyebrow">La propuesta SANA</span><h2>La inversión productiva necesita una capa que conecte el propósito con lo que realmente ocurre.</h2></div><div><p>SANA no es una pantalla de rentabilidad aislada ni una aplicación de captura. Es un ecosistema para organizar proyectos productivos, reunir capacidades y seguir la relación entre capital, decisiones agronómicas, trabajo de campo y resultados.</p><p>La información se alimenta de AGROWAY con datos oportunos y sincronizados según la conectividad del campo, y se complementa con la ciencia, los fertilizantes, los bioinsumos y el acompañamiento de Greenatics y Wondergreen. Así, cada proyecto puede ser leído con más contexto y menos suposiciones.</p></div></div></section>
 
