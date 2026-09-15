@@ -282,7 +282,7 @@
   .access-v4-process li { grid-template-columns: 38px 1fr; }
   .access-v4-process li p { grid-column: 2; }
 }
-.digital-v4-platforms__grid article:nth-child(4) figure { background: linear-gradient(145deg, #eef5e9, #dcebd6); }
-.digital-v4-platforms__grid article:nth-child(4) figure img { object-fit: contain; padding: 18px; }
-.digital-v4-platforms__grid article:nth-child(4) figure::after { display: none; }
-.digital-v4-platforms__grid article:nth-child(4) figure > span { background: #0a2c21; border-radius: 999px; bottom: 16px; color: #fff; font-size: 1rem; padding: 5px 10px; }
+.digital-v4-platforms__grid article:nth-child(4) figure { background: #0a3b2c; }
+.digital-v4-platforms__grid article:nth-child(4) figure img { object-fit: cover; object-position: center; padding: 0; }
+.digital-v4-platforms__grid article:nth-child(4) figure::after { display: block; }
+.digital-v4-platforms__grid article:nth-child(4) figure > span { background: transparent; border-radius: 0; bottom: 18px; color: #fff; font-size: 2rem; padding: 0; }
