@@ -12,7 +12,7 @@ const TRUCK_CAPACITY_TONS = 10;
 
 const format = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 });
 const huellaAccessHref = runtimeLink(runtimeLinks.huella, "/acceso/?interes=calcula-tu-huella");
-const huellaAccessLabel = runtimeLinks.huella ? "Abrir la plataforma" : "Solicitar acceso";
+const huellaAccessLabel = runtimeLinks.huella ? "Abrir la plataforma" : "Explorar estimador";
 
 const inventoryWorkflow = [
   ["01", "Abrir el inventario", "Define organización, periodo, alcance, sede, responsable y fuentes que harán parte de la lectura."],
@@ -57,8 +57,10 @@ export default function CarbonPage() {
         copy="Esta página reúne la entrada pública, la explicación metodológica y el recorrido completo del producto. El estimador sirve para explorar; la plataforma organiza inventarios, fuentes, cargas CSV/XLSX, validación, evidencia, historial y revisión."
         runtimeHref={runtimeLinks.huella || undefined}
         runtimeLabel="Entrar a Calcula tu Huella"
+        demoHref="/huella/#calculadora"
+        demoLabel="Explorar estimador demo"
         accessHref="/acceso/?interes=calcula-tu-huella"
-        accessLabel="Solicitar acceso"
+        accessLabel="Preparar entorno real"
       />
 
       <section className="carbon-v4-product-deck" id="plataforma" aria-labelledby="huella-product-title">

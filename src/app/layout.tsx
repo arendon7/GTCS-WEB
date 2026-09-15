@@ -23,6 +23,7 @@ import "./portfolio-v4.css";
 import "./digital-v4.css";
 import "./agroway/agroway-v1.css";
 import "./sana/sana-v1.css";
+import "./portfolio-demo.css";
 import { JsonLd } from "@/components/json-ld";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";

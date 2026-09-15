@@ -81,10 +81,10 @@ export default function AgrowayPage() {
             <h1>La trazabilidad agrícola que mantiene vivo el proyecto productivo.</h1>
             <p className="lead">AGROWAY registra lo que ocurre en el campo y relaciona productor, finca, lote, cultivo, plan, aplicación, evidencia, seguimiento y cosecha. Es la aplicación de trazabilidad que alimenta a SANA con información real del ciclo.</p>
             <div className="button-row">
-              <Link className="button button--neon" href="#recorrido">Ver el recorrido</Link>
-              <Link className="button button--outline-light" href="/contacto/?interes=agroway">Consultar acceso</Link>
+              <Link className="button button--neon" href="/agroway/app/">Entrar como usuario demo</Link>
+              <Link className="button button--outline-light" href="#recorrido">Ver el recorrido</Link>
             </div>
-            <p className="agroway-v1-hero__note"><strong>Estado:</strong> aplicación privada en evolución. Agroway registra y organiza la información agrícola; SANA utiliza esa base junto con la ciencia y las soluciones de Greenatics y Wondergreen.</p>
+            <p className="agroway-v1-hero__note"><strong>Estado:</strong> demo navegable disponible para pruebas. AGROWAY registra y organiza la información agrícola; la operación productiva se habilita después por organización, proyecto y rol. SANA utiliza esa base junto con la ciencia y las soluciones de Greenatics y Wondergreen.</p>
           </div>
           <aside className="agroway-v1-hero__visual" aria-label="Cadena de valor AGROWAY">
             <div className="agroway-v1-hero__visual-top"><span>AGROWAY V1</span><small>CAMPO → DATOS → SANA</small></div>
@@ -97,10 +97,12 @@ export default function AgrowayPage() {
       <ToolAccessRail
         id="agroway"
         name="AGROWAY"
-        status="Aplicación privada en evolución"
-        copy="AGROWAY es la aplicación de trazabilidad agrícola: registra productor, finca, lote, diagnóstico, plan, abastecimiento, aplicación, evidencia, seguimiento y cosecha. Aquí se explica su alcance; el acceso operativo se habilita por proyecto, organización y rol."
+        status="Demo navegable disponible"
+        copy="AGROWAY es la aplicación de trazabilidad agrícola: registra productor, finca, lote, diagnóstico, plan, abastecimiento, aplicación, evidencia, seguimiento y cosecha. Puedes recorrer un entorno demo con módulos y datos ilustrativos; la operación real se habilita por proyecto, organización y rol."
+        demoHref="/agroway/app/"
+        demoLabel="Entrar como usuario demo"
         accessHref="/contacto/?interes=agroway"
-        accessLabel="Consultar acceso a AGROWAY"
+        accessLabel="Diseñar implementación"
       />
 
       <section className="agroway-v1-intro">

@@ -108,8 +108,10 @@ export default function AppPage() {
         copy="Esta landing presenta la arquitectura completa de OPS. Desde aquí puedes recorrer la demostración y, si el entorno está disponible, entrar a la estación operativa separada. Los datos de demo no representan una planta conectada."
         runtimeHref={runtimeLinks.ops || undefined}
         runtimeLabel="Entrar a la estación OPS"
+        demoHref="/app/#estacion"
+        demoLabel="Explorar estación demo"
         accessHref="/contacto/?interes=greenatics-ops"
-        accessLabel="Solicitar implementación"
+        accessLabel="Preparar entorno real"
       />
 
       <section className="gt-ops-ribbon" aria-label="Capacidades transversales de Greenatics OPS">

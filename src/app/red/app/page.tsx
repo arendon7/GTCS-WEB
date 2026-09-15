@@ -168,7 +168,7 @@ export default function RedAppPage() {
     <header className="red-app__topbar">
       <Link className="red-app__brand" href="/red/"><span aria-hidden="true">G</span><div><strong>GREENATICS</strong><small>RED · Espacio de trabajo</small></div></Link>
       <div className="red-app__topbar-context"><span>Proyecto activo</span><strong>RED-024 · Támesis</strong><small>Diagnóstico territorial · 2026</small></div>
-      <div className="red-app__topbar-meta"><Status tone="muted">Prototipo navegable</Status><span>Datos ilustrativos</span><Link className="red-app__site-link" href="/" aria-label="Volver al sitio Greenatics">Volver a Greenatics</Link></div>
+      <div className="red-app__topbar-meta"><Status tone="muted">Prototipo navegable</Status><span>Datos ilustrativos</span><Link className="red-app__site-link" href="/plataforma/usuarios/">Usuarios y permisos</Link><Link className="red-app__site-link" href="/" aria-label="Volver al sitio Greenatics">Volver a Greenatics</Link></div>
     </header>
 
     <div className="red-app__body">

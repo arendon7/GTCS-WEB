@@ -34,7 +34,7 @@ export default function RedPage() {
       <section className="red-v4-hero">
         <div className="container red-v4-hero__grid">
           <div>
-            <span className="eyebrow eyebrow--light">GREENATICS Red · solución configurable</span>
+            <span className="eyebrow eyebrow--light">GREENATICS Red · estación territorial</span>
             <h1>Del dato territorial al PMIRS vivo.</h1>
             <p className="lead">Red organiza el trabajo que ocurre antes, durante y después de una ruta: diagnóstico, campo, medición, control de calidad, planeación, implementación y seguimiento.</p>
             <div className="button-row"><Link className="button button--light" href="/red/app/">Abrir estación Red</Link><Link className="button button--outline-light" href="/contacto/?interes=red">Diseñar la solución</Link></div>
@@ -46,10 +46,12 @@ export default function RedPage() {
       <ToolAccessRail
         id="red"
         name="GREENATICS Red"
-        status={runtimeLinks.red ? "Estación navegable disponible" : "Solución configurable"}
+        status={runtimeLinks.red ? "Runtime conectado" : "Estación demo disponible"}
         copy="Esta landing explica la solución completa: Proyecto 360, FIELD, QA/QC, hallazgos, línea base, PMIRS STUDIO y PMIRS VIVO. La estación navegable permite explorar la experiencia; la operación productiva se configura con datos, roles y permisos del proyecto."
         runtimeHref={runtimeLinks.red || undefined}
         runtimeLabel="Entrar a la estación Red"
+        demoHref="/red/app/"
+        demoLabel="Entrar a la estación demo"
         accessHref="/contacto/?interes=red"
         accessLabel="Diseñar la implementación"
       />

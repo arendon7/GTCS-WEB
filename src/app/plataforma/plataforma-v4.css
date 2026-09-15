@@ -281,13 +281,26 @@
 .platform-admin__workspace { margin-top: 34px; padding: clamp(22px, 3vw, 34px); border: 1px solid #dce5dc; border-radius: 18px; background: #fff; }
 .platform-admin__table-head { display: flex; justify-content: space-between; gap: 18px; align-items: end; }
 .platform-admin__table-head h3, .platform-admin__lower-grid h3 { margin-top: 9px; color: var(--green-900); }
+.platform-admin__table-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: end; align-items: center; }
 .platform-admin__filters { display: flex; flex-wrap: wrap; gap: 5px; }
 .platform-admin__filters button { padding: 8px 10px; border: 1px solid #d5e0d6; border-radius: 99px; color: #5b6d61; background: #fff; font: inherit; font-size: .68rem; cursor: pointer; }
 .platform-admin__filters button.is-active { border-color: #6ea449; color: #fff; background: #267348; }
+.platform-admin__invite-trigger { padding: 9px 12px; border: 1px solid #bcd3ad; border-radius: 8px; color: #267348; background: #f2f8ed; font: inherit; font-size: .7rem; font-weight: 850; cursor: pointer; }
+.platform-admin__invite-form { display: grid; gap: 20px; margin-top: 18px; padding: 22px; border: 1px solid #cfe1c5; border-radius: 14px; background: #f2f8ed; }
+.platform-admin__invite-head { display: flex; justify-content: space-between; gap: 20px; align-items: start; }
+.platform-admin__invite-head h3 { margin-top: 8px; color: var(--green-900); }
+.platform-admin__invite-head p { margin-top: 6px; color: #68806e; font-size: .76rem; }
+.platform-admin__invite-head > button { border: 0; color: #5f7566; background: transparent; font: inherit; font-size: .7rem; font-weight: 850; cursor: pointer; }
+.platform-admin__invite-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.platform-admin__invite-fields label { display: grid; gap: 7px; color: #476452; font-size: .66rem; font-weight: 850; }
+.platform-admin__invite-fields input, .platform-admin__invite-fields select { width: 100%; padding: 11px 12px; border: 1px solid #cbdaca; border-radius: 8px; color: var(--green-900); background: #fff; font: inherit; font-size: .75rem; font-weight: 500; }
+.platform-admin__invite-fields input:focus, .platform-admin__invite-fields select:focus { outline: 2px solid #a5cf71; outline-offset: 1px; }
+.platform-admin__invite-note { color: #66806e; font-size: .68rem; }
 .platform-admin__table-wrap { overflow-x: auto; margin-top: 24px; }
 .platform-admin__table-wrap table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: .78rem; }
 .platform-admin__table-wrap th { padding: 0 12px 12px; color: #77867b; font-size: .64rem; letter-spacing: .07em; text-align: left; text-transform: uppercase; }
 .platform-admin__table-wrap td { padding: 15px 12px; border-top: 1px solid #e5ebe5; color: #4e6055; vertical-align: middle; }
+.platform-admin__table-wrap tr.is-selected td { background: #f0f7e9; }
 .platform-admin__person { display: flex; gap: 10px; align-items: center; min-width: 190px; }
 .platform-admin__person > span { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; color: #fff; background: #39845b; font-size: .64rem; font-weight: 850; }
 .platform-admin__person strong, .platform-admin__person small { display: block; }
@@ -297,7 +310,24 @@
 .user-status--active { color: #256544; background: #e0f2df; }
 .user-status--pending { color: #8a6319; background: #fff1cb; }
 .user-status--suspended { color: #8f3d37; background: #f8dfdc; }
+.platform-admin__row-actions { display: flex; flex-wrap: wrap; gap: 8px; min-width: 145px; }
 .platform-admin__row-action { border: 0; color: #267348; background: transparent; font: inherit; font-size: .72rem; font-weight: 800; cursor: pointer; }
+.platform-admin__row-action--primary { padding: 7px 10px; border-radius: 7px; color: #fff; background: #267348; }
+.platform-admin__access-panel { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 30px; align-items: center; margin-top: 14px; padding: clamp(24px, 4vw, 42px); border-radius: 18px; color: #fff; background: radial-gradient(circle at 100% 0%, rgba(184, 223, 118, .15), transparent 20rem), #123e2d; }
+.platform-admin__access-copy h2 { max-width: 450px; margin-top: 10px; color: #fff; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1; letter-spacing: -.04em; }
+.platform-admin__access-copy > p { max-width: 470px; margin-top: 14px; color: #c5d9c9; font-size: .82rem; line-height: 1.6; }
+.platform-admin__selected-user { display: flex; gap: 11px; align-items: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(221, 241, 219, .18); }
+.platform-admin__selected-user > span { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; color: #123e2d; background: #c6e78b; font-size: .68rem; font-weight: 900; }
+.platform-admin__selected-user strong, .platform-admin__selected-user small { display: block; }
+.platform-admin__selected-user small { margin-top: 3px; color: #bdd1c1; font-size: .69rem; }
+.platform-admin__platform-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.platform-admin__platform-options button { display: grid; grid-template-columns: 26px 1fr; gap: 2px 9px; padding: 13px; border: 1px solid rgba(222, 242, 222, .2); border-radius: 11px; color: #e6f2e6; background: rgba(0, 28, 19, .22); text-align: left; cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+.platform-admin__platform-options button:hover { border-color: #c6e78b; transform: translateY(-2px); }
+.platform-admin__platform-options button.is-active { border-color: #afd76d; background: rgba(175, 215, 109, .15); }
+.platform-admin__platform-options button > span { grid-row: span 2; display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(222, 242, 222, .38); border-radius: 50%; color: #c6e78b; font-weight: 900; }
+.platform-admin__platform-options button.is-active > span { color: #123e2d; background: #c6e78b; }
+.platform-admin__platform-options strong { align-self: end; font-size: .78rem; }
+.platform-admin__platform-options small { color: #aac5af; font-size: .65rem; line-height: 1.35; }
 .platform-admin__lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
 .platform-admin__lower-grid > article { padding: 28px; border-radius: 18px; background: #fff; }
 .platform-admin__role { display: grid; gap: 4px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e5ebe5; }
@@ -308,13 +338,21 @@
 .platform-admin__audit p { margin-top: 14px; color: #c5d9c9; line-height: 1.6; }
 .platform-admin__audit button { margin-top: 22px; border: 0; color: #c6e78b; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
 .platform-admin__notice { margin-top: 18px; padding: 13px 16px; border-left: 3px solid #8db957; color: #506458; background: #e8f0e7; font-size: .78rem; }
+.platform-admin__notice button { margin-left: 4px; padding: 0; border: 0; color: #267348; background: transparent; font: inherit; font-size: inherit; font-weight: 850; text-decoration: underline; cursor: pointer; }
 @media (max-width: 800px) {
   .platform-admin__hero-grid, .platform-admin__lower-grid { grid-template-columns: 1fr; }
+  .platform-admin__access-panel { grid-template-columns: 1fr; }
   .platform-admin__toolbar, .platform-admin__table-head { align-items: start; flex-direction: column; }
+  .platform-admin__table-actions { justify-content: start; }
+  .platform-admin__invite-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .platform-admin__toolbar label { width: 100%; }
   .platform-admin__stats { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 480px) { .platform-admin__stats { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .platform-admin__stats { grid-template-columns: 1fr; }
+  .platform-admin__platform-options { grid-template-columns: 1fr; }
+  .platform-admin__invite-fields { grid-template-columns: 1fr; }
+}
 
 .platform-v4-note strong { color: var(--green-900); }
 

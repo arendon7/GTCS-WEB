@@ -9,6 +9,8 @@ type ToolAccessRailProps = {
   copy: string;
   runtimeHref?: string;
   runtimeLabel?: string;
+  demoHref?: string;
+  demoLabel?: string;
   accessHref: string;
   accessLabel: string;
 };
@@ -22,6 +24,8 @@ export function ToolAccessRail({
   copy,
   runtimeHref,
   runtimeLabel = `Entrar a ${name}`,
+  demoHref,
+  demoLabel = `Entrar al demo de ${name}`,
   accessHref,
   accessLabel,
 }: ToolAccessRailProps) {
@@ -46,6 +50,10 @@ export function ToolAccessRail({
               >
                 {runtimeLabel} <span aria-hidden="true">↗</span>
               </a>
+            ) : demoHref ? (
+              <Link className="button button--primary" href={demoHref}>
+                {demoLabel} <span aria-hidden="true">→</span>
+              </Link>
             ) : (
               <Link className="button button--primary" href={accessHref}>
                 {accessLabel} <span aria-hidden="true">→</span>
@@ -61,7 +69,7 @@ export function ToolAccessRail({
           <ol>
             <li><b>01</b><div><strong>Entender</strong><p>Qué resuelve {name} y quién la usa.</p></div></li>
             <li><b>02</b><div><strong>Explorar</strong><p>Sus módulos, datos y flujo de trabajo.</p></div></li>
-            <li><b>03</b><div><strong>Entrar</strong><p>{runtimeHref ? "Abrir el entorno disponible." : "Solicitar un entorno configurado."}</p></div></li>
+            <li><b>03</b><div><strong>Entrar</strong><p>{runtimeHref ? "Abrir el entorno disponible." : demoHref ? "Abrir un recorrido navegable con datos ilustrativos." : "Solicitar un entorno configurado."}</p></div></li>
           </ol>
         </aside>
       </div>

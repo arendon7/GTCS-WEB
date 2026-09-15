@@ -126,13 +126,15 @@ export default function PlatformPage() {
                 ? runtimeLinks.ops
                 : application.code === "CO₂"
                   ? runtimeLinks.huella
-                  : application.code === "RED"
+                    : application.code === "RED"
                     ? runtimeLinks.red
                     : "";
+              const demoHref = application.code === "OPS" ? "/app/#estacion" : application.code === "CO₂" ? "/huella/#calculadora" : application.code === "RED" ? "/red/app/" : application.code === "AG" ? "/agroway/app/" : "/sana/app/";
               const state = configuredUrl
                 ? isLocalRuntime(configuredUrl) ? "Runtime local disponible" : "Runtime conectado"
-                : application.state;
+                : demoHref ? "Demo navegable disponible" : application.state;
               const runtimeName = application.code === "CO₂" ? "Calcula tu Huella" : application.code === "RED" ? "Red" : "OPS";
+              const demoLabel = application.code === "OPS" ? "Explorar estación demo" : application.code === "CO₂" ? "Explorar estimador" : application.code === "RED" ? "Entrar a la estación demo" : "Entrar como usuario demo";
 
               return (
                 <article className={`platform-v4-card platform-v4-card--${application.accent}`} key={application.code}>
@@ -144,8 +146,10 @@ export default function PlatformPage() {
                     <Link className="text-link" href={application.route}>{application.cta} <span aria-hidden="true">↗</span></Link>
                     {configuredUrl ? (
                       <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar a {runtimeName} <span aria-hidden="true">↗</span></a>
+                    ) : demoHref ? (
+                      <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link>
                     ) : (
-                      <Link className="text-link text-link--secondary" href={`/acceso/?interes=${application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : "sana"}`}>Solicitar acceso <span aria-hidden="true">→</span></Link>
+                      <Link className="text-link text-link--secondary" href={`/acceso/?interes=${application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : "sana"}`}>Diseñar implementación <span aria-hidden="true">→</span></Link>
                     )}
                   </div>
                 </article>
