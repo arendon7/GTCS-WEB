@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const outputDir = path.resolve(process.env.PUBLIC_OUTPUT_DIR || "out");
-const forbiddenLocalUrl = /https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:[/?#][^\s"'<>]*)?/i;
+const forbiddenLocalUrl = /https?:\/\/(?:(?:localhost|(?:127|10)\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})(?::\d+)?(?:[/?#][^\s"'<>]*)?)/i;
 const failures = [];
 
 function visit(directory) {
