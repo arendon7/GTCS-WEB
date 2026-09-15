@@ -25,6 +25,10 @@ jobs:
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
 
+    defaults:
+      run:
+        working-directory: apps/greenatics-ops
+
     steps:
       - name: Checkout validated main
         uses: actions/checkout@v4

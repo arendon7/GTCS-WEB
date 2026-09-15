@@ -1,5 +1,5 @@
 # Default-branch dispatcher for the authenticated GREENATICS OPS pilot UAT.
-# Runtime source is always the canonical develop branch checked out below.
+# Runtime source is always the validated main branch checked out below.
 name: hosted-pilot-uat
 
 on:
@@ -20,7 +20,7 @@ jobs:
       PILOT_PREVIEW_MODE: full-ops
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      DEPLOY_GIT_REF: develop
+      DEPLOY_GIT_REF: main
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
@@ -32,11 +32,15 @@ jobs:
       PILOT_OPERATOR_YAR_PASSWORD: ${{ secrets.PILOT_OPERATOR_YAR_PASSWORD }}
       PILOT_DIRECTOR_PLANTS: TAM,YAR
 
+    defaults:
+      run:
+        working-directory: apps/greenatics-ops
+
     steps:
-      - name: Checkout canonical develop
+      - name: Checkout validated main
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
           fetch-depth: 1
 
       - name: Setup Node
@@ -51,7 +55,7 @@ jobs:
           sha="$(git rev-parse HEAD)"
           test "${#sha}" -eq 40
           echo "DEPLOY_GIT_SHA=$sha" >> "$GITHUB_ENV"
-          echo "Authenticated UAT from develop@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Authenticated UAT from main@${sha:0:12}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Require hosted UAT secrets
         shell: bash
