@@ -20,17 +20,17 @@ from app.database import init_db
 init_db()
 print("Esquema e inicialización verificados.")
 PYCODE
-if ! "$PY" scripts/check_ready.py; then
-  if [ "${DEPLOYMENT_STRICT:-false}" = "true" ]; then
-    echo "La certificación operativa falló y DEPLOYMENT_STRICT=true; se cancela el arranque." >&2
-    exit 1
-  fi
-  echo "Advertencia: la certificación operativa está degradada; se continúa con el arranque no estricto." >&2
+if [ "${DEPLOYMENT_STRICT:-false}" = "true" ]; then
+  "$PY" scripts/check_ready.py
+else
+  # Defer external probes so the web process can bind before Render's first health check.
+  echo "Certificación externa diferida: DEPLOYMENT_STRICT=false; consultar /api/ready." >&2
 fi
 exec "$PY" -m uvicorn app.main:app \
   --host "$HOST" \
   --port "$PORT" \
-  --workers "${WEB_CONCURRENCY:-2}" \
+  --workers "${WEB_CONCURRENCY:-1}" \
   --proxy-headers \
   --forwarded-allow-ips "${FORWARDED_ALLOW_IPS:-*}" \
   --no-access-log
+
