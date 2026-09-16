@@ -21,7 +21,17 @@ export OPEN_BROWSER=0
 echo "Inicialización de base de datos iniciada." >&2
 "$PY" -m alembic upgrade head
 "$PY" - <<'PYCODE'
+from sqlalchemy import text
+
+from app.db.base import ENGINE
 from app.database import init_db
+
+# Keep startup safe for staging databases that were created by an earlier
+# revision before the password hash migration existed.
+if ENGINE.dialect.name == "postgresql":
+    with ENGINE.begin() as connection:
+        connection.execute(text("ALTER TABLE app_users ALTER COLUMN password_hash TYPE VARCHAR(255)"))
+
 init_db()
 print("Esquema e inicialización verificados.")
 PYCODE
