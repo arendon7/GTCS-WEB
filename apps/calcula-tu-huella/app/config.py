@@ -26,15 +26,24 @@ def is_safe_postgres_identifier(value: str) -> bool:
     return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", value))
 
 
+def normalize_database_url(value: str) -> str:
+    """Use the installed Psycopg 3 driver for legacy PostgreSQL URLs."""
+    value = value.strip()
+    for prefix in ("postgresql://", "postgres://"):
+        if value.startswith(prefix):
+            return "postgresql+psycopg://" + value[len(prefix):]
+    return value
+
+
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Calcula tu Huella"
     version: str = "0.45.5"
     environment: str = os.environ.get("APP_ENV", "local").strip().lower()
-    database_url: str = os.environ.get(
+    database_url: str = normalize_database_url(os.environ.get(
         "DATABASE_URL",
         f"sqlite:///{INSTANCE_DIR / 'calculatuhuella.db'}",
-    )
+    ))
     database_schema: str = os.environ.get("DATABASE_SCHEMA", "").strip()
     session_secret: str = os.environ.get(
         "SESSION_SECRET",
