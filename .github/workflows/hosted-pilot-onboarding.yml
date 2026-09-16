@@ -33,6 +33,9 @@ jobs:
   bootstrap-owners:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: apps/greenatics-ops
     env:
       PILOT_PREVIEW_MODE: full-ops
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
