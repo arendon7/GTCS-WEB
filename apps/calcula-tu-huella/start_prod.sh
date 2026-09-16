@@ -54,11 +54,11 @@ if ENGINE.dialect.name == "postgresql":
             qualified_table = f'"{target_schema}"."login_security_states"'
             connection.execute(text(table_sql.format(qualified_table=qualified_table)))
             connection.execute(text(
-                f'CREATE UNIQUE INDEX IF NOT EXISTS "{target_schema}"."ix_login_security_states_key_hash" '
+                'CREATE UNIQUE INDEX IF NOT EXISTS "ix_login_security_states_key_hash" '
                 f'ON {qualified_table} (key_hash)'
             ))
             connection.execute(text(
-                f'CREATE INDEX IF NOT EXISTS "{target_schema}"."ix_login_security_states_blocked_until" '
+                'CREATE INDEX IF NOT EXISTS "ix_login_security_states_blocked_until" '
                 f'ON {qualified_table} (blocked_until)'
             ))
         # Older staging schemas used narrower VARCHAR limits for methodology
