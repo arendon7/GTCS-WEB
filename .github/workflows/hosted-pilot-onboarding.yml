@@ -1,5 +1,5 @@
 # Default-branch dispatcher for initial GREENATICS OPS owners onboarding.
-# Runtime application source is always the canonical develop branch checked out below.
+# Runtime application source is always the published main branch checked out below.
 name: hosted-pilot-onboarding
 
 on:
@@ -37,7 +37,7 @@ jobs:
       PILOT_PREVIEW_MODE: full-ops
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      DEPLOY_GIT_REF: develop
+      DEPLOY_GIT_REF: main
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.PILOT_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PILOT_SUPABASE_PUBLISHABLE_KEY }}
       SUPABASE_SECRET_KEY: ${{ secrets.PILOT_SUPABASE_SECRET_KEY }}
@@ -47,10 +47,10 @@ jobs:
       ADMIN_NAME: ${{ inputs.admin_name }}
 
     steps:
-      - name: Checkout canonical develop
+      - name: Checkout published main
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
           fetch-depth: 1
 
       - name: Setup Node

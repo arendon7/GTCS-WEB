@@ -37,10 +37,10 @@ jobs:
       ADMIN_NAME: ${{ inputs.admin_name }}
 
     steps:
-      - name: Checkout canonical develop
+      - name: Checkout published main
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
           fetch-depth: 1
 
       - name: Setup Node

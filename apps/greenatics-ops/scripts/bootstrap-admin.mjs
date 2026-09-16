@@ -104,6 +104,12 @@ async function main() {
     const expectedIds = new Set(assignments.map((assignment) => assignment.plant_id));
     const validRows = (verificationRows ?? []).filter((row) => expectedIds.has(row.plant_id) && row.role === "admin" && row.active === true);
     if (validRows.length !== expectedIds.size) throw new Error("La verificación final de membresías administrador no coincidió con TAM+YAR.");
+
+    // Membership grants plant context; the entitlement explicitly grants OPS.
+    const { error: appAccessError } = await admin
+      .from("application_access")
+      .upsert({ user_id: invitedUser.id, app_code: "ops", enabled: true }, { onConflict: "user_id,app_code" });
+    if (appAccessError) throw new Error(`No fue posible habilitar GREENATICS OPS: ${appAccessError.message}`);
   } catch (error) {
     await cleanupInvitedUser(admin, invitedUser.id);
     throw new Error(`${error instanceof Error ? error.message : String(error)} La invitación administrador fue revertida.`);

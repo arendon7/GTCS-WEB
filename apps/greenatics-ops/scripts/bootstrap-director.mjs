@@ -67,5 +67,15 @@ if (!bootstrapPlants?.length) {
   fail(`El bootstrap no devolvió plantas; ${invited ? "la invitación fue revertida" : "el usuario existente no fue eliminado"}.`);
 }
 
+// A director must be able to enter OPS immediately after accepting the invite.
+// Plant memberships and product entitlements are intentionally separate.
+const { error: appAccessError } = await admin
+  .from("application_access")
+  .upsert({ user_id: user.id, app_code: "ops", enabled: true }, { onConflict: "user_id,app_code" });
+if (appAccessError) {
+  if (invited) await admin.auth.admin.deleteUser(user.id);
+  fail(`No fue posible habilitar GREENATICS OPS; ${invited ? "la invitación fue revertida" : "el usuario existente no fue eliminado"}: ${appAccessError.message}`);
+}
+
 console.log(`BOOTSTRAP_OK: ${displayName} (${email}) quedó como director en ${bootstrapPlants.map((plant) => plant.plant_name).join(" + ")}.`);
 console.log("El bootstrap atómico se bloqueará en futuras ejecuciones mientras exista un director activo.");
