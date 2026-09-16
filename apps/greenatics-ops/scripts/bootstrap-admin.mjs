@@ -55,7 +55,6 @@ async function main() {
   const { data: existingUsers, error: listError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (listError) throw new Error(`No fue posible consultar usuarios Auth: ${listError.message}`);
   const existing = existingUsers.users.find((candidate) => normalizeEmail(candidate.email) === email);
-  if (existing) throw new Error("El usuario administrador ya existe en Auth; usa la administración normal de usuarios para modificarlo.");
 
   const { data: plantRows, error: plantsError } = await admin
     .from("plants")
@@ -67,6 +66,33 @@ async function main() {
   const plantsByCode = new Map((plantRows ?? []).map((plant) => [plant.code, plant]));
   const missingCodes = plantCodes.filter((code) => !plantsByCode.has(code));
   if (missingCodes.length) throw new Error(`Faltan plantas activas requeridas: ${missingCodes.join(", ")}.`);
+
+  if (existing) {
+    // Existing identities are never silently elevated. Only a current administrator
+    // or director with the requested plant scope can receive a recovery message.
+    const { data: memberships, error: membershipsError } = await admin
+      .from("plant_memberships")
+      .select("plant_id,role,active")
+      .eq("user_id", existing.id)
+      .eq("active", true)
+      .in("role", ["admin", "director"]);
+    if (membershipsError) throw new Error(`No fue posible validar membresías del administrador existente: ${membershipsError.message}`);
+    const existingPlantIds = new Set((memberships ?? []).map((membership) => membership.plant_id));
+    const missingPlantAccess = plantCodes.filter((code) => !existingPlantIds.has(plantsByCode.get(code).id));
+    if (missingPlantAccess.length) throw new Error("El usuario existente no tiene el alcance administrativo requerido; usa la administración normal de usuarios para modificarlo.");
+
+    const { error: appAccessError } = await admin
+      .from("application_access")
+      .upsert({ user_id: existing.id, app_code: "ops", enabled: true }, { onConflict: "user_id,app_code" });
+    if (appAccessError) throw new Error(`No fue posible habilitar GREENATICS OPS: ${appAccessError.message}`);
+
+    const { error: recoveryError } = await admin.auth.resetPasswordForEmail(email, {
+      redirectTo: `${baseUrl}${INVITE_ACCEPTANCE_PATH}`,
+    });
+    if (recoveryError) throw new Error(`No fue posible enviar el correo de acceso: ${recoveryError.message}`);
+    console.log(`BOOTSTRAP_ADMIN_EXISTING_OK: ${displayName} conserva su alcance administrativo en ${plantCodes.join(" + ")} y recibió un correo de acceso.`);
+    return;
+  }
 
   const { data: inviteData, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { display_name: displayName },

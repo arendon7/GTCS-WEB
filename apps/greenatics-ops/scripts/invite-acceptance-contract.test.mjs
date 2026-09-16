@@ -27,6 +27,13 @@ describe("hosted invitation contract", () => {
     }
   });
 
+  it("recovers a verified existing administrator without silently elevating access", async () => {
+    const bootstrapAdmin = await source("./bootstrap-admin.mjs");
+    expect(bootstrapAdmin).toContain('in("role", ["admin", "director"])');
+    expect(bootstrapAdmin).toContain("El usuario existente no tiene el alcance administrativo requerido");
+    expect(bootstrapAdmin).toContain("resetPasswordForEmail");
+  });
+
   it("keeps auth routes public from the proxy but private from caches and indexing", async () => {
     const proxy = await source("../src/proxy.ts");
     const headers = await source("../src/lib/http-security.ts");
