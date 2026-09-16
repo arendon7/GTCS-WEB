@@ -24,6 +24,7 @@ echo "Inicialización de base de datos iniciada." >&2
 from sqlalchemy import text
 
 from app.db.base import ENGINE
+from app.config import settings
 from app.database import init_db
 
 # Keep startup safe for staging databases that were created by an earlier
