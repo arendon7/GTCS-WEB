@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -20,6 +21,11 @@ def env_list(name: str, default: str = "") -> list[str]:
     return [item.strip() for item in os.environ.get(name, default).split(",") if item.strip()]
 
 
+def is_safe_postgres_identifier(value: str) -> bool:
+    """Keep DATABASE_SCHEMA safe before it reaches a PostgreSQL SET command."""
+    return bool(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", value))
+
+
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Calcula tu Huella"
@@ -29,6 +35,7 @@ class Settings:
         "DATABASE_URL",
         f"sqlite:///{INSTANCE_DIR / 'calculatuhuella.db'}",
     )
+    database_schema: str = os.environ.get("DATABASE_SCHEMA", "").strip()
     session_secret: str = os.environ.get(
         "SESSION_SECRET",
         "local-demo-change-in-production-v030",
@@ -81,6 +88,10 @@ class Settings:
     structured_logging: bool = env_bool("STRUCTURED_LOGGING", True)
     audit_chain_enabled: bool = env_bool("AUDIT_CHAIN_ENABLED", True)
 
+    def __post_init__(self) -> None:
+        if self.database_schema and not is_safe_postgres_identifier(self.database_schema):
+            raise ValueError("DATABASE_SCHEMA debe ser un identificador PostgreSQL simple y seguro.")
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"
@@ -101,6 +112,8 @@ class Settings:
             issues.append("SESSION_HTTPS_ONLY debe estar activo detrás de HTTPS.")
         if self.database_backend != "PostgreSQL":
             issues.append("Para producción se recomienda PostgreSQL en lugar de SQLite.")
+        if self.database_schema and self.database_backend != "PostgreSQL":
+            issues.append("DATABASE_SCHEMA solo puede configurarse con PostgreSQL.")
         if not self.trusted_hosts or "*" in self.trusted_hosts:
             issues.append("TRUSTED_HOSTS debe contener únicamente los dominios autorizados.")
         if not self.public_base_url.startswith("https://"):

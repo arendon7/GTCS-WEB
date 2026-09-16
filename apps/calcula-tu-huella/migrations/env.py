@@ -18,12 +18,18 @@ target_metadata = Base.metadata
 def run_migrations_offline() -> None:
     context.configure(url=settings.database_url, target_metadata=target_metadata, literal_binds=True, compare_type=True)
     with context.begin_transaction():
+        if settings.database_schema:
+            # Keep generated SQL faithful to the private runtime schema as well.
+            context.execute(f'SET search_path TO "{settings.database_schema}"')
         context.run_migrations()
 
 
 def run_migrations_online() -> None:
     connectable = engine_from_config(config.get_section(config.config_ini_section) or {}, prefix="sqlalchemy.", poolclass=pool.NullPool)
     with connectable.connect() as connection:
+        if settings.database_schema:
+            # The identifier is validated in Settings before interpolating it here.
+            connection.exec_driver_sql(f'SET search_path TO "{settings.database_schema}"')
         context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
         with context.begin_transaction():
             context.run_migrations()

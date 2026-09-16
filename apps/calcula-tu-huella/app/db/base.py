@@ -13,6 +13,9 @@ DB_PATH = Path(settings.database_url.removeprefix("sqlite:///")) if settings.dat
 _engine_options: dict[str, object] = {"pool_pre_ping": True}
 if settings.database_url.startswith("sqlite"):
     _engine_options["connect_args"] = {"check_same_thread": False}
+elif settings.database_schema:
+    # The application never relies on the shared public schema when isolated.
+    _engine_options["connect_args"] = {"options": f"-csearch_path={settings.database_schema}"}
 ENGINE = create_engine(settings.database_url, **_engine_options)
 SessionLocal = sessionmaker(bind=ENGINE, autoflush=False, expire_on_commit=False)
 
