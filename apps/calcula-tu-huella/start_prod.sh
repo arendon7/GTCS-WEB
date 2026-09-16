@@ -40,4 +40,3 @@ exec "$PY" -m uvicorn app.main:app \
   --proxy-headers \
   --forwarded-allow-ips "${FORWARDED_ALLOW_IPS:-*}" \
   --no-access-log
-
