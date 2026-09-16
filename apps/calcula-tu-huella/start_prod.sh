@@ -7,12 +7,14 @@ if [ -f .env ]; then
   source .env
   set +a
 fi
-source scripts/runtime_python.sh
-cth_runtime_python "$ROOT"
-PY="$CTH_RUNTIME_PYTHON"
+PY="${CTH_PYTHON_BIN:-/usr/local/bin/python}"
+if [ ! -x "$PY" ]; then
+  PY="$(command -v python)"
+fi
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 export APP_ENV="${APP_ENV:-production}"
 export HOST="${HOST:-0.0.0.0}"
-export PORT="${PORT:-8765}"
+export PORT="${PORT:-10000}"
 export OPEN_BROWSER=0
 # Render's health check must be able to reach the process while a new PostgreSQL
 # schema is migrated and seeded. Keep that boot work out of the critical path.
