@@ -16,23 +16,21 @@ export APP_ENV="${APP_ENV:-production}"
 export HOST="${HOST:-0.0.0.0}"
 export PORT="${PORT:-10000}"
 export OPEN_BROWSER=0
-# Render's health check must be able to reach the process while a new PostgreSQL
-# schema is migrated and seeded. Keep that boot work out of the critical path.
-(
-  set -euo pipefail
-  echo "Inicialización de base de datos iniciada en segundo plano." >&2
-  "$PY" -m alembic upgrade head
-  "$PY" - <<'PYCODE'
+# Complete schema setup before serving traffic. This prevents a healthy
+# container from exposing a half-initialized application to real users.
+echo "Inicialización de base de datos iniciada." >&2
+"$PY" -m alembic upgrade head
+"$PY" - <<'PYCODE'
 from app.database import init_db
 init_db()
 print("Esquema e inicialización verificados.")
 PYCODE
-  if [ "${DEPLOYMENT_STRICT:-false}" = "true" ]; then
-    "$PY" scripts/check_ready.py
-  else
-    echo "Certificación externa diferida: DEPLOYMENT_STRICT=false; consultar /api/ready." >&2
-  fi
-) >&2 &
+if [ "${DEPLOYMENT_STRICT:-false}" = "true" ]; then
+  "$PY" scripts/check_ready.py
+else
+  echo "Certificación externa diferida: DEPLOYMENT_STRICT=false; consultar /api/ready." >&2
+fi
+
 exec "$PY" -m uvicorn app.main:app \
   --host "$HOST" \
   --port "$PORT" \
