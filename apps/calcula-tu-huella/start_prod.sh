@@ -31,6 +31,21 @@ from app.database import init_db
 if ENGINE.dialect.name == "postgresql":
     with ENGINE.begin() as connection:
         connection.execute(text("ALTER TABLE app_users ALTER COLUMN password_hash TYPE VARCHAR(255)"))
+        # Older staging schemas used narrower VARCHAR limits for methodology
+        # metadata. Preserve complete citations, URLs and notes during seeding.
+        connection.execute(text("""
+            DO $$
+            BEGIN
+                IF to_regclass(current_schema() || '.methodology_source_documents') IS NOT NULL THEN
+                    ALTER TABLE methodology_source_documents ALTER COLUMN title TYPE TEXT;
+                    ALTER TABLE methodology_source_documents ALTER COLUMN issuing_body TYPE TEXT;
+                    ALTER TABLE methodology_source_documents ALTER COLUMN document_type TYPE TEXT;
+                    ALTER TABLE methodology_source_documents ALTER COLUMN jurisdiction TYPE TEXT;
+                    ALTER TABLE methodology_source_documents ALTER COLUMN source_url TYPE TEXT;
+                    ALTER TABLE methodology_source_documents ALTER COLUMN status TYPE TEXT;
+                END IF;
+            END $$;
+        """))
 
 init_db()
 print("Esquema e inicialización verificados.")
