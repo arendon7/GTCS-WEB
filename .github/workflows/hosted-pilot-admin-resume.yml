@@ -120,7 +120,7 @@ jobs:
           set -euo pipefail
           node scripts/bootstrap-admin.mjs --email "$ADMIN_EMAIL" --name "$ADMIN_NAME" --plants TAM,YAR
 
-      - name: Verify Administrator TAM plus YAR
+      - name: Verify Administrator or Director TAM plus YAR and OPS
         shell: bash
         run: |
           set -euo pipefail
@@ -138,12 +138,20 @@ jobs:
             .from('plant_memberships')
             .select('plant_id,role,active,plants!inner(code)')
             .eq('user_id', user.id)
-            .eq('role', 'admin')
+            .in('role', ['admin', 'director'])
             .eq('active', true);
           if (membershipsError) throw membershipsError;
           const codes = new Set((memberships || []).map((row) => row.plants?.code));
-          if (!codes.has('TAM') || !codes.has('YAR')) throw new Error('Administrator does not have active TAM+YAR memberships.');
-          console.log('Administrator TAM+YAR: PASS');
+          if (!codes.has('TAM') || !codes.has('YAR')) throw new Error('User does not have active TAM+YAR administrative memberships.');
+          const { data: appAccess, error: appAccessError } = await admin
+            .from('application_access')
+            .select('app_code')
+            .eq('user_id', user.id)
+            .eq('app_code', 'ops')
+            .eq('enabled', true)
+            .maybeSingle();
+          if (appAccessError || !appAccess) throw new Error('User does not have enabled OPS access.');
+          console.log('Administrative TAM+YAR and OPS access: PASS');
           NODE
 
       - name: Recovery summary
