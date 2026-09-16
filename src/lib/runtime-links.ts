@@ -42,6 +42,8 @@ export const runtimeLinks = {
   huella: cleanRuntimeUrl(process.env.NEXT_PUBLIC_HUELLA_APP_URL),
   // Local development can override this with a LAN runtime; public builds always keep OPS reachable.
   ops: configuredOpsRuntime || "https://greenatics-ops.vercel.app",
+  opsApp: `${configuredOpsRuntime || "https://greenatics-ops.vercel.app"}/app`,
+  opsUserAdmin: `${configuredOpsRuntime || "https://greenatics-ops.vercel.app"}/admin/users`,
   red: cleanRuntimeUrl(process.env.NEXT_PUBLIC_RED_APP_URL),
 };
 

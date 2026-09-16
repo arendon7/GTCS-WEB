@@ -123,7 +123,7 @@ export default function PlatformPage() {
           <div className="platform-v4-apps__grid">
             {applications.map((application) => {
               const configuredUrl = application.code === "OPS"
-                ? runtimeLinks.ops
+                ? runtimeLinks.opsApp
                 : application.code === "CO₂"
                   ? runtimeLinks.huella
                     : application.code === "RED"

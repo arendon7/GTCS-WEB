@@ -19,7 +19,7 @@ export function SiteHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const opsUrl = runtimeLinks.ops || process.env.NEXT_PUBLIC_OPS_URL || "/acceso/";
+  const opsUrl = runtimeLinks.opsApp || process.env.NEXT_PUBLIC_OPS_URL || "/acceso/";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -106,7 +106,7 @@ export default function AppPage() {
         name="GREENATICS OPS"
         status={runtimeLinks.ops ? "Runtime operativo disponible" : "Demostración pública disponible"}
         copy="Esta landing presenta la arquitectura completa de OPS. Desde aquí puedes recorrer la demostración y, si el entorno está disponible, entrar a la estación operativa separada. Los datos de demo no representan una planta conectada."
-        runtimeHref={runtimeLinks.ops || undefined}
+        runtimeHref={runtimeLinks.opsApp}
         runtimeLabel="Entrar a la estación OPS"
         demoHref="/app/#estacion"
         demoLabel="Explorar estación demo"
