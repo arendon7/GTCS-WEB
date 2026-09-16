@@ -30,7 +30,7 @@ PYCODE
   else
     echo "Certificación externa diferida: DEPLOYMENT_STRICT=false; consultar /api/ready." >&2
   fi
-) > >(sed 's/^/[bootstrap] /' >&2) 2>&1 &
+) >&2 &
 exec "$PY" -m uvicorn app.main:app \
   --host "$HOST" \
   --port "$PORT" \
