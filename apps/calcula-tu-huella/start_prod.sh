@@ -20,7 +20,13 @@ from app.database import init_db
 init_db()
 print("Esquema e inicialización verificados.")
 PYCODE
-"$PY" scripts/check_ready.py
+if ! "$PY" scripts/check_ready.py; then
+  if [ "${DEPLOYMENT_STRICT:-false}" = "true" ]; then
+    echo "La certificación operativa falló y DEPLOYMENT_STRICT=true; se cancela el arranque." >&2
+    exit 1
+  fi
+  echo "Advertencia: la certificación operativa está degradada; se continúa con el arranque no estricto." >&2
+fi
 exec "$PY" -m uvicorn app.main:app \
   --host "$HOST" \
   --port "$PORT" \
