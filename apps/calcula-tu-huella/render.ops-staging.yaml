@@ -6,8 +6,9 @@ services:
     runtime: docker
     plan: free
     rootDir: apps/calcula-tu-huella
-    dockerfilePath: apps/calcula-tu-huella/Dockerfile
-    dockerContext: apps/calcula-tu-huella
+    # Docker paths are resolved inside rootDir by Render.
+    dockerfilePath: Dockerfile
+    dockerContext: .
     autoDeployTrigger: "off"
     healthCheckPath: /api/health
     envVars:
