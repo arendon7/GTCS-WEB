@@ -29,6 +29,7 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         if settings.database_schema:
             # The identifier is validated in Settings before interpolating it here.
+            connection.exec_driver_sql(f'CREATE SCHEMA IF NOT EXISTS "{settings.database_schema}"')
             connection.exec_driver_sql(f'SET search_path TO "{settings.database_schema}"')
         context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
         with context.begin_transaction():
