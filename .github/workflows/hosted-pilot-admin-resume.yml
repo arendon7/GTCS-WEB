@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       director_email:
-        description: Existing Director email to verify
-        required: true
+        description: Optional existing Director email to verify; leave empty to verify any active Director
+        required: false
+        default: ""
         type: string
       admin_email:
         description: Administrator email to invite
@@ -55,11 +56,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
           [[ "$ADMIN_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
           test "${#ADMIN_NAME}" -ge 2
           test "${#ADMIN_NAME}" -le 120
-          test "${DIRECTOR_EMAIL,,}" != "${ADMIN_EMAIL,,}"
+          if [ -n "$DIRECTOR_EMAIL" ]; then
+            [[ "$DIRECTOR_EMAIL" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]
+            test "${DIRECTOR_EMAIL,,}" != "${ADMIN_EMAIL,,}"
+          fi
           for name in NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY SUPABASE_SECRET_KEY; do
             test -n "${!name:-}"
           done
@@ -81,21 +84,33 @@ jobs:
           import { createClient } from '@supabase/supabase-js';
           const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
           const secret = process.env.SUPABASE_SECRET_KEY;
-          const email = process.env.DIRECTOR_EMAIL.trim().toLowerCase();
+          const expectedEmail = process.env.DIRECTOR_EMAIL.trim().toLowerCase();
           const admin = createClient(url, secret, { auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false } });
-          const { data: page, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-          if (usersError) throw usersError;
-          const user = page.users.find((candidate) => (candidate.email || '').toLowerCase() === email);
-          if (!user) throw new Error('Expected Director user is missing.');
           const { data: memberships, error: membershipsError } = await admin
             .from('plant_memberships')
-            .select('plant_id,role,active,plants!inner(code)')
-            .eq('user_id', user.id)
+            .select('user_id,plant_id,role,active,plants!inner(code)')
             .eq('role', 'director')
             .eq('active', true);
           if (membershipsError) throw membershipsError;
-          const codes = new Set((memberships || []).map((row) => row.plants?.code));
-          if (!codes.has('TAM') || !codes.has('YAR')) throw new Error('Expected Director does not have active TAM+YAR memberships.');
+          const codesByUser = new Map();
+          for (const row of memberships || []) {
+            const codes = codesByUser.get(row.user_id) || new Set();
+            codes.add(row.plants?.code);
+            codesByUser.set(row.user_id, codes);
+          }
+
+          let directorId;
+          if (expectedEmail) {
+            const { data: page, error: usersError } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+            if (usersError) throw usersError;
+            directorId = page.users.find((candidate) => (candidate.email || '').toLowerCase() === expectedEmail)?.id;
+            if (!directorId) throw new Error('Expected Director user is missing.');
+          } else {
+            directorId = [...codesByUser.entries()].find(([, codes]) => codes.has('TAM') && codes.has('YAR'))?.[0];
+          }
+
+          const codes = directorId ? codesByUser.get(directorId) : undefined;
+          if (!codes?.has('TAM') || !codes.has('YAR')) throw new Error('No active Director with TAM+YAR memberships is available.');
           console.log('Existing Director TAM+YAR: PASS');
           NODE
 
