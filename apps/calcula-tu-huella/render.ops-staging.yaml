@@ -1,0 +1,47 @@
+# Import this file as a separate Render Blueprint. It intentionally creates no
+# Render database: persistence remains in the private `huella` schema of OPS.
+services:
+  - type: web
+    name: greenatics-huella-staging
+    runtime: docker
+    plan: free
+    rootDir: apps/calcula-tu-huella
+    dockerfilePath: apps/calcula-tu-huella/Dockerfile
+    dockerContext: apps/calcula-tu-huella
+    autoDeployTrigger: "off"
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: staging
+      - key: DATABASE_SCHEMA
+        value: huella
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SESSION_HTTPS_ONLY
+        value: "true"
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: GREENATICS_PUBLIC_URL
+        value: https://greenatics-circular.arendon.chatgpt.site
+      - key: TRUSTED_HOSTS
+        sync: false
+      - key: SEED_DEMO
+        value: "true"
+      - key: SCHEDULER_ENABLED
+        value: "false"
+      - key: DEPLOYMENT_STRICT
+        value: "false"
+      - key: STORAGE_BACKEND
+        value: s3
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_REGION
+        sync: false
+      - key: S3_ACCESS_KEY
+        sync: false
+      - key: S3_SECRET_KEY
+        sync: false
