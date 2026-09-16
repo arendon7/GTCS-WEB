@@ -23,11 +23,11 @@ services:
       - key: SESSION_HTTPS_ONLY
         value: "true"
       - key: PUBLIC_BASE_URL
-        sync: false
+        value: https://greenatics-huella-staging.onrender.com
       - key: GREENATICS_PUBLIC_URL
         value: https://greenatics-circular.arendon.chatgpt.site
       - key: TRUSTED_HOSTS
-        sync: false
+        value: greenatics-huella-staging.onrender.com,localhost,127.0.0.1
       - key: SEED_DEMO
         value: "true"
       - key: SCHEDULER_ENABLED
