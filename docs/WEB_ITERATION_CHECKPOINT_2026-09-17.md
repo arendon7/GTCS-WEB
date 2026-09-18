@@ -61,6 +61,7 @@ La ruta de producto sigue siendo:
 - Biblioteca y Wondergreen incorporaron metadata social de sección para no compartir páginas técnicas con el título genérico de la portada; las rutas hijas conservan sus títulos específicos cuando los declaran.
 - Casa & Jardín incorporó metadata social propia para que portada, kits y guías se compartan como una experiencia Wondergreen diferenciada.
 - Las páginas hijas de Casa & Jardín ahora declaran metadata social específica: cada kit comparte su ruta y portada, cada producto su función e imagen aprobada cuando existe, y la biblioteca de guías su cubierta PDF. Esto evita que un enlace compartido pierda el contexto del recurso.
+- La puerta “Quiero comprar” de Casa & Jardín dejó de mezclar productos y kits en un único CTA: ahora ofrece “Ver productos por etapa” y “Ver kits por uso”, con destinos independientes y visibles.
 
 ## Puertas verificadas
 
@@ -87,6 +88,7 @@ La ruta de producto sigue siendo:
 - QA de compartibilidad: Biblioteca comparte con título propio de sección y Wondergreen con título de sistema agronómico; no se alteraron las URLs canónicas ni el sitemap.
 - QA de Casa & Jardín: portada, kits y guías exportan título social de sección; las descargas PDF y los enlaces canónicos permanecen intactos.
 - QA de compartibilidad de Casa & Jardín: kits, productos y guías exportan `og:title`, `og:description`, `og:url` e imagen contextual cuando corresponde; se verificaron Plantas Verdes, CRECE y Guías.
+- QA de orientación de compra: el HTML exportado contiene las dos rutas diferenciadas y ya no conserva el CTA ambiguo “Ver productos y kits”.
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 
 ## Riesgos que permanecen
@@ -115,6 +117,7 @@ La ruta de producto sigue siendo:
 13. Mantener alineados el verbo de cada CTA documental y su comportamiento real: “Descargar” debe descargar; “Abrir” debe abrir una ruta de lectura.
 14. Mantener Casa & Jardín como una experiencia propia dentro de Wondergreen: portada, kits, productos y guías deben compartir identidad visual y metadata, pero conservar entradas claras.
 15. Mantener metadata social específica en cada recurso compartible de Casa & Jardín; no volver a depender del título genérico de la sección cuando exista una ficha o documento concreto.
+16. Mantener separadas las puertas de catálogo y kits en cualquier CTA futuro; no usar etiquetas que prometan dos destinos cuando solo enlazan uno.
 
 ## Regla de continuidad
 

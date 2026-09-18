@@ -621,7 +621,8 @@
 .homegarden-v4-start article > span { color: var(--green-700); font-size: .68rem; font-weight: 850; }
 .homegarden-v4-start h2 { margin: 45px 0 10px; font-size: 1.45rem; }
 .homegarden-v4-start p { color: #5a6960; font-size: .84rem; }
-.homegarden-v4-start a { margin-top: auto; color: var(--green-800); font-size: .82rem; font-weight: 850; }
+.homegarden-v4-start__links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; }
+.homegarden-v4-start a { color: var(--green-800); font-size: .82rem; font-weight: 850; }
 
 .homegarden-v4-spaces__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .homegarden-v4-spaces article { overflow: hidden; border: 1px solid #ced9cc; border-radius: 26px 26px 26px 7px; background: #fff; }

@@ -106,9 +106,9 @@ const kitCards = [
 ] as const;
 
 const waysToStart = [
-  ["Necesito orientación", "Usa el diagnóstico guiado para organizar tipo de planta, etapa, estado y tamaño de maceta.", "Hacer diagnóstico", "#diagnostico"],
-  ["Quiero aprender", "Consulta las guías prácticas de trasplante, etapas, cuidado y huertas urbanas.", "Abrir las guías", "/casa-jardin/guias/"],
-  ["Quiero comprar", "Explora kits y productos por etapa; después podemos revisar disponibilidad, presentación y forma de entrega.", "Ver productos y kits", "/casa-jardin/productos/"],
+  { title: "Necesito orientación", copy: "Usa el diagnóstico guiado para organizar tipo de planta, etapa, estado y tamaño de maceta.", cta: "Hacer diagnóstico", href: "#diagnostico", secondaryCta: undefined, secondaryHref: undefined },
+  { title: "Quiero aprender", copy: "Consulta las guías prácticas de trasplante, etapas, cuidado y huertas urbanas.", cta: "Abrir las guías", href: "/casa-jardin/guias/", secondaryCta: undefined, secondaryHref: undefined },
+  { title: "Quiero comprar", copy: "Explora productos por etapa o elige un kit por uso; después podemos revisar disponibilidad, presentación y forma de entrega.", cta: "Ver productos por etapa", href: "/casa-jardin/productos/", secondaryCta: "Ver kits por uso", secondaryHref: "/casa-jardin/kits/" },
 ] as const;
 
 export default function CasaJardinPage() {
@@ -116,7 +116,7 @@ export default function CasaJardinPage() {
     <>
       <section className="homegarden-v4-hero"><div className="container homegarden-v4-hero__grid"><div><span className="eyebrow eyebrow--light">Wondergreen Casa & Jardín</span><h1>Una ruta para cada planta, no una receta para todas.</h1><p className="lead">Casa & Jardín convierte el cuidado cotidiano en decisiones más claras: prepara el suelo, reconoce la etapa, revisa la condición y elige la línea que tiene sentido para ese momento.</p><div className="button-row"><Link className="button button--light" href="#diagnostico">Orientar mi planta</Link><Link className="button button--outline-light" href="/downloads/guia-casa-jardin.pdf" download>Descargar guía</Link></div><div className="homegarden-v4-hero__signals" aria-label="Lógica del sistema Wondergreen"><span>Suelo vivo</span><span>Etapas diferenciadas</span><span>Aplicación con criterio</span></div></div><figure><Image src="/products/wondergreen-casa-jardin-hero.png" alt="Sistema Wondergreen Casa y Jardín con plantas, productos y nutrición por etapas" fill priority sizes="(max-width: 850px) 100vw, 42vw" /><figcaption><strong>El sistema completo, leído por etapas.</strong><span>COMPOST prepara la base; cuatro líneas acompañan momentos diferentes del cultivo.</span></figcaption></figure></div></section>
 
-      <section className="homegarden-v4-start"><div className="container"><div className="homegarden-v4-start__grid">{waysToStart.map(([title, copy, cta, href], index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{copy}</p><Link href={href}>{cta} →</Link></article>)}</div></div></section>
+      <section className="homegarden-v4-start"><div className="container"><div className="homegarden-v4-start__grid">{waysToStart.map(({ title, copy, cta, href, secondaryCta, secondaryHref }, index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{copy}</p><div className="homegarden-v4-start__links"><Link href={href}>{cta} →</Link>{secondaryCta && secondaryHref ? <Link href={secondaryHref}>{secondaryCta} →</Link> : null}</div></article>)}</div></div></section>
 
       <section className="homegarden-v4-spaces"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Elige tu espacio</span><h2>El contexto cambia la pregunta que conviene hacer primero.</h2></div><p>Una matera, un jardín ornamental y una huerta no reciben la misma recomendación. Aquí puedes reconocer el punto de partida antes de entrar al orientador o revisar el catálogo.</p></div><div className="homegarden-v4-spaces__grid">{spaces.map(({ title, kicker, copy, image, alt, tag }) => <article key={title}><figure><Image src={image} alt={alt} fill sizes="(max-width: 760px) 100vw, 31vw" /><figcaption>{tag}</figcaption></figure><div><span>{kicker}</span><h3>{title}</h3><p>{copy}</p><Link href="#diagnostico">Explorar esta ruta <span aria-hidden="true">→</span></Link></div></article>)}</div></div></section>
 
