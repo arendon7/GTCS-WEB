@@ -141,6 +141,11 @@
 .agroindustry-v4-currents { background: #fff; }
 .wg-v4-crops { background: #f7faf5; }
 .wg-v4-product-jump{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:28px 0 22px;padding:10px;border:1px solid #d2dfd1;border-radius:999px;background:#fff}.wg-v4-product-jump>span{margin:0 8px;color:#617269;font-size:.68rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.wg-v4-product-jump a{padding:8px 13px;border:1px solid #cad8cb;border-radius:999px;color:#206b49;font-size:.78rem;font-weight:850;text-decoration:none;transition:background .16s ease,border-color .16s ease,transform .16s ease}.wg-v4-product-jump a:hover{border-color:#80ac82;background:#eef7eb;transform:translateY(-1px)}
+#solidos,
+#liquidos,
+#bioinsumos,
+#documentos { scroll-margin-top: 104px; }
+.wg-v4-product-jump a:focus-visible { outline: 3px solid #8bbf5a; outline-offset: 3px; }
 
 .wg-science {
   padding-block: clamp(82px, 9vw, 136px);
