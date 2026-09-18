@@ -35,7 +35,6 @@ export function RouteDecisionBridge({ eyebrow, title, intro, cards }: RouteDecis
               <p id={`${bridgeId}-card-${index + 1}-copy`}>{card.copy}</p>
               <div className="gt-decision-bridge__inputs">
                 <strong>Lo que conviene traer</strong>
-                <p>No necesitas tenerlo todo listo; estos datos ayudan a enfocar la primera conversación.</p>
                 <ul>{card.inputs.map((input) => <li key={input}>{input}</li>)}</ul>
               </div>
               <Link href={card.href} aria-label={`${card.cta}: ${card.title}`}>{card.cta} <span aria-hidden="true">→</span></Link>

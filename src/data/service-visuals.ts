@@ -29,6 +29,17 @@ const categoryVisuals: Record<Service["category"], ServiceVisual> = {
   },
 };
 
+const serviceVisualOverrides: Record<string, ServiceVisual> = {
+  "diagnostico-residuos": {
+    src: "/projects/yarumal/aerial-02.webp",
+    alt: "Vista aérea de la planta, los accesos y el territorio que se analizan en un diagnóstico Greenatics",
+  },
+  "pgirs-pmirs": {
+    src: "/projects/routes/route-evidence-02.webp",
+    alt: "Entrega de un recipiente con residuos orgánicos durante una operación documentada en Yarumal",
+  },
+};
+
 export function getServiceVisual(service: Pick<Service, "slug" | "name" | "category" | "image" | "imageAlt">): ServiceVisual {
   if (service.slug === "programas-wondergreen") {
     return {
@@ -36,6 +47,8 @@ export function getServiceVisual(service: Pick<Service, "slug" | "name" | "categ
       alt: "Sistema Wondergreen organizado por etapas del cultivo",
     };
   }
+
+  if (serviceVisualOverrides[service.slug]) return serviceVisualOverrides[service.slug];
 
   return service.image
     ? { src: service.image, alt: service.imageAlt ?? service.name }
