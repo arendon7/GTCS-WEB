@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     siteName: "Greenatics",
     title: "Biblioteca técnica y manuales de cultivo | Greenatics",
     description: "Recursos técnicos curados para conectar diagnóstico, aplicación, operación y aprendizaje en Greenatics.",
+    images: ["/brand/greenatics-horizontal.webp"],
   },
 };
 

@@ -68,6 +68,9 @@ La ruta de producto sigue siendo:
 - Las seis herramientas agronómicas del primer lote ahora comparten un rastro visible de retorno a Wondergreen y breadcrumbs estructurados; la herramienta de agua dejó de enviar por WhatsApp una recomendación automática y ahora solicita validar el contexto antes de definir acondicionamiento o fertirriego.
 - El segundo lote de herramientas agronómicas ahora comparte el mismo rastro de retorno: calculadora, calendario, calibración, costo por unidad, fitosanidad, logística, quiz y valorización pecuaria. Se ajustaron además etiquetas de “producto asignado”, “vehículo recomendado” y “fertilizante producido” para comunicar referencias y escenarios, no garantías.
 - La Calculadora agronómica conserva su retorno y breadcrumb también en el fallback de `Suspense`; la primera carga estática ya no queda sin contexto mientras hidrata la interacción.
+- La Biblioteca técnica ahora tiene una navegación contextual visible hacia Greenatics y Wondergreen, un contador de resultados accesible y un estado vacío accionable para búsquedas sin coincidencias.
+- Las portadas de los recursos de Biblioteca se cargan con `next/image`, conservando su recorte editorial y mejorando la carga responsive sin cambiar las rutas de los documentos.
+- Biblioteca declara una imagen social de sección y la guía de aplicación Wondergreen incorpora `Article` JSON-LD con su advertencia de precedencia de ficha técnica.
 
 ## Puertas verificadas
 
@@ -104,6 +107,8 @@ La ruta de producto sigue siendo:
 - QA del segundo lote agronómico: ocho rutas conservan interacción cliente y CTAs operativos, con retorno institucional visible; el quiz y la valorización pecuaria ya no presentan una aplicación o conversión teórica como resultado garantizado.
 - QA de carga inicial: la salida estática de la Calculadora contiene contexto de retorno aun antes de hidratar sus parámetros de búsqueda.
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
+- QA de Biblioteca: 39 rutas de portadas, imágenes y PDFs referenciadas existen en `public/`; la salida exportada contiene breadcrumb, navegación institucional, contador de resultados y metadata social de sección.
+- QA de guía de aplicación: el HTML exportado contiene `Article` JSON-LD y `BreadcrumbList`, conserva canonical propia y mantiene la regla de que ficha, etiqueta y protocolo vigente prevalecen sobre la guía general.
 
 ## Riesgos que permanecen
 
@@ -138,6 +143,7 @@ La ruta de producto sigue siendo:
 20. Mantener los mensajes de salida de las herramientas como fichas preliminares; nunca convertir un cálculo contextual en una recomendación automática de producto o tratamiento.
 21. En herramientas de escenario, distinguir siempre resultado aritmético, referencia a evaluar, viabilidad técnica y promesa comercial; solo esta última requiere validación explícita antes de publicarse como claim.
 22. Mantener sincronizados visual, metadata social y schema `Product` por SKU; una ficha no debe compartir una imagen distinta de la que presenta en pantalla.
+23. Mantener la Biblioteca como índice accionable: toda tarjeta debe declarar si descarga un PDF o abre una referencia web, y toda búsqueda debe comunicar resultado o recuperación sin dejar un estado silencioso.
 
 ## Regla de continuidad
 

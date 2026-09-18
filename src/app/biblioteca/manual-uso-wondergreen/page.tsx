@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArticleJsonLd } from "@/components/article-json-ld";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { fieldApplicationRules, fieldChecklist } from "@/data/crops";
 import { site } from "@/data/site";
@@ -30,6 +31,13 @@ export default function WondergreenUseManualPage() {
   const url = `${site.url}/biblioteca/manual-uso-wondergreen/`;
   return (
     <>
+      <ArticleJsonLd
+        headline="Guía de aplicación en campo Wondergreen"
+        description="Criterios para preparar, ejecutar y hacer seguimiento de aplicaciones Wondergreen sin sustituir la ficha técnica vigente."
+        url={url}
+        dateModified="2026-09-18"
+        about={["Aplicación agronómica", "Wondergreen", "Nutrición vegetal"]}
+      />
       <BreadcrumbJsonLd items={[
         { name: "Greenatics", url: `${site.url}/` },
         { name: "Biblioteca", url: `${site.url}/biblioteca/` },

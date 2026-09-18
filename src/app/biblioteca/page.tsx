@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 interface DocumentItem {
   id: string;
@@ -68,10 +71,19 @@ export default function BibliotecaPage() {
     return matchesFilter && matchesSearch;
   });
 
+  const libraryUrl = `${site.url}/biblioteca/`;
+
   return (
-    <div style={{ background: "#f8faf6", color: "var(--green-950)", padding: "70px 0 90px", overflowX: "hidden" }}>
+    <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Biblioteca técnica", url: libraryUrl }]} />
+      <div style={{ background: "#f8faf6", color: "var(--green-950)", padding: "70px 0 90px", overflowX: "hidden" }}>
       <div className="container">
-        
+        <nav className="library-context-nav" aria-label="Ruta de navegación de la Biblioteca">
+          <Link href="/">← Volver a Greenatics</Link>
+          <span aria-hidden="true">Centro de conocimiento</span>
+          <Link href="/wondergreen/">Explorar Wondergreen →</Link>
+        </nav>
+
         {/* Header */}
         <div style={{ textAlign: "center", maxWidth: "860px", margin: "0 auto 40px" }}>
           <div className="eyebrow-badge" style={{ marginBottom: "16px" }}>
@@ -145,6 +157,7 @@ export default function BibliotecaPage() {
           {/* Instant Search Box */}
           <div style={{ position: "relative", minWidth: "260px" }}>
             <input
+              aria-label="Buscar en la Biblioteca técnica"
               type="text"
               placeholder="Buscar por cultivo, norma o palabra clave..."
               value={search}
@@ -167,9 +180,15 @@ export default function BibliotecaPage() {
 
         </div>
 
+        <div className="library-result-summary" aria-live="polite" aria-atomic="true">
+          <strong>{filtered.length}</strong> {filtered.length === 1 ? "recurso encontrado" : "recursos encontrados"}
+          {search.trim() ? ` para “${search.trim()}”` : ""}
+        </div>
+
         {/* 3-Column Bento Grid of Documents (1440px Wide) */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "clamp(20px, 2.5vw, 32px)", marginBottom: "64px" }}>
-          {filtered.map((doc) => (
+        {filtered.length > 0 ? (
+          <div id="library-results" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "clamp(20px, 2.5vw, 32px)", marginBottom: "64px" }}>
+            {filtered.map((doc) => (
             <article
               key={doc.id}
               style={{
@@ -187,10 +206,12 @@ export default function BibliotecaPage() {
               <div>
                 {/* Document Cover Thumbnail */}
                 <div style={{ position: "relative", width: "100%", height: "200px", background: "#07261d", overflow: "hidden" }}>
-                  <img
+                  <Image
                     src={doc.coverImage}
                     alt={doc.title}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    fill
+                    sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                    style={{ objectFit: "cover" }}
                   />
                   <div style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(7, 38, 29, 0.85)", backdropFilter: "blur(8px)", padding: "4px 10px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.2)" }}>
                     <span style={{ fontSize: "0.72rem", color: "var(--lime-400)", fontWeight: 800 }}>
@@ -248,8 +269,16 @@ export default function BibliotecaPage() {
                 </div>
               </div>
             </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="library-empty-state" role="status">
+            <span className="eyebrow">Sin coincidencias</span>
+            <h2>No encontramos un recurso con esos criterios.</h2>
+            <p>Prueba con el nombre de un cultivo, una familia Wondergreen o una palabra como “suelo”, “operación” o “huerta”.</p>
+            <button type="button" className="button button--ghost" onClick={() => { setSearch(""); setFilter("todos"); }}>Limpiar búsqueda</button>
+          </div>
+        )}
 
         {/* Custom Technical Dossier Request Banner */}
         <div style={{ background: "linear-gradient(145deg, #07261d 0%, #03150f 100%)", color: "#ffffff", padding: "40px 44px", borderRadius: "28px", border: "1.5px solid rgba(255, 255, 255, 0.15)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
@@ -282,6 +311,7 @@ export default function BibliotecaPage() {
         </div>
 
       </div>
-    </div>
+      </div>
+    </>
   );
 }

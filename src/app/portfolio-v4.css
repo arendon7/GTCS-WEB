@@ -818,6 +818,15 @@
 .homegarden-guide-card h3 { margin: 13px 0 9px; font-size: 1.25rem; }
 .homegarden-guide-card p { margin: 0; color: #5a6960; font-size: .82rem; line-height: 1.58; }
 .homegarden-guide-card__use { margin-top: 10px !important; color: #28734f !important; font-size: .77rem !important; }
+.library-context-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; max-width: 1180px; margin: 0 auto 34px; padding: 10px 14px; border: 1px solid #dce7db; border-radius: 999px; background: rgba(255,255,255,.72); color: #627267; font-size: .76rem; font-weight: 800; letter-spacing: .02em; }
+.library-context-nav a { color: #176844; text-decoration: none; }
+.library-context-nav a:hover { color: #0a3828; text-decoration: underline; text-underline-offset: 4px; }
+.library-result-summary { margin: -22px 0 20px; color: #637168; font-size: .8rem; }
+.library-result-summary strong { color: #0d5336; }
+.library-empty-state { display: grid; justify-items: start; gap: 10px; min-height: 250px; margin-bottom: 64px; padding: 38px; border: 1px dashed #b9cdbb; border-radius: 24px 24px 24px 6px; background: #fff; }
+.library-empty-state h2 { margin: 0; color: #183d2d; font-family: Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.8rem); }
+.library-empty-state p { max-width: 580px; margin: 0 0 8px; color: #637168; line-height: 1.6; }
+.library-empty-state .button { cursor: pointer; }
 .homegarden-guide-card .text-link { display: inline-flex; gap: 7px; margin-top: auto; padding-top: 20px; color: #146b47; font-size: .78rem; font-weight: 850; }
 .homegarden-guide-card > a:first-child:focus-visible,
 .homegarden-guide-card .text-link:focus-visible { outline: 3px solid var(--lime-400); outline-offset: 4px; }
