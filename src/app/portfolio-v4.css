@@ -629,6 +629,12 @@
 .homegarden-v4-start p { color: #5a6960; font-size: .84rem; }
 .homegarden-v4-start__links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: auto; }
 .homegarden-v4-start a { color: var(--green-800); font-size: .82rem; font-weight: 850; }
+.homegarden-v4-jump { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 22px; padding: 9px; border: 1px solid #cbd8c9; border-radius: 16px; background: rgba(255,255,255,.72); }
+.homegarden-v4-jump > span { padding: 0 8px; color: #637267; font-size: .66rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.homegarden-v4-jump a { padding: 7px 10px; border-radius: 10px; color: var(--green-800); font-size: .76rem; font-weight: 850; text-decoration: none; }
+.homegarden-v4-jump a:hover { background: #eef6eb; }
+.homegarden-v4-jump a:focus-visible { outline: 3px solid var(--lime-400); outline-offset: 2px; }
+#espacios, #guias, #etapas, #diagnostico, #kits { scroll-margin-top: 104px; }
 
 .homegarden-v4-spaces__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .homegarden-v4-spaces article { overflow: hidden; border: 1px solid #ced9cc; border-radius: 26px 26px 26px 7px; background: #fff; }

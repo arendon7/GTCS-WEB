@@ -139,6 +139,8 @@ La ruta de producto sigue siendo:
 - Refinamiento de navegación: los cuatro destinos reservan margen para la cabecera fija y los enlaces del índice tienen foco visible para teclado.
 - Las fichas dinámicas de producto ahora incluyen un índice local de secciones: papel, datos, aplicación, presentaciones, comparación y criterio técnico; los enlaces reutilizan el contenido existente y conservan el retorno al sistema.
 - QA de continuidad de ficha: las secciones enlazadas exportan sus IDs en las 14 rutas dinámicas y reservan margen frente a la cabecera fija.
+- Casa & Jardín incorpora un índice de orientación en su bloque inicial: espacios, guías, etapas, diagnóstico, kits y productos quedan accesibles sin romper la lectura narrativa.
+- QA de navegación Casa & Jardín: la salida estática exporta las anclas `#espacios`, `#guias`, `#etapas`, `#diagnostico` y `#kits`, además de las rutas canónicas de kits y productos.
 
 ## Riesgos que permanecen
 
@@ -187,6 +189,7 @@ La ruta de producto sigue siendo:
 34. En portafolios extensos, mantener un índice de familias visible y semántico: debe permitir saltar a cada bloque principal sin sustituir los enlaces de ficha, ciencia, documentos o cotización.
 35. Las anclas de portafolio deben respetar la cabecera fija y exponer un foco visible; llegar a una sección no puede ocultar su título ni depender de interacción de puntero.
 36. Las fichas largas deben ofrecer una navegación local breve y semántica; sus enlaces deben apuntar a contenido existente, no duplicar la ficha ni desplazar el CTA principal.
+37. Las experiencias editoriales extensas deben ofrecer un índice contextual temprano; combinar anclas de lectura con rutas de catálogo cuando el usuario necesita pasar de inspiración a decisión.
 
 ## Regla de continuidad
 
