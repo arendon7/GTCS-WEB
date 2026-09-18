@@ -80,6 +80,7 @@ La ruta de producto sigue siendo:
 - Revisión de municipios: el HTML exportado conserva el texto auxiliar una sola vez y usa visuales diferenciados para diagnóstico y operación de rutas.
 - Revisión del Centro de Herramientas: las tres puertas (landing, demo pública y entorno real) se leen en móvil; los accesos de OPS, Red, Huella, AGROWAY y SANA mantienen su destino diferenciado.
 - Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
+- Cada ficha de producto Wondergreen incorpora ahora dos salidas de continuidad desde el criterio técnico: manual de aplicación y ciencia Wondergreen, además de sus rutas existentes hacia cultivos, cotizador y contacto.
 
 ## Riesgos que permanecen
 
@@ -102,6 +103,7 @@ La ruta de producto sigue siendo:
 8. Continuar la revisión visual con el mismo criterio: reducir repetición, distinguir cada capacidad con evidencia adecuada y evitar imágenes decorativas sin función narrativa.
 9. Mantener el estado de navegación activo al incorporar nuevas rutas, especialmente en las landings de producto, herramientas y Casa & Jardín.
 10. Cuando se aprueben nuevos packshots o etiquetas, incorporarlos al registro por SKU sin reemplazar referencias documentales con mockups no reconciliados.
+11. Mantener la continuidad de las fichas: producto, manual, ciencia, cultivo, cotizador y contacto deben permanecer visibles como una misma ruta.
 
 ## Regla de continuidad
 
