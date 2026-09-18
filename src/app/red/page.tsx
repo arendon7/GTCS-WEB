@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "GREENATICS Red | Diagnóstico, campo y PMIRS",
   description: "GREENATICS Red conecta diagnóstico territorial, trabajo de campo, QA/QC, PMIRS, implementación y seguimiento con evidencia reutilizable.",
   alternates: { canonical: "/red/" },
+  openGraph: {
+    title: "GREENATICS Red | Diagnóstico territorial, campo y PMIRS",
+    description: "Conecta Proyecto 360, FIELD, QA/QC, línea base, PMIRS y seguimiento en una misma ruta territorial.",
+    url: "/red/",
+    images: ["/projects/routes/route-evidence-01.webp"],
+  },
 };
 
 const redSequence = [

@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   title: "Herramientas digitales | Operación, territorio, impacto y campo",
   description: "Ecosistema digital Greenatics para registrar operación, conectar usuarios y rutas, estimar impacto y acompañar proyectos agrícolas.",
   alternates: { canonical: "/herramientas/" },
+  openGraph: {
+    title: "Herramientas digitales Greenatics | Operación, territorio y campo",
+    description: "Conoce OPS, GREENATICS Red, Calcula tu Huella, AGROWAY y SANA; explora sus módulos y entra a la experiencia correspondiente.",
+    url: "/herramientas/",
+    images: ["/campaign/06_dashboard_indicadores.jpg"],
+  },
 };
 
 const platforms = [

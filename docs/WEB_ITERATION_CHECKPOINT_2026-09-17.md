@@ -61,6 +61,8 @@ La ruta de producto sigue siendo:
 - Biblioteca y Wondergreen incorporaron metadata social de sección para no compartir páginas técnicas con el título genérico de la portada; las rutas hijas conservan sus títulos específicos cuando los declaran.
 - Las fichas dinámicas de producto Wondergreen ahora ofrecen dos retornos visibles en el primer bloque de información: portada de Wondergreen y catálogo técnico-comercial.
 - El catálogo técnico-comercial y el manual de aplicación declaran imagen social Wondergreen propia, además de su canonical, descripción y rutas editoriales específicas.
+- El Centro de Herramientas y las cinco landings digitales ahora comparten metadata social específica: título, URL e imagen contextual para OPS, Red, Huella, AGROWAY y SANA.
+- Calcula tu Huella, que mantiene su página interactiva como client component, incorporó un layout de sección para conservar canonical y metadata social sin mezclarla con la lógica del estimador.
 - Casa & Jardín incorporó metadata social propia para que portada, kits y guías se compartan como una experiencia Wondergreen diferenciada.
 - Las páginas hijas de Casa & Jardín ahora declaran metadata social específica: cada kit comparte su ruta y portada, cada producto su función e imagen aprobada cuando existe, y la biblioteca de guías su cubierta PDF. Esto evita que un enlace compartido pierda el contexto del recurso.
 - La puerta “Quiero comprar” de Casa & Jardín dejó de mezclar productos y kits en un único CTA: ahora ofrece “Ver productos por etapa” y “Ver kits por uso”, con destinos independientes y visibles.
@@ -115,6 +117,7 @@ La ruta de producto sigue siendo:
 - Revisión visual móvil: Casa & Jardín y Biblioteca mantienen jerarquía, acciones y navegación contextual sin solapamientos en el primer pantallazo del export local.
 - QA de continuidad de producto: 14 fichas dinámicas exportan el enlace visible al catálogo técnico; las rutas de catálogo y manual exportan `og:image` Wondergreen y conservan la metadata específica de cada página.
 - Revisión visual de 2GROW: la pieza documental de producto conserva su tratamiento editorial, presentaciones sólida/líquidas visibles y el retorno adicional al catálogo sin alterar la lectura de la ficha.
+- QA de herramientas: `/herramientas/`, `/app/`, `/huella/`, `/red/`, `/agroway/` y `/sana/` exportan `og:title`, `og:url` y `og:image` propios; las cinco imágenes sociales referenciadas existen en `public/`.
 
 ## Riesgos que permanecen
 
@@ -151,6 +154,7 @@ La ruta de producto sigue siendo:
 22. Mantener sincronizados visual, metadata social y schema `Product` por SKU; una ficha no debe compartir una imagen distinta de la que presenta en pantalla.
 23. Mantener la Biblioteca como índice accionable: toda tarjeta debe declarar si descarga un PDF o abre una referencia web, y toda búsqueda debe comunicar resultado o recuperación sin dejar un estado silencioso.
 24. Mantener dos niveles de retorno en cada ficha Wondergreen: volver al sistema para continuar explorando y volver al catálogo para comparar referencias, presentaciones y estado comercial.
+25. Mantener una identidad social por herramienta: la landing, la demo y el runtime pueden ser puertas distintas, pero al compartir deben conservar el nombre, la función y la imagen de la plataforma correspondiente.
 
 ## Regla de continuidad
 

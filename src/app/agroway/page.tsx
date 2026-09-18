@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   description:
     "AGROWAY registra y relaciona la realidad agrícola para alimentar el ecosistema SANA con datos de campo, ciencia Greenatics y trazabilidad Wondergreen.",
   alternates: { canonical: "/agroway/" },
+  openGraph: {
+    title: "AGROWAY | Trazabilidad agrícola para el ecosistema SANA",
+    description: "Productor, finca, lote, diagnóstico, plan, aplicación, evidencia, seguimiento y cosecha en una historia de campo.",
+    url: "/agroway/",
+    images: ["/guides/guia-cafe-cover.webp"],
+  },
 };
 
 const goldenPath = [

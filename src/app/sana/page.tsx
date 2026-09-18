@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   description:
     "SANA articula inversión, trazabilidad Agroway, ciencia Greenatics y soluciones Wondergreen para acompañar proyectos agrícolas y productivos.",
   alternates: { canonical: "/sana/" },
+  openGraph: {
+    title: "SANA | Ecosistema de inversión en proyectos productivos",
+    description: "Articula datos de AGROWAY, ciencia Greenatics y soluciones Wondergreen para estructurar y acompañar proyectos agrícolas.",
+    url: "/sana/",
+    images: ["/projects/tamesis/paisaje-tamesis.jpg"],
+  },
 };
 
 const layers = [

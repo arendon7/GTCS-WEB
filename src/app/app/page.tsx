@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   description:
     "Greenatics OPS conecta bitácoras, recepciones, lotes, procesos, mantenimiento, inventarios, reportes y decisiones para operar plantas con trazabilidad.",
   alternates: { canonical: "/app/" },
+  openGraph: {
+    title: "GREENATICS OPS | Sistema operacional para plantas",
+    description: "Bitácora, recepción, procesos, mantenimiento, inventario y reportes en una misma historia operativa.",
+    url: "/app/",
+    images: ["/campaign/06_dashboard_indicadores.jpg"],
+  },
 };
 
 const architecture = [
