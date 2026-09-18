@@ -59,6 +59,8 @@ La ruta de producto sigue siendo:
 - La cabecera institucional reconoce la ruta actual y sus subrutas: marca la sección activa en escritorio, la opción hija en los desplegables y el grupo correspondiente en el menú móvil mediante `aria-current`.
 - Las fichas públicas Wondergreen ajustaron el texto de sus visuales de referencia: ahora conectan imagen de familia, ficha técnica, presentación, suministro y cotización sin exponer lenguaje interno de reconciliación.
 - Biblioteca y Wondergreen incorporaron metadata social de sección para no compartir páginas técnicas con el título genérico de la portada; las rutas hijas conservan sus títulos específicos cuando los declaran.
+- Las fichas dinámicas de producto Wondergreen ahora ofrecen dos retornos visibles en el primer bloque de información: portada de Wondergreen y catálogo técnico-comercial.
+- El catálogo técnico-comercial y el manual de aplicación declaran imagen social Wondergreen propia, además de su canonical, descripción y rutas editoriales específicas.
 - Casa & Jardín incorporó metadata social propia para que portada, kits y guías se compartan como una experiencia Wondergreen diferenciada.
 - Las páginas hijas de Casa & Jardín ahora declaran metadata social específica: cada kit comparte su ruta y portada, cada producto su función e imagen aprobada cuando existe, y la biblioteca de guías su cubierta PDF. Esto evita que un enlace compartido pierda el contexto del recurso.
 - La puerta “Quiero comprar” de Casa & Jardín dejó de mezclar productos y kits en un único CTA: ahora ofrece “Ver productos por etapa” y “Ver kits por uso”, con destinos independientes y visibles.
@@ -111,6 +113,8 @@ La ruta de producto sigue siendo:
 - QA de guía de aplicación: el HTML exportado contiene `Article` JSON-LD y `BreadcrumbList`, conserva canonical propia y mantiene la regla de que ficha, etiqueta y protocolo vigente prevalecen sobre la guía general.
 - QA editorial de prepublicación: la salida pública no contiene “por confirmar”, “por definir”, “por certificar”, “por montar”, “mockup”, “Lorem” ni “Coming soon”; los 12 usos de `placeholder` restantes son atributos de formularios y no copy visible.
 - Revisión visual móvil: Casa & Jardín y Biblioteca mantienen jerarquía, acciones y navegación contextual sin solapamientos en el primer pantallazo del export local.
+- QA de continuidad de producto: 14 fichas dinámicas exportan el enlace visible al catálogo técnico; las rutas de catálogo y manual exportan `og:image` Wondergreen y conservan la metadata específica de cada página.
+- Revisión visual de 2GROW: la pieza documental de producto conserva su tratamiento editorial, presentaciones sólida/líquidas visibles y el retorno adicional al catálogo sin alterar la lectura de la ficha.
 
 ## Riesgos que permanecen
 
@@ -146,6 +150,7 @@ La ruta de producto sigue siendo:
 21. En herramientas de escenario, distinguir siempre resultado aritmético, referencia a evaluar, viabilidad técnica y promesa comercial; solo esta última requiere validación explícita antes de publicarse como claim.
 22. Mantener sincronizados visual, metadata social y schema `Product` por SKU; una ficha no debe compartir una imagen distinta de la que presenta en pantalla.
 23. Mantener la Biblioteca como índice accionable: toda tarjeta debe declarar si descarga un PDF o abre una referencia web, y toda búsqueda debe comunicar resultado o recuperación sin dejar un estado silencioso.
+24. Mantener dos niveles de retorno en cada ficha Wondergreen: volver al sistema para continuar explorando y volver al catálogo para comparar referencias, presentaciones y estado comercial.
 
 ## Regla de continuidad
 

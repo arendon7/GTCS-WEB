@@ -60,7 +60,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="container product-detail-grid">
           <ProductVisual product={product} context="detail" />
           <div className="product-info">
-            <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
+            <div className="product-route-nav" aria-label="Rutas relacionadas del producto">
+              <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
+              <Link className="product-route-nav__catalog" href="/biblioteca/catalogo-wondergreen/">Ver catálogo técnico →</Link>
+            </div>
             <span className="eyebrow">{getProductCategoryLabel(product.category)} · {product.family}</span>
             <p className="product-headline">{product.headline}</p>
             <h1>{product.name}</h1>

@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "Guía de aplicación en campo Wondergreen",
   description: "Guía de criterio para preparar, ejecutar y hacer seguimiento de aplicaciones Wondergreen.",
   alternates: { canonical: "/biblioteca/manual-uso-wondergreen/" },
+  openGraph: {
+    title: "Guía de aplicación en campo Wondergreen | Greenatics",
+    description: "Criterios para preparar, ejecutar y hacer seguimiento de aplicaciones Wondergreen con la ficha vigente como referencia principal.",
+    url: "/biblioteca/manual-uso-wondergreen/",
+    images: ["/brand/wondergreen-nutrients.webp"],
+  },
 };
 
 const equipment = [

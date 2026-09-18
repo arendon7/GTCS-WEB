@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   title: "Catálogo técnico-comercial Wondergreen",
   description: "Catálogo web Wondergreen de acondicionadores, fertilizantes organominerales y bioinsumos: familia, formato, presentación, etapa y estado comercial.",
   alternates: { canonical: "/biblioteca/catalogo-wondergreen/" },
+  openGraph: {
+    title: "Catálogo técnico-comercial Wondergreen | Greenatics",
+    description: "Lee el portafolio Wondergreen por objetivo, etapa, formato, presentación y programa técnico.",
+    url: "/biblioteca/catalogo-wondergreen/",
+    images: ["/brand/wondergreen-nutrients.webp"],
+  },
 };
 
 const decisionSteps = [
