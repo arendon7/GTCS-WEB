@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   title: "Wondergreen Casa & Jardín | Plantas, huertas y suelo vivo",
   description: "Orientación y soluciones Wondergreen para plantas de interior, flores, jardines, viveros y huertas urbanas según etapa, estado y tamaño de maceta.",
   alternates: { canonical: "/casa-jardin/" },
+  openGraph: {
+    type: "website",
+    siteName: "Greenatics",
+    title: "Casa & Jardín | Wondergreen",
+    description: "Kits, guías y productos Wondergreen para cuidar plantas, jardines y huertas por etapa y condición.",
+    url: "/casa-jardin/",
+    images: ["/products/wondergreen-casa-jardin-hero.png"],
+  },
 };
 
 const spaces = [

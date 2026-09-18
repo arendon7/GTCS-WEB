@@ -126,6 +126,8 @@ La ruta de producto sigue siendo:
 - QA de gobierno de acceso: `/plataforma/` y `/plataforma/usuarios/` exportan `og:title`, `og:url` y `og:image`; el build mantiene la distinción visible entre directorio demo local y administración productiva en OPS.
 - Las demos de AGROWAY, SANA y GREENATICS Red ahora declaran metadata social propia: el título y la descripción comunican que son espacios navegables con datos ilustrativos, mientras Red mantiene `noindex` para no confundirse con la landing pública.
 - QA de demos compartibles: `/agroway/app/`, `/sana/app/` y `/red/app/` exportan `og:title`, `og:url` y `og:image`; sus retornos visibles al sitio y al Centro de usuarios permanecen intactos.
+- Casa & Jardín ahora declara su propia imagen hero, título, descripción y URL en Open Graph; al compartir la experiencia se conserva su identidad Wondergreen y no la metadata parcial del layout.
+- QA de continuidad visual de Casa & Jardín: la hero `wondergreen-casa-jardin-hero.png` existe, se exporta en la portada y las rutas de kits, guías, productos y diagnóstico siguen presentes en el HTML estático.
 
 ## Riesgos que permanecen
 
@@ -167,6 +169,7 @@ La ruta de producto sigue siendo:
 27. Mantener el patrón de acceso de tres puertas en todas las herramientas: landing para comprender, demo para recorrer y runtime o configuración para operar; ninguna tarjeta debe saltarse la landing sin etiquetar explícitamente que abre una demo.
 28. Mantener contexto propio en las superficies de gobierno: el Centro de plataformas y el Centro de usuarios deben poder compartirse como entradas administrativas, explicando con claridad qué se puede revisar localmente y qué requiere la consola productiva.
 29. Mantener contexto propio en las demos: una estación navegable puede compartirse para revisión, pero debe declarar datos ilustrativos, conservar el retorno a su landing y no presentarse como runtime productivo.
+30. Mantener identidad propia en las experiencias de Casa & Jardín: su hero, guías, kits y productos deben compartir el mismo contexto Wondergreen sin volver a una metadata genérica de Greenatics.
 
 ## Regla de continuidad
 
