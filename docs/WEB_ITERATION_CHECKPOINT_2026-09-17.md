@@ -128,6 +128,8 @@ La ruta de producto sigue siendo:
 - QA de demos compartibles: `/agroway/app/`, `/sana/app/` y `/red/app/` exportan `og:title`, `og:url` y `og:image`; sus retornos visibles al sitio y al Centro de usuarios permanecen intactos.
 - Casa & Jardín ahora declara su propia imagen hero, título, descripción y URL en Open Graph; al compartir la experiencia se conserva su identidad Wondergreen y no la metadata parcial del layout.
 - QA de continuidad visual de Casa & Jardín: la hero `wondergreen-casa-jardin-hero.png` existe, se exporta en la portada y las rutas de kits, guías, productos y diagnóstico siguen presentes en el HTML estático.
+- Las fichas dinámicas de producto Wondergreen ahora usan una grilla responsive explícita: imagen documental y contenido conviven en escritorio, mientras móvil conserva una sola columna sin recortar ni deformar el arte técnico.
+- QA visual de fichas: 14 fichas dinámicas exportadas con `product-detail-grid`; la imagen 2GROW fue revisada en móvil y mantiene lectura completa, retorno al catálogo y acciones comerciales.
 
 ## Riesgos que permanecen
 
@@ -170,6 +172,7 @@ La ruta de producto sigue siendo:
 28. Mantener contexto propio en las superficies de gobierno: el Centro de plataformas y el Centro de usuarios deben poder compartirse como entradas administrativas, explicando con claridad qué se puede revisar localmente y qué requiere la consola productiva.
 29. Mantener contexto propio en las demos: una estación navegable puede compartirse para revisión, pero debe declarar datos ilustrativos, conservar el retorno a su landing y no presentarse como runtime productivo.
 30. Mantener identidad propia en las experiencias de Casa & Jardín: su hero, guías, kits y productos deben compartir el mismo contexto Wondergreen sin volver a una metadata genérica de Greenatics.
+31. Mantener la imagen de producto como evidencia editorial: en escritorio debe acompañar la ficha sin desplazarla fuera de la primera lectura y en móvil debe conservar proporción, texto legible y ausencia de recortes engañosos.
 
 ## Regla de continuidad
 
