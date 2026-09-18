@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { CropLibraryGrid } from "@/components/crop-library-grid";
 import { WondergreenPackshots } from "@/components/wondergreen-packshots";
 import { WondergreenScienceOverview } from "@/components/wondergreen-science-overview";
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
   title: "Wondergreen | Nutrición organomineral y acompañamiento agronómico",
   description: "Productos Wondergreen, diagnóstico, recomendación, planes de aplicación y acompañamiento para productores, asociaciones, distribuidores y empresas agrícolas.",
   alternates: { canonical: "/wondergreen/" },
+  openGraph: {
+    title: "Wondergreen | Nutrición organomineral y acompañamiento agronómico",
+    description: "Productos Wondergreen, diagnóstico, recomendación, planes de aplicación y acompañamiento para productores, asociaciones, distribuidores y empresas agrícolas.",
+    url: "/wondergreen/",
+    images: ["/products/wondergreen-system-stages.webp"],
+  },
 };
 
 const serviceLevels = [
@@ -39,6 +46,7 @@ const tools = [
 export default function WondergreenPage() {
   return (
     <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: "https://greenatics.com.co/" }, { name: "Wondergreen", url: "https://greenatics.com.co/wondergreen/" }]} />
       <section className="wg-v4-hero">
         <div className="container wg-v4-hero__grid">
           <div className="wg-v4-hero__copy">

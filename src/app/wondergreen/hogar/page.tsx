@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   title: "Wondergreen Nutrients Hogar",
   description: "Guía Wondergreen Hogar para entender el cuidado de plantas en casa, matera y huerta urbana por objetivo y etapa.",
   alternates: { canonical: "/wondergreen/hogar/" },
+  openGraph: {
+    title: "Wondergreen Nutrients Hogar",
+    description: "Guía Wondergreen Hogar para entender el cuidado de plantas en casa, matera y huerta urbana por objetivo y etapa.",
+    url: "/wondergreen/hogar/",
+    images: ["/kits/kit-casa-completa.webp"],
+  },
 };
 
 const stages = [

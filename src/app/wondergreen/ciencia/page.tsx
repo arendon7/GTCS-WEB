@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArticleJsonLd } from "@/components/article-json-ld";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Ciencia aplicada | Wondergreen",
   description: "Una lectura clara sobre materia orgánica, microbiología del suelo, organominerales y bioles para tomar mejores decisiones agronómicas.",
   alternates: { canonical: "/wondergreen/ciencia/" },
+  openGraph: {
+    title: "Ciencia aplicada | Wondergreen",
+    description: "Una lectura clara sobre materia orgánica, microbiología del suelo, organominerales y bioles para tomar mejores decisiones agronómicas.",
+    url: "/wondergreen/ciencia/",
+    images: ["/products/wondergreen-system-stages.webp"],
+  },
 };
 
 const connections = [
@@ -21,7 +30,10 @@ const evidence = [
 
 export default function WondergreenSciencePage() {
   return (
-    <div className="wg-bio-science-page">
+    <>
+      <ArticleJsonLd headline="Ciencia aplicada | Wondergreen" description="Una lectura clara sobre materia orgánica, microbiología del suelo, organominerales y bioles para tomar mejores decisiones agronómicas." url={`${site.url}/wondergreen/ciencia/`} about={["Materia orgánica funcional", "Fertilizantes organominerales", "Bioinsumos"]} />
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Wondergreen", url: `${site.url}/wondergreen/` }, { name: "Ciencia aplicada", url: `${site.url}/wondergreen/ciencia/` }]} />
+      <div className="wg-bio-science-page">
       <section className="wg-bio-science-hero">
         <div className="container wg-bio-science-hero__grid">
           <div>
@@ -63,6 +75,7 @@ export default function WondergreenSciencePage() {
       <section className="wg-bio-science-boundary"><div className="container wg-bio-science-boundary__grid"><div><span className="eyebrow eyebrow--light">Límites que protegen la credibilidad</span><h2>Decir más no significa decir cualquier cosa.</h2></div><ul><li>La materia orgánica puede favorecer el entorno del suelo; no asegura por sí sola un rendimiento.</li><li>Un biol puede aportar nutrientes y una fracción asociada al proceso; no se presenta como inoculante sin caracterización.</li><li>Una dosis, mezcla o eficacia se comunica solo con ficha, etiqueta, registro y recomendación vigentes.</li></ul></div></section>
 
       <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Pasar de la lectura a la decisión</span><h2>Conecta la ciencia con tu cultivo, tu lote y tu momento.</h2></div><div className="button-row"><Link className="button button--dark" href="/wondergreen/fitosanidad/">Abrir manejo integrado</Link><Link className="button button--ghost" href="/wondergreen/">Volver al portafolio</Link></div></div></section>
-    </div>
+      </div>
+    </>
   );
 }

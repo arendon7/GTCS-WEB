@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "Biol Wondergreen | Ficha técnica y uso documentado",
   description: "Consulta la ficha web de Biol Wondergreen: composición analítica, presentaciones, uso documentado y condiciones de almacenamiento.",
   alternates: { canonical: "/wondergreen/productos/biol/" },
+  openGraph: {
+    title: "Biol Wondergreen | Ficha técnica y uso documentado",
+    description: "Consulta la ficha web de Biol Wondergreen: composición analítica, presentaciones, uso documentado y condiciones de almacenamiento.",
+    url: "/wondergreen/productos/biol/",
+    images: ["/guides/ficha-biol-cover.png"],
+  },
 };
 
 const analysis = [

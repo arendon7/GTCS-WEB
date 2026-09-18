@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { CropsInteractiveShowroom } from "@/components/crops-interactive-showroom";
 import { fieldApplicationRules, fieldChecklist } from "@/data/crops";
+import { site } from "@/data/site";
 import "./crop-showroom.css";
 
 export const metadata: Metadata = {
   title: "Orientación por cultivo | Wondergreen Nutrients",
   description: "Rutas de lectura agronómica por etapa para preparar diagnósticos y programas Wondergreen en cultivos de Colombia.",
+  alternates: { canonical: "/wondergreen/cultivos/" },
+  openGraph: {
+    title: "Orientación por cultivo | Wondergreen Nutrients",
+    description: "Rutas de lectura agronómica por etapa para preparar diagnósticos y programas Wondergreen en cultivos de Colombia.",
+    url: "/wondergreen/cultivos/",
+    images: ["/guides/guia-cafe-cover.webp"],
+  },
 };
 
 const readingLayers = [
@@ -24,7 +33,9 @@ const catalogFacts = [
 
 export default function CropsPage() {
   return (
-    <div className="crop-catalog-page">
+    <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Wondergreen", url: `${site.url}/wondergreen/` }, { name: "Cultivos", url: `${site.url}/wondergreen/cultivos/` }]} />
+      <div className="crop-catalog-page">
       <section className="crop-catalog-hero">
         <div className="container crop-catalog-hero__grid">
           <div className="crop-catalog-hero__copy">
@@ -130,6 +141,7 @@ export default function CropsPage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

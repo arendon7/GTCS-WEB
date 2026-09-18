@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { QuoteBuilder } from "@/components/quote-builder";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Cotizador Wondergreen",
   description: "Calcula un valor estimado con los precios vigentes del catálogo Wondergreen.",
   alternates: { canonical: "/wondergreen/cotizador/" },
+  openGraph: {
+    title: "Cotizador Wondergreen",
+    description: "Calcula un valor estimado con los precios vigentes del catálogo Wondergreen.",
+    url: "/wondergreen/cotizador/",
+  },
 };
 
 export default function QuotePage() {
   return (
     <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Wondergreen", url: `${site.url}/wondergreen/` }, { name: "Cotizador", url: `${site.url}/wondergreen/cotizador/` }]} />
       <section className="quote-hero">
         <div className="container quote-hero-grid">
           <div>
