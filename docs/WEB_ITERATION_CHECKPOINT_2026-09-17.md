@@ -59,6 +59,7 @@ La ruta de producto sigue siendo:
 - La cabecera institucional reconoce la ruta actual y sus subrutas: marca la sección activa en escritorio, la opción hija en los desplegables y el grupo correspondiente en el menú móvil mediante `aria-current`.
 - Las fichas públicas Wondergreen ajustaron el texto de sus visuales de referencia: ahora conectan imagen de familia, ficha técnica, presentación, suministro y cotización sin exponer lenguaje interno de reconciliación.
 - Biblioteca y Wondergreen incorporaron metadata social de sección para no compartir páginas técnicas con el título genérico de la portada; las rutas hijas conservan sus títulos específicos cuando los declaran.
+- Casa & Jardín incorporó metadata social propia para que portada, kits y guías se compartan como una experiencia Wondergreen diferenciada.
 
 ## Puertas verificadas
 
@@ -83,6 +84,7 @@ La ruta de producto sigue siendo:
 - Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
 - Cada ficha de producto Wondergreen incorpora ahora dos salidas de continuidad desde el criterio técnico: manual de aplicación y ciencia Wondergreen, además de sus rutas existentes hacia cultivos, cotizador y contacto.
 - QA de compartibilidad: Biblioteca comparte con título propio de sección y Wondergreen con título de sistema agronómico; no se alteraron las URLs canónicas ni el sitemap.
+- QA de Casa & Jardín: portada, kits y guías exportan título social de sección; las descargas PDF y los enlaces canónicos permanecen intactos.
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 
 ## Riesgos que permanecen
@@ -109,6 +111,7 @@ La ruta de producto sigue siendo:
 11. Mantener la continuidad de las fichas: producto, manual, ciencia, cultivo, cotizador y contacto deben permanecer visibles como una misma ruta.
 12. Al crear nuevas secciones, definir metadata social de sección y verificar que las páginas no hereden el título genérico de Greenatics.
 13. Mantener alineados el verbo de cada CTA documental y su comportamiento real: “Descargar” debe descargar; “Abrir” debe abrir una ruta de lectura.
+14. Mantener Casa & Jardín como una experiencia propia dentro de Wondergreen: portada, kits, productos y guías deben compartir identidad visual y metadata, pero conservar entradas claras.
 
 ## Regla de continuidad
 
