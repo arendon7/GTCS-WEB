@@ -137,6 +137,8 @@ La ruta de producto sigue siendo:
 - Wondergreen incorpora un índice visible de familias dentro del portafolio: sólidos, líquidos, bioinsumos y documentos quedan disponibles como saltos directos para reducir la fricción de exploración.
 - QA de navegación del portafolio: la salida estática exporta el ancla `#solidos` y los enlaces `#liquidos`, `#bioinsumos` y `#documentos`; los destinos existentes no cambian y el índice mantiene etiqueta accesible.
 - Refinamiento de navegación: los cuatro destinos reservan margen para la cabecera fija y los enlaces del índice tienen foco visible para teclado.
+- Las fichas dinámicas de producto ahora incluyen un índice local de secciones: papel, datos, aplicación, presentaciones, comparación y criterio técnico; los enlaces reutilizan el contenido existente y conservan el retorno al sistema.
+- QA de continuidad de ficha: las secciones enlazadas exportan sus IDs en las 14 rutas dinámicas y reservan margen frente a la cabecera fija.
 
 ## Riesgos que permanecen
 
@@ -184,6 +186,7 @@ La ruta de producto sigue siendo:
 33. No superponer CTA globales en portadas con acciones técnicas propias: Wondergreen y Casa & Jardín deben priorizar sus rutas de producto, diagnóstico, guía, ciencia y cotización sin cubrir información con una barra persistente.
 34. En portafolios extensos, mantener un índice de familias visible y semántico: debe permitir saltar a cada bloque principal sin sustituir los enlaces de ficha, ciencia, documentos o cotización.
 35. Las anclas de portafolio deben respetar la cabecera fija y exponer un foco visible; llegar a una sección no puede ocultar su título ni depender de interacción de puntero.
+36. Las fichas largas deben ofrecer una navegación local breve y semántica; sus enlaces deben apuntar a contenido existente, no duplicar la ficha ni desplazar el CTA principal.
 
 ## Regla de continuidad
 
