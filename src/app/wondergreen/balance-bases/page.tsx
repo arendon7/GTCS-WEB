@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function BalanceBasesPage() {
   const [ca, setCa] = useState(6.5);
@@ -23,6 +24,7 @@ export default function BalanceBasesPage() {
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+      <WondergreenToolTrail name="Balance de bases del suelo" path="/wondergreen/balance-bases/" />
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 800, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Relaciones entre bases</span>

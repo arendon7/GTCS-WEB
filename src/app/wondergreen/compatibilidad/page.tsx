@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 interface InputItem {
   id: string;
@@ -57,6 +58,7 @@ export default function CompatibilidadPage() {
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Compatibilidad de mezclas" path="/wondergreen/compatibilidad/" />
       <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Ingeniería de Mezclas & Drench</span>

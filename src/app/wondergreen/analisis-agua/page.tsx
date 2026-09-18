@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function AnalisisAguaPage() {
   const [ph, setPh] = useState<number>(7.6);
@@ -25,13 +26,14 @@ export default function AnalisisAguaPage() {
     `Hola Greenatics, interpreté la Calidad de Agua de Riego en su web:\n\n` +
     `💧 *Parámetros:* pH ${ph} | CE: ${ec} dS/m | RAS (SAR): ${sar}\n` +
     `⚠️ *Diagnóstico:* ${waterQuality}\n` +
-    `🌿 *Recomendación:* Acondicionamiento con biol fermentado y tamponamiento húmico Wondergreen.\n\n` +
-    `¿Me pueden brindar asesoría para el manejo de fertirriego en mi cultivo?`
+    `📋 *Siguiente paso:* validar el reporte completo, el cultivo y la calidad del agua antes de definir acondicionamiento o fertirriego.\n\n` +
+    `¿Me pueden brindar asesoría para el manejo de agua y fertirriego en mi cultivo?`
   );
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Calidad de agua de riego")}&prioridad=${encodeURIComponent(`pH ${ph} · CE ${ec} dS/m · RAS ${sar} · ${waterQuality}`)}`;
 
   return (
-    <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "#60px 0 80px", paddingBlock: "60px 80px" }}>
+    <div style={{ background: "#f7faf5", color: "var(--green-950)", paddingBlock: "60px 80px" }}>
+      <WondergreenToolTrail name="Análisis de agua" path="/wondergreen/analisis-agua/" />
       <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Fertirriego & Calidad de Agua</span>

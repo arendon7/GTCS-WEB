@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function BalanceCnPage() {
   const [wetKg, setWetKg] = useState(600);
@@ -16,6 +17,7 @@ export default function BalanceCnPage() {
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+      <WondergreenToolTrail name="Balance carbono-nitrógeno" path="/wondergreen/balance-cn/" />
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 810, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Preparación de bioprocesos</span>

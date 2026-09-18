@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 const fields = [
   { key: "ph", label: "pH reportado", min: 4, max: 8, step: 0.1, unit: "" },
@@ -21,6 +22,7 @@ export default function SoilAnalysisPage() {
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Análisis de suelo" path="/wondergreen/analisis-suelo/" />
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 780, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Lectura técnica del suelo</span>

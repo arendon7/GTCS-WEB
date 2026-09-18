@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function EncalamientoPage() {
   const [ph, setPh] = useState(4.8);
@@ -13,6 +14,7 @@ export default function EncalamientoPage() {
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+      <WondergreenToolTrail name="Evaluación de encalamiento" path="/wondergreen/encalamiento/" />
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 790, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Acidez y enmiendas</span>
