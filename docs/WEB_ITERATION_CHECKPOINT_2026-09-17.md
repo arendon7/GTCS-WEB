@@ -130,6 +130,8 @@ La ruta de producto sigue siendo:
 - QA de continuidad visual de Casa & Jardín: la hero `wondergreen-casa-jardin-hero.png` existe, se exporta en la portada y las rutas de kits, guías, productos y diagnóstico siguen presentes en el HTML estático.
 - Las fichas dinámicas de producto Wondergreen ahora usan una grilla responsive explícita: imagen documental y contenido conviven en escritorio, mientras móvil conserva una sola columna sin recortar ni deformar el arte técnico.
 - QA visual de fichas: 14 fichas dinámicas exportadas con `product-detail-grid`; la imagen 2GROW fue revisada en móvil y mantiene lectura completa, retorno al catálogo y acciones comerciales.
+- Las fichas de producto ahora incluyen una comparación contextual con otras referencias de su misma categoría: fórmula o formato, etapa, presentación y enlace directo a cada ficha, además de retornos a ciencia y cotizador.
+- QA de continuidad de portafolio: las fichas con referencias hermanas exportan la sección “Comparar dentro del sistema”; las rutas siguen usando los slugs canónicos y no crean productos paralelos.
 
 ## Riesgos que permanecen
 
@@ -173,6 +175,7 @@ La ruta de producto sigue siendo:
 29. Mantener contexto propio en las demos: una estación navegable puede compartirse para revisión, pero debe declarar datos ilustrativos, conservar el retorno a su landing y no presentarse como runtime productivo.
 30. Mantener identidad propia en las experiencias de Casa & Jardín: su hero, guías, kits y productos deben compartir el mismo contexto Wondergreen sin volver a una metadata genérica de Greenatics.
 31. Mantener la imagen de producto como evidencia editorial: en escritorio debe acompañar la ficha sin desplazarla fuera de la primera lectura y en móvil debe conservar proporción, texto legible y ausencia de recortes engañosos.
+32. Mantener comparación contextual en cada ficha: mostrar referencias de la misma categoría con fórmula, etapa y presentación, y ofrecer ciencia y cotizador como salidas siguientes sin convertir la comparación en una recomendación automática.
 
 ## Regla de continuidad
 
