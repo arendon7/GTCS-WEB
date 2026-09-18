@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Kits por uso | Wondergreen Casa & Jardín",
@@ -24,7 +26,9 @@ const kits = [
 
 export default function CasaJardinKitsPage() {
   return (
-    <div className="homegarden-public-subpage">
+    <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Casa & Jardín", url: `${site.url}/casa-jardin/` }, { name: "Kits por uso", url: `${site.url}/casa-jardin/kits/` }]} />
+      <div className="homegarden-public-subpage">
       <section className="homegarden-subpage-hero">
         <div className="container homegarden-subpage-hero__grid">
           <div><Link className="back-link" href="/casa-jardin/">← Volver a Casa & Jardín</Link><span className="eyebrow eyebrow--light">Wondergreen · kits por uso</span><h1>Kits por contexto. Etapas separadas.</h1><p className="lead">Un kit organiza opciones para una necesidad concreta; no prescribe aplicaciones simultáneas. Revisa cada planta, reconoce su etapa y confirma su condición antes de decidir.</p><div className="button-row"><a className="button button--light" href="#kits">Explorar kits</a><Link className="button button--outline-light" href="/casa-jardin/productos/">Ver productos</Link></div></div>
@@ -33,6 +37,7 @@ export default function CasaJardinKitsPage() {
       </section>
       <section className="homegarden-public-section" id="kits"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Composiciones visibles</span><h2>Elige por uso. Después revisa cada etapa.</h2></div><p>Los artes visuales ayudan a reconocer la ruta de cuidado. La cotización y el acompañamiento definen presentación, disponibilidad y forma de entrega.</p></div><div className="homegarden-kit-grid">{kits.map(({ slug, name, audience, composition, promise, image }, index) => <article className="homegarden-kit-card" key={name}><Link className="homegarden-kit-card__media" href={`/casa-jardin/kits/${slug}/`} aria-label={`Ver composición de ${name}`}><Image src={image} alt={`Guía visual ${name}`} fill sizes="(max-width: 760px) 100vw, 33vw" /></Link><div className="homegarden-kit-card__body"><span className="homegarden-product-card__number">0{index + 1} · RUTA DE CUIDADO</span><small>{audience}</small><h3>{name}</h3><strong>{promise}</strong><p>{composition}</p><Link className="homegarden-kit-card__link" href={`/casa-jardin/kits/${slug}/`}>Ver composición <span aria-hidden="true">→</span></Link><span className="homegarden-kit-card__status">Disponible bajo cotización y acompañamiento</span></div></article>)}</div><div className="homegarden-public-callout homegarden-public-callout--compact"><strong>Trasplanta & Arranca se recomienda según el estado de raíz y el tipo de planta.</strong><p>El equipo define el componente radicular o bioinsumo y el protocolo de aplicación de acuerdo con el diagnóstico del caso.</p></div></div></section>
       <section className="homegarden-public-section homegarden-public-section--soft"><div className="container homegarden-public-callout"><div><span className="eyebrow">¿Todavía no sabes cuál encaja?</span><h2>La orientación entra cuando hay una duda real.</h2></div><p>Si no está clara la etapa o la planta muestra encharcamiento, daño radicular, estrés severo o señales sanitarias, primero revisa la causa.</p><div className="button-row"><Link className="button button--dark" href="/casa-jardin/#diagnostico">Usar orientador</Link><Link className="button button--ghost" href="/casa-jardin/guias/">Abrir guías</Link></div></div></section>
-    </div>
+      </div>
+    </>
   );
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Productos por etapa | Wondergreen Casa & Jardín",
@@ -24,7 +26,9 @@ const products = [
 
 export default function CasaJardinProductosPage() {
   return (
-    <div className="homegarden-public-subpage">
+    <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Casa & Jardín", url: `${site.url}/casa-jardin/` }, { name: "Productos por etapa", url: `${site.url}/casa-jardin/productos/` }]} />
+      <div className="homegarden-public-subpage">
       <section className="homegarden-subpage-hero">
         <div className="container homegarden-subpage-hero__grid">
           <div>
@@ -51,6 +55,7 @@ export default function CasaJardinProductosPage() {
       </section>
 
       <section className="homegarden-public-section homegarden-public-section--soft"><div className="container homegarden-public-callout"><div><span className="eyebrow">Regla de decisión</span><h2>Una etapa orienta; la condición confirma.</h2></div><p>Agua, drenaje, raíces, luz, sanidad, tamaño del recipiente y estado general importan tanto como la fórmula. Por eso no publicamos una dosis universal ni convertimos una imagen de síntoma en diagnóstico.</p><div className="button-row"><Link className="button button--dark" href="/casa-jardin/#diagnostico">Revisar mi planta</Link><Link className="button button--ghost" href="/casa-jardin/kits/">Ver kits por uso</Link></div></div></section>
-    </div>
+      </div>
+    </>
   );
 }

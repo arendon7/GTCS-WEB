@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Guías Casa & Jardín | Wondergreen",
@@ -23,10 +25,13 @@ const guides = [
 
 export default function CasaJardinGuiasPage() {
   return (
-    <div className="homegarden-public-subpage">
+    <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Casa & Jardín", url: `${site.url}/casa-jardin/` }, { name: "Guías", url: `${site.url}/casa-jardin/guias/` }]} />
+      <div className="homegarden-public-subpage">
       <section className="homegarden-subpage-hero"><div className="container homegarden-subpage-hero__grid"><div><Link className="back-link" href="/casa-jardin/">← Volver a Casa & Jardín</Link><span className="eyebrow eyebrow--light">Wondergreen · biblioteca práctica</span><h1>Aprender también es una forma de cuidar.</h1><p className="lead">Estas guías convierten el sistema Wondergreen en decisiones observables: qué mirar, qué revisar primero y cuándo tiene sentido pasar de una etapa a otra.</p><div className="button-row"><a className="button button--light" href="#guias">Ver guías PDF</a><Link className="button button--outline-light" href="/casa-jardin/productos/">Ver productos</Link></div></div><figure className="homegarden-subpage-hero__visual"><Image src="/guides/home-garden-casa-jardin-cover.webp" alt="Portada de la guía Wondergreen Casa y Jardín" fill priority sizes="(max-width: 850px) 100vw, 40vw" /><figcaption>WEB = CONTEXTO · PDF = DOCUMENTO COMPLETO</figcaption></figure></div></section>
       <section className="homegarden-public-section" id="guias"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Biblioteca de descarga</span><h2>Cuatro guías para cuatro decisiones distintas.</h2></div><p>La página ayuda a descubrir y elegir el material. Al abrir una tarjeta accedes al PDF completo, sin sustituirlo por extractos ni promesas de aplicación.</p></div><div className="homegarden-guide-grid">{guides.map(({ title, copy, use, pages, image, pdf }, index) => <article className="homegarden-guide-card" key={title}><a href={pdf} download aria-label={`Descargar ${title}`}><Image src={image} alt={`Portada: ${title}`} fill sizes="(max-width: 760px) 100vw, 25vw" /></a><div><div className="homegarden-guide-card__meta"><span>Guía 0{index + 1}</span><span>{pages} · PDF completo</span></div><h3>{title}</h3><p>{copy}</p><p className="homegarden-guide-card__use">{use}</p><a className="text-link" href={pdf} download>Descargar PDF <span aria-hidden="true">↓</span></a></div></article>)}</div></div></section>
       <section className="homegarden-public-section homegarden-public-section--soft"><div className="container homegarden-public-callout"><div><span className="eyebrow">Regla común</span><h2>Observa. Identifica. Elige. Aplica. Revisa.</h2></div><p>La guía acompaña la decisión, pero la etiqueta vigente y la recomendación técnica siguen definiendo dosis, frecuencia y vía de aplicación.</p><div className="button-row"><Link className="button button--dark" href="/casa-jardin/#diagnostico">Usar orientador</Link><Link className="button button--ghost" href="/biblioteca/">Abrir biblioteca Greenatics</Link></div></div></section>
-    </div>
+      </div>
+    </>
   );
 }

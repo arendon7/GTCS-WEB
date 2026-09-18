@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CasaJardinInteractive } from "@/components/casa-jardin-interactive";
+import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Wondergreen Casa & Jardín | Plantas, huertas y suelo vivo",
@@ -114,6 +116,7 @@ const waysToStart = [
 export default function CasaJardinPage() {
   return (
     <>
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Casa & Jardín", url: `${site.url}/casa-jardin/` }]} />
       <section className="homegarden-v4-hero"><div className="container homegarden-v4-hero__grid"><div><span className="eyebrow eyebrow--light">Wondergreen Casa & Jardín</span><h1>Una ruta para cada planta, no una receta para todas.</h1><p className="lead">Casa & Jardín convierte el cuidado cotidiano en decisiones más claras: prepara el suelo, reconoce la etapa, revisa la condición y elige la línea que tiene sentido para ese momento.</p><div className="button-row"><Link className="button button--light" href="#diagnostico">Orientar mi planta</Link><Link className="button button--outline-light" href="/downloads/guia-casa-jardin.pdf" download>Descargar guía</Link></div><div className="homegarden-v4-hero__signals" aria-label="Lógica del sistema Wondergreen"><span>Suelo vivo</span><span>Etapas diferenciadas</span><span>Aplicación con criterio</span></div></div><figure><Image src="/products/wondergreen-casa-jardin-hero.png" alt="Sistema Wondergreen Casa y Jardín con plantas, productos y nutrición por etapas" fill priority sizes="(max-width: 850px) 100vw, 42vw" /><figcaption><strong>El sistema completo, leído por etapas.</strong><span>COMPOST prepara la base; cuatro líneas acompañan momentos diferentes del cultivo.</span></figcaption></figure></div></section>
 
       <section className="homegarden-v4-start"><div className="container"><div className="homegarden-v4-start__grid">{waysToStart.map(({ title, copy, cta, href, secondaryCta, secondaryHref }, index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{copy}</p><div className="homegarden-v4-start__links"><Link href={href}>{cta} →</Link>{secondaryCta && secondaryHref ? <Link href={secondaryHref}>{secondaryCta} →</Link> : null}</div></article>)}</div></div></section>

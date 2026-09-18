@@ -63,6 +63,7 @@ La ruta de producto sigue siendo:
 - Las páginas hijas de Casa & Jardín ahora declaran metadata social específica: cada kit comparte su ruta y portada, cada producto su función e imagen aprobada cuando existe, y la biblioteca de guías su cubierta PDF. Esto evita que un enlace compartido pierda el contexto del recurso.
 - La puerta “Quiero comprar” de Casa & Jardín dejó de mezclar productos y kits en un único CTA: ahora ofrece “Ver productos por etapa” y “Ver kits por uso”, con destinos independientes y visibles.
 - Los índices de productos y kits de Casa & Jardín ahora tienen metadata social propia e imagen contextual, completando la cadena de compartibilidad entre sección, catálogo, kit, producto y guía.
+- Casa & Jardín incorporó breadcrumbs JSON-LD en portada, índices de productos y kits, guías y fichas individuales; la jerarquía Greenatics → Casa & Jardín → recurso ahora coincide con los retornos visibles de cada página.
 
 ## Puertas verificadas
 
@@ -91,6 +92,7 @@ La ruta de producto sigue siendo:
 - QA de compartibilidad de Casa & Jardín: kits, productos y guías exportan `og:title`, `og:description`, `og:url` e imagen contextual cuando corresponde; se verificaron Plantas Verdes, CRECE y Guías.
 - QA de orientación de compra: el HTML exportado contiene las dos rutas diferenciadas y ya no conserva el CTA ambiguo “Ver productos y kits”.
 - QA de catálogo compartible: los índices `/casa-jardin/productos/` y `/casa-jardin/kits/` exportan título, descripción, URL e imagen Open Graph propios.
+- QA estructural de Casa & Jardín: seis superficies exportan breadcrumbs válidos y conservan las rutas canónicas, sin cambiar el contenido visible ni las URLs públicas.
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 
 ## Riesgos que permanecen
@@ -121,6 +123,7 @@ La ruta de producto sigue siendo:
 15. Mantener metadata social específica en cada recurso compartible de Casa & Jardín; no volver a depender del título genérico de la sección cuando exista una ficha o documento concreto.
 16. Mantener separadas las puertas de catálogo y kits en cualquier CTA futuro; no usar etiquetas que prometan dos destinos cuando solo enlazan uno.
 17. Mantener metadata propia en los índices de productos y kits; la sección Casa & Jardín no debe ser el único contexto compartido.
+18. Mantener la jerarquía JSON-LD alineada con la navegación visible al crear nuevas fichas o documentos dentro de Casa & Jardín.
 
 ## Regla de continuidad
 
