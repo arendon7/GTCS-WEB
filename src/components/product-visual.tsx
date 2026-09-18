@@ -21,7 +21,7 @@ export function ProductVisual({ product, context }: ProductVisualProps) {
     return (
       <figure className={`product-reference-visual product-reference-visual--${context}`}>
         <img src={product.image} alt={`Ficha visual de la familia ${product.family}`} />
-        <figcaption>{context === "card" ? "Referencia visual de la línea. La presentación vigente se confirma en la ficha y la cotización." : "Material visual de orientación de la línea. La cotización y la ficha técnica definen la presentación y el programa de uso adecuados."}</figcaption>
+        <figcaption>{context === "card" ? "Vista de la familia Wondergreen. La ficha y la cotización orientan la presentación adecuada para cada solicitud." : "Vista de referencia de la familia. La ficha técnica y la cotización organizan presentación, suministro y programa de uso."}</figcaption>
       </figure>
     );
   }

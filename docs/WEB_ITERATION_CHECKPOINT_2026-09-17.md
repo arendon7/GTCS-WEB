@@ -57,6 +57,7 @@ La ruta de producto sigue siendo:
 - El puente de decisión de las rutas municipales dejó el contexto editorial en una sola introducción; las tarjetas ya no repiten el mismo texto auxiliar en cada alternativa.
 - El registro visual municipal incorporó excepciones explícitas para diferenciar el diagnóstico aéreo de la evidencia de operación en campo de PGIRS/PMIRS; esto evita que dos capacidades distintas se perciban como la misma escena.
 - La cabecera institucional reconoce la ruta actual y sus subrutas: marca la sección activa en escritorio, la opción hija en los desplegables y el grupo correspondiente en el menú móvil mediante `aria-current`.
+- Las fichas públicas Wondergreen ajustaron el texto de sus visuales de referencia: ahora conectan imagen de familia, ficha técnica, presentación, suministro y cotización sin exponer lenguaje interno de reconciliación.
 
 ## Puertas verificadas
 
@@ -78,6 +79,7 @@ La ruta de producto sigue siendo:
 - Revisión visual local: portada, accesos, imágenes de operación y bloque de rutas de audiencia revisados sobre `localhost:3042`.
 - Revisión de municipios: el HTML exportado conserva el texto auxiliar una sola vez y usa visuales diferenciados para diagnóstico y operación de rutas.
 - Revisión del Centro de Herramientas: las tres puertas (landing, demo pública y entorno real) se leen en móvil; los accesos de OPS, Red, Huella, AGROWAY y SANA mantienen su destino diferenciado.
+- Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
 
 ## Riesgos que permanecen
 
@@ -99,6 +101,7 @@ La ruta de producto sigue siendo:
 7. Reconectar el proyecto Sites original desde la cuenta personal antes de publicar este commit; no crear una segunda URL mientras el proyecto anterior no sea visible.
 8. Continuar la revisión visual con el mismo criterio: reducir repetición, distinguir cada capacidad con evidencia adecuada y evitar imágenes decorativas sin función narrativa.
 9. Mantener el estado de navegación activo al incorporar nuevas rutas, especialmente en las landings de producto, herramientas y Casa & Jardín.
+10. Cuando se aprueben nuevos packshots o etiquetas, incorporarlos al registro por SKU sin reemplazar referencias documentales con mockups no reconciliados.
 
 ## Regla de continuidad
 
