@@ -109,6 +109,8 @@ La ruta de producto sigue siendo:
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 - QA de Biblioteca: 39 rutas de portadas, imágenes y PDFs referenciadas existen en `public/`; la salida exportada contiene breadcrumb, navegación institucional, contador de resultados y metadata social de sección.
 - QA de guía de aplicación: el HTML exportado contiene `Article` JSON-LD y `BreadcrumbList`, conserva canonical propia y mantiene la regla de que ficha, etiqueta y protocolo vigente prevalecen sobre la guía general.
+- QA editorial de prepublicación: la salida pública no contiene “por confirmar”, “por definir”, “por certificar”, “por montar”, “mockup”, “Lorem” ni “Coming soon”; los 12 usos de `placeholder` restantes son atributos de formularios y no copy visible.
+- Revisión visual móvil: Casa & Jardín y Biblioteca mantienen jerarquía, acciones y navegación contextual sin solapamientos en el primer pantallazo del export local.
 
 ## Riesgos que permanecen
 
