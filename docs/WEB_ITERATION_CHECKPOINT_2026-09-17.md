@@ -124,6 +124,8 @@ La ruta de producto sigue siendo:
 - QA de rutas de acceso: `/acceso/`, `/herramientas/`, `/red/`, `/red/app/`, `/huella/`, `/agroway/` y `/sana/` responden HTTP 200 en el export local; la tarjeta Red exporta landing y demo como destinos distintos.
 - El Centro Greenatics y el Centro de usuarios ahora tienen metadata social propia, con título, descripción, URL canónica e imagen de compartir; el contexto administrativo ya no depende del metadata genérico del sitio.
 - QA de gobierno de acceso: `/plataforma/` y `/plataforma/usuarios/` exportan `og:title`, `og:url` y `og:image`; el build mantiene la distinción visible entre directorio demo local y administración productiva en OPS.
+- Las demos de AGROWAY, SANA y GREENATICS Red ahora declaran metadata social propia: el título y la descripción comunican que son espacios navegables con datos ilustrativos, mientras Red mantiene `noindex` para no confundirse con la landing pública.
+- QA de demos compartibles: `/agroway/app/`, `/sana/app/` y `/red/app/` exportan `og:title`, `og:url` y `og:image`; sus retornos visibles al sitio y al Centro de usuarios permanecen intactos.
 
 ## Riesgos que permanecen
 
@@ -164,6 +166,7 @@ La ruta de producto sigue siendo:
 26. No superponer CTAs globales sobre superficies que ya tienen acciones por herramienta; la accesibilidad y la lectura de la tarjeta tienen precedencia sobre la persistencia de una barra flotante.
 27. Mantener el patrón de acceso de tres puertas en todas las herramientas: landing para comprender, demo para recorrer y runtime o configuración para operar; ninguna tarjeta debe saltarse la landing sin etiquetar explícitamente que abre una demo.
 28. Mantener contexto propio en las superficies de gobierno: el Centro de plataformas y el Centro de usuarios deben poder compartirse como entradas administrativas, explicando con claridad qué se puede revisar localmente y qué requiere la consola productiva.
+29. Mantener contexto propio en las demos: una estación navegable puede compartirse para revisión, pero debe declarar datos ilustrativos, conservar el retorno a su landing y no presentarse como runtime productivo.
 
 ## Regla de continuidad
 
