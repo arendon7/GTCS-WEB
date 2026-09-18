@@ -132,6 +132,8 @@ La ruta de producto sigue siendo:
 - QA visual de fichas: 14 fichas dinámicas exportadas con `product-detail-grid`; la imagen 2GROW fue revisada en móvil y mantiene lectura completa, retorno al catálogo y acciones comerciales.
 - Las fichas de producto ahora incluyen una comparación contextual con otras referencias de su misma categoría: fórmula o formato, etapa, presentación y enlace directo a cada ficha, además de retornos a ciencia y cotizador.
 - QA de continuidad de portafolio: las fichas con referencias hermanas exportan la sección “Comparar dentro del sistema”; las rutas siguen usando los slugs canónicos y no crean productos paralelos.
+- La barra flotante global deja de aparecer en Wondergreen y Casa & Jardín: sus CTA locales ya cubren orientación, cotización, guías y acompañamiento, y la barra persistente estaba tapando contenido técnico en móvil.
+- Revisión visual móvil de `/wondergreen/#liquidos`: etiquetas líquidas, explicación de nutrición soluble, bioinsumo documentado y dato de dilución quedan visibles sin solapamiento; el resultado conserva la navegación fija institucional.
 
 ## Riesgos que permanecen
 
@@ -176,6 +178,7 @@ La ruta de producto sigue siendo:
 30. Mantener identidad propia en las experiencias de Casa & Jardín: su hero, guías, kits y productos deben compartir el mismo contexto Wondergreen sin volver a una metadata genérica de Greenatics.
 31. Mantener la imagen de producto como evidencia editorial: en escritorio debe acompañar la ficha sin desplazarla fuera de la primera lectura y en móvil debe conservar proporción, texto legible y ausencia de recortes engañosos.
 32. Mantener comparación contextual en cada ficha: mostrar referencias de la misma categoría con fórmula, etapa y presentación, y ofrecer ciencia y cotizador como salidas siguientes sin convertir la comparación en una recomendación automática.
+33. No superponer CTA globales en portadas con acciones técnicas propias: Wondergreen y Casa & Jardín deben priorizar sus rutas de producto, diagnóstico, guía, ciencia y cotización sin cubrir información con una barra persistente.
 
 ## Regla de continuidad
 

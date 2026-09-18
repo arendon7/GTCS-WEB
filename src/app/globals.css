@@ -758,8 +758,15 @@ p, li, blockquote {
 
 /* These two surfaces already expose their own per-tool entry actions. */
 body:has(.digital-v4-platforms) > .floating-action-bar,
-body:has(.access-v4-environments) > .floating-action-bar {
-  display: none;
+body:has(.access-v4-environments) > .floating-action-bar,
+body:has(.wg-v4-hero) > .floating-action-bar,
+body:has(.homegarden-v4-hero) > .floating-action-bar {
+  display: none !important;
+}
+
+body:has(.wg-v4-hero) .floating-action-bar,
+body:has(.homegarden-v4-hero) .floating-action-bar {
+  display: none !important;
 }
 
 @media (max-width: 1320px) {
