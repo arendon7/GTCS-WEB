@@ -6,12 +6,18 @@ export const metadata: Metadata = {
   title: "Acceso a plataformas Greenatics",
   description: "Centro de acceso a las plataformas Greenatics: OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
   alternates: { canonical: "/acceso/" },
+  openGraph: {
+    title: "Acceso a plataformas Greenatics",
+    description: "Entra a demos públicas o configura entornos de OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
+    url: "/acceso/",
+    images: ["/campaign/06_dashboard_indicadores.jpg"],
+  },
 };
 
 const environments: Array<{ code: string; name: string; status: string; copy: string; publicHref: string; publicCta: string; access: string; accessHref: string; demoHref?: string }> = [
   { code: "OPS", name: "GREENATICS OPS", status: "Demostración pública disponible", copy: "La demostración permite recorrer bitácora, recepción, procesos, mantenimiento, inventarios e indicadores con datos ilustrativos. Los entornos de operación se configuran por organización, planta y rol.", publicHref: "/app/", publicCta: "Abrir demostración", access: "Preparar entorno real", accessHref: "/contacto/?interes=greenatics-ops", demoHref: "/app/#estacion" },
   { code: "CO₂", name: "Calcula tu Huella", status: "Estimador público disponible", copy: "Explora escenarios de emisiones y conoce la plataforma completa para inventarios, fuentes, cargas CSV/XLSX, validación, evidencias, historial y reportes climáticos.", publicHref: "/huella/", publicCta: "Abrir landing de Huella", access: "Preparar entorno real", accessHref: "/contacto/?interes=calcula-tu-huella", demoHref: "/huella/#calculadora" },
-  { code: "RED", name: "GREENATICS Red", status: "Estación pública navegable", copy: "Recorre una estación territorial con Proyecto 360, generadores, rutas, FIELD, QA/QC, PMIRS, indicadores, evidencias y coordinación. La demo ya permite entender el flujo; el entorno productivo se conecta después a la organización, sus roles y sus datos.", publicHref: "/red/app/", publicCta: "Explorar estación Red", access: "Preparar entorno real", accessHref: "/contacto/?interes=greenatics-red", demoHref: "/red/app/" },
+  { code: "RED", name: "GREENATICS Red", status: "Estación pública navegable", copy: "Recorre una estación territorial con Proyecto 360, generadores, rutas, FIELD, QA/QC, PMIRS, indicadores, evidencias y coordinación. La demo ya permite entender el flujo; el entorno productivo se conecta después a la organización, sus roles y sus datos.", publicHref: "/red/", publicCta: "Conocer GREENATICS Red", access: "Preparar entorno real", accessHref: "/contacto/?interes=red", demoHref: "/red/app/" },
   { code: "AG", name: "AGROWAY", status: "Demo navegable disponible", copy: "Aplicación de trazabilidad agrícola para registrar productor, finca, lote, ciclo, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha.", publicHref: "/agroway/", publicCta: "Conocer AGROWAY", access: "Diseñar implementación", accessHref: "/contacto/?interes=agroway", demoHref: "/agroway/app/" },
   { code: "SANA", name: "SANA", status: "Demo navegable disponible", copy: "Ecosistema para estructurar y acompañar inversión en proyectos productivos con datos de AGROWAY, ciencia Greenatics, soluciones Wondergreen y seguimiento de campo.", publicHref: "/sana/", publicCta: "Conocer SANA", access: "Diseñar implementación", accessHref: "/contacto/?interes=sana", demoHref: "/sana/app/" },
 ];

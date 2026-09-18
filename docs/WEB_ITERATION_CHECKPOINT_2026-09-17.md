@@ -63,6 +63,8 @@ La ruta de producto sigue siendo:
 - El catálogo técnico-comercial y el manual de aplicación declaran imagen social Wondergreen propia, además de su canonical, descripción y rutas editoriales específicas.
 - El Centro de Herramientas y las cinco landings digitales ahora comparten metadata social específica: título, URL e imagen contextual para OPS, Red, Huella, AGROWAY y SANA.
 - Calcula tu Huella, que mantiene su página interactiva como client component, incorporó un layout de sección para conservar canonical y metadata social sin mezclarla con la lógica del estimador.
+- El Centro de Herramientas y Acceso ya no muestran la barra flotante global sobre sus tarjetas: ambos tienen acciones propias por plataforma y ahora priorizan la lectura completa de cada entrada sin oclusión móvil.
+- Acceso corrigió la única excepción de navegación de GREENATICS Red: la tarjeta lleva primero a `/red/` y conserva `/red/app/` como estación demo explícita, con `interes=red` para continuar la conversación.
 - Casa & Jardín incorporó metadata social propia para que portada, kits y guías se compartan como una experiencia Wondergreen diferenciada.
 - Las páginas hijas de Casa & Jardín ahora declaran metadata social específica: cada kit comparte su ruta y portada, cada producto su función e imagen aprobada cuando existe, y la biblioteca de guías su cubierta PDF. Esto evita que un enlace compartido pierda el contexto del recurso.
 - La puerta “Quiero comprar” de Casa & Jardín dejó de mezclar productos y kits en un único CTA: ahora ofrece “Ver productos por etapa” y “Ver kits por uso”, con destinos independientes y visibles.
@@ -118,6 +120,8 @@ La ruta de producto sigue siendo:
 - QA de continuidad de producto: 14 fichas dinámicas exportan el enlace visible al catálogo técnico; las rutas de catálogo y manual exportan `og:image` Wondergreen y conservan la metadata específica de cada página.
 - Revisión visual de 2GROW: la pieza documental de producto conserva su tratamiento editorial, presentaciones sólida/líquidas visibles y el retorno adicional al catálogo sin alterar la lectura de la ficha.
 - QA de herramientas: `/herramientas/`, `/app/`, `/huella/`, `/red/`, `/agroway/` y `/sana/` exportan `og:title`, `og:url` y `og:image` propios; las cinco imágenes sociales referenciadas existen en `public/`.
+- Revisión visual de acceso móvil: la barra flotante ya no se superpone a la primera tarjeta en `#entornos-disponibles`; el resto de páginas conserva sus acciones rápidas contextuales.
+- QA de rutas de acceso: `/acceso/`, `/herramientas/`, `/red/`, `/red/app/`, `/huella/`, `/agroway/` y `/sana/` responden HTTP 200 en el export local; la tarjeta Red exporta landing y demo como destinos distintos.
 
 ## Riesgos que permanecen
 
@@ -155,6 +159,8 @@ La ruta de producto sigue siendo:
 23. Mantener la Biblioteca como índice accionable: toda tarjeta debe declarar si descarga un PDF o abre una referencia web, y toda búsqueda debe comunicar resultado o recuperación sin dejar un estado silencioso.
 24. Mantener dos niveles de retorno en cada ficha Wondergreen: volver al sistema para continuar explorando y volver al catálogo para comparar referencias, presentaciones y estado comercial.
 25. Mantener una identidad social por herramienta: la landing, la demo y el runtime pueden ser puertas distintas, pero al compartir deben conservar el nombre, la función y la imagen de la plataforma correspondiente.
+26. No superponer CTAs globales sobre superficies que ya tienen acciones por herramienta; la accesibilidad y la lectura de la tarjeta tienen precedencia sobre la persistencia de una barra flotante.
+27. Mantener el patrón de acceso de tres puertas en todas las herramientas: landing para comprender, demo para recorrer y runtime o configuración para operar; ninguna tarjeta debe saltarse la landing sin etiquetar explícitamente que abre una demo.
 
 ## Regla de continuidad
 

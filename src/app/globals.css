@@ -756,6 +756,12 @@ p, li, blockquote {
   background: rgba(255, 255, 255, 0.09);
 }
 
+/* These two surfaces already expose their own per-tool entry actions. */
+body:has(.digital-v4-platforms) > .floating-action-bar,
+body:has(.access-v4-environments) > .floating-action-bar {
+  display: none;
+}
+
 @media (max-width: 1320px) {
   .desktop-nav {
     gap: 17px;
