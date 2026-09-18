@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   description:
     "Centro único de acceso a las plataformas Greenatics: OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
   alternates: { canonical: "/plataforma/" },
+  openGraph: {
+    title: "Centro Greenatics | Plataformas y aplicaciones",
+    description:
+      "Un solo lugar para conocer, explorar y solicitar acceso a las herramientas digitales de Greenatics.",
+    url: "/plataforma/",
+    images: ["/brand/greenatics-horizontal.webp"],
+  },
 };
 
 const applications = [

@@ -122,6 +122,8 @@ La ruta de producto sigue siendo:
 - QA de herramientas: `/herramientas/`, `/app/`, `/huella/`, `/red/`, `/agroway/` y `/sana/` exportan `og:title`, `og:url` y `og:image` propios; las cinco imágenes sociales referenciadas existen en `public/`.
 - Revisión visual de acceso móvil: la barra flotante ya no se superpone a la primera tarjeta en `#entornos-disponibles`; el resto de páginas conserva sus acciones rápidas contextuales.
 - QA de rutas de acceso: `/acceso/`, `/herramientas/`, `/red/`, `/red/app/`, `/huella/`, `/agroway/` y `/sana/` responden HTTP 200 en el export local; la tarjeta Red exporta landing y demo como destinos distintos.
+- El Centro Greenatics y el Centro de usuarios ahora tienen metadata social propia, con título, descripción, URL canónica e imagen de compartir; el contexto administrativo ya no depende del metadata genérico del sitio.
+- QA de gobierno de acceso: `/plataforma/` y `/plataforma/usuarios/` exportan `og:title`, `og:url` y `og:image`; el build mantiene la distinción visible entre directorio demo local y administración productiva en OPS.
 
 ## Riesgos que permanecen
 
@@ -161,6 +163,7 @@ La ruta de producto sigue siendo:
 25. Mantener una identidad social por herramienta: la landing, la demo y el runtime pueden ser puertas distintas, pero al compartir deben conservar el nombre, la función y la imagen de la plataforma correspondiente.
 26. No superponer CTAs globales sobre superficies que ya tienen acciones por herramienta; la accesibilidad y la lectura de la tarjeta tienen precedencia sobre la persistencia de una barra flotante.
 27. Mantener el patrón de acceso de tres puertas en todas las herramientas: landing para comprender, demo para recorrer y runtime o configuración para operar; ninguna tarjeta debe saltarse la landing sin etiquetar explícitamente que abre una demo.
+28. Mantener contexto propio en las superficies de gobierno: el Centro de plataformas y el Centro de usuarios deben poder compartirse como entradas administrativas, explicando con claridad qué se puede revisar localmente y qué requiere la consola productiva.
 
 ## Regla de continuidad
 
