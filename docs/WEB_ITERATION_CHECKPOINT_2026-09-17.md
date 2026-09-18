@@ -83,6 +83,7 @@ La ruta de producto sigue siendo:
 - Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
 - Cada ficha de producto Wondergreen incorpora ahora dos salidas de continuidad desde el criterio técnico: manual de aplicación y ciencia Wondergreen, además de sus rutas existentes hacia cultivos, cotizador y contacto.
 - QA de compartibilidad: Biblioteca comparte con título propio de sección y Wondergreen con título de sistema agronómico; no se alteraron las URLs canónicas ni el sitemap.
+- Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 
 ## Riesgos que permanecen
 
@@ -107,6 +108,7 @@ La ruta de producto sigue siendo:
 10. Cuando se aprueben nuevos packshots o etiquetas, incorporarlos al registro por SKU sin reemplazar referencias documentales con mockups no reconciliados.
 11. Mantener la continuidad de las fichas: producto, manual, ciencia, cultivo, cotizador y contacto deben permanecer visibles como una misma ruta.
 12. Al crear nuevas secciones, definir metadata social de sección y verificar que las páginas no hereden el título genérico de Greenatics.
+13. Mantener alineados el verbo de cada CTA documental y su comportamiento real: “Descargar” debe descargar; “Abrir” debe abrir una ruta de lectura.
 
 ## Regla de continuidad
 
