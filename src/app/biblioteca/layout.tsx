@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Biblioteca Técnica & Manuales de Cultivo | Greenatics",
-  description: "88 documentos técnicos, manuales agronómicos de 20 páginas y guías de aplicación Wondergreen descargables en PDF.",
+  title: "Biblioteca técnica y manuales de cultivo",
+  description: "Recursos técnicos curados: manuales agronómicos, guías de aplicación Wondergreen, documentos de operación y rutas web para decidir con mejor información.",
   alternates: { canonical: "/biblioteca/" },
 };
 

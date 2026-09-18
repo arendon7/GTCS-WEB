@@ -66,6 +66,7 @@ export default function DiagnosticoPage() {
             const isSelected = selectedId === p.id;
             return (
               <button
+                type="button"
                 key={p.id}
                 onClick={() => setSelectedId(p.id)}
                 style={{

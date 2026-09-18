@@ -82,19 +82,18 @@ export function HomeHero() {
         <div className="home-system-hero__grid">
           <div className="home-system-hero__copy">
             <p className="eyebrow">
-              <span className="hero-status-dot" aria-hidden="true" />
-              Economía circular aplicada en territorio
+              Greenatics · sistemas circulares que se pueden operar
             </p>
 
             <h1 id="home-hero-title">
-              Convertimos residuos orgánicos en sistemas que una organización puede
-              <em> operar, medir y mejorar.</em>
+              Convertimos residuos orgánicos en sistemas que el territorio puede
+              <em> operar, medir y valorizar.</em>
             </h1>
 
             <p className="home-system-hero__lead">
-              Integramos diagnóstico, recolección selectiva, plantas de aprovechamiento,
-              operación, trazabilidad digital y valorización para que la economía circular
-              deje de ser una meta aislada y se convierta en capacidad cotidiana.
+              Integramos diagnóstico, recolección selectiva, plantas de tratamiento,
+              dirección técnica, trazabilidad digital y valorización para convertir una
+              meta ambiental en capacidad cotidiana, evidencia operativa y valor para el territorio.
             </p>
 
             <div className="home-system-hero__actions" aria-label="Acciones principales">
@@ -104,23 +103,50 @@ export function HomeHero() {
               <Link className="button home-hero-secondary" href="/proyectos/">
                 Ver casos reales
               </Link>
-              <Link className="home-hero-text-link" href="/wondergreen/">
-                Conocer Wondergreen <span aria-hidden="true">→</span>
+              <Link className="home-hero-text-link" href="/herramientas/">
+                Explorar herramientas <span aria-hidden="true">↗</span>
               </Link>
+            </div>
+
+            <div className="home-audience-router home-audience-router--left">
+              <p className="home-audience-router__label">¿Qué necesitas transformar?</p>
+              <div className="home-audience-router__tabs" role="tablist" aria-label="Rutas según necesidad">
+                {profiles.map((item) => (
+                  <button
+                    type="button"
+                    aria-controls={`profile-panel-${item.id}`}
+                    aria-selected={activeProfile === item.id}
+                    className={activeProfile === item.id ? "is-active" : undefined}
+                    id={`profile-tab-${item.id}`}
+                    key={item.id}
+                    onClick={() => setActiveProfile(item.id)}
+                    role="tab"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              <div aria-labelledby={`profile-tab-${profile.id}`} className="home-audience-router__panel" id={`profile-panel-${profile.id}`} role="tabpanel">
+                <h2>{profile.title}</h2>
+                <p>{profile.description}</p>
+                <Link href={profile.href}>
+                  {profile.cta} <span aria-hidden="true">→</span>
+                </Link>
+              </div>
             </div>
 
             <ul className="home-proof-list" aria-label="Razones para confiar">
               <li>
-                <strong>Operación real</strong>
-                <span>Diseñamos para el día a día, no solo para el documento.</span>
+                <strong>Capacidad instalada</strong>
+                <span>Diseñamos para que el sistema funcione en el día a día.</span>
               </li>
               <li>
-                <strong>Ciencia aplicada</strong>
-                <span>Variables de proceso traducidas en decisiones y protocolos.</span>
+                <strong>Decisiones con datos</strong>
+                <span>Traducimos variables de proceso en protocolos y prioridades.</span>
               </li>
               <li>
-                <strong>Evidencia útil</strong>
-                <span>Registros que permiten controlar, demostrar y mejorar.</span>
+                <strong>Valor que permanece</strong>
+                <span>Conectamos tratamiento, productos, energía y retorno al suelo.</span>
               </li>
             </ul>
           </div>
@@ -154,32 +180,6 @@ export function HomeHero() {
               ))}
             </div>
 
-            <div className="home-audience-router">
-              <p className="home-audience-router__label">¿Qué necesita transformar?</p>
-              <div className="home-audience-router__tabs" role="tablist" aria-label="Perfiles">
-                {profiles.map((item) => (
-                  <button
-                    aria-controls={`profile-panel-${item.id}`}
-                    aria-selected={activeProfile === item.id}
-                    className={activeProfile === item.id ? "is-active" : undefined}
-                    id={`profile-tab-${item.id}`}
-                    key={item.id}
-                    onClick={() => setActiveProfile(item.id)}
-                    role="tab"
-                    type="button"
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-              <div aria-labelledby={`profile-tab-${profile.id}`} className="home-audience-router__panel" id={`profile-panel-${profile.id}`} role="tabpanel">
-                <h2>{profile.title}</h2>
-                <p>{profile.description}</p>
-                <Link href={profile.href}>
-                  {profile.cta} <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
 

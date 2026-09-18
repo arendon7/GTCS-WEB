@@ -38,11 +38,11 @@ export function CropsInteractiveShowroom() {
         <div className="crop-explorer__categories" aria-label="Filtrar por familia productiva" role="group">
           {categories.map((item) => (
             <button
+              type="button"
               aria-pressed={activeCategory === item.id}
               className={activeCategory === item.id ? "is-active" : undefined}
               key={item.id}
               onClick={() => setActiveCategory(item.id)}
-              type="button"
             >
               <span>{item.label}</span>
               <small>{item.slugs.length}</small>

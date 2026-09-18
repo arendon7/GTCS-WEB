@@ -12,7 +12,7 @@ export default function EncalamientoPage() {
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Evaluación de encalamiento")}&prioridad=${encodeURIComponent(`${crop} · pH ${ph} · saturación de aluminio ${al}% · textura ${texture}`)}`;
 
   return (
-    <main style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 790, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Acidez y enmiendas</span>
@@ -62,6 +62,6 @@ export default function EncalamientoPage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

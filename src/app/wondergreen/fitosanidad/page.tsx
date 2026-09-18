@@ -17,7 +17,7 @@ export default function FitosanidadPage() {
   const visible = filter === "Todos" ? routes : routes.filter((route) => route.crop === filter);
 
   return (
-    <main style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
       <div className="container" style={{ maxWidth: 1100 }}>
         <header style={{ maxWidth: 820, margin: "0 auto 34px", textAlign: "center" }}>
           <span className="eyebrow">Manejo integrado y trazable</span>
@@ -59,6 +59,6 @@ export default function FitosanidadPage() {
           <p style={{ margin: "7px 0 0", lineHeight: 1.55, fontSize: ".88rem" }}>Greenatics puede evaluar alternativas microbianas, botánicas, culturales, físicas y nutricionales. La web no vincula automáticamente un organismo, extracto o fertilizante con una plaga o enfermedad: cada uso debe contrastarse con diagnóstico, registro, etiqueta, calidad del producto y condiciones del sistema.</p>
         </aside>
       </div>
-    </main>
+    </div>
   );
 }

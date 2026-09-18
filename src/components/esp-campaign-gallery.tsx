@@ -43,6 +43,7 @@ export function EspCampaignGallery() {
             const isSelected = activeIdx === idx;
             return (
               <button
+                type="button"
                 key={c.num}
                 onClick={() => setActiveIdx(idx)}
                 style={{

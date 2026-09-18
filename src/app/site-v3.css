@@ -22,9 +22,215 @@ main [id] {
   gap: 8px;
 }
 
+.site-header .brand-link {
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: #f4f8ef;
+}
+
 .home-system-hero h1 {
   font-size: clamp(3rem, 4.35vw, 4.75rem);
   line-height: 1.01;
+}
+
+/* The decision router belongs to the message column, so the evidence stays legible. */
+.home-audience-router--left {
+  width: min(100%, 780px);
+  margin: 32px 0 0;
+  padding: 18px;
+  border-color: rgba(184, 237, 114, 0.35);
+  background: rgba(248, 252, 245, 0.97);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+}
+
+.home-audience-router--left .home-audience-router__tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-audience-router--left .home-audience-router__panel {
+  padding-top: 15px;
+}
+
+.home-audience-router--left .home-audience-router__panel h2 {
+  max-width: 620px;
+}
+
+.home-audience-router--left .home-audience-router__panel p {
+  max-width: 680px;
+}
+
+.home-system-hero__copy > .home-proof-list {
+  margin-top: 30px;
+}
+
+/* A direct tool gateway keeps the public story connected to usable product entry points. */
+.home-tools-bridge {
+  padding: clamp(64px, 7vw, 96px) 0;
+  border-bottom: 1px solid #d8e1d8;
+  background: #fbfcf8;
+}
+
+.home-tools-bridge__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.65fr);
+  gap: clamp(32px, 7vw, 96px);
+  align-items: end;
+  margin-bottom: 34px;
+}
+
+.home-tools-bridge__heading h2 {
+  max-width: 700px;
+  margin: 8px 0 0;
+  color: var(--green-950);
+  font-size: clamp(2.25rem, 4.1vw, 4.35rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.home-tools-bridge__heading p {
+  max-width: 480px;
+  margin: 0;
+  color: #52645a;
+  line-height: 1.7;
+}
+
+.home-tools-bridge__list {
+  border-top: 1px solid #bdcdbd;
+}
+
+.home-tools-bridge__list a {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  min-height: 86px;
+  padding: 14px 8px;
+  border-bottom: 1px solid #bdcdbd;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 160ms ease-out, padding 160ms ease-out;
+}
+
+.home-tools-bridge__list a:hover,
+.home-tools-bridge__list a:focus-visible {
+  padding-right: 18px;
+  padding-left: 18px;
+  background: #eef5eb;
+}
+
+.home-tools-bridge__number {
+  color: var(--green-700);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.home-tools-bridge__content {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.home-tools-bridge__content strong {
+  color: var(--green-950);
+  font-size: 1.05rem;
+}
+
+.home-tools-bridge__content small {
+  overflow: hidden;
+  color: #66766d;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-tools-bridge__action,
+.home-tools-bridge__all {
+  color: var(--green-700);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.home-tools-bridge__action span,
+.home-tools-bridge__all span {
+  display: inline-block;
+  margin-left: 4px;
+  transition: transform 160ms ease-out;
+}
+
+.home-tools-bridge__list a:hover .home-tools-bridge__action span,
+.home-tools-bridge__list a:focus-visible .home-tools-bridge__action span,
+.home-tools-bridge__all:hover span,
+.home-tools-bridge__all:focus-visible span {
+  transform: translateX(3px);
+}
+
+.verified-metrics-matrix {
+  padding: clamp(28px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 24px 24px 24px 7px;
+  background: #fff;
+  box-shadow: 0 14px 40px rgba(0, 107, 69, 0.06);
+}
+
+.verified-metrics-matrix__intro { max-width: 700px; margin: 0 auto 30px; text-align: center; }
+.verified-metrics-matrix__intro h3 { margin: 8px 0; color: var(--green-950); font-size: clamp(1.5rem, 2.4vw, 2rem); }
+.verified-metrics-matrix__intro p,
+.verified-metrics-matrix__grid p,
+.verified-metrics-matrix__note { color: var(--muted); line-height: 1.5; }
+.verified-metrics-matrix__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.verified-metrics-matrix__grid article { display: flex; min-height: 190px; flex-direction: column; padding: 20px; border: 1px solid var(--line); border-radius: 16px 16px 16px 4px; background: #fafcf9; }
+.verified-metrics-matrix__grid article > span { color: var(--green-700); font-size: .68rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.verified-metrics-matrix__grid strong { margin-top: 18px; color: var(--green-800); font-size: clamp(1.7rem, 3vw, 2.35rem); line-height: 1; }
+.verified-metrics-matrix__grid h4 { margin: 8px 0 2px; color: var(--green-950); font-size: .95rem; }
+.verified-metrics-matrix__grid p { margin: 0; font-size: .78rem; }
+.verified-metrics-matrix__note { margin: 20px 0 0; padding: 14px 16px; border-left: 2px solid var(--green-700); background: #f2f6ed; font-size: .78rem; }
+.verified-metrics-matrix__note strong { color: var(--green-800); }
+
+.home-tools-bridge__all {
+  display: inline-flex;
+  margin-top: 22px;
+  padding: 10px 0;
+  text-decoration: none;
+}
+
+@media (max-width: 800px) {
+  .home-tools-bridge__heading {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .verified-metrics-matrix__grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .home-tools-bridge__list a {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 18px 0;
+  }
+
+  .home-tools-bridge__action {
+    grid-column: 2;
+    padding-top: 2px;
+  }
+
+  .home-tools-bridge__content small {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-tools-bridge__list a,
+  .home-tools-bridge__action span,
+  .home-tools-bridge__all span {
+    transition: none;
+  }
 }
 
 @media (max-width: 1480px) {
@@ -53,6 +259,17 @@ main [id] {
 @media (max-width: 680px) {
   .home-system-hero h1 {
     font-size: clamp(2.5rem, 11.6vw, 3.4rem);
+  }
+
+  .home-audience-router--left {
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 0;
+    padding: 15px;
+  }
+
+  .home-audience-router--left .home-audience-router__tabs {
+    grid-template-columns: 1fr;
   }
 }
 

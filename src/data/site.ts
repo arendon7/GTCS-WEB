@@ -29,6 +29,8 @@ export const primaryNav: NavItem[] = [
   { href: "/municipios/", label: "Municipios y ESP" },
   { href: "/empresas/", label: "Empresas" },
   { href: "/agroindustria/", label: "Agroindustria" },
+  { href: "/portafolio/", label: "Portafolio" },
+  { href: "/herramientas/", label: "Herramientas" },
   {
     href: "/wondergreen/",
     label: "Wondergreen",
@@ -46,7 +48,7 @@ export const primaryNav: NavItem[] = [
     label: "Conocimiento",
     subitems: [
       { href: "/biblioteca/", label: "Biblioteca técnica", description: "Manuales, guías de cultivo y documentos de consulta" },
-      { href: "/herramientas/", label: "Herramientas digitales", description: "OPS, Red Aseo, Calcula tu Huella, AGROWAY y SANA" },
+      { href: "/herramientas/", label: "Herramientas digitales", description: "OPS, GREENATICS Red, Calcula tu Huella, AGROWAY y SANA" },
       { href: "/agroway/", label: "AGROWAY", description: "Aplicación de trazabilidad agrícola y datos de campo" },
       { href: "/biblioteca/glosario/", label: "Glosario", description: "Conceptos de economía circular, bioprocesos y suelos" },
       { href: "/impacto/", label: "Impacto y evidencia", description: "Indicadores validados y metodología de medición" },

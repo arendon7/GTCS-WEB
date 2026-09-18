@@ -34,6 +34,7 @@ export function GalleryEvidence() {
         </div>
         <div style={{ display: "flex", gap: "8px", background: "rgba(0, 107, 69, 0.08)", padding: "4px", borderRadius: "999px" }}>
           <button
+            type="button"
             onClick={() => { setTab("plant"); setSelectedIdx(0); }}
             style={{
               padding: "8px 18px",
@@ -50,6 +51,7 @@ export function GalleryEvidence() {
             Planta de Bioprocesos
           </button>
           <button
+            type="button"
             onClick={() => { setTab("routes"); setSelectedIdx(0); }}
             style={{
               padding: "8px 18px",
@@ -89,6 +91,7 @@ export function GalleryEvidence() {
           const isSelected = selectedIdx === idx;
           return (
             <button
+              type="button"
               key={img.src}
               onClick={() => setSelectedIdx(idx)}
               style={{

@@ -78,6 +78,61 @@ if (fs.existsSync(sitemapFile)) {
   }
 }
 
+const serviceLandingPaths = [
+  "/servicios/diagnostico-residuos/",
+  "/servicios/pgirs-pmirs/",
+  "/servicios/microrrutas-motocarguero/",
+  "/servicios/plantas-modulares/",
+  "/servicios/operacion-delegada/",
+  "/servicios/greenatics-ops/",
+  "/servicios/aprovechamiento-productivo/",
+  "/servicios/programas-wondergreen/",
+];
+
+for (const route of serviceLandingPaths) {
+  const file = path.join(root, route.replace(/^\//, ""), "index.html");
+  if (!fs.existsSync(file)) {
+    errors.push(`${route}: missing service landing export`);
+    continue;
+  }
+  const html = fs.readFileSync(file, "utf8");
+  if (!/<figure[^>]*>[\s\S]*?<img\b/i.test(html)) errors.push(`${route}: service landing is missing its contextual visual`);
+}
+
+const serviceIndexFile = path.join(root, "servicios", "index.html");
+if (fs.existsSync(serviceIndexFile)) {
+  const serviceIndexHtml = fs.readFileSync(serviceIndexFile, "utf8");
+  const visualCards = (serviceIndexHtml.match(/gt-service-card__media/g) || []).length;
+  if (visualCards < serviceLandingPaths.length) errors.push(`/servicios/: expected at least ${serviceLandingPaths.length} visual service cards, found ${visualCards}`);
+}
+
+const homeGardenCatalogFile = path.join(root, "casa-jardin", "productos", "index.html");
+if (fs.existsSync(homeGardenCatalogFile)) {
+  const homeGardenCatalogHtml = fs.readFileSync(homeGardenCatalogFile, "utf8");
+  const stageCards = (homeGardenCatalogHtml.match(/homegarden-product-card__media/g) || []).length;
+  const stageVisuals = (homeGardenCatalogHtml.match(/Ficha visual (?:COMPOST|CRECE|EQUILIBRA|FLORECE|FRUCTIFICA) Wondergreen/g) || []).length;
+  if (stageCards < 5 || stageVisuals < 5) errors.push(`/casa-jardin/productos/: expected five stage cards with contextual visuals, found ${stageCards} cards and ${stageVisuals} visual alts`);
+  if (/se habilitarán sólo cuando estén reconciliados/i.test(homeGardenCatalogHtml)) errors.push(`/casa-jardin/productos/: internal reconciliation wording must not appear in public catalog`);
+}
+
+const productRoot = path.join(root, "wondergreen", "productos");
+if (fs.existsSync(productRoot)) {
+  const productPages = fs.readdirSync(productRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && fs.existsSync(path.join(productRoot, entry.name, "index.html")))
+    .map((entry) => entry.name);
+  if (productPages.length < 14) {
+    errors.push(`/wondergreen/productos/: expected at least 14 product landings, found ${productPages.length}`);
+  }
+  for (const slug of productPages) {
+    const page = `/wondergreen/productos/${slug}/`;
+    const html = fs.readFileSync(path.join(productRoot, slug, "index.html"), "utf8");
+    if (!/<h1\b/i.test(html)) errors.push(`${page}: product landing is missing its H1`);
+    if (!/product-(?:reference-visual|packshot|stage)|wg-biol-hero__visual/i.test(html)) errors.push(`${page}: product landing is missing a visual product treatment`);
+    if (!/href="\/wondergreen\/"/i.test(html)) errors.push(`${page}: product landing is missing its return link to Wondergreen`);
+    if (!/href="\/wondergreen\/cotizador\//i.test(html)) errors.push(`${page}: product landing is missing its cotizador route`);
+  }
+}
+
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
   const page = pagePathFromFile(file);
@@ -100,6 +155,14 @@ for (const file of htmlFiles) {
     else if (normalizePathname(canonicalMatch[1]) !== page) {
       errors.push(`${page}: canonical ${canonicalMatch[1]} does not match sitemap route`);
     }
+    const openGraphUrlMatch = html.match(/<meta[^>]+property="og:url"[^>]+content="([^"]+)"/i);
+    if (openGraphUrlMatch && normalizePathname(openGraphUrlMatch[1]) !== page) {
+      errors.push(`${page}: og:url ${openGraphUrlMatch[1]} does not match sitemap route`);
+    }
+  }
+
+  if ((html.match(/<main\b/gi) || []).length > 1) {
+    errors.push(`${page}: nested or duplicate main landmarks detected`);
   }
 
   for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {

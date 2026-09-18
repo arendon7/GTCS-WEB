@@ -55,6 +55,18 @@ pnpm qa:ecosystem
 
 El gate verifica web pública, portal, Red, health/login de Huella, health/login de OPS y el bloqueo anónimo de OPS. No crea usuarios, no ejecuta migraciones remotas y no toca datos productivos.
 
+El script conserva esos puertos como valores por defecto, pero acepta destinos explícitos para validar otra sesión local, una red LAN o un staging. La URL de Red puede ser independiente cuando la estación ya vive fuera del portal:
+
+```bash
+GREENATICS_SITE_URL=http://localhost:3001 \
+GREENATICS_RED_URL=http://localhost:3001/red/app \
+GREENATICS_HUELLA_URL=http://127.0.0.1:8765 \
+GREENATICS_OPS_URL=http://localhost:3002 \
+pnpm qa:ecosystem
+```
+
+En staging o producción se deben usar URLs HTTPS y runtimes realmente levantados. Este parámetro solo cambia dónde se verifica cada superficie; no habilita autenticación, persistencia ni permisos por sí mismo.
+
 ## Alcance local
 
 - Huella usa SQLite local aislada y conserva su flujo de inventario, cargas, validación, evidencias, cálculo e informes.

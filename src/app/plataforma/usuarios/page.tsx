@@ -25,7 +25,9 @@ const platformDescription: Record<Platform, string> = {
   AGROWAY: "Trazabilidad agrícola y trabajo de campo.",
   SANA: "Proyectos productivos y oportunidades de inversión.",
 };
+const organizations = ["Greenatics S.A.S.", "Proyecto Yarumal", "Proyecto Támesis", "Finca demostrativa"] as const;
 const demoUsersStorageKey = "greenatics-demo-users-v1";
+const isExternal = (url: string) => /^https?:\/\//.test(url);
 
 function isStoredUser(value: unknown): value is User {
   if (!value || typeof value !== "object") return false;
@@ -35,7 +37,7 @@ function isStoredUser(value: unknown): value is User {
 
 export default function PlatformUsersPage() {
   const [users, setUsers] = useState(initialUsers);
-  const [notice, setNotice] = useState("Consola local preparada para conectar con identidad central.");
+  const [notice, setNotice] = useState("Vista de demostración preparada para revisar identidad y alcance.");
   const [filter, setFilter] = useState("Todos");
   const [selectedEmail, setSelectedEmail] = useState(initialUsers[0].email);
   const [showInviteForm, setShowInviteForm] = useState(false);
@@ -43,9 +45,11 @@ export default function PlatformUsersPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteOrganization, setInviteOrganization] = useState("Greenatics S.A.S.");
   const [inviteRole, setInviteRole] = useState("Analista o responsable de lote");
+  const [organization, setOrganization] = useState<(typeof organizations)[number]>("Greenatics S.A.S.");
   const [isHydrated, setIsHydrated] = useState(false);
-  const visibleUsers = filter === "Todos" ? users : users.filter((user) => user.status === filter);
-  const selectedUser = users.find((user) => user.email === selectedEmail) ?? users[0];
+  const scopedUsers = users.filter((user) => user.organization === organization);
+  const visibleUsers = (filter === "Todos" ? scopedUsers : scopedUsers.filter((user) => user.status === filter));
+  const selectedUser = scopedUsers.find((user) => user.email === selectedEmail) ?? scopedUsers[0] ?? users[0];
 
   useEffect(() => {
     try {
@@ -55,7 +59,7 @@ export default function PlatformUsersPage() {
         if (Array.isArray(parsed) && parsed.every(isStoredUser)) setUsers(parsed);
       }
     } catch {
-      setNotice("No fue posible leer el directorio local. Se mantiene la configuración inicial de la demo.");
+      setNotice("No fue posible leer el directorio de demostración. Se mantiene la configuración inicial de esta vista.");
     } finally {
       setIsHydrated(true);
     }
@@ -106,8 +110,16 @@ export default function PlatformUsersPage() {
     setNotice("Directorio demo restablecido. Los usuarios productivos no se modifican desde esta vista.");
   }
 
+  function changeOrganization(nextOrganization: (typeof organizations)[number]) {
+    setOrganization(nextOrganization);
+    const firstUser = users.find((user) => user.organization === nextOrganization);
+    setSelectedEmail(firstUser?.email ?? "");
+    setFilter("Todos");
+    setNotice(`Contexto cambiado a ${nextOrganization}. El directorio y el alcance muestran solo esta organización.`);
+  }
+
   return (
-    <main className="platform-admin">
+    <div className="platform-admin">
       <section className="platform-admin__hero">
         <div className="container platform-admin__hero-grid">
           <div>
@@ -115,17 +127,17 @@ export default function PlatformUsersPage() {
             <span className="eyebrow eyebrow--light">Administración de acceso</span>
             <h1>Una identidad para cada equipo. Un alcance claro para cada decisión.</h1>
             <p className="lead">Administra organizaciones, usuarios, roles y accesos de OPS, Huella, Red, AGROWAY y SANA desde un solo lugar. La consola conserva el principio de mínimo privilegio: cada persona ve y modifica únicamente lo que su responsabilidad requiere.</p>
-            <div className="button-row"><button className="button button--light" type="button" onClick={() => setShowInviteForm((current) => !current)}>{showInviteForm ? "Cerrar invitación" : "+ Ver flujo de invitación"}</button><a className="button button--outline-light" href={runtimeLinks.opsUserAdmin}>Abrir administración OPS</a><Link className="button button--outline-light" href="/acceso/">Ver accesos</Link></div>
+            <div className="button-row"><button className="button button--light" type="button" onClick={() => setShowInviteForm((current) => !current)}>{showInviteForm ? "Cerrar invitación" : "+ Ver flujo de invitación"}</button><a className="button button--outline-light" href={runtimeLinks.opsUserAdmin} target={isExternal(runtimeLinks.opsUserAdmin) ? "_blank" : undefined} rel={isExternal(runtimeLinks.opsUserAdmin) ? "noopener noreferrer" : undefined}>Administrar usuarios en OPS ↗</a><Link className="button button--outline-light" href="/acceso/">Ver accesos</Link></div>
           </div>
-          <aside className="platform-admin__hero-card"><span>Estado del centro</span><strong>Identidad y permisos en un solo workspace</strong><p>Esta vista explica el modelo de administración. La gestión real de cuentas se realiza en la consola autenticada de OPS, con invitaciones, plantas, roles y herramientas habilitadas.</p><div><i /><span>Políticas base · activas</span></div><div><i /><span>Separación por organización · activa</span></div><div><i /><span>Administración real · consola OPS</span></div></aside>
+          <aside className="platform-admin__hero-card"><span>Estado del centro</span><strong>Identidad y permisos en un solo workspace</strong><p>Esta vista permite revisar el modelo de administración y preparar cambios de demostración. La gestión productiva de cuentas se realiza en la consola autenticada de OPS, con invitaciones, plantas, roles y herramientas habilitadas.</p><div><i /><span>Políticas base · activas</span></div><div><i /><span>Separación por organización · activa</span></div><div><i /><span>Administración productiva · OPS</span></div></aside>
         </div>
       </section>
 
       <section className="platform-admin__body">
         <div className="container">
-          <div className="platform-admin__toolbar"><div><span className="eyebrow">Greenatics S.A.S.</span><h2>Personas y permisos</h2><p>Elige una organización para revisar usuarios, alcance, estado y última actividad.</p></div><label>Organización<select defaultValue="Greenatics S.A.S."><option>Greenatics S.A.S.</option><option>Proyecto Yarumal</option><option>Proyecto Támesis</option><option>Finca demostrativa</option></select></label></div>
-          {showInviteForm && <form className="platform-admin__invite-form" onSubmit={createInvitation}><div className="platform-admin__invite-head"><div><span className="eyebrow">Nueva persona</span><h3>Crear una invitación pendiente.</h3><p>Registra el contexto primero; el alcance se asigna en el panel siguiente.</p></div><button type="button" onClick={() => setShowInviteForm(false)}>Cerrar</button></div><div className="platform-admin__invite-fields"><label>Nombre completo<input required value={inviteName} onChange={(event) => setInviteName(event.target.value)} placeholder="Ej. Valentina Gómez" /></label><label>Correo de trabajo<input required type="email" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} placeholder="persona@organizacion.co" /></label><label>Organización<select value={inviteOrganization} onChange={(event) => setInviteOrganization(event.target.value)}><option>Greenatics S.A.S.</option><option>Proyecto Yarumal</option><option>Proyecto Támesis</option><option>Finca demostrativa</option></select></label><label>Rol base<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}><option>Analista o responsable de lote</option><option>Dirección de operación</option><option>Administrador general</option></select></label></div><div className="button-row"><button className="button button--dark" type="submit">Crear usuario pendiente</button><button className="button button--ghost" type="button" onClick={() => setShowInviteForm(false)}>Cancelar</button></div><small className="platform-admin__invite-note">Demo local: no se envía ningún correo; los cambios se conservan en este navegador. En producción, OPS generaría la invitación con expiración y registro de auditoría.</small></form>}
-          <div className="platform-admin__stats"><article><span>Usuarios activos</span><strong>{users.filter((user) => user.status === "Activo").length}</strong><small>Con acceso vigente</small></article><article><span>Invitaciones</span><strong>{users.filter((user) => user.status === "Invitación pendiente").length}</strong><small>Esperando aceptación</small></article><article><span>Organizaciones</span><strong>4</strong><small>Con límites independientes</small></article><article><span>Eventos de seguridad</span><strong>0</strong><small>Sin alertas críticas</small></article></div>
+          <div className="platform-admin__toolbar"><div><span className="eyebrow">{organization}</span><h2>Personas y permisos</h2><p>Elige una organización para revisar usuarios, alcance, estado y última actividad.</p></div><label htmlFor="platform-organization">Organización<select id="platform-organization" value={organization} onChange={(event) => changeOrganization(event.target.value as (typeof organizations)[number])}>{organizations.map((item) => <option key={item}>{item}</option>)}</select></label></div>
+          {showInviteForm && <form className="platform-admin__invite-form" onSubmit={createInvitation}><div className="platform-admin__invite-head"><div><span className="eyebrow">Nueva persona</span><h3>Crear una invitación pendiente.</h3><p>Registra el contexto primero; el alcance se asigna en el panel siguiente.</p></div><button type="button" onClick={() => setShowInviteForm(false)}>Cerrar</button></div><div className="platform-admin__invite-fields"><label>Nombre completo<input required value={inviteName} onChange={(event) => setInviteName(event.target.value)} placeholder="Ej. Valentina Gómez" /></label><label>Correo de trabajo<input required type="email" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} placeholder="persona@organizacion.co" /></label><label>Organización<select value={inviteOrganization} onChange={(event) => setInviteOrganization(event.target.value)}><option>Greenatics S.A.S.</option><option>Proyecto Yarumal</option><option>Proyecto Támesis</option><option>Finca demostrativa</option></select></label><label>Rol base<select value={inviteRole} onChange={(event) => setInviteRole(event.target.value)}><option>Analista o responsable de lote</option><option>Dirección de operación</option><option>Administrador general</option></select></label></div><div className="button-row"><button className="button button--dark" type="submit">Crear usuario pendiente</button><button className="button button--ghost" type="button" onClick={() => setShowInviteForm(false)}>Cancelar</button></div><small className="platform-admin__invite-note">Modo demostración: no se envía ningún correo; los cambios se conservan en este navegador. En un entorno productivo, OPS generaría la invitación con expiración y registro de auditoría.</small></form>}
+          <div className="platform-admin__stats"><article><span>Usuarios activos</span><strong>{scopedUsers.filter((user) => user.status === "Activo").length}</strong><small>En {organization}</small></article><article><span>Invitaciones</span><strong>{scopedUsers.filter((user) => user.status === "Invitación pendiente").length}</strong><small>Esperando aceptación</small></article><article><span>Organizaciones</span><strong>{organizations.length}</strong><small>Con límites independientes</small></article><article><span>Eventos de seguridad</span><strong>0</strong><small>Sin alertas críticas</small></article></div>
 
           <div className="platform-admin__workspace">
             <div className="platform-admin__table-head"><div><span className="eyebrow">Directorio</span><h3>Usuarios con acceso al ecosistema</h3></div><div className="platform-admin__table-actions"><div className="platform-admin__filters">{["Todos", "Activo", "Invitación pendiente", "Suspendido"].map((item) => <button className={filter === item ? "is-active" : undefined} key={item} type="button" onClick={() => setFilter(item)}>{item}</button>)}</div><button className="platform-admin__invite-trigger" type="button" onClick={() => setShowInviteForm((current) => !current)}>{showInviteForm ? "Cerrar invitación" : "+ Invitar persona"}</button></div></div>
@@ -138,9 +150,9 @@ export default function PlatformUsersPage() {
           </section>
 
           <div className="platform-admin__lower-grid"><article><span className="eyebrow">Roles base</span><h3>Permisos comprensibles antes de asignar.</h3><div className="platform-admin__role"><strong>Administrador general</strong><span>Organizaciones, usuarios, políticas y auditoría.</span></div><div className="platform-admin__role"><strong>Dirección de operación</strong><span>OPS, Red, reportes y decisiones del proyecto asignado.</span></div><div className="platform-admin__role"><strong>Analista o responsable de lote</strong><span>Captura, consulta y evidencia dentro de su alcance.</span></div></article><article className="platform-admin__audit"><span className="eyebrow eyebrow--light">Auditoría de acceso</span><h3>Lo importante también queda registrado.</h3><p>Invitaciones, cambios de rol, suspensiones, accesos y exportaciones deben conservar actor, organización, fecha, motivo y objeto afectado.</p><button type="button" onClick={() => setNotice("Registro de auditoría preparado para consultar eventos por organización, persona, plataforma y periodo.")}>Abrir registro de eventos →</button></article></div>
-          <p className="platform-admin__notice" role="status">{notice} {isHydrated ? "Los cambios de esta demo se conservan en este navegador." : "Cargando directorio demo..."} Para crear o modificar usuarios reales, usa <a href={runtimeLinks.opsUserAdmin}>Administración OPS</a>. <button type="button" onClick={resetDemoDirectory}>Restablecer demo</button></p>
+          <p className="platform-admin__notice" role="status">{notice} {isHydrated ? "Los cambios de esta demo se conservan en este navegador." : "Cargando directorio de demostración..."} Para crear o modificar usuarios reales, abre <a href={runtimeLinks.opsUserAdmin} target={isExternal(runtimeLinks.opsUserAdmin) ? "_blank" : undefined} rel={isExternal(runtimeLinks.opsUserAdmin) ? "noopener noreferrer" : undefined}>la consola de usuarios OPS ↗</a>. <button type="button" onClick={resetDemoDirectory}>Restablecer demo</button></p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

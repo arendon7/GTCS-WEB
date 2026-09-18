@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { JsonLd } from "@/components/json-ld";
 import { ProductVisual } from "@/components/product-visual";
-import { getProduct, products } from "@/data/products";
+import { getProduct, getProductCategoryLabel, products } from "@/data/products";
 import { site } from "@/data/site";
 
 export function generateStaticParams() {
@@ -60,13 +60,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <ProductVisual product={product} context="detail" />
           <div className="product-info">
             <Link className="back-link" href="/wondergreen/">← Volver a Wondergreen</Link>
-            <span className="eyebrow">{product.category} · {product.family}</span>
+            <span className="eyebrow">{getProductCategoryLabel(product.category)} · {product.family}</span>
             <p className="product-headline">{product.headline}</p>
             <h1>{product.name}</h1>
             <p className="lead">{product.intro}</p>
             <p className="product-focus"><strong>Enfoque de la familia:</strong> {product.focus}</p>
             <div className={`commercial-status ${hasPublicPrice ? "commercial-status--priced" : "commercial-status--technical"}`}><strong>{hasPublicPrice ? "Precio público de referencia" : "Disponible bajo cotización"}</strong><span>{hasPublicPrice ? "La cotización define inventario, logística y condición de entrega para el suministro." : "La referencia se suministra con acompañamiento técnico; la ficha, presentación y condición de uso se entregan para el programa seleccionado."}</span></div>
-            <dl className="product-facts"><div><dt>Categoría</dt><dd>{product.category}</dd></div><div><dt>Formato</dt><dd>{product.format}</dd></div><div><dt>Etapa / objetivo</dt><dd>{product.stage}</dd></div>{product.formula ? <div><dt>Referencia</dt><dd>{product.formula}</dd></div> : null}</dl>
+            <dl className="product-facts"><div><dt>Categoría</dt><dd>{getProductCategoryLabel(product.category)}</dd></div><div><dt>Formato</dt><dd>{product.format}</dd></div><div><dt>Etapa / objetivo</dt><dd>{product.stage}</dd></div>{product.formula ? <div><dt>Referencia</dt><dd>{product.formula}</dd></div> : null}</dl>
             {hasPublicPrice ? <div className="price-panel"><div><small>Precio público de referencia · {product.presentation}</small><strong>{cop(product.priceCop!)}</strong></div><div className="button-row"><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Consultar / comprar</a><Link className="button button--ghost" href={contactHref}>Llevar a Contacto</Link></div></div> : <div className="price-panel price-panel--technical"><div><small>Estado comercial</small><strong>Bajo cotización</strong></div><div className="button-row"><a className="button button--primary" href={site.bookingUrl} target="_blank" rel="noreferrer">Solicitar cotización</a><Link className="button button--ghost" href={contactHref}>Llevar a Contacto</Link></div></div>}
           </div>
         </div>

@@ -64,7 +64,7 @@ export default function BiolProductPage() {
             <span className="eyebrow eyebrow--light">Wondergreen · ficha técnica consultada</span>
             <h1>Biol: materia orgánica y nutrientes en una referencia líquida.</h1>
             <p className="lead">Una ficha de producto sirve para entender qué está documentado, cómo se presenta y qué debe revisarse antes de aplicar. Aquí organizamos el contenido técnico del documento fuente sin convertirlo en una receta universal.</p>
-            <div className="button-row"><a className="button button--light" href="/downloads/ficha-tecnica-biol-wondergreen.pdf" target="_blank" rel="noreferrer">Descargar ficha PDF</a><Link className="button button--outline-light" href="/contacto/?interes=wondergreen&perfil=agro&diagnostico=Biol%20Wondergreen">Consultar al equipo</Link></div>
+            <div className="button-row"><a className="button button--light" href="/downloads/ficha-tecnica-biol-wondergreen.pdf" target="_blank" rel="noreferrer">Descargar ficha PDF</a><Link className="button button--outline-light" href="/wondergreen/cotizador/?producto=biol">Abrir cotizador</Link><Link className="button button--ghost-light" href="/contacto/?interes=wondergreen&perfil=agro&diagnostico=Biol%20Wondergreen">Consultar al equipo</Link></div>
           </div>
           <figure className="wg-biol-hero__visual"><Image src="/guides/ficha-biol-cover.png" alt="Portada de la ficha técnica de Biol Wondergreen" fill priority sizes="(max-width: 800px) 100vw, 34vw" /><figcaption><strong>Ficha técnica · abril de 2024</strong><span>Documento fuente para orientar la presentación, el programa de uso y el acompañamiento agronómico.</span></figcaption></figure>
         </div>

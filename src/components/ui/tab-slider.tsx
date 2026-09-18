@@ -22,6 +22,7 @@ export function TabSlider({
         const isActive = activeTab === tab.id;
         return (
           <button
+            type="button"
             key={tab.id}
             role="tab"
             aria-selected={isActive}

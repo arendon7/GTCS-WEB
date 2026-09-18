@@ -20,7 +20,7 @@ export default function SoilAnalysisPage() {
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Revisión de análisis de suelo")}&prioridad=${encodeURIComponent(`${crop} · pH ${values.ph} · materia orgánica ${values.om}% · C.I.C. ${values.cic} · aluminio ${values.al}%`)}`;
 
   return (
-    <main style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+    <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 780, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Lectura técnica del suelo</span>
@@ -73,6 +73,6 @@ export default function SoilAnalysisPage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

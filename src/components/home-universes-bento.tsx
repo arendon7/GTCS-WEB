@@ -104,7 +104,7 @@ export function HomeUniversesBento() {
         <div className="home-system-map__heading">
           <div>
             <span className="eyebrow">El sistema Greenatics</span>
-            <h2 id="system-map-title">Cinco capacidades convierten una intención circular en una operación completa.</h2>
+            <h2 id="system-map-title">De la decisión a la operación, sin saltos.</h2>
           </div>
           <div className="home-system-map__promise">
             <span>Una responsabilidad compartida</span>
@@ -124,7 +124,8 @@ export function HomeUniversesBento() {
             </figure>
             <div className="home-capability-story__thesis"><span>Una cadena de responsabilidad</span><p>Diagnosticar sin implementar deja un documento. Implementar sin acompañar deja infraestructura vulnerable. Operar sin medir impide aprender. Valorizar sin calidad ni destino solo traslada el problema.</p></div>
           </div>
-          <ol className="home-capability-track">
+          <div className="home-capability-track__legend" aria-hidden="true"><span>Qué hacemos</span><span>Qué queda instalado</span></div>
+          <ol className="home-capability-track" aria-label="Cinco capacidades de Greenatics">
             {capabilities.map((capability) => (
               <li key={capability.number}>
                 <span>{capability.number}</span>
@@ -136,7 +137,7 @@ export function HomeUniversesBento() {
         </div>
 
         <div className="home-system-loop" aria-label="Lógica de integración Greenatics">
-          <span className="home-system-loop__label">La lógica de integración</span>
+          <span className="home-system-loop__label">La secuencia que conecta las capacidades</span>
           <ol>
             <li><b>01</b><strong>Señal</strong><small>El territorio muestra una necesidad.</small></li>
             <li><b>02</b><strong>Decisión</strong><small>La línea base ordena las alternativas.</small></li>
@@ -147,8 +148,8 @@ export function HomeUniversesBento() {
         </div>
 
         <div className="home-audience-paths__heading">
-          <span>Cinco puertas de entrada</span>
-          <h3>Un mismo sistema, configurado para decisiones diferentes.</h3>
+          <span>Encuentra tu punto de entrada</span>
+          <h3>El mismo método cambia según el problema que necesitas resolver.</h3>
         </div>
 
         <div className="home-audience-paths">

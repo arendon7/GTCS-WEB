@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const products = [
-  ["COMPOST", "La base del sistema", "Materia orgánica y acondicionamiento del sustrato antes de pensar en la siguiente etapa.", null, "Preparar el suelo", "/wondergreen/"],
+  ["COMPOST", "La base del sistema", "Materia orgánica y acondicionamiento del sustrato antes de pensar en la siguiente etapa.", "/products/wondergreen-system-stages.webp", "Preparar el suelo", "/wondergreen/"],
   ["CRECE", "2GROW · 15-3-3", "Acompaña crecimiento, brotación y recuperación vegetativa cuando la planta está activa.", "/products/wondergreen-2grow.webp", "Leer la etapa", "/wondergreen/productos/2grow/"],
   ["EQUILIBRA", "2BALANCE · 7-7-7", "Nutrición balanceada y mantenimiento para plantas que ya están estables.", "/products/wondergreen-2balance.webp", "Sostener la planta", "/wondergreen/productos/2balance/"],
   ["FLORECE", "2BLOOM · 3-8-3", "Acompaña la transición reproductiva y la floración sin convertir la nutrición en una promesa.", "/products/wondergreen-2bloom.webp", "Leer la transición", "/wondergreen/productos/2bloom/"],
@@ -34,7 +34,7 @@ export default function CasaJardinProductosPage() {
 
       <section className="homegarden-public-section" id="catalogo">
         <div className="container">
-          <div className="wg-v4-heading"><div><span className="eyebrow">Catálogo por etapa</span><h2>Una línea cumple una función dentro del ciclo.</h2></div><p>Las referencias técnicas de Wondergreen son el punto de partida. Las presentaciones domésticas, precios, dosificadores y condiciones de compra se habilitarán sólo cuando estén reconciliados.</p></div>
+          <div className="wg-v4-heading"><div><span className="eyebrow">Catálogo por etapa</span><h2>Una línea cumple una función dentro del ciclo.</h2></div><p>Las fichas explican el papel de cada línea y ayudan a elegir el siguiente paso. La dosis, la frecuencia y la presentación se recomiendan según el cultivo, el volumen de sustrato, la condición de la planta y la etiqueta vigente.</p></div>
           <div className="homegarden-product-grid">
             {products.map(([name, label, copy, image, prompt, href], index) => <article className="homegarden-product-card" key={name}>
               <div className="homegarden-product-card__media">{image ? <Image src={image} alt={`Ficha visual ${name} Wondergreen`} fill sizes="(max-width: 760px) 100vw, 20vw" /> : <div><span>01</span><strong>Suelo<br />primero.</strong><small>COMPOST</small></div>}</div>

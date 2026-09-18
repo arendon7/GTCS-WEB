@@ -33,6 +33,7 @@ export function EspSystemVisualizer() {
           const isSelected = selectedIdx === idx;
           return (
             <button
+              type="button"
               key={link.num}
               onClick={() => setSelectedIdx(idx)}
               style={{

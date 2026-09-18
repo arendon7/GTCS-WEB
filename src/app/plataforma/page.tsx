@@ -159,6 +159,20 @@ export default function PlatformPage() {
         </div>
       </section>
 
+      <section className="platform-v4-access-map" aria-labelledby="platform-access-map-title">
+        <div className="container">
+          <div className="platform-v4-heading">
+            <div><span className="eyebrow">Cómo entrar</span><h2 id="platform-access-map-title">Tres puertas, una secuencia clara.</h2></div>
+            <p>No todas las personas necesitan el mismo nivel de acceso. Primero se entiende la herramienta; luego se recorre una experiencia pública; finalmente se habilita el entorno de trabajo con identidad, organización, permisos y datos propios.</p>
+          </div>
+          <div className="platform-v4-access-map__grid">
+            <article><span>01</span><div><strong>Landing</strong><p>Qué resuelve, para quién está diseñada y qué módulos reúne.</p></div><small>Leer antes de entrar</small></article>
+            <article><span>02</span><div><strong>Demo pública</strong><p>Un recorrido navegable con datos ilustrativos y acciones visibles.</p></div><small>Explorar sin configurar una cuenta</small></article>
+            <article><span>03</span><div><strong>Entorno real</strong><p>Un espacio separado por organización, rol, permisos, persistencia y soporte.</p></div><small>Se habilita con una implementación</small></article>
+          </div>
+        </div>
+      </section>
+
       <section className="platform-v4-foundation">
         <div className="container">
           <div className="platform-v4-heading platform-v4-heading--light">

@@ -190,7 +190,7 @@ export default function CompaniesPage() {
           <div className="gt-service-preview-grid gt-service-preview-grid--company">
             {companyServices.map((service) => (
               <article key={service.slug}>
-                <span>{service.category}</span>
+                <span>{service.categoryLabel}</span>
                 <h3>{service.name}</h3>
                 <p>{service.summary}</p>
                 <div className="gt-card-answer"><strong>Qué ayuda a resolver</strong><p>{service.solves}</p></div>

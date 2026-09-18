@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { JsonLd } from "@/components/json-ld";
 import { services } from "@/data/services";
+import { getServiceVisual } from "@/data/service-visuals";
 import { site } from "@/data/site";
 
 const categoryProcess = {
@@ -52,10 +53,25 @@ const categoryProcess = {
   ],
 } as const;
 
+const serviceProcessOverrides = {
+  "programas-wondergreen": [
+    ["01", "Leer el lote", "Reunimos cultivo, variedad, etapa, suelo, agua, manejo previo y objetivo productivo."],
+    ["02", "Elegir la función", "Relacionamos la necesidad con una familia Wondergreen y una vía de aplicación posible."],
+    ["03", "Construir el protocolo", "Definimos producto, presentación, dosis, frecuencia y precauciones desde la ficha vigente."],
+    ["04", "Aplicar y registrar", "Acompañamos la aplicación y dejamos fecha, lote, condición y observaciones trazables."],
+    ["05", "Observar y ajustar", "Revisamos la respuesta del cultivo y decidimos continuidad, ajuste o nueva lectura."],
+  ],
+} as const;
+
 const clientInputs = {
   "Municipios y ESP": ["PGIRS y documentos disponibles", "información de generación y cobertura", "contratos/operadores y actores", "infraestructura existente", "restricciones presupuestales y de predio"],
   Empresas: ["proceso que genera la corriente", "volúmenes/frecuencias", "puntos de generación y almacenamiento", "gestores/contratos actuales", "objetivos ambientales u operativos"],
   Ambos: ["información de la corriente", "ubicación y logística", "infraestructura disponible", "objetivo del proyecto", "datos o estudios existentes"],
+} as const;
+
+const serviceInputs = {
+  "programas-wondergreen": ["Cultivo, variedad, área y etapa fisiológica", "Análisis de suelo, agua o información disponible", "Manejo previo, síntomas y objetivo productivo", "Productos disponibles y forma de aplicación", "Fotografías, fechas y observaciones de seguimiento"],
+  "greenatics-ops": ["Planta, proceso y periodo de operación", "Registros actuales de recepción, pesaje y actividades", "Usuarios, roles y responsables de cada turno", "Indicadores, reportes o balances que necesitas controlar", "Equipos, inventarios, mantenimiento y alertas prioritarias"],
 } as const;
 
 export function generateStaticParams() {
@@ -80,9 +96,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const service = services.find((item) => item.slug === slug);
   if (!service) notFound();
   const url = `${site.url}/servicios/${service.slug}/`;
-  const process = categoryProcess[service.category] || categoryProcess["Planeación"];
-  const inputs = clientInputs[service.audience];
+  const process = serviceProcessOverrides[service.slug as keyof typeof serviceProcessOverrides] || categoryProcess[service.category] || categoryProcess["Planeación"];
+  const inputs = serviceInputs[service.slug as keyof typeof serviceInputs] || clientInputs[service.audience];
   const related = services.filter((item) => item.slug !== service.slug && (item.category === service.category || item.audience === service.audience)).slice(0, 3);
+  const visual = getServiceVisual(service);
 
   const serviceSchema = {
     "@context": "https://schema.org",
@@ -106,22 +123,18 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         <div className="container service-detail-hero-grid">
           <div>
             <Link className="back-link back-link--light" href="/servicios/">← Todos los servicios</Link>
-            <span className="eyebrow eyebrow--light">{service.category} · {service.audience}</span>
+            <span className="eyebrow eyebrow--light">{service.categoryLabel} · {service.audience}</span>
             <h1>{service.name}</h1>
             <p className="lead">{service.summary}</p>
             <div className="button-row"><Link className="button button--light" href={`/contacto/?servicio=${service.slug}`}>{service.cta}</Link><Link className="button button--outline-light" href="/diagnostico/">¿Es esta mi ruta?</Link></div>
           </div>
-          {service.image ? (
-            <div className="service-detail-visual">
-              <figure>
-                <Image src={service.image} alt={service.imageAlt || service.name} fill priority sizes="(max-width: 1000px) 100vw, 40vw" />
-                {service.imageCaption ? <figcaption>{service.imageCaption}</figcaption> : null}
-              </figure>
-              <aside className="service-detail-problem"><span>Problema que abordamos</span><strong>{service.solves}</strong></aside>
-            </div>
-          ) : (
+          <div className="service-detail-visual">
+            <figure>
+              <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 1000px) 100vw, 40vw" />
+              <figcaption>{service.imageCaption ?? `Referencia visual de ${service.categoryLabel.toLowerCase()}: ${visual.alt.toLowerCase()}.`}</figcaption>
+            </figure>
             <aside className="service-detail-problem"><span>Problema que abordamos</span><strong>{service.solves}</strong></aside>
-          )}
+          </div>
         </div>
       </section>
 
@@ -138,7 +151,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         </div>
       </section>
 
-      <section className="service-detail-scope"><div className="container service-detail-scope-grid"><div><span className="eyebrow">Alcance modular</span><h2>Qué puede incluir.</h2><p>La combinación final depende del diagnóstico, del nivel de madurez del proyecto y del alcance contratado.</p></div><ul>{service.includes.map((item)=><li key={item}>{item}</li>)}</ul></div></section>
+      <section className="service-detail-scope"><div className="container service-detail-scope-grid"><div><span className="eyebrow">Alcance modular</span><h2>Qué puede incluir esta ruta.</h2><p>La combinación final depende del diagnóstico, del nivel de madurez del proyecto y del alcance contratado.</p></div><ul>{service.includes.map((item)=><li key={item}>{item}</li>)}</ul></div></section>
 
       <section className="service-detail-process"><div className="container"><div className="section-heading"><span className="eyebrow eyebrow--light">Cómo trabajamos</span><h2>Un proceso diseñado para reducir incertidumbre antes de escalar.</h2></div><div className="service-process-grid">{process.map(([number,title,copy]: readonly [string, string, string])=><article key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></article>)}</div></div></section>
 
@@ -165,7 +178,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
       <section className="service-detail-boundary"><div className="container"><strong>Alcance y responsabilidad</strong><p>Esta página describe una capacidad Greenatics, no una oferta contractual cerrada. Permisos, licencias, estudios, diseños, construcción, suministros, operación, personal, trámites, registros, certificaciones, informes y obligaciones se incluyen únicamente cuando el contrato específico los define.</p></div></section>
 
-      <section className="service-related"><div className="container"><div className="section-heading"><span className="eyebrow">También puede interesarte</span><h2>Los servicios forman una cadena.</h2></div><div className="service-related-grid">{related.map((item)=><Link href={`/servicios/${item.slug}/`} key={item.slug}><span>{item.category}</span><strong>{item.name}</strong><p>{item.summary}</p><em>Ver servicio →</em></Link>)}</div></div></section>
+      <section className="service-related"><div className="container"><div className="section-heading"><span className="eyebrow">También puede interesarte</span><h2>Los servicios forman una cadena.</h2></div><div className="service-related-grid">{related.map((item)=><Link href={`/servicios/${item.slug}/`} key={item.slug}><span>{item.categoryLabel}</span><strong>{item.name}</strong><p>{item.summary}</p><em>Ver servicio →</em></Link>)}</div></div></section>
 
       <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Siguiente paso</span><h2>No necesitamos definir todo antes de conversar. Sí necesitamos entender bien el punto de partida.</h2></div><Link className="button button--dark" href={`/contacto/?servicio=${service.slug}`}>{service.cta}</Link></div></section>
     </>

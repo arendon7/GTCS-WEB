@@ -53,7 +53,7 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent(`Orientación para ${crop.name}`)}&prioridad=${encodeURIComponent(`${crop.name} · ruta por etapa · señales de campo y seguimiento`)}`;
 
   return (
-    <main className="crop-guide-page">
+    <div className="crop-guide-page">
       <ArticleJsonLd
         about={[crop.name, crop.scientificName, "Nutrición vegetal", "Wondergreen Nutrients"]}
         description={crop.intro}
@@ -213,6 +213,6 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
           <div><Link className="button button--primary" href={contactHref}>Llevar consulta a Contacto →</Link><a className="crop-guide-cta__link" href={`https://wa.me/573003078822?text=${waConsultMsg}`} rel="noopener noreferrer" target="_blank">Validar por WhatsApp directo <span aria-hidden="true">→</span></a><Link href="/wondergreen/cotizador/">Preparar cotización <span aria-hidden="true">→</span></Link></div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

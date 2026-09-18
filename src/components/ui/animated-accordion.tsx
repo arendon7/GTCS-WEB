@@ -27,6 +27,7 @@ export function AnimatedAccordion({ items }: { items: AccordionItem[] }) {
             data-open={isOpen ? "true" : "false"}
           >
             <button
+              type="button"
               className="animated-accordion-trigger"
               onClick={() => toggle(item.id)}
               aria-expanded={isOpen}

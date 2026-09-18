@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { UniversalSearchModal } from "@/components/universal-search-modal";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { runtimeLinks } from "@/lib/runtime-links";
 
 const featuredTools = [
   { href: "/herramientas/", label: "Centro de herramientas", description: "Todas las plataformas y aplicaciones del sistema Greenatics" },
-  { href: "/red/app/", label: "Red Aseo", description: "Territorio, generadores, rutas, PMIRS y evidencias" },
+  { href: "/red/app/", label: "GREENATICS Red", description: "Territorio, generadores, rutas, PMIRS y evidencias" },
   { href: "/huella/", label: "Calcula tu Huella", description: "Inventario, indicadores y lectura de impacto" },
   { href: "/agroway/", label: "AGROWAY", description: "Aplicación de trazabilidad agrícola y datos de campo" },
   { href: "/sana/", label: "SANA", description: "Ecosistema de inversión en proyectos productivos" },
@@ -19,6 +19,8 @@ export function SiteHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseRef = useRef<HTMLButtonElement>(null);
   const opsUrl = runtimeLinks.opsApp || process.env.NEXT_PUBLIC_OPS_URL || "/acceso/";
 
   useEffect(() => {
@@ -27,10 +29,26 @@ export function SiteHeader() {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
       }
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+        setSearchOpen(false);
+        setActiveDropdown(null);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    mobileCloseRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      mobileToggleRef.current?.focus();
+    };
+  }, [mobileMenuOpen]);
 
 
   return (
@@ -118,9 +136,11 @@ export function SiteHeader() {
           <button
             type="button"
             className="mobile-toggle-btn"
+            ref={mobileToggleRef}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-drawer"
           >
             {mobileMenuOpen ? "✕" : "☰"}
           </button>
@@ -130,12 +150,36 @@ export function SiteHeader() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="mobile-drawer-overlay" role="presentation" onClick={() => setMobileMenuOpen(false)}>
-          <div className="mobile-drawer-panel" onClick={(e) => e.stopPropagation()}>
+          <div
+            id="mobile-navigation-drawer"
+            className="mobile-drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-navigation-title"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(event) => {
+              if (event.key !== "Tab") return;
+              const focusable = event.currentTarget.querySelectorAll<HTMLElement>(
+                'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])',
+              );
+              const first = focusable[0];
+              const last = focusable[focusable.length - 1];
+              if (!first || !last) return;
+              if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+              } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+              }
+            }}
+          >
             <div className="mobile-drawer-header">
-              <span className="eyebrow">Menú de Navegación</span>
+              <span className="eyebrow" id="mobile-navigation-title">Menú de navegación</span>
               <button
                 type="button"
                 className="mobile-drawer-close"
+                ref={mobileCloseRef}
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Cerrar menú"
               >

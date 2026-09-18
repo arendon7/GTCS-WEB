@@ -15,7 +15,7 @@ export default function BalanceCnPage() {
   const contactHref = `/contacto/?interes=agroindustria&perfil=empresa&diagnostico=${encodeURIComponent("Preparación de lote y balance C/N")}&prioridad=${encodeURIComponent(`${wetKg} kg de ${wetMaterial} · ${structureKg} kg de ${structureMaterial} · lote inicial ${total} kg · ${wetShare}% húmedo / ${structureShare}% estructurante`)}`;
 
   return (
-    <main style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 810, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Preparación de bioprocesos</span>
@@ -69,6 +69,6 @@ export default function BalanceCnPage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

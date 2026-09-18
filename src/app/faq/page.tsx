@@ -47,6 +47,7 @@ export default function FaqPage() {
             { id: "hogar", label: "🏡 Casa & Jardín" }
           ].map((tab) => (
             <button
+              type="button"
               key={tab.id}
               onClick={() => setActiveCat(tab.id)}
               style={{
@@ -80,6 +81,7 @@ export default function FaqPage() {
                 }}
               >
                 <button
+                  type="button"
                   onClick={() => setOpenIdx(isOpen ? null : idx)}
                   style={{
                     width: "100%",

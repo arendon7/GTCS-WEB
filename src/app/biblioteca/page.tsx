@@ -12,45 +12,47 @@ interface DocumentItem {
   pages: string;
   format: string;
   coverImage: string;
-  downloadUrl: string;
+  downloadUrl?: string;
+  referenceHref?: string;
+  referenceLabel?: string;
   badge: string;
 }
 
 const documents: DocumentItem[] = [
   // 1. CULTIVOS AGRO
-  { id: "cafe", title: "Manual Técnico Wondergreen: Café (20 Páginas)", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Levante, floración, llenado de grano y poszoca en suelos Andisoles volcánicos.", pages: "20 Páginas", format: "PDF (3.2 MB)", coverImage: "/guides/guia-cafe-cover.webp", downloadUrl: "/downloads/guia-wondergreen-cafe.pdf", badge: "Manual 20P" },
-  { id: "aguacate", title: "Manual Técnico Wondergreen: Aguacate Hass", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Sanidad radicular, cuajado y calibres 14-22 de exportación con materia seca >23%.", pages: "18 Páginas", format: "PDF (2.8 MB)", coverImage: "/guides/guia-aguacate-cover.webp", downloadUrl: "/downloads/guia-wondergreen-aguacate.pdf", badge: "Manual 18P" },
-  { id: "cacao", title: "Manual Técnico Wondergreen: Cacao Fino de Aroma", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Cojines florales, amarre de cherelles y llenado de mazorca sin monilia.", pages: "16 Páginas", format: "PDF (2.4 MB)", coverImage: "/guides/guia-cacao-cover.webp", downloadUrl: "/downloads/guia-wondergreen-cacao.pdf", badge: "Manual 16P" },
-  { id: "citricos", title: "Manual Técnico Wondergreen: Cítricos & Limón Tahití", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Flujos continuos de floración, porcentaje de jugo >42% y sólidos solubles.", pages: "18 Páginas", format: "PDF (2.9 MB)", coverImage: "/guides/guia-citricos-cover.webp", downloadUrl: "/downloads/guia-wondergreen-citricos.pdf", badge: "Manual 18P" },
-  { id: "pastos", title: "Manual Técnico Wondergreen: Pastos y Praderas", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Aforo forrajero, proteína cruda, descompactación y rebrote pospastoreo.", pages: "16 Páginas", format: "PDF (2.2 MB)", coverImage: "/guides/guia-pastos-cover.webp", downloadUrl: "/downloads/guia-wondergreen-pastos-y-praderas.pdf", badge: "Manual 16P" },
-  { id: "platano", title: "Manual Técnico Wondergreen: Plátano y Banano", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Emisión foliar semanal, belloteo y calibración de dedos comerciales.", pages: "20 Páginas", format: "PDF (3.4 MB)", coverImage: "/guides/guia-cacao-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_BANANO_PLATANO_PROFUNDO_20P.pdf", badge: "Manual 20P" },
-  { id: "tomate", title: "Guía Oficial Wondergreen: Tomate Chonto & Pimentón", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Prevención de pudrición apical (culillo negro), firmeza y cuajado continuo.", pages: "14 Páginas", format: "PDF (1.9 MB)", coverImage: "/guides/catalogo-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_TOMATE_CHONTO_V1.pdf", badge: "Guía Oficial" },
+  { id: "cafe", title: "Manual Técnico Wondergreen: Café (20 Páginas)", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Levante, floración, llenado de grano y poszoca en suelos Andisoles volcánicos.", pages: "20 Páginas", format: "PDF (3.2 MB)", coverImage: "/guides/guia-cafe-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_CAFE_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "aguacate", title: "Manual Técnico Wondergreen: Aguacate Hass", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Sanidad radicular, cuajado y calibres 14-22 de exportación con materia seca >23%.", pages: "20 Páginas", format: "PDF (2.8 MB)", coverImage: "/guides/guia-aguacate-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_AGUACATE_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "cacao", title: "Manual Técnico Wondergreen: Cacao Fino de Aroma", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Cojines florales, amarre de cherelles y llenado de mazorca sin monilia.", pages: "20 Páginas", format: "PDF (2.4 MB)", coverImage: "/guides/guia-cacao-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_CACAO_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "citricos", title: "Manual Técnico Wondergreen: Cítricos & Limón Tahití", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Flujos continuos de floración, porcentaje de jugo >42% y sólidos solubles.", pages: "20 Páginas", format: "PDF (2.9 MB)", coverImage: "/guides/guia-citricos-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_LIMON_TAHITI_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "pastos", title: "Manual Técnico Wondergreen: Pastos y Praderas", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Aforo forrajero, proteína cruda, descompactación y rebrote pospastoreo.", pages: "20 Páginas", format: "PDF (2.2 MB)", coverImage: "/guides/guia-pastos-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_PASTOS_PRADERAS_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "platano", title: "Manual Técnico Wondergreen: Plátano y Banano", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Emisión foliar semanal, belloteo y calibración de dedos comerciales.", pages: "20 Páginas", format: "PDF (3.4 MB)", coverImage: "/guides/guia-platano-banano-cover.webp", downloadUrl: "/downloads/MANUAL_TECNICO_WONDERGREEN_BANANO_PLATANO_PROFUNDO_20P.pdf", badge: "Manual 20P" },
+  { id: "tomate", title: "Guía Oficial Wondergreen: Tomate Chonto & Pimentón", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Prevención de pudrición apical (culillo negro), firmeza y cuajado continuo.", pages: "14 Páginas", format: "PDF (1.9 MB)", coverImage: "/guides/guia-tomate-chonto-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_TOMATE_CHONTO_V1.pdf", badge: "Guía Oficial" },
   { id: "lechuga", title: "Guía Oficial Wondergreen: Lechuga & Hortalizas", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Ciclo rápido (45 días), peso fresco, crocancia y tolerancia a tipburn.", pages: "12 Páginas", format: "PDF (1.6 MB)", coverImage: "/guides/home-garden-mi-huerta-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_LECHUGA_V1.pdf", badge: "Guía Oficial" },
-  { id: "gulupa", title: "Guía Oficial Wondergreen: Gulupa & Pasifloras", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Espaldera, amarre floral, grosor de cáscara y brix >15°.", pages: "14 Páginas", format: "PDF (1.8 MB)", coverImage: "/guides/guia-citricos-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_GULUPA_V1.pdf", badge: "Guía Oficial" },
-  { id: "granadilla", title: "Guía Oficial Wondergreen: Granadilla", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Emparrillado tradicional, consistencia de cáscara y peso de pulpa.", pages: "14 Páginas", format: "PDF (1.8 MB)", coverImage: "/guides/guia-aguacate-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_GRANADILLA_V1.pdf", badge: "Guía Oficial" },
-  { id: "uchuva", title: "Guía Oficial Wondergreen: Uchuva de Exportación", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Calibre de cáliz (capacho), sólidos solubles y prevención de rajado.", pages: "14 Páginas", format: "PDF (1.7 MB)", coverImage: "/guides/guia-cafe-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_UCHUVA_V1.pdf", badge: "Guía Oficial" },
-  { id: "lulo", title: "Guía Oficial Wondergreen: Lulo (Naranjilla)", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Raíz superficial, nutrición fraccionada y cuaje continuo.", pages: "14 Páginas", format: "PDF (1.7 MB)", coverImage: "/guides/guia-citricos-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_LULO_V1.pdf", badge: "Guía Oficial" },
+  { id: "gulupa", title: "Guía Oficial Wondergreen: Gulupa & Pasifloras", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Espaldera, amarre floral, grosor de cáscara y brix >15°.", pages: "14 Páginas", format: "PDF (1.8 MB)", coverImage: "/guides/guia-gulupa-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_GULUPA_V1.pdf", badge: "Guía Oficial" },
+  { id: "granadilla", title: "Guía Oficial Wondergreen: Granadilla", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Emparrillado tradicional, consistencia de cáscara y peso de pulpa.", pages: "14 Páginas", format: "PDF (1.8 MB)", coverImage: "/guides/guia-granadilla-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_GRANADILLA_V1.pdf", badge: "Guía Oficial" },
+  { id: "uchuva", title: "Guía Oficial Wondergreen: Uchuva de Exportación", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Calibre de cáliz (capacho), sólidos solubles y prevención de rajado.", pages: "14 Páginas", format: "PDF (1.7 MB)", coverImage: "/guides/guia-uchuva-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_UCHUVA_V1.pdf", badge: "Guía Oficial" },
+  { id: "lulo", title: "Guía Oficial Wondergreen: Lulo (Naranjilla)", category: "cultivos", categoryLabel: "Cultivos Agro", desc: "Raíz superficial, nutrición fraccionada y cuaje continuo.", pages: "14 Páginas", format: "PDF (1.7 MB)", coverImage: "/guides/guia-lulo-cover.webp", downloadUrl: "/downloads/01_GUIA_WONDERGREEN_LULO_V1.pdf", badge: "Guía Oficial" },
 
   // 2. PRODUCTOS WONDERGREEN
-  { id: "cat-wondergreen", title: "Catálogo Maestro Wondergreen Nutrients", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Fichas técnicas completas de las 4 fórmulas sólidas (40 kg) y bioinsumos líquidos con oclusión húmica.", pages: "24 Páginas", format: "PDF (4.1 MB)", coverImage: "/guides/catalogo-cover.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Catálogo Maestro" },
-  { id: "manual-uso", title: "Manual de Dosificación y Aplicación en Campo", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Protocolos de dosificación al plato, compatibilidad de mezclas y calibración de bombas.", pages: "16 Páginas", format: "PDF (2.1 MB)", coverImage: "/guides/guia-cafe-cover.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Protocolo de Campo" },
-  { id: "ficha-2grow", title: "Ficha Técnica Oficial: Wondergreen 2GROW (15-3-3)", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Especificación analítica de nitrógeno ocluido, fósforo soluble y ácidos húmicos.", pages: "4 Páginas", format: "PDF (1.1 MB)", coverImage: "/products/wondergreen-2grow.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Ficha Técnica" },
+  { id: "cat-wondergreen", title: "Catálogo Maestro Wondergreen Nutrients", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Fichas técnicas completas de las 4 fórmulas sólidas (40 kg) y bioinsumos líquidos con oclusión húmica.", pages: "10 Páginas", format: "PDF (versión pública)", coverImage: "/guides/catalogo-cover.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Catálogo Maestro" },
+  { id: "manual-uso", title: "Guía de Dosificación y Aplicación en Campo", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Criterios para preparar, ejecutar y revisar una aplicación; la ficha vigente define la dosis y compatibilidad específica.", pages: "Guía web", format: "Referencia online", coverImage: "/guides/guia-cafe-cover.webp", referenceHref: "/biblioteca/manual-uso-wondergreen/", referenceLabel: "Abrir guía web", badge: "Guía web" },
+  { id: "ficha-2grow", title: "Referencia técnica: Wondergreen 2GROW (15-3-3)", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Rol de la fórmula, presentaciones y contexto de uso dentro del sistema Wondergreen.", pages: "Catálogo", format: "PDF (versión pública)", coverImage: "/products/wondergreen-2grow.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Catálogo técnico" },
   { id: "ficha-biol", title: "Ficha técnica: Biol Wondergreen", category: "productos", categoryLabel: "Catálogos Wondergreen", desc: "Documento fuente con presentaciones, usos documentados, composición analítica y condiciones de almacenamiento del fertilizante líquido con actividad biológica.", pages: "2 Páginas", format: "PDF (15 MB)", coverImage: "/guides/ficha-biol-cover.png", downloadUrl: "/downloads/ficha-tecnica-biol-wondergreen.pdf", badge: "Documento fuente" },
 
   // 3. INGENIERÍA & REGULACIÓN MUNICIPAL
-  { id: "dossier-esp", title: "Dossier Técnico: Soluciones para Municipios & ESP", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Plantas modulares de bioprocesos, microrrutas en motocargueros de 750 kg y modelo CRA 720.", pages: "28 Páginas", format: "PDF (5.2 MB)", coverImage: "/campaign/01_solucion_integral.jpg", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Dossier Territorial" },
-  { id: "guia-sui", title: "Manual de Reportabilidad SUI & Liquidación VBA", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Instrucciones de cargue al Sistema Único de Información para prestadores de la actividad de aprovechamiento.", pages: "18 Páginas", format: "PDF (2.6 MB)", coverImage: "/campaign/01_solucion_integral.jpg", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Marco Normativo" },
-  { id: "guia-tributaria", title: "Guía de Deducción Tributaria Ambiental (Art. 255 E.T.)", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Procedimiento de radicación ante la ANLA y requisitos para el 25% de descuento en renta.", pages: "16 Páginas", format: "PDF (2.3 MB)", coverImage: "/campaign/01_solucion_integral.jpg", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Guía Fiscal" },
+  { id: "dossier-esp", title: "Ruta técnica: Soluciones para Municipios & ESP", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Plantas modulares de bioprocesos, microrrutas en motocargueros y modelo de acompañamiento territorial.", pages: "Referencia web", format: "Página Greenatics", coverImage: "/campaign/01_solucion_integral.jpg", referenceHref: "/municipios/", referenceLabel: "Abrir ruta municipal", badge: "Referencia web" },
+  { id: "guia-sui", title: "Ruta de reportabilidad SUI & liquidación", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Contexto para organizar datos, soportes y responsabilidades de reportabilidad en servicios de aprovechamiento.", pages: "Referencia web", format: "Página Greenatics", coverImage: "/campaign/01_solucion_integral.jpg", referenceHref: "/soluciones/auditoria-sui/", referenceLabel: "Abrir solución SUI", badge: "Referencia web" },
+  { id: "guia-tributaria", title: "Beneficio tributario ambiental", category: "ingenieria", categoryLabel: "Ingeniería & Normatividad", desc: "Ruta para revisar soporte técnico, alcance y requisitos antes de estructurar una solicitud de beneficio ambiental.", pages: "Referencia web", format: "Página Greenatics", coverImage: "/campaign/01_solucion_integral.jpg", referenceHref: "/soluciones/beneficio-tributario/", referenceLabel: "Abrir solución tributaria", badge: "Referencia web" },
 
   // 4. POEs & OPERACIÓN DE PLANTA
-  { id: "poe-bascula", title: "POE-01: Protocolo de Pesaje y Control en Báscula", category: "poe", categoryLabel: "POEs & Operación", desc: "Estructura de referencia para registrar tara, origen, calidad, peso neto, recepción y novedades.", pages: "12 Páginas", format: "PDF (1.8 MB)", coverImage: "/campaign/01_solucion_integral.jpg", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "POE operativo" },
-  { id: "poe-termofilia", title: "POE-02: Control Térmico y Pasteurización en Biopilas", category: "poe", categoryLabel: "POEs & Operación", desc: "Bitácora de temperatura (>55°C), protocolos de volteo y certificación de pasteurización.", pages: "14 Páginas", format: "PDF (2.0 MB)", coverImage: "/campaign/01_solucion_integral.jpg", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "SOP Operativo" },
+  { id: "poe-bascula", title: "POE-01: Protocolo de Pesaje y Control en Báscula", category: "poe", categoryLabel: "POEs & Operación", desc: "Estructura de referencia para registrar tara, origen, calidad, peso neto, recepción y novedades.", pages: "Referencia web", format: "GREENATICS OPS", coverImage: "/campaign/01_solucion_integral.jpg", referenceHref: "/app/", referenceLabel: "Explorar OPS", badge: "Referencia web" },
+  { id: "poe-termofilia", title: "POE-02: Control Térmico y Pasteurización en Biopilas", category: "poe", categoryLabel: "POEs & Operación", desc: "Criterios para seguir temperatura, volteo y condiciones de proceso en biopilas.", pages: "Referencia web", format: "Página Greenatics", coverImage: "/campaign/01_solucion_integral.jpg", referenceHref: "/tecnologia/", referenceLabel: "Abrir tecnología", badge: "Referencia web" },
 
   // 5. CASA & JARDÍN BOTÁNICO
   { id: "guia-huerta", title: "Guía Práctica: Mi Huerta Urbana en Casa", category: "hogar", categoryLabel: "Casa & Jardín", desc: "Semilleros, sustratos vivos y cuidados para cosechar aromáticas y tomates en balcón o terraza.", pages: "16 Páginas", format: "PDF (2.5 MB)", coverImage: "/guides/home-garden-mi-huerta-cover.webp", downloadUrl: "/downloads/guia-mi-huerta.pdf", badge: "Guía Doméstica" },
-  { id: "guia-plantas-interior", title: "Manual de Cuidado de Plantas de Interior", category: "hogar", categoryLabel: "Casa & Jardín", desc: "Criterios de luz, riego, sustrato, drenaje, observación y nutrición para plantas de interior.", pages: "14 Páginas", format: "PDF (2.1 MB)", coverImage: "/guides/catalogo-cover.webp", downloadUrl: "/downloads/guia-casa-jardin.pdf", badge: "Guía doméstica" },
+  { id: "guia-plantas-interior", title: "Manual de Cuidado de Plantas de Interior", category: "hogar", categoryLabel: "Casa & Jardín", desc: "Criterios de luz, riego, sustrato, drenaje, observación y nutrición para plantas de interior.", pages: "14 Páginas", format: "PDF (2.1 MB)", coverImage: "/guides/home-garden-casa-jardin-cover.webp", downloadUrl: "/downloads/guia-casa-jardin.pdf", badge: "Guía doméstica" },
 
-  { id: "paper-giem", title: "Base técnica de bioprocesos y valorización", category: "giem", categoryLabel: "Ciencia aplicada", desc: "Conceptos de compostaje, digestión anaerobia, control de proceso y salidas de valorización.", pages: "22 Páginas", format: "PDF (3.8 MB)", coverImage: "/guides/catalogo-cover.webp", downloadUrl: "/downloads/catalogo-wondergreen.pdf", badge: "Referencia técnica" }
+  { id: "paper-giem", title: "Base técnica de bioprocesos y valorización", category: "giem", categoryLabel: "Ciencia aplicada", desc: "Conceptos de compostaje, digestión anaerobia, control de proceso y salidas de valorización.", pages: "Referencia web", format: "Página Greenatics", coverImage: "/guides/catalogo-cover.webp", referenceHref: "/tecnologia/", referenceLabel: "Explorar tecnología", badge: "Referencia web" }
 ];
 
 export default function BibliotecaPage() {
@@ -74,7 +76,7 @@ export default function BibliotecaPage() {
         <div style={{ textAlign: "center", maxWidth: "860px", margin: "0 auto 40px" }}>
           <div className="eyebrow-badge" style={{ marginBottom: "16px" }}>
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--green-800)", display: "inline-block" }} />
-            <span>Centro de Conocimiento & Ingeniería Editorial · 88 Documentos Técnicos</span>
+            <span>Centro de Conocimiento & Ingeniería Editorial · {documents.length} recursos curados</span>
           </div>
 
           <h1 style={{ fontSize: "clamp(2.4rem, 4.2vw, 3.5rem)", color: "var(--green-950)", margin: "8px 0 14px" }}>
@@ -218,14 +220,24 @@ export default function BibliotecaPage() {
 
               {/* Actions Footer */}
               <div style={{ padding: "0 24px 24px", display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "8px" }}>
-                <a
-                  href={doc.downloadUrl}
-                  download
-                  className="button button--primary"
-                  style={{ padding: "10px 14px", fontSize: "0.84rem", textAlign: "center" }}
-                >
-                  Descargar PDF ↓
-                </a>
+                {doc.downloadUrl ? (
+                  <a
+                    href={doc.downloadUrl}
+                    download
+                    className="button button--primary"
+                    style={{ padding: "10px 14px", fontSize: "0.84rem", textAlign: "center" }}
+                  >
+                    Descargar PDF ↓
+                  </a>
+                ) : (
+                  <Link
+                    href={doc.referenceHref || "/biblioteca/"}
+                    className="button button--primary"
+                    style={{ padding: "10px 14px", fontSize: "0.84rem", textAlign: "center" }}
+                  >
+                    {doc.referenceLabel || "Abrir referencia"} →
+                  </Link>
+                )}
                 <div style={{ display: "grid", gap: "8px" }}>
                   <Link href={`/contacto/?interes=biblioteca&perfil=agro&diagnostico=${encodeURIComponent(`Consulta sobre ${doc.title}`)}`} className="button button--ghost" style={{ padding: "10px 8px", fontSize: "0.8rem", textAlign: "center" }}>
                     Llevar a Contacto

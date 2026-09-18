@@ -13,6 +13,7 @@
     "qa:runtime-config": "node scripts/check-runtime-config.mjs",
     "qa:ecosystem": "node scripts/check-local-ecosystem.mjs",
     "qa:entrypoints": "node scripts/check-local-entrypoints.mjs",
+    "qa:tool-contracts": "node scripts/check-tool-contracts.mjs",
     "test:visual": "playwright test tests/visual-smoke.spec.ts",
     "test:a11y": "playwright test tests/accessibility.spec.ts",
     "test:red": "playwright test tests/red-app.spec.ts"

@@ -24,7 +24,7 @@ const catalogFacts = [
 
 export default function CropsPage() {
   return (
-    <main className="crop-catalog-page">
+    <div className="crop-catalog-page">
       <section className="crop-catalog-hero">
         <div className="container crop-catalog-hero__grid">
           <div className="crop-catalog-hero__copy">
@@ -130,6 +130,6 @@ export default function CropsPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

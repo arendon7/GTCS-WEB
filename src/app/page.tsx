@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HomeHero } from "@/components/home-hero";
+import { HomeToolsBridge } from "@/components/home-tools-bridge";
 import { HomeUniversesBento } from "@/components/home-universes-bento";
 import { HomeTerritoryShowcase } from "@/components/home-territory-showcase";
 import { HomeWondergreenBridge } from "@/components/home-wondergreen-bridge";
+import { portfolioGroups } from "@/data/portfolio";
 
 export const metadata: Metadata = {
   title: "Sistemas territoriales de economía circular",
@@ -15,7 +17,19 @@ export default function HomePage() {
   return (
     <div style={{ background: "#f8faf6", color: "var(--green-950)", overflowX: "hidden" }}>
       <HomeHero />
+      <HomeToolsBridge />
       <HomeUniversesBento />
+      <section className="home-portfolio-bridge" aria-labelledby="home-portfolio-title">
+        <div className="container">
+          <div className="home-portfolio-bridge__heading">
+            <div><span className="eyebrow">Greenatics 2.0</span><h2 id="home-portfolio-title">Cinco líneas para entrar al sistema por el problema correcto.</h2></div>
+            <p>Territorio, valorización, Wondergreen, clima y datos, y operación digital comparten un mismo método: entender, estructurar, implementar, medir y mejorar.</p>
+          </div>
+          <div className="home-portfolio-bridge__grid">
+            {portfolioGroups.map((group, index) => <Link className={`home-portfolio-bridge__card home-portfolio-bridge__card--${group.color}`} href={`/portafolio/${group.slug}/`} key={group.slug}><span>0{index + 1}</span><strong>{group.shortName}</strong><small>{group.eyebrow}</small><em>Explorar <b aria-hidden="true">→</b></em></Link>)}
+          </div>
+        </div>
+      </section>
       <HomeTerritoryShowcase />
       <HomeWondergreenBridge />
 

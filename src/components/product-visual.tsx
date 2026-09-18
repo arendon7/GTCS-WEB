@@ -17,17 +17,17 @@ export function ProductVisual({ product, context }: ProductVisualProps) {
     );
   }
 
-  if (context === "card") {
-    return <div className="product-orb" aria-hidden="true"><span>{product.family}</span></div>;
-  }
-
   if (product.image) {
     return (
-      <figure className="product-reference-visual">
+      <figure className={`product-reference-visual product-reference-visual--${context}`}>
         <img src={product.image} alt={`Ficha visual de la familia ${product.family}`} />
-        <figcaption>Material visual de orientación de la línea. La cotización y la ficha técnica definen la presentación y el programa de uso adecuados.</figcaption>
+        <figcaption>{context === "card" ? "Referencia visual de la línea. La presentación vigente se confirma en la ficha y la cotización." : "Material visual de orientación de la línea. La cotización y la ficha técnica definen la presentación y el programa de uso adecuados."}</figcaption>
       </figure>
     );
+  }
+
+  if (context === "card") {
+    return <div className="product-orb" aria-hidden="true"><span>{product.family}</span></div>;
   }
 
   return (

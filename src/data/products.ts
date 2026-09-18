@@ -517,6 +517,17 @@ export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
+export const productCategoryLabels: Record<Product["category"], string> = {
+  solidos: "Fertilizantes sólidos",
+  liquidos: "Fertilizantes líquidos",
+  acondicionadores: "Acondicionadores de suelo",
+  bioinsumos: "Bioinsumos y bioles",
+};
+
+export function getProductCategoryLabel(category: Product["category"]): string {
+  return productCategoryLabels[category];
+}
+
 export const bioinputs = products.filter(p => p.category === "bioinsumos");
 export const pricedProducts = products.filter((product) => typeof product.priceCop === "number");
 export const technicalPortfolio = products.filter((product) => typeof product.priceCop !== "number");

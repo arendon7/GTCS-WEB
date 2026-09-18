@@ -1,44 +1,54 @@
 #!/usr/bin/env node
 
+const trimTrailingSlash = (value) => value.trim().replace(/\/$/, "");
+const baseUrl = (name, fallback) => trimTrailingSlash(process.env[name] || fallback);
+const joinUrl = (base, path) => `${trimTrailingSlash(base)}${path}`;
+
+// Defaults preserve the original local layout; CI and staging can provide their own hosts.
+const siteUrl = baseUrl("GREENATICS_SITE_URL", "http://localhost:3001");
+const redUrl = baseUrl("GREENATICS_RED_URL", joinUrl(siteUrl, "/red/app"));
+const huellaUrl = baseUrl("GREENATICS_HUELLA_URL", "http://127.0.0.1:8765");
+const opsUrl = baseUrl("GREENATICS_OPS_URL", "http://localhost:3002");
+
 const checks = [
   {
     label: "web pública",
-    url: "http://localhost:3001/",
+    url: joinUrl(siteUrl, "/"),
     expected: (response, body) => response.status === 200 && body.includes("Greenatics"),
   },
   {
     label: "Centro Greenatics",
-    url: "http://localhost:3001/plataforma/",
+    url: joinUrl(siteUrl, "/plataforma/"),
     expected: (response, body) => response.status === 200 && body.includes("Centro Greenatics"),
   },
   {
     label: "GREENATICS Red",
-    url: "http://localhost:3001/red/app/",
+    url: joinUrl(redUrl, "/"),
     expected: (response, body) => response.status === 200 && body.includes("GREENATICS Red"),
   },
   {
     label: "Huella health",
-    url: "http://127.0.0.1:8765/api/health",
+    url: joinUrl(huellaUrl, "/api/health"),
     expected: (response, body) => response.status === 200 && body.includes('"app":"Calcula tu Huella"'),
   },
   {
     label: "Huella login",
-    url: "http://127.0.0.1:8765/login",
+    url: joinUrl(huellaUrl, "/login"),
     expected: (response) => response.status === 200,
   },
   {
     label: "OPS health",
-    url: "http://localhost:3002/api/health",
+    url: joinUrl(opsUrl, "/api/health"),
     expected: (response, body) => response.status === 200 && body.includes('"mode":"local"'),
   },
   {
     label: "OPS login",
-    url: "http://localhost:3002/login",
+    url: joinUrl(opsUrl, "/login"),
     expected: (response) => response.status === 200,
   },
   {
     label: "OPS bloqueo anónimo",
-    url: "http://localhost:3002/app",
+    url: joinUrl(opsUrl, "/app"),
     expected: (response) => [302, 307].includes(response.status) && response.headers.get("location")?.includes("reason=configuration"),
   },
 ];

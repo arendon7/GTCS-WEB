@@ -22,8 +22,13 @@ export function WondergreenLiquidLines() {
         <div>
           <span className="eyebrow">Línea líquida</span>
           <h3>Soluble para la operación. Biológica cuando la ficha lo confirma.</h3>
-          <p>Las presentaciones líquidas amplían el sistema Wondergreen para diferentes escalas y vías de aplicación. Algunas referencias se integran como nutrición soluble y otras como bioinsumos; la composición, concentración, microorganismos, compatibilidades y condición regulatoria se leen por separado.</p>
-          <div className="wg-liquid-lines__signal"><span>Referencia con soporte documental</span><strong>Biol Wondergreen</strong><p>La ficha consultada describe un fertilizante líquido con actividad biológica, carbono orgánico y nutrientes. Su programa de uso se define con la ficha técnica, la presentación elegida y la lectura agronómica del lote.</p><Link href="/wondergreen/productos/biol/">Leer ficha técnica de Biol →</Link></div>
+          <p>Las presentaciones líquidas amplían el sistema Wondergreen para diferentes escalas y vías de aplicación. Hay referencias de nutrición soluble y otras con actividad biológica; la composición, concentración, microorganismos, compatibilidades y condición regulatoria se leen por separado en cada ficha.</p>
+          <div className="wg-liquid-lines__split" aria-label="Funciones de la línea líquida">
+            <div><span>01 · Nutrición soluble</span><p>Fórmulas N-P-K para acompañar crecimiento, equilibrio, floración o fase productiva.</p></div>
+            <div><span>02 · Bioinsumo documentado</span><p>Biol Wondergreen aporta carbono, nutrientes y actividad biológica según la ficha técnica consultada.</p></div>
+          </div>
+          <div className="wg-liquid-lines__signal"><span>Referencia con soporte documental</span><strong>Biol Wondergreen</strong><p>La ficha consultada describe un fertilizante líquido con carbono orgánico, nutrientes y actividad biológica. Se puede integrar a la relación suelo-planta: favorece la actividad microbiana, la absorción de nutrientes y el desarrollo radicular cuando se incorpora a un programa técnico.</p><Link href="/wondergreen/productos/biol/">Leer ficha técnica de Biol →</Link></div>
+          <div className="wg-liquid-lines__dose-note"><div><span>Dato de aplicación documentado</span><strong>1 L en 100 L de agua</strong></div><p>Referencia de dilución para Biol Wondergreen en fertirriego o aplicación edáfica. La dosis total, frecuencia y vía final se ajustan a cultivo, etapa, suelo, clima, concentración y etiqueta vigente.</p></div>
           <Link className="text-link" href="/biblioteca/catalogo-wondergreen/">Consultar el Product Master →</Link>
         </div>
       </div>

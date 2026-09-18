@@ -1666,6 +1666,16 @@
   line-height: 1.35;
 }
 
+.gt-proof-ribbon__grid > div:not(.gt-proof-ribbon__intro) small {
+  margin-top: 9px;
+  color: #d1e5dc;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
 .gt-proof-ribbon__intro span {
   color: var(--lime-300);
   font-size: 0.67rem;
@@ -2203,6 +2213,25 @@
   padding: 30px;
   border: 1px solid var(--line);
   border-radius: 24px 24px 24px 6px;
+  overflow: hidden;
+}
+
+.gt-service-preview__media {
+  position: relative;
+  height: 166px;
+  margin: -30px -30px 24px;
+  overflow: hidden;
+  background: #dfe9df;
+}
+
+.gt-service-preview__media img {
+  object-fit: cover;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gt-service-preview-grid article:hover .gt-service-preview__media img,
+.gt-service-preview-grid article:focus-within .gt-service-preview__media img {
+  transform: scale(1.035);
 }
 
 .gt-service-preview-grid article > span {
@@ -2214,8 +2243,14 @@
 }
 
 .gt-service-preview-grid h3 {
-  margin: 38px 0 14px;
+  margin: 16px 0 14px;
   font-size: 1.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-service-preview__media img {
+    transition: none;
+  }
 }
 
 .gt-service-preview-grid p,
@@ -3326,6 +3361,31 @@
   border: 1px solid var(--line);
   border-radius: 24px 24px 24px 6px;
   box-shadow: var(--shadow-xs);
+  overflow: hidden;
+}
+
+.gt-service-card__media {
+  position: relative;
+  height: 176px;
+  margin: -32px -32px 26px;
+  overflow: hidden;
+  background: #dfe9df;
+}
+
+.gt-service-card__media img {
+  object-fit: cover;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gt-service-cards > article:hover .gt-service-card__media img,
+.gt-service-cards > article:focus-within .gt-service-card__media img {
+  transform: scale(1.035);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-service-card__media img {
+    transition: none;
+  }
 }
 
 .gt-service-card__meta {
@@ -3343,7 +3403,7 @@
 }
 
 .gt-service-cards h3 {
-  margin: 40px 0 14px;
+  margin: 18px 0 14px;
   font-size: 1.5rem;
 }
 
@@ -4246,6 +4306,54 @@
   font-size: 0.8rem;
 }
 
+.gt-impact-climate-bridge {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 34px;
+  align-items: end;
+  margin-top: 22px;
+  padding: 30px 32px;
+  color: #eef7f0;
+  background: #123e2f;
+  border: 1px solid #2f6d52;
+  border-radius: 22px 22px 22px 6px;
+}
+
+.gt-impact-climate-bridge .eyebrow {
+  color: #c8e976;
+}
+
+.gt-impact-climate-bridge h3 {
+  max-width: 470px;
+  margin-top: 10px;
+  color: #fff;
+  font-size: clamp(1.65rem, 2.5vw, 2.55rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.gt-impact-climate-bridge p {
+  max-width: 630px;
+  color: #c3d8cc;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.gt-impact-climate-bridge a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 18px;
+  color: #c8e976;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.gt-impact-climate-bridge a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 5px;
+}
+
 .gt-case-roles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4356,8 +4464,14 @@
   .gt-case-method-grid,
   .gt-case-roles,
   .gt-case-evidence-note,
+  .gt-impact-climate-bridge,
   .gt-case-gallery__grid {
     grid-template-columns: 1fr;
+  }
+
+  .gt-impact-climate-bridge {
+    gap: 22px;
+    padding: 26px 24px;
   }
 
   .gt-case-system__steps li,

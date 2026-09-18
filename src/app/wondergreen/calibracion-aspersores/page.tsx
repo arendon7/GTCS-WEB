@@ -14,7 +14,7 @@ export default function CalibracionAspersoresPage() {
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Calibración de aspersión")}&prioridad=${encodeURIComponent(`Tanque ${tank} L · cobertura medida ${measuredArea} m² · área objetivo ${targetArea} m² · ${tanks.toFixed(1)} cargas · ${carrier.toFixed(0)} L observados`)}`;
 
   return (
-    <main style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 800, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Calibración medida en campo</span>
@@ -56,6 +56,6 @@ export default function CalibracionAspersoresPage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -51,7 +51,7 @@ export function SolutionAssessment({
   const contactHref = `/contacto/?interes=solucion&perfil=esp&diagnostico=${encodeURIComponent(title)}&prioridad=${encodeURIComponent(details || nextStep)}`;
 
   return (
-    <main style={{ background: "#f7faf5", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", color: "var(--green-950)" }}>
       <section style={{ background: "linear-gradient(135deg, #082b21 0%, #124b38 58%, #1c6847 100%)", color: "#fff", padding: "clamp(64px, 9vw, 112px) 0 70px" }}>
         <div className="container" style={{ maxWidth: 1120, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))", gap: "clamp(30px, 6vw, 72px)", alignItems: "end" }}>
           <div>
@@ -128,6 +128,6 @@ export function SolutionAssessment({
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

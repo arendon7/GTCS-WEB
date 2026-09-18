@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { yarumalClaims } from "@/data/claims";
 import { environmentalParkModules, municipalServices } from "@/data/services";
+import { getServiceVisual } from "@/data/service-visuals";
 import { RouteDecisionBridge } from "@/components/route-decision-bridge";
 
 export const metadata: Metadata = {
@@ -228,15 +229,27 @@ export default function MunicipiosPage() {
         <div className="container">
           <div className="gt-route-heading gt-route-heading--split"><div><span className="eyebrow">Capacidades Greenatics</span><h2>Del instrumento de planeación al control diario.</h2></div><p>Cada servicio puede contratarse por separado o integrarse en una ruta de maduración. El alcance final define estudios, entregables, responsabilidades y resultados esperados.</p></div>
           <div className="gt-service-preview-grid gt-service-preview-grid--municipal">
-            {municipalServices.map((service) => (
+            {municipalServices.map((service) => {
+              const visual = getServiceVisual(service);
+
+              return (
               <article key={service.slug}>
-                <span>{service.category}</span>
+                <figure className="gt-service-preview__media">
+                  <Image
+                    src={visual.src}
+                    alt={visual.alt}
+                    fill
+                    sizes="(max-width: 760px) 100vw, (max-width: 1180px) 50vw, 31vw"
+                  />
+                </figure>
+                <span>{service.categoryLabel}</span>
                 <h3>{service.name}</h3>
                 <p>{service.summary}</p>
                 <details><summary>Qué puede incluir</summary><ul>{service.includes.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul></details>
                 <Link href={`/servicios/${service.slug}/`}>Ver alcance y entregables →</Link>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

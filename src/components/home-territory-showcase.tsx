@@ -131,6 +131,7 @@ export function HomeTerritoryShowcase() {
             <div className="home-territory__tabs" role="tablist" aria-label="Galería del caso Yarumal">
               {(Object.keys(galleries) as GalleryKey[]).map((key) => (
                 <button
+                  type="button"
                   aria-controls="territory-gallery-panel"
                   aria-selected={activeGallery === key}
                   className={activeGallery === key ? "is-active" : undefined}
@@ -138,7 +139,6 @@ export function HomeTerritoryShowcase() {
                   key={key}
                   onClick={() => changeGallery(key)}
                   role="tab"
-                  type="button"
                 >
                   {galleries[key].label}
                 </button>
@@ -167,12 +167,12 @@ export function HomeTerritoryShowcase() {
             <div className="home-territory__thumbnails" aria-label={`Imágenes: ${gallery.label}`}>
               {gallery.images.map((item, index) => (
                 <button
+                  type="button"
                   aria-label={`Mostrar ${item.title}`}
                   aria-pressed={activeImage === index}
                   className={activeImage === index ? "is-active" : undefined}
                   key={item.src}
                   onClick={() => setActiveImage(index)}
-                  type="button"
                 >
                   <Image alt="" fill sizes="120px" src={item.src} />
                 </button>

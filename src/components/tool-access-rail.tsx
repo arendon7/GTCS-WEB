@@ -42,24 +42,36 @@ export function ToolAccessRail({
           </div>
           <div className="button-row">
             {runtimeHref ? (
-              <a
-                className="button button--primary"
-                href={runtimeHref}
-                target={isExternal(runtimeHref) ? "_blank" : undefined}
-                rel={isExternal(runtimeHref) ? "noopener noreferrer" : undefined}
-              >
-                {runtimeLabel} <span aria-hidden="true">↗</span>
-              </a>
+              <>
+                <a
+                  className="button button--primary"
+                  href={runtimeHref}
+                  target={isExternal(runtimeHref) ? "_blank" : undefined}
+                  rel={isExternal(runtimeHref) ? "noopener noreferrer" : undefined}
+                >
+                  {runtimeLabel} <span aria-hidden="true">↗</span>
+                </a>
+                {demoHref && (
+                  <Link className="button button--ghost" href={demoHref}>
+                    {demoLabel} <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </>
             ) : demoHref ? (
-              <Link className="button button--primary" href={demoHref}>
-                {demoLabel} <span aria-hidden="true">→</span>
-              </Link>
+              <>
+                <Link className="button button--primary" href={demoHref}>
+                  {demoLabel} <span aria-hidden="true">→</span>
+                </Link>
+                <Link className="button button--ghost" href={accessHref}>
+                  {accessLabel} <span aria-hidden="true">→</span>
+                </Link>
+              </>
             ) : (
               <Link className="button button--primary" href={accessHref}>
                 {accessLabel} <span aria-hidden="true">→</span>
               </Link>
             )}
-            <Link className="button button--ghost" href="/acceso/">
+            <Link className="button button--ghost" href="/herramientas/">
               Ver todas las herramientas
             </Link>
           </div>
@@ -69,7 +81,7 @@ export function ToolAccessRail({
           <ol>
             <li><b>01</b><div><strong>Entender</strong><p>Qué resuelve {name} y quién la usa.</p></div></li>
             <li><b>02</b><div><strong>Explorar</strong><p>Sus módulos, datos y flujo de trabajo.</p></div></li>
-            <li><b>03</b><div><strong>Entrar</strong><p>{runtimeHref ? "Abrir el entorno disponible." : demoHref ? "Abrir un recorrido navegable con datos ilustrativos." : "Solicitar un entorno configurado."}</p></div></li>
+            <li><b>03</b><div><strong>Entrar</strong><p>{runtimeHref && demoHref ? "Elegir la demo pública o el entorno configurado." : runtimeHref ? "Abrir el entorno disponible." : demoHref ? "Abrir la demo o preparar el entorno de la organización." : "Preparar un entorno configurado con el equipo."}</p></div></li>
           </ol>
         </aside>
       </div>

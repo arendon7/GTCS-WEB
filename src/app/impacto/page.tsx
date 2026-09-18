@@ -54,7 +54,7 @@ export default function ImpactoPage() {
       <section className="gt-proof-ribbon" id="resultados" aria-label="Resultados validados del caso Yarumal">
         <div className="container gt-proof-ribbon__grid">
           <div className="gt-proof-ribbon__intro"><span>Caso Yarumal</span><strong>Resultados validados y publicables</strong></div>
-          {yarumalClaims.map((claim) => <div key={claim.id}><strong>{claim.value}</strong><span>{claim.compactLabel}</span></div>)}
+          {yarumalClaims.map((claim) => <div key={claim.id}><strong>{claim.value}</strong><span>{claim.compactLabel}</span><small>{claim.context.replace("Caso Yarumal · ", "")}</small></div>)}
         </div>
       </section>
 
@@ -79,6 +79,16 @@ export default function ImpactoPage() {
             <div><span>Claims del caso</span><p>Son resultados de impacto, eficacia y eficiencia validados para Yarumal y pueden comunicarse comercialmente con su contexto.</p></div>
             <div><span>Proyección de un nuevo proyecto</span><p>Requiere línea base, supuestos y validación propios. Los resultados históricos orientan; no sustituyen el estudio del nuevo territorio.</p></div>
           </div>
+          <aside className="gt-impact-climate-bridge" aria-label="Puente entre evidencia operativa e impacto climático">
+            <div>
+              <span className="eyebrow">Del dato operativo al CO₂</span>
+              <h3>La evidencia logística también puede convertirse en un claim climático.</h3>
+            </div>
+            <div>
+              <p>Los 140 km de transporte evitado por viaje ya muestran una mejora operativa verificable. Para traducirla a tCO₂e hay que documentar carga, vehículo, combustible, frecuencia, factor de emisión, periodo y frontera del cálculo.</p>
+              <Link href="/huella/#calculadora">Explorar un escenario de CO₂ <span aria-hidden="true">↗</span></Link>
+            </div>
+          </aside>
         </div>
       </section>
 

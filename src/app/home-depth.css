@@ -646,6 +646,7 @@
   z-index: 200;
   display: flex;
   justify-content: flex-end;
+  overscroll-behavior: contain;
 }
 .mobile-drawer-panel {
   width: min(340px, 85vw);
@@ -656,6 +657,7 @@
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
 }
 .mobile-drawer-header {
@@ -1644,6 +1646,26 @@
   list-style: none;
 }
 
+.home-capability-track__legend {
+  display: grid;
+  grid-template-columns: 42px minmax(150px, 0.6fr) minmax(240px, 1fr);
+  gap: 22px;
+  padding: 0 8px 10px;
+  color: #718078;
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-capability-track__legend span:first-child {
+  grid-column: 2;
+}
+
+.home-capability-track__legend span:nth-child(2) {
+  grid-column: 3;
+}
+
 .home-capability-track li {
   display: grid;
   grid-template-columns: 42px minmax(150px, 0.6fr) minmax(240px, 1fr);
@@ -2378,6 +2400,10 @@
     gap: 16px;
     min-height: 0;
     padding: 25px 4px;
+  }
+
+  .home-capability-track__legend {
+    display: none;
   }
 
   .home-capability-track li > div:last-child {

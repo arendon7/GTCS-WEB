@@ -78,6 +78,7 @@ export default function SolutionsPage() {
             <div className="button-row">
               <Link className="button button--light" href="/diagnostico/">Encontrar mi punto de entrada</Link>
               <Link className="button button--outline-light" href="/servicios/">Ver servicios contratables</Link>
+              <Link className="button button--outline-light" href="/portafolio/">Ver portafolio Greenatics 2.0</Link>
             </div>
           </div>
           <div className="gt-solution-hero__mosaic" aria-label="Evidencia del sistema Greenatics">

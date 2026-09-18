@@ -67,6 +67,7 @@ export function CropDeficiencyViewer() {
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {deficiencies.map((d) => (
             <button
+              type="button"
               key={d.id}
               onClick={() => setSelectedId(d.id)}
               style={{

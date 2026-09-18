@@ -73,6 +73,7 @@ export default function CalendarioAgricolaPage() {
 
         <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "36px" }}>
           <button
+            type="button"
             onClick={() => setSelectedKey("cafe-antioquia")}
             style={{
               padding: "10px 20px",
@@ -88,6 +89,7 @@ export default function CalendarioAgricolaPage() {
             ☕ Café (Antioquia y Eje Cafetero)
           </button>
           <button
+            type="button"
             onClick={() => setSelectedKey("aguacate-antioquia")}
             style={{
               padding: "10px 20px",

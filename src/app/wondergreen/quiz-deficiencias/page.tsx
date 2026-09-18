@@ -124,6 +124,7 @@ export default function QuizDeficienciasPage() {
                 }
                 return (
                   <button
+                    type="button"
                     key={opt.label}
                     onClick={() => handleSelect(idx)}
                     style={{
@@ -159,6 +160,7 @@ export default function QuizDeficienciasPage() {
 
             {selectedOpt !== null && (
               <button
+                type="button"
                 onClick={handleNext}
                 className="button button--primary"
                 style={{ width: "100%", padding: "14px", fontSize: "0.95rem" }}
@@ -179,6 +181,7 @@ export default function QuizDeficienciasPage() {
 
             <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
               <button
+                type="button"
                 onClick={() => {
                   setCurrentIdx(0);
                   setSelectedOpt(null);

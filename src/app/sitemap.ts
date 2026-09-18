@@ -2,6 +2,8 @@ export const dynamic = "force-static";
 
 import { MetadataRoute } from "next";
 import { crops } from "@/data/crops";
+import { portfolioGroups } from "@/data/portfolio";
+import { products } from "@/data/products";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://greenatics.com";
@@ -9,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${baseUrl}`, lastModified: new Date(), changeFrequency: "weekly", priority: 1.0 },
     { url: `${baseUrl}/soluciones`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/portafolio`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/wondergreen`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/wondergreen/cotizador`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${baseUrl}/casa-jardin`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
@@ -33,5 +36,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...cropRoutes];
+  const portfolioRoutes: MetadataRoute.Sitemap = portfolioGroups.map((group) => ({
+    url: `${baseUrl}/portafolio/${group.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  const productRoutes: MetadataRoute.Sitemap = [
+    ...products.map((product) => ({
+      url: `${baseUrl}/wondergreen/productos/${product.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    })),
+    {
+      url: `${baseUrl}/wondergreen/productos/biol`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+  ];
+
+  return [...staticRoutes, ...portfolioRoutes, ...productRoutes, ...cropRoutes];
 }

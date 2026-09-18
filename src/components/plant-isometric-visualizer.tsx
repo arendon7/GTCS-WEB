@@ -77,8 +77,9 @@ export function PlantIsometricVisualizer() {
         {stations.map((st) => {
           const isSelected = activeStation === st.id;
           return (
-            <button
-              key={st.id}
+          <button
+            type="button"
+            key={st.id}
               onClick={() => setActiveStation(st.id)}
               style={{
                 padding: "14px 10px",

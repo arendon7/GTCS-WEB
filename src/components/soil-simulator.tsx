@@ -67,6 +67,7 @@ export function SoilSimulator() {
         <div style={{ display: "flex", gap: "8px", background: "rgba(0, 107, 69, 0.08)", padding: "4px", borderRadius: "999px" }}>
           {soils.map((s) => (
             <button
+              type="button"
               key={s.id}
               onClick={() => {
                 setSelectedSoil(s.id);

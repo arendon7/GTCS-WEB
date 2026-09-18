@@ -244,11 +244,20 @@
 .wg-liquid-lines h3 { max-width: 700px; margin: 10px 0 12px; color: #183d2d; font-family: Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.03; }
 .wg-liquid-lines p { max-width: 740px; color: #526158; font-size: .86rem; line-height: 1.65; }
 .wg-liquid-lines .text-link { display: inline-flex; margin-top: 17px; color: #146b47; font-size: .78rem; font-weight: 850; }
+.wg-liquid-lines__split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: 740px; margin-top: 18px; }
+.wg-liquid-lines__split > div { padding: 13px 15px; border: 1px solid #cbd9ca; border-radius: 13px 13px 13px 4px; background: rgba(255,255,255,.52); }
+.wg-liquid-lines__split span { color: #28734f; font-size: .62rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.wg-liquid-lines__split p { margin-top: 7px; font-size: .74rem; line-height: 1.45; }
 .wg-liquid-lines__signal { display: grid; gap: 5px; max-width: 740px; margin-top: 20px; padding: 16px 18px; border-left: 3px solid #9ebf4c; border-radius: 0 14px 14px 0; background: rgba(255,255,255,.58); }
 .wg-liquid-lines__signal > span { color: #28734f; font-size: .66rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
 .wg-liquid-lines__signal strong { color: #183d2d; font-family: Georgia, serif; font-size: 1.18rem; }
 .wg-liquid-lines__signal p { margin: 0; font-size: .76rem; line-height: 1.5; }
 .wg-liquid-lines__signal a { display: inline-flex; margin-top: 4px; color: #146b47; font-size: .74rem; font-weight: 850; }
+.wg-liquid-lines__dose-note { display: grid; grid-template-columns: minmax(150px, .34fr) 1fr; gap: 18px; align-items: center; max-width: 740px; margin-top: 12px; padding: 14px 16px; border: 1px solid #b7d19f; border-radius: 14px; background: #f6faef; }
+.wg-liquid-lines__dose-note > div { display: grid; gap: 4px; }
+.wg-liquid-lines__dose-note span { color: #28734f; font-size: .62rem; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+.wg-liquid-lines__dose-note strong { color: #183d2d; font-family: Georgia, serif; font-size: 1.32rem; line-height: 1.05; }
+.wg-liquid-lines__dose-note p { margin: 0; font-size: .72rem; line-height: 1.5; }
 .wg-liquid-lines__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
 .wg-liquid-lines__grid article { display: flex; min-height: 430px; flex-direction: column; padding: 14px; border: 1px solid #cfdbcc; border-radius: 17px 17px 17px 4px; background: #fff; }
 .wg-liquid-lines__card-media { position: relative; aspect-ratio: 1.55; min-height: 0; margin-bottom: 16px; overflow: hidden; border-radius: 12px 12px 12px 4px; background: #f9f7f1; }
@@ -871,6 +880,7 @@
   .wg-bio-lines__footer,
   .wg-docs__heading,
   .wg-liquid-lines__intro,
+  .wg-liquid-lines__split,
   .wg-v4-decision__intro,
   .wg-v4-tools__grid,
   .wg-v4-bridge__grid,
@@ -903,6 +913,7 @@
   .wg-liquid-lines__grid,
   .wg-bio-lines__grid,
   .wg-docs__grid { grid-template-columns: 1fr; }
+  .wg-liquid-lines__dose-note { grid-template-columns: 1fr; gap: 8px; }
   .wg-science-path { grid-template-columns: 120px minmax(0, 1fr); }
   .wg-bio-science-connections { grid-template-columns: 1fr; }
   .wg-bio-science-connections article,

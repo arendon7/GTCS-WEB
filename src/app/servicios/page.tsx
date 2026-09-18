@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { yarumalClaims } from "@/data/claims";
 import { services, type ServiceCategory } from "@/data/services";
+import { getServiceVisual } from "@/data/service-visuals";
 
 export const metadata: Metadata = {
   title: "Servicios",
@@ -172,7 +173,15 @@ export default function ServicesPage() {
               <div className="gt-service-cards">
                 {items.map((service) => (
                   <article key={service.slug}>
-                    <div className="gt-service-card__meta"><span>{service.audience}</span><em>{service.category}</em></div>
+                    <figure className="gt-service-card__media">
+                      <Image
+                        src={getServiceVisual(service).src}
+                        alt={getServiceVisual(service).alt}
+                        fill
+                        sizes="(max-width: 760px) 100vw, 42vw"
+                      />
+                    </figure>
+                    <div className="gt-service-card__meta"><span>{service.audience}</span><em>{service.categoryLabel}</em></div>
                     <h3>{service.name}</h3>
                     <p className="gt-service-card__summary">{service.summary}</p>
                     <div className="gt-card-answer"><strong>Problema que aborda</strong><p>{service.solves}</p></div>

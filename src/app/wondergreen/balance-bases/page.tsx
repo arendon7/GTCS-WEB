@@ -22,7 +22,7 @@ export default function BalanceBasesPage() {
   ];
 
   return (
-    <main style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+    <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 800, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Relaciones entre bases</span>
@@ -65,6 +65,6 @@ export default function BalanceBasesPage() {
           </section>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
