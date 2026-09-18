@@ -58,6 +58,7 @@ La ruta de producto sigue siendo:
 - El registro visual municipal incorporó excepciones explícitas para diferenciar el diagnóstico aéreo de la evidencia de operación en campo de PGIRS/PMIRS; esto evita que dos capacidades distintas se perciban como la misma escena.
 - La cabecera institucional reconoce la ruta actual y sus subrutas: marca la sección activa en escritorio, la opción hija en los desplegables y el grupo correspondiente en el menú móvil mediante `aria-current`.
 - Las fichas públicas Wondergreen ajustaron el texto de sus visuales de referencia: ahora conectan imagen de familia, ficha técnica, presentación, suministro y cotización sin exponer lenguaje interno de reconciliación.
+- Biblioteca y Wondergreen incorporaron metadata social de sección para no compartir páginas técnicas con el título genérico de la portada; las rutas hijas conservan sus títulos específicos cuando los declaran.
 
 ## Puertas verificadas
 
@@ -81,6 +82,7 @@ La ruta de producto sigue siendo:
 - Revisión del Centro de Herramientas: las tres puertas (landing, demo pública y entorno real) se leen en móvil; los accesos de OPS, Red, Huella, AGROWAY y SANA mantienen su destino diferenciado.
 - Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
 - Cada ficha de producto Wondergreen incorpora ahora dos salidas de continuidad desde el criterio técnico: manual de aplicación y ciencia Wondergreen, además de sus rutas existentes hacia cultivos, cotizador y contacto.
+- QA de compartibilidad: Biblioteca comparte con título propio de sección y Wondergreen con título de sistema agronómico; no se alteraron las URLs canónicas ni el sitemap.
 
 ## Riesgos que permanecen
 
@@ -104,6 +106,7 @@ La ruta de producto sigue siendo:
 9. Mantener el estado de navegación activo al incorporar nuevas rutas, especialmente en las landings de producto, herramientas y Casa & Jardín.
 10. Cuando se aprueben nuevos packshots o etiquetas, incorporarlos al registro por SKU sin reemplazar referencias documentales con mockups no reconciliados.
 11. Mantener la continuidad de las fichas: producto, manual, ciencia, cultivo, cotizador y contacto deben permanecer visibles como una misma ruta.
+12. Al crear nuevas secciones, definir metadata social de sección y verificar que las páginas no hereden el título genérico de Greenatics.
 
 ## Regla de continuidad
 
