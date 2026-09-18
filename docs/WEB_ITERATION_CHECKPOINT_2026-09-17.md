@@ -52,6 +52,8 @@ La ruta de producto sigue siendo:
 - El metadata raíz dejó de imponer la URL de la portada como `og:url` en todas las páginas; cada ruta conserva su canonical y el QA ahora detecta cualquier Open Graph que apunte a otra ruta.
 - Se eliminaron landmarks `<main>` anidados en el Centro de usuarios, la biblioteca de cultivos, las guías de cultivo y las herramientas de soluciones/agronomía; sus clases visuales se mantienen sin duplicar la semántica principal.
 - La auditoría estática ahora falla ante más de un landmark principal por página, además de verificar canonical, `og:url`, enlaces, imágenes, JSON-LD, sitemap, claims sensibles y rutas de runtime.
+- El Centro Greenatics dejó de llamar “prototipo” a GREENATICS Red: ahora comunica una estación demo disponible con datos ilustrativos y una ruta explícita de consolidación productiva.
+- Las pestañas de audiencia de la portada incorporaron navegación por teclado con flechas, `Home` y `End`, manteniendo el cambio de contenido y el foco visible.
 
 ## Puertas verificadas
 
@@ -70,6 +72,7 @@ La ruta de producto sigue siendo:
 - Auditoría de imágenes: 42 archivos con `next/image`, 0 tags sin `alt`; registro visual de servicios con 7/7 assets existentes y salida estática sin referencias al asset reemplazado.
 - Contrato de producto: 14/14 landings exportadas con visual y rutas de continuidad verificadas.
 - QA semántico: 124 páginas HTML sin landmarks `<main>` duplicados y sin `og:url` heredados de la portada.
+- Revisión visual local: portada, accesos, imágenes de operación y bloque de rutas de audiencia revisados sobre `localhost:3042`.
 
 ## Riesgos que permanecen
 
@@ -88,6 +91,7 @@ La ruta de producto sigue siendo:
 4. Convertir la lista de gates de staging en una secuencia ejecutable para Huella y OPS, sin publicar secretos.
 5. Mantener Red como producto en construcción hasta completar persistencia y permisos; no confundir estación pública con operación multiusuario.
 6. Mantener el control de semántica y metadatos dentro de la auditoría estática para que las próximas iteraciones de contenido o diseño no degraden accesibilidad ni compartibilidad.
+7. Reconectar el proyecto Sites original desde la cuenta personal antes de publicar este commit; no crear una segunda URL mientras el proyecto anterior no sea visible.
 
 ## Regla de continuidad
 

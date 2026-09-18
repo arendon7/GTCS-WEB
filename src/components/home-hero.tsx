@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { KeyboardEvent } from "react";
 import { useState } from "react";
 import { yarumalClaims } from "@/data/claims";
 
@@ -75,6 +76,20 @@ export function HomeHero() {
     "municipios",
   );
   const profile = profiles.find((item) => item.id === activeProfile) ?? profiles[0];
+  const activeProfileIndex = profiles.findIndex((item) => item.id === activeProfile);
+
+  function handleProfileKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === "Home"
+      ? 0
+      : event.key === "End"
+        ? profiles.length - 1
+        : (activeProfileIndex + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1) + profiles.length) % profiles.length;
+    const nextProfile = profiles[nextIndex];
+    setActiveProfile(nextProfile.id);
+    document.getElementById(`profile-tab-${nextProfile.id}`)?.focus();
+  }
 
   return (
     <section className="home-system-hero" aria-labelledby="home-hero-title">
@@ -120,6 +135,7 @@ export function HomeHero() {
                     id={`profile-tab-${item.id}`}
                     key={item.id}
                     onClick={() => setActiveProfile(item.id)}
+                    onKeyDown={handleProfileKeyDown}
                     role="tab"
                   >
                     {item.label}

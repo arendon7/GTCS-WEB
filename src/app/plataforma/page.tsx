@@ -43,7 +43,7 @@ const applications = [
   },
   {
     code: "RED",
-    state: "Estación navegable v5 · datos demo",
+    state: "Estación demo disponible · datos ilustrativos",
     name: "GREENATICS Red",
     copy: "La estación territorial para convertir contexto, generadores, rutas, FIELD, QA/QC y PMIRS en trabajo coordinado, indicadores y seguimiento con evidencia.",
     route: "/red/app/",
@@ -192,7 +192,7 @@ export default function PlatformPage() {
             <li><span>01</span><div><strong>Portal único</strong><p>Entradas consistentes, estados honestos y navegación entre productos.</p></div></li>
             <li><span>02</span><div><strong>Identidad y permisos</strong><p>Organizaciones, roles, sesiones seguras, auditoría y recuperación controlada.</p></div></li>
             <li><span>03</span><div><strong>Servicios y datos</strong><p>OPS, Huella y AGROWAY se conectan mediante contratos explícitos; SANA recibe el contexto autorizado para estructurar y acompañar proyectos, sin copiar datos ni romper sus migraciones.</p></div></li>
-            <li><span>04</span><div><strong>Red productiva</strong><p>El prototipo navegable pasa a Proyecto 360, FIELD, QA/QC, PMIRS y coordinación con backend persistente.</p></div></li>
+            <li><span>04</span><div><strong>GREENATICS Red</strong><p>La estación demo se amplía hacia Proyecto 360, FIELD, QA/QC, PMIRS y coordinación con backend persistente.</p></div></li>
           </ol>
         </div>
       </section>
