@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = getProduct(slug);
   if (!product) return {};
   const canonical = `/wondergreen/productos/${product.slug}/`;
-  return { title: product.name, description: product.objective, alternates: { canonical }, openGraph: { title: product.name, description: product.objective, url: canonical } };
+  return { title: product.name, description: product.objective, alternates: { canonical }, openGraph: { title: product.name, description: product.objective, url: canonical, ...(product.image ? { images: [product.image] } : {}) } };
 }
 
 function cop(value: number) {
@@ -41,6 +41,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     brand: { "@type": "Brand", name: "Wondergreen Nutrients" },
     category: product.category,
     sku: product.slug,
+    ...(product.image ? { image: `${site.url}${product.image}` } : {}),
     additionalProperty: [
       { "@type": "PropertyValue", name: "Formato", value: product.format },
       { "@type": "PropertyValue", name: "Presentaciones", value: product.presentations.join(", ") },

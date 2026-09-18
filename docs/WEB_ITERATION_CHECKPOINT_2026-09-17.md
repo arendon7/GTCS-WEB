@@ -91,7 +91,9 @@ La ruta de producto sigue siendo:
 - Revisión del Centro de Herramientas: las tres puertas (landing, demo pública y entorno real) se leen en móvil; los accesos de OPS, Red, Huella, AGROWAY y SANA mantienen su destino diferenciado.
 - Revisión de producto: 2GROW conserva su pieza visual documental con presentaciones sólida y líquidas visibles; el componente común mantiene un tratamiento fail-closed para referencias sin packshot público aprobado.
 - Cada ficha de producto Wondergreen incorpora ahora dos salidas de continuidad desde el criterio técnico: manual de aplicación y ciencia Wondergreen, además de sus rutas existentes hacia cultivos, cotizador y contacto.
+- Las fichas dinámicas de producto Wondergreen ahora comparten también su imagen documental aprobada y declaran esa imagen en el schema `Product`, completando la continuidad visual de sólidos, líquidos y bioinsumos.
 - QA de compartibilidad: Biblioteca comparte con título propio de sección y Wondergreen con título de sistema agronómico; no se alteraron las URLs canónicas ni el sitemap.
+- QA de imágenes de producto compartible: las 14 fichas exportan su imagen registrada en Open Graph y en el schema `Product` cuando existe.
 - QA de Casa & Jardín: portada, kits y guías exportan título social de sección; las descargas PDF y los enlaces canónicos permanecen intactos.
 - QA de compartibilidad de Casa & Jardín: kits, productos y guías exportan `og:title`, `og:description`, `og:url` e imagen contextual cuando corresponde; se verificaron Plantas Verdes, CRECE y Guías.
 - QA de orientación de compra: el HTML exportado contiene las dos rutas diferenciadas y ya no conserva el CTA ambiguo “Ver productos y kits”.
@@ -135,6 +137,7 @@ La ruta de producto sigue siendo:
 19. Completar la misma arquitectura en Wondergreen: cada herramienta, ficha técnica, cultivo y ruta de acompañamiento debe declarar contexto social y breadcrumbs sin perder su CTA operativo.
 20. Mantener los mensajes de salida de las herramientas como fichas preliminares; nunca convertir un cálculo contextual en una recomendación automática de producto o tratamiento.
 21. En herramientas de escenario, distinguir siempre resultado aritmético, referencia a evaluar, viabilidad técnica y promesa comercial; solo esta última requiere validación explícita antes de publicarse como claim.
+22. Mantener sincronizados visual, metadata social y schema `Product` por SKU; una ficha no debe compartir una imagen distinta de la que presenta en pantalla.
 
 ## Regla de continuidad
 
