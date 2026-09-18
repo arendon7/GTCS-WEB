@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Kits por uso | Wondergreen Casa & Jardín",
   description: "Kits Wondergreen para plantas verdes, plantas con flor, huertas y colecciones, con rutas de cuidado y etapas claramente separadas.",
   alternates: { canonical: "/casa-jardin/kits/" },
+  openGraph: {
+    title: "Kits por uso | Wondergreen Casa & Jardín",
+    description: "Kits Wondergreen para plantas verdes, plantas con flor, huertas y colecciones, con rutas de cuidado y etapas claramente separadas.",
+    url: "/casa-jardin/kits/",
+    images: ["/kits/kit-casa-completa.webp"],
+  },
 };
 
 const kits = [

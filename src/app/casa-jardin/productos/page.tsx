@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Productos por etapa | Wondergreen Casa & Jardín",
   description: "Explora Wondergreen por suelo, crecimiento, equilibrio, floración y fructificación, con rutas de cuidado y orientación doméstica por etapa.",
   alternates: { canonical: "/casa-jardin/productos/" },
+  openGraph: {
+    title: "Productos por etapa | Wondergreen Casa & Jardín",
+    description: "Explora Wondergreen por suelo, crecimiento, equilibrio, floración y fructificación, con rutas de cuidado y orientación doméstica por etapa.",
+    url: "/casa-jardin/productos/",
+    images: ["/products/wondergreen-casa-jardin-hero.png"],
+  },
 };
 
 const products = [
