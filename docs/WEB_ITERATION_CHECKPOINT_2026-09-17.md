@@ -66,6 +66,8 @@ La ruta de producto sigue siendo:
 - Casa & Jardín incorporó breadcrumbs JSON-LD en portada, índices de productos y kits, guías y fichas individuales; la jerarquía Greenatics → Casa & Jardín → recurso ahora coincide con los retornos visibles de cada página.
 - Wondergreen inició su cierre de arquitectura pública: portada, ciencia aplicada, cultivos, cotizador, Hogar y Biol ahora comparten metadata social contextual; ciencia añade además marcado editorial de artículo.
 - Las seis herramientas agronómicas del primer lote ahora comparten un rastro visible de retorno a Wondergreen y breadcrumbs estructurados; la herramienta de agua dejó de enviar por WhatsApp una recomendación automática y ahora solicita validar el contexto antes de definir acondicionamiento o fertirriego.
+- El segundo lote de herramientas agronómicas ahora comparte el mismo rastro de retorno: calculadora, calendario, calibración, costo por unidad, fitosanidad, logística, quiz y valorización pecuaria. Se ajustaron además etiquetas de “producto asignado”, “vehículo recomendado” y “fertilizante producido” para comunicar referencias y escenarios, no garantías.
+- La Calculadora agronómica conserva su retorno y breadcrumb también en el fallback de `Suspense`; la primera carga estática ya no queda sin contexto mientras hidrata la interacción.
 
 ## Puertas verificadas
 
@@ -97,6 +99,8 @@ La ruta de producto sigue siendo:
 - QA estructural de Casa & Jardín: seis superficies exportan breadcrumbs válidos y conservan las rutas canónicas, sin cambiar el contenido visible ni las URLs públicas.
 - QA de Wondergreen core: portada, ciencia, cultivos, cotizador, Hogar y Biol conservan canonical propia y metadata contextual; los hubs de ciencia y cultivos incorporan breadcrumbs estructurados.
 - QA del primer lote agronómico: análisis de suelo, agua, balance de bases, balance C/N, compatibilidad y encalamiento conservan interacción cliente, contacto y WhatsApp, con retorno institucional visible y contexto estructurado.
+- QA del segundo lote agronómico: ocho rutas conservan interacción cliente y CTAs operativos, con retorno institucional visible; el quiz y la valorización pecuaria ya no presentan una aplicación o conversión teórica como resultado garantizado.
+- QA de carga inicial: la salida estática de la Calculadora contiene contexto de retorno aun antes de hidratar sus parámetros de búsqueda.
 - Los botones que prometen descargar documentos en Casa & Jardín y Biol ahora ejecutan descarga directa del PDF; el HTML exportado fue comprobado con el atributo `download`.
 
 ## Riesgos que permanecen
@@ -130,6 +134,7 @@ La ruta de producto sigue siendo:
 18. Mantener la jerarquía JSON-LD alineada con la navegación visible al crear nuevas fichas o documentos dentro de Casa & Jardín.
 19. Completar la misma arquitectura en Wondergreen: cada herramienta, ficha técnica, cultivo y ruta de acompañamiento debe declarar contexto social y breadcrumbs sin perder su CTA operativo.
 20. Mantener los mensajes de salida de las herramientas como fichas preliminares; nunca convertir un cálculo contextual en una recomendación automática de producto o tratamiento.
+21. En herramientas de escenario, distinguir siempre resultado aritmético, referencia a evaluar, viabilidad técnica y promesa comercial; solo esta última requiere validación explícita antes de publicarse como claim.
 
 ## Regla de continuidad
 

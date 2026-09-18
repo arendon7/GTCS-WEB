@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 interface LivestockType {
   name: string;
@@ -33,14 +34,15 @@ export default function ValorizacionPecuariaPage() {
     `🐷 *Sector:* ${lType.name}\n` +
     `🔢 *Población:* ${animalCount.toLocaleString()} animales\n` +
     `💩 *Estiércol / Porquinaza Generada:* ${annualManureTons.toLocaleString()} Toneladas / año\n\n` +
-    `🌿 *Abono Organomineral Obtenido:* ${annualBagsAbono40kg.toLocaleString()} Bultos de 40 kg\n` +
-    `💰 *Valor Económico del Fertilizante:* COP $${(commercialAbonoValueCop / 1000000).toFixed(1)} Millones / año\n\n` +
-    `¿Podemos solicitar una propuesta para instalar una biofábrica pecuaria modular en mi predio?`
+    `🌿 *Escenario teórico de valorización:* ${annualBagsAbono40kg.toLocaleString()} Bultos de 40 kg\n` +
+    `💰 *Valor comercial referencial del escenario:* COP $${(commercialAbonoValueCop / 1000000).toFixed(1)} Millones / año\n\n` +
+    `¿Podemos revisar la viabilidad técnica, sanitaria y económica de una biofábrica pecuaria modular en mi predio?`
   );
   const contactHref = `/contacto/?interes=agroindustria&perfil=empresa&diagnostico=${encodeURIComponent("Valorización de residuos pecuarios")}&prioridad=${encodeURIComponent(`${lType.name} · ${animalCount.toLocaleString()} animales · ${annualManureTons.toLocaleString()} t/año de estiércol · ${annualBagsAbono40kg.toLocaleString()} bultos potenciales`)}`;
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Valorización de subproductos pecuarios" path="/wondergreen/valorizacion-pecuaria/" />
       <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Economía Circular Pecuaria & Biofábricas</span>
@@ -120,13 +122,13 @@ export default function ValorizacionPecuariaPage() {
 
             <div style={{ background: "#f0f8ec", color: "var(--green-950)", padding: "20px", borderRadius: "16px", marginBottom: "24px" }}>
               <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "var(--green-800)", fontWeight: 800, display: "block" }}>
-                Valor Comercial del Fertilizante Producido:
+                Valor comercial referencial del escenario:
               </span>
               <strong style={{ display: "block", fontSize: "1.7rem", color: "var(--green-950)", margin: "4px 0 6px" }}>
                 COP ${(commercialAbonoValueCop / 1000000).toFixed(1)} Millones / año
               </strong>
               <small style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
-                Ahorro directo en la compra de fertilizantes químicos para praderas y pasturas de corte.
+                No es producción garantizada ni ahorro directo: requiere caracterización, proceso, calidad, registro y mercado.
               </small>
             </div>
 

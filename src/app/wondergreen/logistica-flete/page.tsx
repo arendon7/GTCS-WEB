@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function LogisticaFletePage() {
   const [bags, setBags] = useState<number>(120); // Bultos de 40 kg
@@ -25,13 +26,14 @@ export default function LogisticaFletePage() {
     `Hola Greenatics, coticé el Despacho Logístico de Wondergreen para *${destinationRegion}*:\n\n` +
     `📦 *Pedido:* ${bags} Bultos de 40 kg (${totalWeightTons} Toneladas)\n` +
     `🪵 *Palletización:* ${palletsCount} Estibas estándar\n` +
-    `🚛 *Vehículo Recomendado:* ${suggestedVehicle}\n\n` +
+    `🚛 *Escenario de vehículo:* ${suggestedVehicle}\n\n` +
     `¿Me pueden cotizar el flete consolidado y tiempo de entrega a mi municipio?`
   );
   const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Despacho y logística Wondergreen")}&prioridad=${encodeURIComponent(`${bags} bultos · ${totalWeightTons} t · ${palletsCount} estibas · ${suggestedVehicle} · destino ${destinationRegion}`)}`;
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Logística y flete" path="/wondergreen/logistica-flete/" />
       <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Despachos Nacionales & Palletización</span>
@@ -39,7 +41,7 @@ export default function LogisticaFletePage() {
             Calculadora Logística de Carga, Pallets & Flete
           </h1>
           <p style={{ color: "var(--muted)", fontSize: "1.02rem", lineHeight: 1.6 }}>
-            Calcula el peso total, número de estibas y tipo de vehículo de transporte óptimo para tu pedido de fertilizantes Wondergreen a cualquier departamento de Colombia.
+            Calcula el peso total, número de estibas y un escenario de vehículo para preparar el despacho de fertilizantes Wondergreen a cualquier departamento de Colombia.
           </p>
         </div>
 
@@ -116,7 +118,7 @@ export default function LogisticaFletePage() {
 
             <div style={{ background: "#f0f8ec", color: "var(--green-950)", padding: "20px", borderRadius: "16px", marginBottom: "24px" }}>
               <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "var(--green-800)", fontWeight: 800, display: "block" }}>
-                Vehículo de Transporte Recomendado:
+                Escenario de vehículo:
               </span>
               <strong style={{ display: "block", fontSize: "1.25rem", color: "var(--green-950)", margin: "4px 0 4px" }}>
                 🚛 {suggestedVehicle}

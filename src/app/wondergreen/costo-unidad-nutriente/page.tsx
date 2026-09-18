@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function CostoUnidadNutrientePage() {
   const [alternativePrice, setAlternativePrice] = useState(185000);
@@ -22,6 +23,7 @@ export default function CostoUnidadNutrientePage() {
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Costo por unidad de nutriente" path="/wondergreen/costo-unidad-nutriente/" />
       <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Comparación comercial responsable</span>

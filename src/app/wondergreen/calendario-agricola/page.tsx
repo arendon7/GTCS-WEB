@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 interface CropCalendarData {
   region: string;
@@ -60,6 +61,7 @@ export default function CalendarioAgricolaPage() {
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Calendario agrícola" path="/wondergreen/calendario-agricola/" />
       <div className="container" style={{ maxWidth: "1140px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Fenología & Calendario de Nutrición</span>
@@ -142,7 +144,7 @@ export default function CalendarioAgricolaPage() {
               </div>
 
               <div style={{ paddingTop: "10px", borderTop: "1px solid var(--line)" }}>
-                <small style={{ fontSize: "0.7rem", color: "var(--muted)", display: "block" }}>Producto Asignado:</small>
+                <small style={{ fontSize: "0.7rem", color: "var(--muted)", display: "block" }}>Referencia a evaluar:</small>
                 <strong style={{ fontSize: "0.86rem", color: "var(--green-800)" }}>{m.product}</strong>
               </div>
             </div>

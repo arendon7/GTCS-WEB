@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 interface QuestionItem {
   id: number;
@@ -21,7 +22,7 @@ const quizQuestions: QuestionItem[] = [
       { label: "Deficiencia de Hierro (Fe)", nutrient: "Fe", isCorrect: false, explanation: "Incorrecto. El Hierro es inmóvil y su clorosis se manifiesta primero en las hojas apicales más jóvenes." },
       { label: "Exceso de Fósforo (P)", nutrient: "P", isCorrect: false, explanation: "Incorrecto. El exceso de fósforo suele inducir deficiencia de Zinc o Hierro, no clorosis uniforme bajera." }
     ],
-    solution: "Aplicar Wondergreen 2GROW (15-3-3) para reactivar el crecimiento foliar y la fotosíntesis."
+    solution: "Evaluar Wondergreen 2GROW (15-3-3) como referencia de crecimiento solo después de confirmar diagnóstico, análisis y etiqueta vigente."
   },
   {
     id: 2,
@@ -32,7 +33,7 @@ const quizQuestions: QuestionItem[] = [
       { label: "Deficiencia de Calcio (Ca)", nutrient: "Ca", isCorrect: false, explanation: "Incorrecto. El Calcio afecta los puntos de crecimiento y genera deformación de brotes o pudrición apical de fruto." },
       { label: "Toxicidad por Manganeso", nutrient: "Mn", isCorrect: false, explanation: "Incorrecto. El manganeso tóxico produce manchas necróticas punteadas oscuras, no clorosis marginal continua." }
     ],
-    solution: "Aplicar Wondergreen 2FRUIT (3-3-8) de lenta entrega para asegurar calibre y materia seca."
+    solution: "Considerar Wondergreen 2FRUIT (3-3-8) dentro de un programa validado; no garantiza por sí solo calibre, materia seca ni rendimiento."
   },
   {
     id: 3,
@@ -43,7 +44,7 @@ const quizQuestions: QuestionItem[] = [
       { label: "Deficiencia de Magnesio (Mg)", nutrient: "Mg", isCorrect: false, explanation: "Incorrecto. El Magnesio produce clorosis intervenal en hojas viejas (nervaduras verdes con limbo amarillo)." },
       { label: "Falta de Riego", nutrient: "H2O", isCorrect: false, explanation: "Incorrecto. El síntoma clásico de antocianinas púrpuras en suelo volcánico es el bloqueo de fósforo." }
     ],
-    solution: "Aplicar Wondergreen 2BLOOM (3-8-3) o 2BALANCE para quelar el aluminio y desbloquear el fósforo."
+    solution: "Revisar primero acidez, aluminio y fósforo disponible; 2BLOOM o 2BALANCE solo se evalúan después de validar suelo, objetivo y etiqueta."
   }
 ];
 
@@ -74,6 +75,7 @@ export default function QuizDeficienciasPage() {
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
+      <WondergreenToolTrail name="Quiz de deficiencias" path="/wondergreen/quiz-deficiencias/" />
       <div className="container" style={{ maxWidth: "860px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 36px" }}>
           <span className="eyebrow">Diagnóstico Visual & Autoentrenamiento</span>

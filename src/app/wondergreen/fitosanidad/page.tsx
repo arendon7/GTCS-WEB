@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 const routes = [
   { crop: "Café", focus: "Frutos, hojas, tallos y raíces", observe: "Distribución por lote, incidencia, severidad, estado del fruto, historial de manejo y relación con lluvias o floración." },
@@ -18,6 +19,7 @@ export default function FitosanidadPage() {
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+      <WondergreenToolTrail name="Fitosanidad y observación de campo" path="/wondergreen/fitosanidad/" />
       <div className="container" style={{ maxWidth: 1100 }}>
         <header style={{ maxWidth: 820, margin: "0 auto 34px", textAlign: "center" }}>
           <span className="eyebrow">Manejo integrado y trazable</span>

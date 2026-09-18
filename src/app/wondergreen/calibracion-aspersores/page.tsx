@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 export default function CalibracionAspersoresPage() {
   const [tank, setTank] = useState(20);
@@ -15,6 +16,7 @@ export default function CalibracionAspersoresPage() {
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
+      <WondergreenToolTrail name="Calibración de aspersores" path="/wondergreen/calibracion-aspersores/" />
       <div className="container" style={{ maxWidth: 1080 }}>
         <header style={{ maxWidth: 800, margin: "0 auto 38px", textAlign: "center" }}>
           <span className="eyebrow">Calibración medida en campo</span>

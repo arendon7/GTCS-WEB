@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { crops } from "@/data/crops";
+import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
 
 const stages = [
   { id: "arranque", name: "Establecimiento y crecimiento", product: "Wondergreen 2GROW (15-3-3)", verify: "Edad del cultivo, raíz, humedad y nutrición de base." },
@@ -37,6 +38,7 @@ function Planner() {
 
   return (
     <div style={{ background: "#f8faf6", color: "var(--green-950)", padding: "70px 0 90px" }}>
+      <WondergreenToolTrail name="Calculadora agronómica" path="/wondergreen/calculadora/" />
       <div className="container" style={{ maxWidth: "1080px", margin: "0 auto" }}>
         <header style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 40px" }}>
           <span className="eyebrow">Preparador de recomendación Wondergreen</span>
@@ -69,5 +71,5 @@ function Planner() {
 }
 
 export default function CalculatorPage() {
-  return <Suspense fallback={<div className="container" style={{ padding: "80px 0" }}>Preparando herramienta…</div>}><Planner /></Suspense>;
+  return <Suspense fallback={<div style={{ background: "#f8faf6", color: "var(--green-950)", padding: "70px 0 90px", minHeight: "60vh" }}><WondergreenToolTrail name="Calculadora agronómica" path="/wondergreen/calculadora/" /><div className="container" style={{ maxWidth: "1080px", margin: "0 auto", padding: "80px 0" }}>Preparando la calculadora agronómica…</div></div>}><Planner /></Suspense>;
 }
