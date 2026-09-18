@@ -11,7 +11,20 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const kit = getCasaJardinKit(slug);
-  return kit ? { title: `${kit.name} | Kits Wondergreen Casa & Jardín`, description: `${kit.promise} Ruta de cuidado y condiciones de uso.`, alternates: { canonical: `/casa-jardin/kits/${kit.slug}/` } } : { title: "Kit | Wondergreen Casa & Jardín" };
+  if (!kit) return { title: "Kit | Wondergreen Casa & Jardín" };
+  const canonical = `/casa-jardin/kits/${kit.slug}/`;
+  const description = `${kit.promise} Ruta de cuidado y condiciones de uso.`;
+  return {
+    title: `${kit.name} | Kits Wondergreen Casa & Jardín`,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: `${kit.name} | Wondergreen Casa & Jardín`,
+      description,
+      url: canonical,
+      ...(kit.image ? { images: [kit.image] } : {}),
+    },
+  };
 }
 
 const stageLinks: Record<string, string> = { COMPOST: "/casa-jardin/productos/compost/", CRECE: "/casa-jardin/productos/crece/", EQUILIBRA: "/casa-jardin/productos/equilibra/", FLORECE: "/casa-jardin/productos/florece/", FRUCTIFICA: "/casa-jardin/productos/fructifica/" };

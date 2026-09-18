@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Guías Casa & Jardín | Wondergreen",
   description: "Guías prácticas Wondergreen para observar, preparar, trasplantar, reconocer etapas y acompañar una huerta doméstica.",
   alternates: { canonical: "/casa-jardin/guias/" },
+  openGraph: {
+    title: "Guías Casa & Jardín | Wondergreen",
+    description: "Guías prácticas Wondergreen para observar, preparar, trasplantar, reconocer etapas y acompañar una huerta doméstica.",
+    url: "/casa-jardin/guias/",
+    images: ["/guides/home-garden-casa-jardin-cover.webp"],
+  },
 };
 
 const guides = [

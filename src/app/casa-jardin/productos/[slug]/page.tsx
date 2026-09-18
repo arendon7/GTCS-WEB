@@ -11,7 +11,19 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const product = getCasaJardinProduct(slug);
-  return product ? { title: `${product.name} | Wondergreen Casa & Jardín`, description: product.role, alternates: { canonical: `/casa-jardin/productos/${product.slug}/` } } : { title: "Producto | Wondergreen Casa & Jardín" };
+  if (!product) return { title: "Producto | Wondergreen Casa & Jardín" };
+  const canonical = `/casa-jardin/productos/${product.slug}/`;
+  return {
+    title: `${product.name} | Wondergreen Casa & Jardín`,
+    description: product.role,
+    alternates: { canonical },
+    openGraph: {
+      title: `${product.name} | Wondergreen Casa & Jardín`,
+      description: product.role,
+      url: canonical,
+      ...(product.image ? { images: [product.image] } : {}),
+    },
+  };
 }
 
 export default async function CasaJardinProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
