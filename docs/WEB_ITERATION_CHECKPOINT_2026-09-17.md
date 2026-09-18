@@ -134,6 +134,8 @@ La ruta de producto sigue siendo:
 - QA de continuidad de portafolio: las fichas con referencias hermanas exportan la sección “Comparar dentro del sistema”; las rutas siguen usando los slugs canónicos y no crean productos paralelos.
 - La barra flotante global deja de aparecer en Wondergreen y Casa & Jardín: sus CTA locales ya cubren orientación, cotización, guías y acompañamiento, y la barra persistente estaba tapando contenido técnico en móvil.
 - Revisión visual móvil de `/wondergreen/#liquidos`: etiquetas líquidas, explicación de nutrición soluble, bioinsumo documentado y dato de dilución quedan visibles sin solapamiento; el resultado conserva la navegación fija institucional.
+- Wondergreen incorpora un índice visible de familias dentro del portafolio: sólidos, líquidos, bioinsumos y documentos quedan disponibles como saltos directos para reducir la fricción de exploración.
+- QA de navegación del portafolio: la salida estática exporta el ancla `#solidos` y los enlaces `#liquidos`, `#bioinsumos` y `#documentos`; los destinos existentes no cambian y el índice mantiene etiqueta accesible.
 
 ## Riesgos que permanecen
 
@@ -179,6 +181,7 @@ La ruta de producto sigue siendo:
 31. Mantener la imagen de producto como evidencia editorial: en escritorio debe acompañar la ficha sin desplazarla fuera de la primera lectura y en móvil debe conservar proporción, texto legible y ausencia de recortes engañosos.
 32. Mantener comparación contextual en cada ficha: mostrar referencias de la misma categoría con fórmula, etapa y presentación, y ofrecer ciencia y cotizador como salidas siguientes sin convertir la comparación en una recomendación automática.
 33. No superponer CTA globales en portadas con acciones técnicas propias: Wondergreen y Casa & Jardín deben priorizar sus rutas de producto, diagnóstico, guía, ciencia y cotización sin cubrir información con una barra persistente.
+34. En portafolios extensos, mantener un índice de familias visible y semántico: debe permitir saltar a cada bloque principal sin sustituir los enlaces de ficha, ciencia, documentos o cotización.
 
 ## Regla de continuidad
 

@@ -59,7 +59,7 @@ export function WondergreenPackshots() {
   const current = products.find(p => p.id === selectedId) || products[0];
 
   return (
-    <div className="wg-solid-showcase">
+    <div className="wg-solid-showcase" id="solidos">
       <div className="wg-solid-showcase__header">
         <div>
           <span className="eyebrow">Portafolio sólido Wondergreen</span>
