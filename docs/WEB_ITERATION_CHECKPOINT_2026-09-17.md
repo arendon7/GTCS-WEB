@@ -56,6 +56,7 @@ La ruta de producto sigue siendo:
 - Las pestañas de audiencia de la portada incorporaron navegación por teclado con flechas, `Home` y `End`, manteniendo el cambio de contenido y el foco visible.
 - El puente de decisión de las rutas municipales dejó el contexto editorial en una sola introducción; las tarjetas ya no repiten el mismo texto auxiliar en cada alternativa.
 - El registro visual municipal incorporó excepciones explícitas para diferenciar el diagnóstico aéreo de la evidencia de operación en campo de PGIRS/PMIRS; esto evita que dos capacidades distintas se perciban como la misma escena.
+- La cabecera institucional reconoce la ruta actual y sus subrutas: marca la sección activa en escritorio, la opción hija en los desplegables y el grupo correspondiente en el menú móvil mediante `aria-current`.
 
 ## Puertas verificadas
 
@@ -76,6 +77,7 @@ La ruta de producto sigue siendo:
 - QA semántico: 124 páginas HTML sin landmarks `<main>` duplicados y sin `og:url` heredados de la portada.
 - Revisión visual local: portada, accesos, imágenes de operación y bloque de rutas de audiencia revisados sobre `localhost:3042`.
 - Revisión de municipios: el HTML exportado conserva el texto auxiliar una sola vez y usa visuales diferenciados para diagnóstico y operación de rutas.
+- Revisión del Centro de Herramientas: las tres puertas (landing, demo pública y entorno real) se leen en móvil; los accesos de OPS, Red, Huella, AGROWAY y SANA mantienen su destino diferenciado.
 
 ## Riesgos que permanecen
 
@@ -96,6 +98,7 @@ La ruta de producto sigue siendo:
 6. Mantener el control de semántica y metadatos dentro de la auditoría estática para que las próximas iteraciones de contenido o diseño no degraden accesibilidad ni compartibilidad.
 7. Reconectar el proyecto Sites original desde la cuenta personal antes de publicar este commit; no crear una segunda URL mientras el proyecto anterior no sea visible.
 8. Continuar la revisión visual con el mismo criterio: reducir repetición, distinguir cada capacidad con evidencia adecuada y evitar imágenes decorativas sin función narrativa.
+9. Mantener el estado de navegación activo al incorporar nuevas rutas, especialmente en las landings de producto, herramientas y Casa & Jardín.
 
 ## Regla de continuidad
 

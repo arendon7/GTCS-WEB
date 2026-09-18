@@ -697,6 +697,12 @@
   display: block;
   margin-bottom: 6px;
 }
+.mobile-group-title[aria-current="page"] {
+  color: var(--green-600);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
 .mobile-group-subitems {
   display: flex;
   flex-direction: column;
@@ -707,6 +713,10 @@
 .mobile-group-subitems a {
   font-size: 0.88rem;
   color: var(--ink);
+}
+.mobile-group-subitems a[aria-current="page"] {
+  color: var(--green-700);
+  font-weight: 800;
 }
 .mobile-drawer-actions {
   margin-top: auto;

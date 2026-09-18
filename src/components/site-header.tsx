@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { UniversalSearchModal } from "@/components/universal-search-modal";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { primaryNav } from "@/data/site";
 import { runtimeLinks } from "@/lib/runtime-links";
 
@@ -15,7 +16,22 @@ const featuredTools = [
   { href: "/sana/", label: "SANA", description: "Ecosistema de inversión en proyectos productivos" },
 ] as const;
 
+const normalizePath = (value: string) => {
+  const path = value.split("?")[0].split("#")[0];
+  return path === "/" ? "/" : path.replace(/\/+$/, "");
+};
+
+const pathMatches = (currentPath: string, targetPath: string) => {
+  const current = normalizePath(currentPath);
+  const target = normalizePath(targetPath);
+  return current === target || (target !== "/" && current.startsWith(`${target}/`));
+};
+
+const navItemMatches = (currentPath: string, item: (typeof primaryNav)[number]) =>
+  pathMatches(currentPath, item.href) || Boolean(item.subitems?.some((subitem) => pathMatches(currentPath, subitem.href)));
+
 export function SiteHeader() {
+  const pathname = usePathname() || "/";
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
@@ -70,6 +86,7 @@ export function SiteHeader() {
           {primaryNav.map((item) => {
             if (item.subitems && item.subitems.length > 0) {
               const isOpen = activeDropdown === item.label;
+              const isCurrent = navItemMatches(pathname, item);
               const menuId = `nav-menu-${item.label.toLowerCase().replace(/\s+/g, "-")}`;
               return (
                 <div
@@ -84,7 +101,7 @@ export function SiteHeader() {
                     }
                   }}
                 >
-                  <Link href={item.href} className="nav-dropdown-trigger" aria-haspopup="menu" aria-expanded={isOpen} aria-controls={menuId}>
+                  <Link href={item.href} className="nav-dropdown-trigger" aria-haspopup="menu" aria-expanded={isOpen} aria-controls={menuId} aria-current={isCurrent ? "page" : undefined}>
                     {item.label}
                     <span className="dropdown-arrow" aria-hidden="true">⌄</span>
                   </Link>
@@ -95,6 +112,7 @@ export function SiteHeader() {
                           key={sub.href}
                           href={sub.href}
                           className="nav-dropdown-item"
+                          aria-current={pathMatches(pathname, sub.href) ? "page" : undefined}
                           onClick={() => setActiveDropdown(null)}
                         >
                           <strong>{sub.label}</strong>
@@ -107,7 +125,7 @@ export function SiteHeader() {
               );
             }
             return (
-              <Link key={item.href} href={item.href} className="nav-link">
+              <Link key={item.href} href={item.href} className="nav-link" aria-current={pathMatches(pathname, item.href) ? "page" : undefined}>
                 {item.label}
               </Link>
             );
@@ -207,6 +225,7 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     className="mobile-group-title"
+                    aria-current={navItemMatches(pathname, item) ? "page" : undefined}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.label}
@@ -217,6 +236,7 @@ export function SiteHeader() {
                         <Link
                           key={sub.href}
                           href={sub.href}
+                          aria-current={pathMatches(pathname, sub.href) ? "page" : undefined}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {sub.label}
