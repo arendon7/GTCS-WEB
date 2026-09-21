@@ -8,6 +8,14 @@ function imagePosition(slug: string) {
   return slug === "bioinsumo-bacillus-subtilis" || slug === "bioinsumo-metarhizium" ? "wg-bio-lines__media--bottom" : "wg-bio-lines__media--top";
 }
 
+function imageLabel(slug: string) {
+  return slug === "bioinsumo-trichoderma" || slug === "bioinsumo-bacillus-subtilis"
+    ? "Referencia combinada · Trichoderma + Bacillus"
+    : slug === "bioinsumo-beauveria" || slug === "bioinsumo-metarhizium"
+      ? "Referencia combinada · Beauveria + Metarhizium"
+      : "Referencia individual · 1 L";
+}
+
 export function WondergreenBioinputLines() {
   return (
     <section className="wg-bio-lines" id="bioinsumos" aria-labelledby="wg-bio-lines-title">
@@ -25,7 +33,7 @@ export function WondergreenBioinputLines() {
             {product.image ? (
               <Link className={`wg-bio-lines__media ${imagePosition(product.slug)}`} href={`/wondergreen/productos/${product.slug}/`} aria-label={`Abrir ficha de ${product.name}`}>
                 <Image src={product.image} alt={`Etiqueta de referencia de ${product.name} en presentación de 1 L`} fill sizes="(max-width: 760px) 100vw, 19vw" />
-                <span>Referencia visual · 1 L</span>
+                <span>{imageLabel(product.slug)}</span>
               </Link>
             ) : null}
             <div className="wg-bio-lines__top"><span>{product.family}</span><small>Portafolio técnico</small></div>

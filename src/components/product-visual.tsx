@@ -8,6 +8,11 @@ type ProductVisualProps = {
 
 export function ProductVisual({ product, context }: ProductVisualProps) {
   const media = getProductMedia(product.slug);
+  const combinedReference = product.slug === "bioinsumo-trichoderma" || product.slug === "bioinsumo-bacillus-subtilis"
+    ? "Trichoderma y Bacillus subtilis"
+    : product.slug === "bioinsumo-beauveria" || product.slug === "bioinsumo-metarhizium"
+      ? "Beauveria y Metarhizium"
+      : null;
 
   if (canRenderPublicPackshot(media) && media.src && media.alt) {
     return (
@@ -20,8 +25,8 @@ export function ProductVisual({ product, context }: ProductVisualProps) {
   if (product.image) {
     return (
       <figure className={`product-reference-visual product-reference-visual--${context}`}>
-        <img src={product.image} alt={`Ficha visual de la familia ${product.family}`} />
-        <figcaption>{context === "card" ? "Vista de la familia Wondergreen. La ficha y la cotización orientan la presentación adecuada para cada solicitud." : "Vista de referencia de la familia. La ficha técnica y la cotización organizan presentación, suministro y programa de uso."}</figcaption>
+        <img src={product.image} alt={combinedReference ? `Referencia visual combinada de ${combinedReference} Wondergreen` : `Ficha visual de la familia ${product.family}`} />
+        <figcaption>{combinedReference ? `Referencia visual combinada: ${combinedReference}. La ficha individual y la cotización orientan la presentación adecuada.` : context === "card" ? "Vista de la familia Wondergreen. La ficha y la cotización orientan la presentación adecuada para cada solicitud." : "Vista de referencia de la familia. La ficha técnica y la cotización organizan presentación, suministro y programa de uso."}</figcaption>
       </figure>
     );
   }
