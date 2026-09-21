@@ -69,7 +69,11 @@ export const products: Product[] = [
       { label: "Presentación", value: "Bulto 40 kg" },
       { label: "Precio Referencia", value: "COP $147.400" }
     ],
-    application: ["La dosis, frecuencia y vía se definen con etiqueta vigente, diagnóstico y recomendación técnica."],
+    application: [
+      "Ubicarlo en la etapa de establecimiento, brotación o crecimiento vegetativo que se quiere acompañar.",
+      "Aplicarlo al suelo, cerca de la zona radicular activa y con humedad suficiente para favorecer su incorporación.",
+      "Definir dosis, frecuencia y distancia al tallo con la etiqueta vigente, el diagnóstico y la recomendación técnica del lote.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Limón Tahití", "Pastos", "Plátano", "Tomate", "Lechuga", "Gulupa", "Granadilla", "Uchuva", "Lulo"],
     cautions: ["No aplicar en suelo seco sin adecuada humedad.", "Conservar en lugar techado y seco."],
     priceCop: 147400,
@@ -103,7 +107,11 @@ export const products: Product[] = [
       { label: "Presentación", value: "Bulto 40 kg" },
       { label: "Precio Referencia", value: "COP $147.400" }
     ],
-    application: ["Definir aplicación y periodicidad con etiqueta vigente y recomendación técnica."],
+    application: [
+      "Usarlo cuando la planta ya está estable y el objetivo sea sostener una nutrición balanceada, no forzar un crecimiento puntual.",
+      "Distribuirlo de manera homogénea en la zona de goteo, evitando concentrarlo sobre el tallo o aplicarlo con el suelo saturado.",
+      "Definir cantidad y periodicidad con análisis, etiqueta vigente, manejo previo y recomendación técnica.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Limón Tahití", "Pastos", "Plátano", "Tomate", "Lechuga", "Gulupa", "Granadilla", "Uchuva", "Lulo"],
     cautions: ["Distribuir de forma homogénea en la zona de goteo."],
     priceCop: 147400,
@@ -137,7 +145,11 @@ export const products: Product[] = [
       { label: "Presentación", value: "Bulto 40 kg" },
       { label: "Precio Referencia", value: "COP $115.500" }
     ],
-    application: ["Confirmar dosis, vía y momento con etiqueta vigente y recomendación técnica."],
+    application: [
+      "Confirmar que la planta se encuentre en transición reproductiva y que luz, agua y sanidad no estén limitando la floración.",
+      "Aplicarlo al suelo como parte del programa de la etapa, sin sustituir polinización, manejo de carga ni seguimiento del cultivo.",
+      "Definir dosis, momento y frecuencia con la etiqueta vigente y la recomendación técnica para el lote.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Limón Tahití", "Tomate", "Gulupa", "Granadilla", "Uchuva", "Lulo"],
     cautions: ["No aplicar sobre follaje mojado."],
     priceCop: 115500,
@@ -171,7 +183,11 @@ export const products: Product[] = [
       { label: "Presentación", value: "Bulto 40 kg" },
       { label: "Precio Referencia", value: "COP $121.900" }
     ],
-    application: ["Definir dosis y momento con etiqueta vigente, carga productiva y recomendación técnica."],
+    application: [
+      "Usarlo cuando el cultivo esté en cuajado, desarrollo o llenado y exista una condición productiva que acompañar.",
+      "Revisar agua, raíces, carga y sanidad antes de ajustar la nutrición del fruto u órgano cosechado.",
+      "Definir dosis, momento y frecuencia con la etiqueta vigente, la carga productiva y la recomendación técnica.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Limón Tahití", "Plátano", "Tomate", "Gulupa", "Granadilla", "Uchuva", "Lulo"],
     cautions: ["Mantener humedad de suelo constante para absorción eficiente."],
     priceCop: 121900,

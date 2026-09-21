@@ -207,6 +207,7 @@ La ruta de producto sigue siendo:
 48. Las fichas de kits deben explicar que una composición completa es una secuencia y no una mezcla simultánea; cada etapa debe conservar su enlace de producto, su condición de uso y una salida hacia el diagnóstico.
 49. Las fichas y guías de Casa & Jardín que ya tienen CTA propios no deben recibir la barra flotante global; ninguna acción persistente puede tapar una etapa, una advertencia o una ruta de uso específica.
 50. Toda landing de herramienta debe ofrecer, además de landing/demo/runtime, una salida visible para administradores hacia usuarios, roles y aplicaciones; el acceso operativo no debe depender de encontrar el enlace en el menú global.
+51. Toda ficha Wondergreen debe separar fórmula, función, etapa, vía de aplicación y dosis: la página puede explicar la lógica de uso y sus beneficios, pero una cantidad universal solo aparece cuando la etiqueta y la ficha vigente la soportan.
 
 ## Regla de continuidad
 
