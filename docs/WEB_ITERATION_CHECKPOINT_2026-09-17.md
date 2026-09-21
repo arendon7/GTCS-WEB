@@ -143,6 +143,8 @@ La ruta de producto sigue siendo:
 - QA de navegación Casa & Jardín: la salida estática exporta las anclas `#espacios`, `#guias`, `#etapas`, `#diagnostico` y `#kits`, además de las rutas canónicas de kits y productos.
 - Las cinco tarjetas de kit en la portada Casa & Jardín ahora enlazan a sus fichas canónicas (`plantas-verdes`, `plantas-con-flor`, `mi-huerta`, `casa-completa`, `casa-completa-xl`) con un CTA explícito de lectura.
 - QA de continuidad de kits: las cinco tarjetas exportan su enlace a ficha y el texto distingue abrir la ficha de consultar disponibilidad.
+- El rail reutilizable de acceso ahora comunica explícitamente si la entrada es demo con datos ilustrativos, runtime real separado o entorno configurado por identidad y permisos.
+- QA de contrato de acceso: las cinco landings (`/app/`, `/huella/`, `/red/`, `/agroway/`, `/sana/`) mantienen sus botones y exportan una nota contextual de acceso.
 
 ## Riesgos que permanecen
 
@@ -193,6 +195,7 @@ La ruta de producto sigue siendo:
 36. Las fichas largas deben ofrecer una navegación local breve y semántica; sus enlaces deben apuntar a contenido existente, no duplicar la ficha ni desplazar el CTA principal.
 37. Las experiencias editoriales extensas deben ofrecer un índice contextual temprano; combinar anclas de lectura con rutas de catálogo cuando el usuario necesita pasar de inspiración a decisión.
 38. Toda tarjeta de catálogo que tenga ficha propia debe ofrecer un CTA explícito a esa ficha; no dejar la imagen y el claim como contenido sin destino navegable.
+39. Toda landing de herramienta debe distinguir en lenguaje visible entre demo ilustrativa y runtime productivo; el usuario debe saber si puede entrar sin credenciales y qué datos encontrará.
 
 ## Regla de continuidad
 

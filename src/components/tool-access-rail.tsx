@@ -29,6 +29,14 @@ export function ToolAccessRail({
   accessHref,
   accessLabel,
 }: ToolAccessRailProps) {
+  const accessNote = runtimeHref && demoHref
+    ? "Demo pública con datos ilustrativos · entorno real separado."
+    : demoHref
+      ? "Demo navegable sin contraseña · datos ilustrativos."
+      : runtimeHref
+        ? "Entorno disponible · acceso según identidad y permisos."
+        : "La experiencia se configura por organización, usuarios y permisos.";
+
   return (
     <section className="tool-access-rail" aria-labelledby={`${id}-access-title`}>
       <div className="container tool-access-rail__grid">
@@ -38,7 +46,7 @@ export function ToolAccessRail({
           <p>{copy}</p>
           <div className="tool-access-rail__status" aria-label={`Estado de ${name}`}>
             <span>{status}</span>
-            <small>Esta página explica el producto y sus módulos.</small>
+            <small>{accessNote}</small>
           </div>
           <div className="button-row">
             {runtimeHref ? (
