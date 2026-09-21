@@ -69,6 +69,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 104px;
   font-size: 16px;
   background-color: var(--green-950);
 }
@@ -382,7 +383,7 @@ p, li, blockquote {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(5, 31, 23, 0.88);
+  background: #051f17;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
