@@ -46,6 +46,16 @@
 .digital-v4-hero figcaption { position: absolute; right: 18px; bottom: 18px; left: 18px; display: grid; gap: 4px; padding: 18px; border: 1px solid rgba(255,255,255,.14); border-radius: 16px 16px 16px 4px; background: rgba(4,28,20,.9); }
 .digital-v4-hero figcaption span { color: #adc4b7; font-size: .76rem; }
 
+.digital-tools-index { position: sticky; z-index: 8; top: 0; border-bottom: 1px solid #cbd8ca; background: rgba(243,240,230,.94); backdrop-filter: blur(14px); }
+.digital-tools-index__inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 66px; }
+.digital-tools-index__label { color: var(--green-800); font-size: .66rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; white-space: nowrap; }
+.digital-tools-index__links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 20px; }
+.digital-tools-index__links a { display: grid; gap: 2px; color: #53655b; line-height: 1.1; }
+.digital-tools-index__links a:hover { color: var(--green-800); }
+.digital-tools-index__links a:focus-visible { outline: 2px solid var(--green-700); outline-offset: 4px; }
+.digital-tools-index__links strong { font-size: .73rem; }
+.digital-tools-index__links small { color: #7b897f; font-size: .61rem; }
+
 .digital-v4-platforms,
 .digital-v4-governance,
 .carbon-v4-calculator,
@@ -263,6 +273,9 @@
 }
 
 @media (max-width: 760px) {
+  .digital-tools-index__inner { display: block; padding-block: 12px; }
+  .digital-tools-index__links { justify-content: flex-start; gap: 9px 16px; margin-top: 9px; }
+  .digital-tools-index__links small { display: none; }
   .carbon-v4-brandbar { display: grid; gap: 18px; padding-bottom: 30px; }
   .carbon-v4-brandbar > span { padding-top: 14px; padding-left: 0; border-top: 1px solid rgba(255,255,255,.2); border-left: 0; }
   .carbon-v4-hero__copy { padding-top: 54px; }

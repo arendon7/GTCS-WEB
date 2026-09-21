@@ -111,7 +111,13 @@ export function HomeTerritoryShowcase() {
                 El acompañamiento científico fortalece el bioproceso mediante inoculación termófila,
                 control de temperatura superior a 55 °C y seguimiento de lote. Los resultados de
                 logística, masa y ahorro provienen de la evidencia operativa y económica del caso.
+                La distancia evitada es una mejora operativa verificable; para traducirla a CO₂
+                equivalente todavía se deben completar carga, combustible, frecuencia, factor,
+                periodo y frontera del inventario.
               </p>
+              <Link className="home-territory__validation-link" href="/huella/#calculadora">
+                Traducir evidencia a un escenario de CO₂ <span aria-hidden="true">→</span>
+              </Link>
             </div>
 
             <div className="home-territory__actions">

@@ -196,6 +196,9 @@ La ruta de producto sigue siendo:
 37. Las experiencias editoriales extensas deben ofrecer un índice contextual temprano; combinar anclas de lectura con rutas de catálogo cuando el usuario necesita pasar de inspiración a decisión.
 38. Toda tarjeta de catálogo que tenga ficha propia debe ofrecer un CTA explícito a esa ficha; no dejar la imagen y el claim como contenido sin destino navegable.
 39. Toda landing de herramienta debe distinguir en lenguaje visible entre demo ilustrativa y runtime productivo; el usuario debe saber si puede entrar sin credenciales y qué datos encontrará.
+40. La evidencia territorial debe conectar con el método climático sin saltar la cadena de medición: kilómetros evitados pueden presentarse como mejora operativa, pero su traducción a CO₂e debe declarar carga, combustible, frecuencia, factor, periodo y frontera.
+41. Las páginas extensas del ecosistema digital deben ofrecer un recorrido temprano que conecte herramientas, evidencia, campo, operación y acceso; la orientación no debe depender de que el usuario descubra los enlaces al final de la página.
+42. La home debe cerrar con más de una salida: diagnóstico y contacto para conversión, pero también producto, impacto validado, herramientas y ecosistemas complementarios para que cada visitante pueda continuar según su nivel de decisión.
 
 ## Regla de continuidad
 

@@ -62,12 +62,18 @@ export default function HomePage() {
           </div>
 
           <div className="home-conversion-block__footer">
-            <p>También puedes conocer Wondergreen para agro, Casa y Jardín y huertas urbanas.</p>
+            <p>También puedes seguir la evidencia, los productos y las plataformas desde una misma ruta.</p>
             <Link href="/wondergreen/" className="conv-footer-link">
               Explorar Wondergreen <span aria-hidden="true">→</span>
             </Link>
             <Link href="/casa-jardin/" className="conv-footer-link">
               Ver Casa y Jardín <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/impacto/" className="conv-footer-link">
+              Ver impacto validado <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/herramientas/" className="conv-footer-link">
+              Abrir herramientas <span aria-hidden="true">→</span>
             </Link>
             <Link href="/sana/" className="conv-footer-link">
               Conocer SANA <span aria-hidden="true">→</span>

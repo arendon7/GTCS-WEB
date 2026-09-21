@@ -2222,6 +2222,19 @@
   line-height: 1.55;
 }
 
+.home-territory__validation-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: #b8ed72;
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.home-territory__validation-link:hover { color: #e2ffb9; }
+.home-territory__validation-link:focus-visible { outline: 2px solid #b8ed72; outline-offset: 4px; }
+
 .home-territory__actions {
   display: flex;
   align-items: center;
