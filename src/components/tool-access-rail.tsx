@@ -83,6 +83,10 @@ export function ToolAccessRail({
               Ver todas las herramientas
             </Link>
           </div>
+          <p className="tool-access-rail__admin-note">
+            <span>Administración de acceso</span>
+            ¿Gestionas una organización? <Link href="/plataforma/usuarios/">Revisa usuarios, roles y aplicaciones en el Centro Greenatics <span aria-hidden="true">→</span></Link>
+          </p>
         </div>
         <aside className="tool-access-rail__route" aria-label={`Ruta de acceso a ${name}`}>
           <span>Ruta recomendada</span>

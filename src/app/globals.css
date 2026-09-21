@@ -891,6 +891,38 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
   font-size: 0.78rem;
 }
 
+.tool-access-rail__admin-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  align-items: baseline;
+  max-width: 790px;
+  margin: 20px 0 0;
+  color: #64756a;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.tool-access-rail__admin-note > span {
+  color: var(--green-800);
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tool-access-rail__admin-note a {
+  color: var(--green-800);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 107, 69, 0.3);
+  text-underline-offset: 4px;
+}
+
+.tool-access-rail__admin-note a:hover {
+  text-decoration-color: currentColor;
+}
+
 .tool-access-rail__route {
   padding: 25px 26px 26px;
   border: 1px solid #c6d6c3;
