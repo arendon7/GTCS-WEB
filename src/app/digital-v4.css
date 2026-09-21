@@ -276,6 +276,7 @@
   .digital-tools-index__inner { display: block; padding-block: 12px; }
   .digital-tools-index__links { justify-content: flex-start; gap: 9px 16px; margin-top: 9px; }
   .digital-tools-index__links small { display: none; }
+  .digital-v4-hero figure { min-height: 360px; }
   .carbon-v4-brandbar { display: grid; gap: 18px; padding-bottom: 30px; }
   .carbon-v4-brandbar > span { padding-top: 14px; padding-left: 0; border-top: 1px solid rgba(255,255,255,.2); border-left: 0; }
   .carbon-v4-hero__copy { padding-top: 54px; }
