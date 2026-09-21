@@ -730,6 +730,9 @@
 .homegarden-v4-kits__body h3 { margin-top: 28px; }
 .homegarden-v4-kits__claim { margin-top: 14px !important; color: var(--lime-300) !important; font-family: Georgia, serif; font-size: .95rem !important; line-height: 1.2 !important; }
 .homegarden-v4-kits__intent { margin-top: 10px !important; color: #acc8ba !important; font-size: .76rem !important; }
+.homegarden-v4-kits__link { display: inline-flex; gap: 7px; margin-top: auto; padding-top: 20px; color: var(--lime-300); font-size: .78rem; font-weight: 850; text-decoration: none; }
+.homegarden-v4-kits__link:hover { color: #fff; }
+.homegarden-v4-kits__link:focus-visible { outline: 3px solid var(--lime-400); outline-offset: 4px; }
 .homegarden-v4-kits__note { display: grid; grid-template-columns: 180px 1fr; gap: 24px; margin-top: 28px; padding: 22px 24px; border: 1px solid rgba(201, 233, 183, .28); border-radius: 18px 18px 18px 5px; background: rgba(157, 203, 108, .12); }
 .homegarden-v4-kits__note strong { color: var(--lime-300); }
 .homegarden-v4-kits__note p { margin: 0; color: #bed4c8; font-size: .84rem; }

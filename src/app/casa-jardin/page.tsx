@@ -74,6 +74,7 @@ const safetySignals = [
 
 const kitCards = [
   {
+    slug: "plantas-verdes",
     title: "Plantas Verdes",
     composition: "2GROW 15-3-3 · 500 g + 2BALANCE 7-7-7 · 500 g",
     intent: "Para acompañar crecimiento activo y mantenimiento de plantas de follaje.",
@@ -82,6 +83,7 @@ const kitCards = [
     alt: "Kit Wondergreen Plantas Verdes con 2GROW y 2BALANCE",
   },
   {
+    slug: "plantas-con-flor",
     title: "Plantas con Flor",
     composition: "2BALANCE 7-7-7 · 500 g + 2BLOOM 3-8-3 · 500 g",
     intent: "Para conversar sobre estabilidad, transición y floración sin recetas genéricas.",
@@ -90,6 +92,7 @@ const kitCards = [
     alt: "Kit Wondergreen Plantas con Flor con 2BALANCE y 2BLOOM",
   },
   {
+    slug: "mi-huerta",
     title: "Mi Huerta",
     composition: "COMPOST 2 kg + CRECE / FLORECE / FRUCTIFICA · 500 g",
     intent: "Una ruta doméstica para preparar el sustrato y seguir el ciclo de la huerta.",
@@ -98,6 +101,7 @@ const kitCards = [
     alt: "Kit Wondergreen Mi Huerta con compost y líneas por etapa",
   },
   {
+    slug: "casa-completa",
     title: "Casa Completa",
     composition: "2GROW + 2BALANCE + 2BLOOM + 2FRUIT · 500 g",
     intent: "Cuatro líneas para leer la etapa de cada planta y no aplicar lo mismo a todo.",
@@ -106,6 +110,7 @@ const kitCards = [
     alt: "Kit Wondergreen Casa Completa con cuatro líneas por etapa",
   },
   {
+    slug: "casa-completa-xl",
     title: "Casa Completa XL",
     composition: "2GROW + 2BALANCE + 2BLOOM + 2FRUIT · 1 kg",
     intent: "Una propuesta de mayor volumen para colecciones, jardines y necesidades recurrentes.",
@@ -143,7 +148,7 @@ export default function CasaJardinPage() {
 
       <section className="homegarden-v4-care"><div className="container homegarden-v4-care__grid"><div><span className="eyebrow">Una rutina que sí se puede sostener</span><h2>Aplicar es solo una parte del cuidado.</h2></div><ol><li><span>01</span><strong>Observar</strong><p>Luz, humedad, hojas nuevas, raíces visibles, drenaje y presencia de plagas.</p></li><li><span>02</span><strong>Confirmar antes de aplicar</strong><p>Revisa especie, tamaño de maceta, estado de la planta y las instrucciones de la etiqueta vigente.</p></li><li><span>03</span><strong>Registrar y revisar</strong><p>Anota la fecha, toma una fotografía y observa la respuesta antes de repetir.</p></li></ol></div></section>
 
-      <section className="homegarden-v4-kits" id="kits" aria-labelledby="homegarden-kits-title"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Kits Wondergreen Casa & Jardín</span><h2 id="homegarden-kits-title">Empieza por una necesidad real y continúa por etapas.</h2></div><p>Estas composiciones ayudan a elegir una ruta de cuidado: cada kit reúne referencias con una función distinta y no implica aplicar todos sus productos al mismo tiempo. La presentación, disponibilidad, dosis y frecuencia se confirman según la planta, el volumen de sustrato y la etiqueta vigente.</p></div><div className="homegarden-v4-kits__grid">{kitCards.map(({ title, composition, intent, claim, image, alt }, index) => <article className="homegarden-v4-kits__card homegarden-v4-kits__card--visual" key={title}><figure className="homegarden-v4-kits__visual"><Image src={image} alt={alt} fill sizes="(max-width: 760px) 100vw, 20vw" /><figcaption>Composición visual del kit</figcaption></figure><div className="homegarden-v4-kits__body"><span>0{index + 1} · Ruta de cuidado</span><h3>{title}</h3><p>{composition}</p><p className="homegarden-v4-kits__claim">{claim}</p><p className="homegarden-v4-kits__intent">{intent}</p><small>Consulta disponibilidad y orientación para tu espacio.</small></div></article>)}</div><div className="homegarden-v4-kits__note"><strong>Una ruta también puede empezar con un trasplante</strong><p>Si la planta acaba de llegar, está recuperándose o necesita cambiar de sustrato, primero revisamos raíz, drenaje y humedad. Después definimos si corresponde una solución de inicio y cómo integrarla al cuidado.</p></div></div></section>
+      <section className="homegarden-v4-kits" id="kits" aria-labelledby="homegarden-kits-title"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Kits Wondergreen Casa & Jardín</span><h2 id="homegarden-kits-title">Empieza por una necesidad real y continúa por etapas.</h2></div><p>Estas composiciones ayudan a elegir una ruta de cuidado: cada kit reúne referencias con una función distinta y no implica aplicar todos sus productos al mismo tiempo. La presentación, disponibilidad, dosis y frecuencia se confirman según la planta, el volumen de sustrato y la etiqueta vigente.</p></div><div className="homegarden-v4-kits__grid">{kitCards.map(({ slug, title, composition, intent, claim, image, alt }, index) => <article className="homegarden-v4-kits__card homegarden-v4-kits__card--visual" key={title}><figure className="homegarden-v4-kits__visual"><Image src={image} alt={alt} fill sizes="(max-width: 760px) 100vw, 20vw" /><figcaption>Composición visual del kit</figcaption></figure><div className="homegarden-v4-kits__body"><span>0{index + 1} · Ruta de cuidado</span><h3>{title}</h3><p>{composition}</p><p className="homegarden-v4-kits__claim">{claim}</p><p className="homegarden-v4-kits__intent">{intent}</p><small>Consulta disponibilidad y orientación para tu espacio.</small><Link className="homegarden-v4-kits__link" href={`/casa-jardin/kits/${slug}/`}>Abrir ficha del kit <span aria-hidden="true">→</span></Link></div></article>)}</div><div className="homegarden-v4-kits__note"><strong>Una ruta también puede empezar con un trasplante</strong><p>Si la planta acaba de llegar, está recuperándose o necesita cambiar de sustrato, primero revisamos raíz, drenaje y humedad. Después definimos si corresponde una solución de inicio y cómo integrarla al cuidado.</p></div></div></section>
 
       <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Casa, jardín o huerta</span><h2>Cuéntanos qué plantas tienes y te ayudamos a encontrar una ruta sencilla.</h2></div><Link className="button button--dark" href="/contacto/?interes=casa-jardin">Consultar Casa & Jardín</Link></div></section>
     </>

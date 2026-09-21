@@ -141,6 +141,8 @@ La ruta de producto sigue siendo:
 - QA de continuidad de ficha: las secciones enlazadas exportan sus IDs en las 14 rutas dinámicas y reservan margen frente a la cabecera fija.
 - Casa & Jardín incorpora un índice de orientación en su bloque inicial: espacios, guías, etapas, diagnóstico, kits y productos quedan accesibles sin romper la lectura narrativa.
 - QA de navegación Casa & Jardín: la salida estática exporta las anclas `#espacios`, `#guias`, `#etapas`, `#diagnostico` y `#kits`, además de las rutas canónicas de kits y productos.
+- Las cinco tarjetas de kit en la portada Casa & Jardín ahora enlazan a sus fichas canónicas (`plantas-verdes`, `plantas-con-flor`, `mi-huerta`, `casa-completa`, `casa-completa-xl`) con un CTA explícito de lectura.
+- QA de continuidad de kits: las cinco tarjetas exportan su enlace a ficha y el texto distingue abrir la ficha de consultar disponibilidad.
 
 ## Riesgos que permanecen
 
@@ -190,6 +192,7 @@ La ruta de producto sigue siendo:
 35. Las anclas de portafolio deben respetar la cabecera fija y exponer un foco visible; llegar a una sección no puede ocultar su título ni depender de interacción de puntero.
 36. Las fichas largas deben ofrecer una navegación local breve y semántica; sus enlaces deben apuntar a contenido existente, no duplicar la ficha ni desplazar el CTA principal.
 37. Las experiencias editoriales extensas deben ofrecer un índice contextual temprano; combinar anclas de lectura con rutas de catálogo cuando el usuario necesita pasar de inspiración a decisión.
+38. Toda tarjeta de catálogo que tenga ficha propia debe ofrecer un CTA explícito a esa ficha; no dejar la imagen y el claim como contenido sin destino navegable.
 
 ## Regla de continuidad
 
