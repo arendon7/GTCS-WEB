@@ -69,7 +69,7 @@ const portfolioUniverses = [
   {
     number: "03",
     title: "Wondergreen Casa & Jardín",
-    copy: "Soluciones simples y especializadas para plantas de interior, jardines, viveros, huertas urbanas y proyectos educativos.",
+    copy: "Soluciones claras y especializadas para plantas de interior, jardines, viveros, huertas urbanas y proyectos educativos.",
     links: [["Ir a Casa & Jardín", "/casa-jardin/"], ["Diagnóstico de plantas", "/diagnostico/"], ["Guías prácticas", "/biblioteca/huertas/"]],
   },
 ] as const;

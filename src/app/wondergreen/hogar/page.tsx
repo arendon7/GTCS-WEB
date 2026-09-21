@@ -40,7 +40,7 @@ export default function WondergreenHomePage() {
             <Link className="back-link" href="/wondergreen/">← Wondergreen</Link>
             <span className="eyebrow">Wondergreen Nutrients Hogar</span>
             <h1>Kits de cultivo para uso práctico en casa, matera y huerta urbana.</h1>
-            <p className="lead">Una experiencia más simple para quien no necesita un portafolio agrícola completo, pero sí quiere entender qué hacer con su planta según objetivo, etapa y condición.</p>
+            <p className="lead">Una experiencia más directa para quien no necesita un portafolio agrícola completo, pero sí quiere entender qué hacer con su planta según objetivo, etapa y condición.</p>
             <div className="home-status">Una ruta de cuidado por objetivo, etapa y condición de la planta. El equipo orienta el producto, la presentación y el protocolo apropiados para cada caso.</div>
           </div>
           <div className="home-garden-visual" aria-hidden="true"><div className="home-pot"><span></span><i></i><b></b></div><div className="home-soil-ring">suelo</div><div className="home-care-ring">cuidado</div></div>
@@ -63,10 +63,10 @@ export default function WondergreenHomePage() {
       </section>
 
       <section className="knowledge-section">
-        <div className="container split-knowledge"><div><span className="eyebrow">Huertas</span><h2>Casa, comunidad y educación requieren una ruta diferente al agro profesional.</h2></div><div><p>Para huertas urbanas, escolares o comunitarias priorizamos preparación del suelo, establecimiento, observación, manejo seguro y selección simple por objetivo. En contextos educativos, la relación comercial y técnica se dirige a la institución o responsable adulto.</p><div className="button-row"><Link className="button button--primary" href="/biblioteca/huertas/">Abrir guía de huertas</Link><Link className="button button--ghost" href="/contacto/">Consultar proyecto</Link></div></div></div>
+        <div className="container split-knowledge"><div><span className="eyebrow">Huertas</span><h2>Casa, comunidad y educación requieren una ruta diferente al agro profesional.</h2></div><div><p>Para huertas urbanas, escolares o comunitarias priorizamos preparación del suelo, establecimiento, observación, manejo seguro y selección por objetivo. En contextos educativos, la relación comercial y técnica se dirige a la institución o responsable adulto.</p><div className="button-row"><Link className="button button--primary" href="/biblioteca/huertas/">Abrir guía de huertas</Link><Link className="button button--ghost" href="/contacto/">Consultar proyecto</Link></div></div></div>
       </section>
 
-      <section className="knowledge-source-band"><div className="container knowledge-source-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento Hogar</span><h2>Una recomendación simple también puede tener buen criterio.</h2></div><div><p>La orientación considera especie, etapa, luz, riego, drenaje, tamaño de matera y objetivo de cuidado. Para seleccionar una presentación o programa, el equipo Wondergreen acompaña la decisión.</p><Link href="/contacto/?interes=wondergreen-hogar">Hablar con el equipo →</Link></div></div></section>
+      <section className="knowledge-source-band"><div className="container knowledge-source-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento Hogar</span><h2>Una recomendación clara también puede tener buen criterio.</h2></div><div><p>La orientación considera especie, etapa, luz, riego, drenaje, tamaño de matera y objetivo de cuidado. Para seleccionar una presentación o programa, el equipo Wondergreen acompaña la decisión.</p><Link href="/contacto/?interes=wondergreen-hogar">Hablar con el equipo →</Link></div></div></section>
     </>
   );
 }

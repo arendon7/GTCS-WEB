@@ -10,7 +10,7 @@ const entries = [
 
 export function DigitalToolsIndex() {
   return (
-    <nav className="digital-tools-index" aria-label="Recorrido rápido por el ecosistema digital">
+    <nav className="digital-tools-index" aria-label="Recorrido por el ecosistema digital">
       <div className="container digital-tools-index__inner">
         <span className="digital-tools-index__label">Recorrido digital</span>
         <div className="digital-tools-index__links">

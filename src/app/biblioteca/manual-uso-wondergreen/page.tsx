@@ -30,7 +30,7 @@ const doNot = [
   "No asumir compatibilidad entre productos o sistemas de aplicación.",
   "No trasladar una dosis entre cultivos, presentaciones o formulaciones.",
   "No aplicar por rutina cuando el lote presenta estrés o una causa no diagnosticada.",
-  "No usar este borrador como sustituto de ficha, etiqueta o recomendación técnica aprobada.",
+  "No sustituyas la ficha técnica, la etiqueta o la recomendación técnica vigente con esta guía general.",
 ] as const;
 
 export default function WondergreenUseManualPage() {
@@ -55,7 +55,7 @@ export default function WondergreenUseManualPage() {
           <div>
             <Link className="back-link" href="/biblioteca/">← Biblioteca</Link>
             <span className="eyebrow">Guía de aplicación en campo</span>
-            <h1>La aplicación en campo debe ser simple, pero nunca improvisada.</h1>
+            <h1>La aplicación en campo necesita criterio, no improvisación.</h1>
             <p className="lead">Esta guía organiza los criterios operativos que acompañan una aplicación responsable. La ficha técnica y el protocolo de la referencia elegida definen las dosis, mezclas, compatibilidades e instrucciones específicas.</p>
           </div>
           <aside className="knowledge-warning">

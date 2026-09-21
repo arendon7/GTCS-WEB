@@ -19,7 +19,7 @@ const route = [
 ] as const;
 
 const contexts = [
-  ["Casa y matera", "Simplicidad, lectura visual y rutinas fáciles de sostener."],
+  ["Casa y matera", "Lectura visual y rutinas que el espacio puede sostener."],
   ["Huerta comunitaria", "Roles claros, calendario, manejo colectivo y trazabilidad básica."],
   ["Huerta escolar", "Aprendizaje ambiental y agronómico con gestión institucional y responsables adultos."],
   ["Proyecto territorial", "Puede integrarse con compostaje, educación ambiental, viveros y programas públicos."],
