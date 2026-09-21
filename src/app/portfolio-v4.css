@@ -1031,6 +1031,10 @@
 .wg-biol-hero__visual figcaption { position: absolute; right: 16px; bottom: 16px; left: 16px; display: grid; gap: 4px; padding: 17px 18px; border: 1px solid rgba(255,255,255,.18); border-radius: 15px 15px 15px 4px; background: rgba(5, 31, 23, .92); backdrop-filter: blur(12px); }
 .wg-biol-hero__visual figcaption span { color: #bbd0c3; font-size: .75rem; line-height: 1.45; }
 .wg-biol-intro { padding-block: clamp(68px, 9vw, 126px); background: #f7f6ef; }
+.wg-biol-index { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 28px; padding: 12px 14px; border: 1px solid #d1ddcf; border-radius: 999px; background: rgba(255,255,255,.72); color: #64736a; font-size: .72rem; font-weight: 800; }
+.wg-biol-index span { color: #28734f; letter-spacing: .08em; text-transform: uppercase; }
+.wg-biol-index a { color: #146b47; text-decoration: none; text-underline-offset: 4px; }
+.wg-biol-index a:hover, .wg-biol-index a:focus-visible { text-decoration: underline; }
 .wg-biol-intro__grid, .wg-biol-presentations__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .8fr); gap: clamp(36px, 8vw, 120px); align-items: start; }
 .wg-biol-intro h2, .wg-biol-use h2, .wg-biol-analysis h2, .wg-biol-presentations h2, .wg-biol-checks h2 { max-width: 820px; margin: 12px 0 0; color: #183d2d; font-family: Georgia, serif; font-size: clamp(2.2rem, 4.3vw, 4.5rem); line-height: .98; letter-spacing: -.045em; }
 .wg-biol-intro p { color: #536259; line-height: 1.7; }
@@ -1080,4 +1084,9 @@
   .wg-biol-analysis__table, .wg-biol-checks__grid { grid-template-columns: 1fr; }
   .wg-biol-hero h1 { font-size: clamp(2.8rem, 13vw, 4.8rem); }
   .wg-biol-hero__visual { min-height: 420px; }
+}
+
+@media (max-width: 560px) {
+  .wg-biol-index { align-items: flex-start; flex-direction: column; border-radius: 18px; }
+  .wg-biol-index a { width: 100%; padding-top: 7px; border-top: 1px solid #dfe8dc; }
 }
