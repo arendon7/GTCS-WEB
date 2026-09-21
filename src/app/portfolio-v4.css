@@ -152,6 +152,7 @@
 .agroindustry-v4-currents { background: #fff; }
 .wg-v4-crops { background: #f7faf5; }
 .wg-v4-product-jump{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:28px 0 22px;padding:10px;border:1px solid #d2dfd1;border-radius:999px;background:#fff}.wg-v4-product-jump>span{margin:0 8px;color:#617269;font-size:.68rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.wg-v4-product-jump a{padding:8px 13px;border:1px solid #cad8cb;border-radius:999px;color:#206b49;font-size:.78rem;font-weight:850;text-decoration:none;transition:background .16s ease,border-color .16s ease,transform .16s ease}.wg-v4-product-jump a:hover{border-color:#80ac82;background:#eef7eb;transform:translateY(-1px)}
+#productos,
 #solidos,
 #liquidos,
 #bioinsumos,
@@ -184,6 +185,10 @@
 }
 
 @media (max-width: 760px) {
+  .wg-v4-product-jump { flex-wrap: nowrap; align-items: center; overflow-x: auto; border-radius: 18px; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .wg-v4-product-jump::-webkit-scrollbar { display: none; }
+  .wg-v4-product-jump > span, .wg-v4-product-jump a { flex: 0 0 auto; scroll-snap-align: start; }
+  .wg-v4-product-jump > span { margin-left: 4px; }
   .wg-v4-entry__grid { grid-template-columns: 1fr; margin-top: 30px; }
   .wg-v4-entry__card { min-height: 224px; }
   .wg-v4-entry__card h3 { margin-top: 30px; }
