@@ -221,7 +221,11 @@ export const products: Product[] = [
       { label: "Presentación técnica", value: "1 L / 5 L / 20 L" },
       { label: "Estado", value: "Disponible bajo solicitud y acompañamiento técnico" }
     ],
-    application: ["Usar únicamente según etiqueta, condición regulatoria y recomendación vigentes."],
+    application: [
+      "Primero define si la necesidad es nutricional, microbiológica o preventiva; el portafolio no se aplica como una mezcla única.",
+      "Selecciona la referencia, prepara el agua y revisa compatibilidad, almacenamiento y condición regulatoria antes de abrir la aplicación.",
+      "Registra lote, fecha, vía, dosis, clima y respuesta para decidir continuidad, ajuste o rotación con evidencia.",
+    ],
     crops: ["Todos los cultivos"],
     cautions: ["No asumir compatibilidad, blanco biológico o dosis entre referencias distintas."],
     presentation: "1 L / 5 L / 20 L",
@@ -255,7 +259,11 @@ export const products: Product[] = [
       { label: "Presentación documentada", value: "1 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
-    application: ["Agitar antes de usar y definir vía, dosis y frecuencia únicamente con ficha, etiqueta y recomendación técnica vigentes."],
+    application: [
+      "Confirmar que el objetivo esté relacionado con suelo, raíz o establecimiento y que exista una condición de humedad que permita trabajar la aplicación.",
+      "Agitar antes de usar; separar la aplicación de cobres, fungicidas, desinfectantes y productos muy alcalinos salvo compatibilidad validada.",
+      "Definir vía, dosis y frecuencia con la ficha, etiqueta y recomendación técnica vigentes; registrar la respuesta radicular y del suelo.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Viveros", "Frutales"],
     cautions: ["No aplicar en horas de alta radiación.", "No mezclar con fungicidas, cobres, azufres, desinfectantes, aceites o productos muy alcalinos sin validación.", "Mantener fuera del alcance de niños y mascotas."],
     formula: "Trichoderma",
@@ -288,7 +296,11 @@ export const products: Product[] = [
       { label: "Presentación documentada", value: "1 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
-    application: ["Agitar antes de usar y definir preparación, vía y frecuencia con ficha, etiqueta y recomendación técnica vigentes."],
+    application: [
+      "Confirmar que el programa busca suelo activo o desarrollo radicular y revisar calidad de agua, humedad y manejo previo.",
+      "Agitar antes de preparar; no mezclar con bactericidas, cobres, desinfectantes o productos muy alcalinos sin prueba previa.",
+      "Definir preparación, vía y frecuencia con la ficha, etiqueta y recomendación técnica vigentes, y observar la respuesta del lote.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Viveros", "Frutales"],
     cautions: ["No mezclar con bactericidas, cobres, desinfectantes o productos muy alcalinos sin prueba previa.", "Mantener fuera del alcance de niños y mascotas.", "No usar como bloque aislado del diagnóstico."],
     formula: "Bacillus subtilis",
@@ -321,7 +333,11 @@ export const products: Product[] = [
       { label: "Presentación documentada", value: "1 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
-    application: ["Definir objetivo, momento, cobertura, vía y frecuencia a partir del monitoreo, la etiqueta vigente y la recomendación técnica."],
+    application: [
+      "Monitorear e identificar el problema antes de elegir la referencia; el microorganismo no sustituye la confirmación del blanco ni la oportunidad.",
+      "Planear cobertura, horario, humedad, calidad de agua y compatibilidad para proteger la viabilidad del producto durante la aplicación.",
+      "Definir objetivo, dosis, intervalo y frecuencia con monitoreo, etiqueta vigente y recomendación técnica; verificar el resultado antes de repetir.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Pasifloras"],
     cautions: ["Evitar radiación fuerte durante la aplicación.", "No mezclar con fungicidas, cobres, azufres, desinfectantes o aceites sin validación.", "La respuesta depende de monitoreo, clima, presión del problema y equipo disponible."],
     formula: "Beauveria",
@@ -354,7 +370,11 @@ export const products: Product[] = [
       { label: "Presentación documentada", value: "1 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
-    application: ["Agitar antes de usar y definir aplicación dirigida, vía y frecuencia con etiqueta vigente, monitoreo y recomendación técnica."],
+    application: [
+      "Relacionar la aplicación con el objetivo del programa, el monitoreo y las condiciones de humedad, temperatura y cobertura del lote.",
+      "Agitar antes de preparar y proteger la aplicación de radiación fuerte; validar mezcla, vía y compatibilidad antes de usar.",
+      "Definir aplicación dirigida, dosis y frecuencia con etiqueta vigente, monitoreo y recomendación técnica; registrar la respuesta.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Pasifloras"],
     cautions: ["No aplicar con radiación fuerte.", "No mezclar con fungicidas, cobres, azufres, aceites o desinfectantes sin validación.", "La respuesta depende de humedad, temperatura, cobertura y calidad del producto."],
     formula: "Metarhizium",
@@ -387,7 +407,11 @@ export const products: Product[] = [
       { label: "Presentación documentada", value: "1 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
-    application: ["Agitar antes de usar y definir vía, dosis y frecuencia con etiqueta vigente, objetivo preventivo y recomendación técnica."],
+    application: [
+      "Usarlo como herramienta preventiva dentro de un programa de manejo integrado, no como sustituto de prácticas culturales, físicas o biológicas.",
+      "Agitar antes de preparar y revisar compatibilidad, calidad de agua, radiación y vía de aplicación para reducir riesgos de fitotoxicidad o pérdida de eficacia.",
+      "Definir dosis, frecuencia y momento con etiqueta vigente, objetivo preventivo, monitoreo y recomendación técnica; registrar la respuesta.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Jardinería"],
     cautions: ["No mezclar con productos muy alcalinos sin prueba de compatibilidad.", "Evitar horas de alta radiación y mantener fuera del alcance de niños y mascotas.", "Ajustar dosis y frecuencia según diagnóstico, cultivo y objetivo."],
     formula: "Ajo + Ají",
@@ -419,7 +443,11 @@ export const products: Product[] = [
       { label: "Formato", value: "Líquido soluble" },
       { label: "Presentaciones", value: "1 L / 3,75 L / 20 L / 200 L / 1000 L" }
     ],
-    application: ["Definir dosis, vía y frecuencia con etiqueta vigente, calidad de agua, etapa y recomendación técnica."],
+    application: [
+      "Ubicar la referencia en la etapa de arranque, crecimiento vegetativo o recuperación que se quiere acompañar.",
+      "Revisar calidad de agua, vía de aplicación y compatibilidad antes de preparar; el formato líquido complementa, pero no reemplaza, la ruta del suelo.",
+      "Definir dosis, frecuencia y volumen con etiqueta vigente, etapa y recomendación técnica; registrar la respuesta del cultivo.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Pasifloras", "Viveros"],
     cautions: ["Realizar prueba de compatibilidad cuando se combine con bioinsumos u otros productos.", "No mezclar por intuición ni asumir que la vía foliar y la radicular tienen el mismo manejo."],
     priceCop: 17000,
@@ -453,7 +481,11 @@ export const products: Product[] = [
       { label: "Formato", value: "Líquido soluble" },
       { label: "Presentaciones", value: "1 L / 3,75 L / 20 L / 200 L / 1000 L" }
     ],
-    application: ["Definir dosis, vía y frecuencia con etiqueta vigente y recomendación técnica para el lote."],
+    application: [
+      "Usarlo cuando el cultivo requiera equilibrio o transición y el diagnóstico no indique una limitación previa de agua, raíz o sanidad.",
+      "Revisar calidad de agua, sistema de aplicación y compatibilidad física o biológica antes de incorporarlo al tanque.",
+      "Definir dosis, vía y frecuencia con etiqueta vigente, análisis y recomendación técnica para el lote; evaluar la respuesta antes de fraccionar.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Cítricos", "Plátano", "Hortalizas"],
     cautions: ["Verificar compatibilidad física y biológica antes de combinar.", "Separar aplicaciones cuando la etiqueta o la orientación técnica lo indiquen."],
     priceCop: 19100,
@@ -487,7 +519,11 @@ export const products: Product[] = [
       { label: "Formato", value: "Líquido soluble" },
       { label: "Estado", value: "Disponible bajo cotización" }
     ],
-    application: ["Definir dosis, vía y frecuencia únicamente con ficha y etiqueta vigentes."],
+    application: [
+      "Confirmar transición reproductiva, condición del cultivo y objetivo de floración antes de elegir la referencia soluble.",
+      "Revisar calidad de agua, compatibilidad con bioinsumos e intervalo entre aplicaciones antes de preparar la mezcla.",
+      "Definir dosis, vía, momento y frecuencia únicamente con ficha, etiqueta y recomendación técnica vigentes; no interpretar la fórmula como garantía de cuajado.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Cítricos", "Gulupa", "Granadilla", "Uchuva"],
     cautions: ["No presentar la fórmula como garantía de floración o cuajado.", "Confirmar mezcla, intervalo y calidad de agua antes de aplicar."],
     formula: "30-80-30",
@@ -519,7 +555,11 @@ export const products: Product[] = [
       { label: "Formato", value: "Líquido soluble" },
       { label: "Presentaciones", value: "1 L / 3,75 L / 20 L / 200 L / 1000 L" }
     ],
-    application: ["Definir dosis, vía y frecuencia con etiqueta vigente, carga productiva y recomendación técnica."],
+    application: [
+      "Ubicar la aplicación en desarrollo, llenado o maduración y definir qué indicador de calidad o rendimiento se quiere seguir.",
+      "Revisar carga productiva, agua, calidad de mezcla y compatibilidad antes de aplicar; el formato líquido no es equivalente al sólido.",
+      "Definir dosis, vía y frecuencia con etiqueta vigente, carga productiva y recomendación técnica, y comparar la respuesta con el registro del lote.",
+    ],
     crops: ["Café", "Aguacate", "Cacao", "Cítricos", "Plátano", "Gulupa", "Granadilla", "Uchuva"],
     cautions: ["No asumir que el formato líquido es equivalente a la referencia sólida.", "Verificar compatibilidad y hacer prueba de mezcla cuando corresponda."],
     priceCop: 18000,
