@@ -201,6 +201,8 @@ La ruta de producto sigue siendo:
 42. La home debe cerrar con más de una salida: diagnóstico y contacto para conversión, pero también producto, impacto validado, herramientas y ecosistemas complementarios para que cada visitante pueda continuar según su nivel de decisión.
 43. Wondergreen debe presentar sus familias por función antes de presentar referencias: base orgánica, nutrición sólida por etapa, líquidos por vía/operación y bioinsumos por manejo integrado.
 44. Una imagen documental combinada no debe rotularse como packshot individual; el texto alternativo y la etiqueta visible deben explicar el alcance real del activo hasta contar con una imagen reconciliada por SKU.
+45. El orientador Casa & Jardín debe tratar el estrés como una puerta de seguridad: no toda planta con crecimiento lento está lista para recibir nutrición; primero se debe orientar la revisión de agua, drenaje, raíces y sanidad.
+46. Los resultados de diagnóstico deben enlazar a los kits canónicos existentes y usar sus nombres oficiales; una etiqueta de marketing antigua o un kit sin ficha navegable rompe la continuidad entre orientación y compra.
 
 ## Regla de continuidad
 

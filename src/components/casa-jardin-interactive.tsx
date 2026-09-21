@@ -13,7 +13,7 @@ interface DiagnosticResult {
   description: string;
   application: string;
   recommendedKit: string;
-  kitPrice: string;
+  kitHref: string;
   waMessage: string;
 }
 
@@ -27,8 +27,8 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     headline: "La etapa observada es compatible con una orientación hacia crecimiento vegetativo.",
     description: "2GROW está orientado a acompañar establecimiento, brotación y crecimiento. Antes de aplicarlo conviene revisar humedad, drenaje, tamaño de maceta y condición general de la planta.",
     application: "Confirma la dosis y la frecuencia en la etiqueta vigente o con orientación técnica según presentación, especie y volumen de sustrato.",
-    recommendedKit: "Kit Plantas Verdes de Interior",
-    kitPrice: "COP $48.000",
+    recommendedKit: "Plantas Verdes",
+    kitHref: "/casa-jardin/kits/plantas-verdes/",
     waMessage: "Hola Wondergreen, hice el diagnóstico para mi planta en brotación y quiero pedir el Kit Plantas Verdes (CRECE + EQUILIBRA)."
   },
   equilibra: {
@@ -40,8 +40,8 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     headline: "La etapa observada es compatible con una orientación de nutrición balanceada.",
     description: "2BALANCE está orientado al mantenimiento nutricional. La selección final debe considerar especie, sustrato, riego, exposición y aplicaciones previas.",
     application: "Usa únicamente la dosis, frecuencia y vía indicadas en la etiqueta vigente o en una recomendación técnica para tu caso.",
-    recommendedKit: "Kit Plantas Verdes de Interior",
-    kitPrice: "COP $48.000",
+    recommendedKit: "Plantas Verdes",
+    kitHref: "/casa-jardin/kits/plantas-verdes/",
     waMessage: "Hola Wondergreen, hice el diagnóstico para mi planta estable y quiero pedir el Kit de Mantenimiento EQUILIBRA."
   },
   florece: {
@@ -53,8 +53,8 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     headline: "La etapa observada es compatible con una orientación hacia transición reproductiva.",
     description: "2BLOOM está orientado a acompañar la etapa de floración. La respuesta depende también de luz, temperatura, riego, sanidad y condición radicular.",
     application: "Confirma la aplicación en la etiqueta vigente y evita ajustar frecuencia solo por la presencia de flores o botones.",
-    recommendedKit: "Kit Plantas con Flor & Orquídeas",
-    kitPrice: "COP $52.000",
+    recommendedKit: "Plantas con Flor",
+    kitHref: "/casa-jardin/kits/plantas-con-flor/",
     waMessage: "Hola Wondergreen, mi planta está sacando botones/flores y quiero pedir el Kit Plantas con Flor (FLORECE)."
   },
   fructifica: {
@@ -66,8 +66,8 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     headline: "La etapa observada es compatible con una orientación hacia desarrollo y llenado.",
     description: "2FRUIT está orientado a acompañar la fase productiva. El programa debe considerar carga de frutos, especie, disponibilidad de agua y nutrición previa.",
     application: "Valida dosis y frecuencia según etiqueta, presentación y condiciones de la huerta; esta orientación no reemplaza esa verificación.",
-    recommendedKit: "Kit Mi Huerta en Casa",
-    kitPrice: "COP $65.000",
+    recommendedKit: "Mi Huerta",
+    kitHref: "/casa-jardin/kits/mi-huerta/",
     waMessage: "Hola Wondergreen, mis plantas tienen frutos/huerta activa y quiero pedir el Kit Mi Huerta en Casa (FRUCTIFICA + COMPOST)."
   },
   compost: {
@@ -79,8 +79,8 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     headline: "La situación observada sugiere revisar primero la condición física y orgánica del sustrato.",
     description: "El compost puede contribuir al aporte de materia orgánica y al acondicionamiento del sustrato cuando su uso es compatible con la especie y el drenaje.",
     application: "Define la proporción con la etiqueta vigente y el volumen de la maceta; en trasplantes, verifica además aireación y drenaje de la mezcla.",
-    recommendedKit: "Kit Mi Huerta o Compost 2kg",
-    kitPrice: "COP $28.000",
+    recommendedKit: "Mi Huerta o Compost",
+    kitHref: "/casa-jardin/kits/mi-huerta/",
     waMessage: "Hola Wondergreen, necesito regenerar la tierra de mis macetas y quiero pedir Wondergreen Compost Vivo."
   }
 };
@@ -100,7 +100,7 @@ export function CasaJardinInteractive() {
   const [potSizeSelect, setPotSizeSelect] = useState<string>("M");
 
   // Determine diagnostic result
-  const isSafetyGateTriggered = plantHealth === "encharcada" || plantHealth === "plaga";
+  const isSafetyGateTriggered = plantHealth === "estresada" || plantHealth === "encharcada" || plantHealth === "plaga";
 
   let resultKey = "equilibra";
   if (plantStage === "brotes") resultKey = "crece";
@@ -251,7 +251,7 @@ export function CasaJardinInteractive() {
                   Pausa la fertilización y revisa primero la causa
                 </strong>
                 <span style={{ fontSize: "0.86rem", color: "#795548" }}>
-                  El encharcamiento, las manchas o la presencia de insectos pueden tener causas distintas. Agregar nutrientes sin revisar el problema puede aumentar el estrés.
+                  El estrés, el encharcamiento, las manchas o la presencia de insectos pueden tener causas distintas. Agregar nutrientes sin revisar el problema puede aumentar el daño.
                 </span>
               </div>
             </div>
@@ -263,7 +263,7 @@ export function CasaJardinInteractive() {
                 <li><strong>Revisa el drenaje:</strong> Asegúrate de que la maceta tenga orificios libres y la tierra no esté lodosa.</li>
                 <li><strong>Deja secar:</strong> Espera a que los primeros 3 cm de tierra estén secos al tacto antes de volver a regar.</li>
                 <li><strong>Observa antes de tratar:</strong> Registra dónde aparece el síntoma y consulta antes de usar un producto de control.</li>
-                <li><strong>Retoma la nutrición después:</strong> Cuando la causa esté identificada y la planta se estabilice, revisa la línea y dosis adecuadas.</li>
+                <li><strong>Retoma la nutrición después:</strong> Cuando la causa esté identificada y la planta se estabilice, revisa la línea y la dosis adecuadas.</li>
               </ol>
             </div>
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
@@ -297,7 +297,7 @@ export function CasaJardinInteractive() {
               </div>
               <div style={{ textAlign: "right" }}>
                 <span style={{ fontSize: "0.78rem", color: "var(--muted)", display: "block" }}>Kit sugerido:</span>
-                <strong style={{ fontSize: "1rem", color: "var(--green-900)" }}>{result.recommendedKit}</strong>
+                <Link href={result.kitHref} style={{ fontSize: "1rem", color: "var(--green-900)", fontWeight: 800, textDecoration: "underline", textUnderlineOffset: "3px" }}>{result.recommendedKit} →</Link>
               </div>
             </div>
 
