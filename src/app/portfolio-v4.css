@@ -757,7 +757,9 @@
 .homegarden-v4-care li > span { color: var(--green-700); font-size: .68rem; }
 .homegarden-v4-care li p { margin: 0; color: #56665d; font-size: .82rem; }
 
-.homegarden-v4-kits { padding-block: clamp(78px, 9vw, 132px); color: #fff; background: #0b3b2d; }
+.homegarden-v4-kits { padding-block: clamp(78px, 9vw, 132px); color: #fff; background: #0b3b2d; scroll-margin-top: 104px; }
+.homegarden-v4-kits .wg-v4-heading h2 { color: #fff; }
+.homegarden-v4-kits .wg-v4-heading .eyebrow { color: var(--lime-300); }
 .homegarden-v4-kits .wg-v4-heading > p { color: #bad0c4; }
 .homegarden-v4-kits__grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .homegarden-v4-kits__grid article { display: flex; min-height: 265px; flex-direction: column; padding: 24px; border: 1px solid rgba(255,255,255,.16); border-radius: 22px 22px 22px 6px; background: rgba(255,255,255,.06); }
