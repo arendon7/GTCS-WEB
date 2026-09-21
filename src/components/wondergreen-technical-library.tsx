@@ -8,6 +8,7 @@ const documents = [
     description: "Fertilizante líquido con actividad biológica. Incluye presentaciones de 1 L a 1000 L, usos documentados, composición analítica y condiciones de almacenamiento.",
     image: "/guides/ficha-biol-cover.png",
     href: "/wondergreen/productos/biol/",
+    pdf: "/downloads/ficha-tecnica-biol-wondergreen.pdf",
     action: "Abrir ficha web",
     note: "Ficha consultada · abril de 2024"
   },
@@ -17,6 +18,7 @@ const documents = [
     description: "Consulta las familias, fórmulas, etapas, presentaciones y estados comerciales del sistema Wondergreen antes de solicitar una recomendación.",
     image: "/guides/catalogo-cover-hd.png",
     href: "/biblioteca/catalogo-wondergreen/",
+    pdf: "/downloads/CATALOGO_WONDERGREEN_AGOSTO_2026.pdf",
     action: "Abrir catálogo web",
     note: "Referencia editorial vigente del portafolio"
   },
@@ -26,6 +28,7 @@ const documents = [
     description: "Explora guías de café, cacao, aguacate, cítricos, pastos, hortalizas y pasifloras para llegar al producto con mejor contexto.",
     image: "/guides/guia-cafe-cover.webp",
     href: "/wondergreen/cultivos/",
+    pdf: "/downloads/BIBLIOTECA_MANUALES_TECNICOS_WONDERGREEN_6_MANUALES_A4.pdf",
     action: "Explorar cultivos",
     note: "Etapa, observación y seguimiento"
   },
@@ -59,7 +62,10 @@ export function WondergreenTechnicalLibrary() {
               <h4>{document.title}</h4>
               <p>{document.description}</p>
               <small>{document.note}</small>
-              <Link href={document.href}>{document.action} →</Link>
+              <div className="wg-docs__actions">
+                <Link href={document.href}>{document.action} →</Link>
+                {document.pdf ? <a href={document.pdf} target="_blank" rel="noreferrer">Descargar PDF ↗</a> : null}
+              </div>
             </div>
           </article>
         ))}
