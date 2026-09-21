@@ -44,6 +44,13 @@ const tools = [
   ["Reconocer una alerta", "Orienta la observación de síntomas sin sustituir un diagnóstico agronómico en campo.", "/wondergreen/quiz-deficiencias/"],
 ] as const;
 
+const entryPoints = [
+  ["Ya conozco el producto", "Abre una referencia, revisa su presentación y prepara una cotización.", "Ver el portafolio", "/wondergreen/#productos"],
+  ["Necesito entender el lote", "Organiza suelo, cultivo, etapa y objetivo antes de hablar de fórmula.", "Iniciar diagnóstico", "/wondergreen/analisis-suelo/"],
+  ["Voy a mezclar o aplicar", "Revisa compatibilidad física y biológica antes de preparar el tanque.", "Revisar compatibilidad", "/wondergreen/compatibilidad/"],
+  ["Quiero estudiar primero", "Consulta catálogo, guías por cultivo y la ciencia que explica el sistema.", "Abrir biblioteca", "/wondergreen/#documentos"],
+] as const;
+
 export default function WondergreenPage() {
   return (
     <>
@@ -60,6 +67,8 @@ export default function WondergreenPage() {
           <figure className="wg-v4-hero__visual"><Image src="/products/wondergreen-system-stages.webp" alt="Sistema Wondergreen organizado por etapas del cultivo" fill priority sizes="(max-width: 900px) 100vw, 46vw" /><figcaption><strong>Un sistema, no una fórmula aislada.</strong><span>Cada producto cumple un papel dentro del ciclo productivo.</span></figcaption></figure>
         </div>
       </section>
+
+      <section className="wg-v4-entry" id="rutas" aria-labelledby="wg-v4-entry-title"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Elige tu punto de entrada</span><h2 id="wg-v4-entry-title">No tienes que empezar por el producto correcto. Empieza por la pregunta correcta.</h2></div><p>Wondergreen puede acompañar una compra puntual, una lectura técnica o un programa completo. Estas cuatro rutas te llevan al siguiente paso sin perder el contexto.</p></div><div className="wg-v4-entry__grid">{entryPoints.map(([title, copy, action, href], index) => <Link className="wg-v4-entry__card" href={href} key={title}><span>0{index + 1}</span><div><h3>{title}</h3><p>{copy}</p></div><strong>{action} <span aria-hidden="true">→</span></strong></Link>)}</div></div></section>
 
       <section className="wg-v4-levels"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Cómo quieres trabajar</span><h2>El producto es una puerta de entrada. El nivel de acompañamiento depende de tu decisión.</h2></div><p>No todas las compras necesitan una visita técnica, pero una recomendación responsable sí debe reconocer qué información existe, qué puede inferirse y qué requiere validación en campo.</p></div><div className="wg-v4-levels__grid">{serviceLevels.map((level) => <article key={level.number}><span>{level.number}</span><h3>{level.name}</h3><p>{level.ideal}</p><ul>{level.includes.map((item) => <li key={item}>{item}</li>)}</ul><Link href={level.href}>{level.cta} →</Link></article>)}</div></div></section>
 
