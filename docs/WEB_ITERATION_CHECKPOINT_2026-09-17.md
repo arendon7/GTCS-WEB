@@ -199,6 +199,8 @@ La ruta de producto sigue siendo:
 40. La evidencia territorial debe conectar con el método climático sin saltar la cadena de medición: kilómetros evitados pueden presentarse como mejora operativa, pero su traducción a CO₂e debe declarar carga, combustible, frecuencia, factor, periodo y frontera.
 41. Las páginas extensas del ecosistema digital deben ofrecer un recorrido temprano que conecte herramientas, evidencia, campo, operación y acceso; la orientación no debe depender de que el usuario descubra los enlaces al final de la página.
 42. La home debe cerrar con más de una salida: diagnóstico y contacto para conversión, pero también producto, impacto validado, herramientas y ecosistemas complementarios para que cada visitante pueda continuar según su nivel de decisión.
+43. Wondergreen debe presentar sus familias por función antes de presentar referencias: base orgánica, nutrición sólida por etapa, líquidos por vía/operación y bioinsumos por manejo integrado.
+44. Una imagen documental combinada no debe rotularse como packshot individual; el texto alternativo y la etiqueta visible deben explicar el alcance real del activo hasta contar con una imagen reconciliada por SKU.
 
 ## Regla de continuidad
 

@@ -4,6 +4,12 @@ import { products } from "@/data/products";
 
 const liquidProducts = products.filter((product) => product.category === "liquidos");
 
+function imageNote(slug: string) {
+  return slug === "2balance-liquido" || slug === "2bloom-liquido"
+    ? "Referencia documental combinada · 1 L"
+    : "Referencia visual · 1 L";
+}
+
 function cop(value: number) {
   return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
 }
@@ -38,8 +44,8 @@ export function WondergreenLiquidLines() {
           <article key={product.slug}>
             {product.image ? (
               <div className={`wg-liquid-lines__card-media ${product.slug === "2bloom-liquido" ? "wg-liquid-lines__card-media--bottom" : "wg-liquid-lines__card-media--top"}`}>
-                <Image src={product.image} alt={`Etiqueta de referencia de ${product.name} en presentación de 1 L`} fill sizes="(max-width: 760px) 100vw, 24vw" />
-                <span>Referencia visual · 1 L</span>
+                <Image src={product.image} alt={imageNote(product.slug).startsWith("Referencia documental") ? `Referencia documental combinada de ${product.name} y otra formulación líquida en presentación de 1 L` : `Etiqueta de referencia de ${product.name} en presentación de 1 L`} fill sizes="(max-width: 760px) 100vw, 24vw" />
+                <span>{imageNote(product.slug)}</span>
               </div>
             ) : null}
             <div className="wg-liquid-lines__top"><span>{product.family}</span><small>{product.stage}</small></div>
