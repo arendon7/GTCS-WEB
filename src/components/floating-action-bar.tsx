@@ -10,6 +10,7 @@ export function FloatingActionBar() {
   const [isPortfolioVisible, setIsPortfolioVisible] = useState(false);
   const [isToolsVisible, setIsToolsVisible] = useState(false);
   const [isHomePage, setIsHomePage] = useState(false);
+  const [isSuppressed, setIsSuppressed] = useState(false);
 
   useEffect(() => {
     const updateVisibility = () => setIsScrolled(window.scrollY > 520);
@@ -21,6 +22,13 @@ export function FloatingActionBar() {
     const portfolio = document.querySelector(".home-portfolio-bridge");
     const footer = document.querySelector(".site-footer");
     setIsHomePage(Boolean(hero));
+    setIsSuppressed(
+      Boolean(
+        document.querySelector(
+          ".homegarden-public-subpage, .wg-v4-hero, .homegarden-v4-hero, .digital-v4-platforms, .access-v4-environments",
+        ),
+      ),
+    );
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.target === hero) setIsHeroVisible(entry.isIntersecting);
@@ -40,7 +48,7 @@ export function FloatingActionBar() {
     };
   }, []);
 
-  const isVisible = !isHomePage && isScrolled && !isHeroVisible && !isToolsVisible && !isPortfolioVisible && !isFooterVisible;
+  const isVisible = !isSuppressed && !isHomePage && isScrolled && !isHeroVisible && !isToolsVisible && !isPortfolioVisible && !isFooterVisible;
 
   return (
     <aside

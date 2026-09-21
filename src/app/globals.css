@@ -760,12 +760,14 @@ p, li, blockquote {
 body:has(.digital-v4-platforms) > .floating-action-bar,
 body:has(.access-v4-environments) > .floating-action-bar,
 body:has(.wg-v4-hero) > .floating-action-bar,
-body:has(.homegarden-v4-hero) > .floating-action-bar {
+body:has(.homegarden-v4-hero) > .floating-action-bar,
+body:has(.homegarden-public-subpage) > .floating-action-bar {
   display: none !important;
 }
 
 body:has(.wg-v4-hero) .floating-action-bar,
-body:has(.homegarden-v4-hero) .floating-action-bar {
+body:has(.homegarden-v4-hero) .floating-action-bar,
+body:has(.homegarden-public-subpage) .floating-action-bar {
   display: none !important;
 }
 

@@ -204,6 +204,8 @@ La ruta de producto sigue siendo:
 45. El orientador Casa & Jardín debe tratar el estrés como una puerta de seguridad: no toda planta con crecimiento lento está lista para recibir nutrición; primero se debe orientar la revisión de agua, drenaje, raíces y sanidad.
 46. Los resultados de diagnóstico deben enlazar a los kits canónicos existentes y usar sus nombres oficiales; una etiqueta de marketing antigua o un kit sin ficha navegable rompe la continuidad entre orientación y compra.
 47. Las fichas Casa & Jardín deben cerrar con una rutina accionable —observar, elegir, aplicar y revisar— y ofrecer salidas hacia guías, diagnóstico y contacto; describir el producto sin explicar cómo continuar deja incompleta la experiencia.
+48. Las fichas de kits deben explicar que una composición completa es una secuencia y no una mezcla simultánea; cada etapa debe conservar su enlace de producto, su condición de uso y una salida hacia el diagnóstico.
+49. Las fichas y guías de Casa & Jardín que ya tienen CTA propios no deben recibir la barra flotante global; ninguna acción persistente puede tapar una etapa, una advertencia o una ruta de uso específica.
 
 ## Regla de continuidad
 
