@@ -203,6 +203,7 @@ La ruta de producto sigue siendo:
 44. Una imagen documental combinada no debe rotularse como packshot individual; el texto alternativo y la etiqueta visible deben explicar el alcance real del activo hasta contar con una imagen reconciliada por SKU.
 45. El orientador Casa & Jardín debe tratar el estrés como una puerta de seguridad: no toda planta con crecimiento lento está lista para recibir nutrición; primero se debe orientar la revisión de agua, drenaje, raíces y sanidad.
 46. Los resultados de diagnóstico deben enlazar a los kits canónicos existentes y usar sus nombres oficiales; una etiqueta de marketing antigua o un kit sin ficha navegable rompe la continuidad entre orientación y compra.
+47. Las fichas Casa & Jardín deben cerrar con una rutina accionable —observar, elegir, aplicar y revisar— y ofrecer salidas hacia guías, diagnóstico y contacto; describir el producto sin explicar cómo continuar deja incompleta la experiencia.
 
 ## Regla de continuidad
 
