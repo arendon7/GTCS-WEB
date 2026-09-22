@@ -157,6 +157,7 @@ export default function BibliotecaPage() {
           {/* Instant Search Box */}
           <div style={{ position: "relative", minWidth: "260px" }}>
             <input
+              className="library-page-search"
               aria-label="Buscar en la Biblioteca técnica"
               type="text"
               placeholder="Buscar por cultivo, norma o palabra clave..."
@@ -169,8 +170,7 @@ export default function BibliotecaPage() {
                 border: "1.5px solid var(--line)",
                 background: "#fafcf9",
                 fontSize: "0.86rem",
-                color: "var(--green-950)",
-                outline: "none"
+                color: "var(--green-950)"
               }}
             />
             <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--muted)" }}>

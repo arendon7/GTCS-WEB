@@ -42,11 +42,13 @@ export default function GlosarioPage() {
 
         <div style={{ background: "#ffffff", padding: "16px 20px", borderRadius: "16px", border: "1.5px solid var(--line)", marginBottom: "32px" }}>
           <input
+            className="glossary-search"
             type="text"
+            aria-label="Buscar un término del glosario"
             placeholder="Buscar término (ej: oclusión, andisol, CRA 720, biol)..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            style={{ width: "100%", border: "none", outline: "none", fontSize: "1rem", color: "var(--green-950)", fontWeight: 600 }}
+            style={{ width: "100%", border: "none", fontSize: "1rem", color: "var(--green-950)", fontWeight: 600 }}
           />
         </div>
 

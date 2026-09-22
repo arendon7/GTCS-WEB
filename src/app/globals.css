@@ -54,8 +54,8 @@
   /* Physics-based Transitions (Modern Web Guidance) */
   --ease-elastic: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Base Reset & Box Sizing */
@@ -91,6 +91,24 @@ a {
 
 button, input, select, textarea {
   font: inherit;
+}
+
+.contact-field:focus-visible,
+.universal-search-input:focus-visible,
+.library-page-search:focus-visible,
+.glossary-search:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--green-700) 42%, white);
+  outline-offset: 2px;
+}
+
+.library-explorer input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--green-700) 42%, white);
+  outline-offset: 2px;
+}
+
+.crop-explorer__search input:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--green-700) 42%, white);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================

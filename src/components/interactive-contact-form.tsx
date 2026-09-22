@@ -151,103 +151,131 @@ export function InteractiveContactForm() {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-name" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Nombre Completo / Cargo *
           </label>
           <input
+            id="contact-name"
+            name="name"
+            autoComplete="name"
             required
             type="text"
-            placeholder="Ej: Ing. Carlos Restrepo"
+            className="contact-field"
+            placeholder="Ej.: Ing. Carlos Restrepo…"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-entity" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Entidad, Empresa o Finca *
           </label>
           <input
+            id="contact-entity"
+            name="organization"
+            autoComplete="organization"
             required
             type="text"
-            placeholder="Ej: Alcaldía Municipal / Agropecuaria SAS"
+            className="contact-field"
+            placeholder="Ej.: Alcaldía Municipal o Agropecuaria SAS…"
             value={entity}
             onChange={(e) => setEntity(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-email" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Correo Electrónico *
           </label>
           <input
+            id="contact-email"
+            name="email"
+            autoComplete="email"
+            spellCheck={false}
             required
             type="email"
-            placeholder="nombre@entidad.gov.co"
+            className="contact-field"
+            placeholder="nombre@entidad.gov.co…"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-phone" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Celular / WhatsApp *
           </label>
           <input
+            id="contact-phone"
+            name="phone"
+            autoComplete="tel"
+            inputMode="tel"
             required
             type="tel"
-            placeholder="+57 300 000 0000"
+            className="contact-field"
+            placeholder="+57 300 000 0000…"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-location" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Municipio y Departamento *
           </label>
           <input
+            id="contact-location"
+            name="location"
+            autoComplete="address-level2"
             required
             type="text"
-            placeholder="Ej: Yarumal, Antioquia"
+            className="contact-field"
+            placeholder="Ej.: Yarumal, Antioquia…"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+          <label htmlFor="contact-volume" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Volumen o Escala Estimada
           </label>
           <input
+            id="contact-volume"
+            name="volume"
             type="text"
+            className="contact-field"
             placeholder={currentProfile.placeholderVol}
             value={volume}
             onChange={(e) => setVolume(e.target.value)}
-            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+            style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
           />
         </div>
       </div>
 
       <div style={{ marginBottom: "22px" }}>
-        <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+        <label htmlFor="contact-details" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
           Detalle del Requerimiento o Desafío Técnico:
         </label>
         <textarea
+          id="contact-details"
+          name="details"
+          className="contact-field"
           rows={3}
-          placeholder="Describe la situación actual, plazos del proyecto o necesidad específica de fertilización / aprovechamiento..."
+          placeholder="Describe la situación actual, los plazos o la necesidad técnica de fertilización o aprovechamiento…"
           value={details}
           onChange={(e) => setDetails(e.target.value)}
-          style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", outline: "none", background: "#fafcf9" }}
+          style={{ width: "100%", padding: "10px 14px", borderRadius: "10px", border: "1.5px solid var(--line)", fontSize: "0.88rem", background: "#fafcf9" }}
         />
       </div>
 
@@ -258,6 +286,11 @@ export function InteractiveContactForm() {
       >
         <span>Enviar solicitud y conectar con un ingeniero →</span>
       </button>
+      {submitted ? (
+        <p role="status" aria-live="polite" style={{ margin: "14px 0 0", color: "var(--green-800)", fontSize: "0.82rem", lineHeight: 1.5 }}>
+          Abrimos WhatsApp con el resumen de tu solicitud. Revisa el mensaje antes de enviarlo.
+        </p>
+      ) : null}
     </form>
   );
 }

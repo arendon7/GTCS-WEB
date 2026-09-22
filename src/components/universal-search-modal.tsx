@@ -119,6 +119,9 @@ export function UniversalSearchModal({ isOpen, onClose }: { isOpen: boolean; onC
       }}
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="universal-search-title"
         onClick={(e) => e.stopPropagation()}
         style={{
           width: "100%",
@@ -131,9 +134,12 @@ export function UniversalSearchModal({ isOpen, onClose }: { isOpen: boolean; onC
         }}
       >
         <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--line)", display: "flex", alignItems: "center", gap: "12px", background: "#fafcf9" }}>
-          <span style={{ fontSize: "1.2rem" }}>🔍</span>
+          <span style={{ fontSize: "1.2rem" }} aria-hidden="true">🔍</span>
+          <span id="universal-search-title" className="sr-only">Buscar en Greenatics</span>
           <input
+            className="universal-search-input"
             type="text"
+            aria-label="Buscar en Greenatics"
             placeholder="Buscar cultivos, herramientas, servicios o manuales en PDF..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -141,7 +147,6 @@ export function UniversalSearchModal({ isOpen, onClose }: { isOpen: boolean; onC
             style={{
               flex: 1,
               border: "none",
-              outline: "none",
               fontSize: "1rem",
               background: "transparent",
               color: "var(--green-950)",
@@ -167,11 +172,11 @@ export function UniversalSearchModal({ isOpen, onClose }: { isOpen: boolean; onC
                   padding: "12px 16px",
                   borderRadius: "12px",
                   textDecoration: "none",
-                  transition: "background 0.15s ease",
+                  transition: "background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease",
                   marginBottom: "4px"
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "#f0f8ec"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f8ec"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2px" }}>
                   <strong style={{ fontSize: "0.95rem", color: "var(--green-950)" }}>{item.title}</strong>
