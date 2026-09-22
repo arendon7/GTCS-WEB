@@ -109,7 +109,7 @@ export function WondergreenPackshots() {
 
           <div className="wg-solid-showcase__actions">
             <Link className="button button--primary" href="/wondergreen/cotizador/">
-              Cotizar con WhatsApp →
+              Abrir cotizador →
             </Link>
             <Link className="button button--ghost" href={`/wondergreen/productos/${current.id}/`}>
               Ver ficha completa →

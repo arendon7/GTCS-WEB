@@ -10,7 +10,7 @@ const documents = [
     href: "/wondergreen/productos/biol/",
     pdf: "/downloads/ficha-tecnica-biol-wondergreen.pdf",
     action: "Abrir ficha web",
-    note: "Ficha consultada · abril de 2024"
+    note: "Fuente técnica consultada · abril de 2024"
   },
   {
     title: "Catálogo técnico-comercial Wondergreen",

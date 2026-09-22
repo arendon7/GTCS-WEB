@@ -27,6 +27,8 @@ const spaces = [
     image: "/kits/kit-plantas-verdes.png",
     alt: "Kit Wondergreen Plantas Verdes para plantas de follaje",
     tag: "CRECE · EQUILIBRA",
+    href: "/casa-jardin/kits/plantas-verdes/",
+    cta: "Ver ruta Plantas Verdes",
   },
   {
     title: "Flores y jardín",
@@ -35,6 +37,8 @@ const spaces = [
     image: "/kits/kit-plantas-con-flor.png",
     alt: "Kit Wondergreen Plantas con Flor para plantas ornamentales",
     tag: "EQUILIBRA · FLORECE",
+    href: "/casa-jardin/kits/plantas-con-flor/",
+    cta: "Ver ruta Plantas con Flor",
   },
   {
     title: "Huerta en casa",
@@ -43,6 +47,8 @@ const spaces = [
     image: "/kits/kit-mi-huerta.png",
     alt: "Kit Wondergreen Mi Huerta para acompañar el ciclo de una huerta doméstica",
     tag: "PREPARA · CRECE · FLORECE · FRUCTIFICA",
+    href: "/casa-jardin/kits/mi-huerta/",
+    cta: "Ver ruta Mi Huerta",
   },
 ] as const;
 
@@ -134,7 +140,7 @@ export default function CasaJardinPage() {
 
       <section className="homegarden-v4-start"><div className="container"><nav className="homegarden-v4-jump" aria-label="Explorar Casa y Jardín"><span>Explorar esta ruta</span><a href="#espacios">Espacios</a><a href="#guias">Guías</a><a href="#etapas">Etapas</a><a href="#diagnostico">Diagnóstico</a><a href="/casa-jardin/kits/">Kits</a><a href="/casa-jardin/productos/">Productos</a></nav><div className="homegarden-v4-start__grid">{waysToStart.map(({ title, copy, cta, href, secondaryCta, secondaryHref }, index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{copy}</p><div className="homegarden-v4-start__links"><Link href={href}>{cta} →</Link>{secondaryCta && secondaryHref ? <Link href={secondaryHref}>{secondaryCta} →</Link> : null}</div></article>)}</div></div></section>
 
-      <section className="homegarden-v4-spaces" id="espacios"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Elige tu espacio</span><h2>El contexto cambia la pregunta que conviene hacer primero.</h2></div><p>Una matera, un jardín ornamental y una huerta no reciben la misma recomendación. Aquí puedes reconocer el punto de partida antes de entrar al orientador o revisar el catálogo.</p></div><div className="homegarden-v4-spaces__grid">{spaces.map(({ title, kicker, copy, image, alt, tag }) => <article key={title}><figure><Image src={image} alt={alt} fill sizes="(max-width: 760px) 100vw, 31vw" /><figcaption>{tag}</figcaption></figure><div><span>{kicker}</span><h3>{title}</h3><p>{copy}</p><Link href="#diagnostico">Explorar esta ruta <span aria-hidden="true">→</span></Link></div></article>)}</div></div></section>
+      <section className="homegarden-v4-spaces" id="espacios"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Elige tu espacio</span><h2>El contexto cambia la pregunta que conviene hacer primero.</h2></div><p>Una matera, un jardín ornamental y una huerta no reciben la misma recomendación. Aquí puedes reconocer el punto de partida antes de entrar al orientador o revisar el catálogo.</p></div><div className="homegarden-v4-spaces__grid">{spaces.map(({ title, kicker, copy, image, alt, tag, href, cta }) => <article key={title}><figure><Image src={image} alt={alt} fill sizes="(max-width: 760px) 100vw, 31vw" /><figcaption>{tag}</figcaption></figure><div><span>{kicker}</span><h3>{title}</h3><p>{copy}</p><div className="homegarden-v4-spaces__links"><Link href={href}>{cta} <span aria-hidden="true">→</span></Link><Link href="#diagnostico">Orientar mi planta <span aria-hidden="true">↗</span></Link></div></div></article>)}</div></div></section>
 
       <section className="homegarden-v4-guides" id="guias" aria-labelledby="homegarden-guides-title"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Biblioteca para decidir</span><h2 id="homegarden-guides-title">Elige la guía según la decisión que tienes delante.</h2></div><p>No todas las preguntas son de fertilización. Aquí reunimos el material para observar, preparar, trasplantar, reconocer etapas y acompañar una huerta doméstica.</p></div><div className="homegarden-v4-guides__grid">{guideCards.map(([title, copy, image, pdf]) => <article key={title}><a className="homegarden-v4-guides__cover" href={pdf} download aria-label={`Descargar ${title}`}><Image src={image} alt={`Portada: ${title}`} fill sizes="(max-width: 760px) 100vw, 24vw" /></a><div><h3>{title}</h3><p>{copy}</p><a className="homegarden-v4-guides__link" href={pdf} download>Descargar guía <span aria-hidden="true">→</span></a></div></article>)}</div><div className="homegarden-v4-guides__note"><strong>La regla común</strong><p>Observa, identifica, elige, aplica y revisa. La etapa orienta la familia de producto; la etiqueta vigente o la recomendación técnica define dosis, frecuencia y vía de aplicación.</p></div></div></section>
 
