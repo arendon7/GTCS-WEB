@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 const profileOptions = [
   { id: "esp", label: "Municipio / ESP", placeholderVol: "Ej: 150 ton/mes de orgánicos" },
@@ -52,6 +53,7 @@ export function InteractiveContactForm() {
   const [volume, setVolume] = useState<string>("");
   const [details, setDetails] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [whatsappUrl, setWhatsappUrl] = useState<string>("");
   const [context, setContext] = useState<ContactContext | null>(null);
 
   useEffect(() => {
@@ -93,7 +95,9 @@ export function InteractiveContactForm() {
       `*Requerimiento:* ${details || "Diagnóstico y cotización técnica"}\n\n` +
       `¿Podemos coordinar fecha para una llamada de ingeniería o visita técnica a la Planta Yarumal?`
     );
-    window.open(`https://wa.me/573003078822?text=${message}`, "_blank");
+    const nextWhatsappUrl = `https://wa.me/573003078822?text=${message}`;
+    setWhatsappUrl(nextWhatsappUrl);
+    window.open(nextWhatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -288,9 +292,12 @@ export function InteractiveContactForm() {
       </button>
       {submitted ? (
         <p role="status" aria-live="polite" style={{ margin: "14px 0 0", color: "var(--green-800)", fontSize: "0.82rem", lineHeight: 1.5 }}>
-          Abrimos WhatsApp con el resumen de tu solicitud. Revisa el mensaje antes de enviarlo.
+          Abrimos WhatsApp con el resumen de tu solicitud. Revisa el mensaje antes de enviarlo. Si no se abrió una nueva pestaña, <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">continúa aquí</a>.
         </p>
       ) : null}
+      <p style={{ margin: "14px 0 0", color: "var(--muted)", fontSize: "0.75rem", lineHeight: 1.5 }}>
+        Usaremos estos datos solo para entender tu solicitud y preparar el siguiente paso. También puedes revisar nuestra <Link href="/legal/privacidad/">política de privacidad</Link>.
+      </p>
     </form>
   );
 }

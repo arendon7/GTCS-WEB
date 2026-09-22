@@ -52,12 +52,12 @@ export default function ContactoPage() {
           {/* Floating Metrics Bar (1440px Wide) */}
           <div className="contact-metrics" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", background: "rgba(10, 41, 32, 0.8)", border: "1.5px solid rgba(255, 255, 255, 0.15)", borderRadius: "var(--radius-lg)", padding: "24px 32px", backdropFilter: "blur(20px)", color: "#ffffff" }}>
             <div>
-              <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>&lt; 24 Horas</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Tiempo de Respuesta Técnico</span>
+              <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>Respuesta técnica</strong>
+              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Revisión inicial de tu contexto</span>
             </div>
             <div>
-              <strong style={{ fontSize: "1.65rem", color: "#ffffff", display: "block" }}>Proforma Oficial</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Validez Fiscal & Presupuestal</span>
+              <strong style={{ fontSize: "1.65rem", color: "#ffffff", display: "block" }}>Alcance claro</strong>
+              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Base técnica para decidir</span>
             </div>
             <div>
               <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>Visitas a Planta</strong>
@@ -108,9 +108,9 @@ export default function ContactoPage() {
 
                 <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.15)", paddingTop: "18px" }}>
                   <small style={{ color: "#a8c7b8", fontSize: "0.74rem", display: "block", marginBottom: "4px" }}>Línea Directa / WhatsApp:</small>
-                  <strong style={{ fontSize: "1.25rem", color: "#ffffff", display: "block" }}>+57 300 307 8822</strong>
+                  <a href="tel:+573003078822" style={{ fontSize: "1.25rem", color: "#ffffff", display: "block", textDecoration: "none" }}>+57 300 307 8822</a>
                   <small style={{ color: "#a8c7b8", fontSize: "0.74rem", display: "block", marginTop: "8px" }}>Correo Oficial:</small>
-                  <strong style={{ fontSize: "0.92rem", color: "#cbdcd3" }}>contacto@greenatics.co</strong>
+                  <a href="mailto:contacto@greenatics.co" style={{ fontSize: "0.92rem", color: "#cbdcd3", textDecoration: "none" }}>contacto@greenatics.co</a>
                 </div>
               </div>
 
