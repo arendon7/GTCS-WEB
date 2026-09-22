@@ -137,6 +137,7 @@ export default function PlatformPage() {
                     ? runtimeLinks.red
                     : "";
               const demoHref = application.code === "OPS" ? "/app/#estacion" : application.code === "CO₂" ? "/huella/#calculadora" : application.code === "RED" ? "/red/app/" : application.code === "AG" ? "/agroway/app/" : "/sana/app/";
+              const implementationInterest = application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : application.code === "SANA" ? "sana" : "greenatics-ops";
               const state = configuredUrl
                 ? isLocalRuntime(configuredUrl) ? "Disponible en este sitio" : "Espacio operativo conectado"
                 : demoHref ? "Demo navegable disponible" : application.state;
@@ -151,11 +152,18 @@ export default function PlatformPage() {
                   <div className="platform-v4-card__actions">
                     <Link className="text-link" href={application.route}>{application.cta} <span aria-hidden="true">↗</span></Link>
                     {configuredUrl ? (
-                      <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar al espacio operativo <span aria-hidden="true">↗</span></a>
+                      <>
+                        <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar al espacio operativo <span aria-hidden="true">↗</span></a>
+                        {demoHref ? <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link> : null}
+                        <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Configurar espacio real <span aria-hidden="true">→</span></Link>
+                      </>
                     ) : demoHref ? (
-                      <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link>
+                      <>
+                        <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link>
+                        <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Configurar espacio real <span aria-hidden="true">→</span></Link>
+                      </>
                     ) : (
-                      <Link className="text-link text-link--secondary" href={`/acceso/?interes=${application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : "sana"}`}>Diseñar implementación <span aria-hidden="true">→</span></Link>
+                      <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Diseñar implementación <span aria-hidden="true">→</span></Link>
                     )}
                   </div>
                 </article>
