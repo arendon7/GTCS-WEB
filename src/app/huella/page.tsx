@@ -11,8 +11,8 @@ const TRUCK_FACTOR_KG_KM = 1.2;
 const TRUCK_CAPACITY_TONS = 10;
 
 const format = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 0 });
-const huellaAccessHref = runtimeLink(runtimeLinks.huella, "/huella/#calculadora");
-const huellaAccessLabel = runtimeLinks.huella ? "Abrir la plataforma" : "Abrir el estimador";
+const huellaAccessHref = runtimeLink(runtimeLinks.huella, "/acceso/?interes=calcula-tu-huella");
+const huellaAccessLabel = runtimeLinks.huella ? "Entrar a la plataforma" : "Configurar la plataforma";
 
 const inventoryWorkflow = [
   ["01", "Abrir el inventario", "Define organización, periodo, alcance, sede, responsable y fuentes que harán parte de la lectura."],

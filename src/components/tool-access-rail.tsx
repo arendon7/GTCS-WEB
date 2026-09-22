@@ -64,6 +64,9 @@ export function ToolAccessRail({
                     {demoLabel} <span aria-hidden="true">→</span>
                   </Link>
                 )}
+                <Link className="button button--ghost" href={accessHref}>
+                  {accessLabel} <span aria-hidden="true">→</span>
+                </Link>
               </>
             ) : demoHref ? (
               <>
