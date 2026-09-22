@@ -50,7 +50,7 @@ export default function ContactoPage() {
           </div>
 
           {/* Floating Metrics Bar (1440px Wide) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", background: "rgba(10, 41, 32, 0.8)", border: "1.5px solid rgba(255, 255, 255, 0.15)", borderRadius: "var(--radius-lg)", padding: "24px 32px", backdropFilter: "blur(20px)", color: "#ffffff" }}>
+          <div className="contact-metrics" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", background: "rgba(10, 41, 32, 0.8)", border: "1.5px solid rgba(255, 255, 255, 0.15)", borderRadius: "var(--radius-lg)", padding: "24px 32px", backdropFilter: "blur(20px)", color: "#ffffff" }}>
             <div>
               <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>&lt; 24 Horas</strong>
               <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Tiempo de Respuesta Técnico</span>
@@ -74,7 +74,7 @@ export default function ContactoPage() {
       {/* 2. FORM & DIRECTORY GRID (1440px+ WIDE) */}
       <section style={{ padding: "100px 0", background: "#ffffff", borderBottom: "1px solid var(--line)" }}>
         <div className="container">
-          <div style={{ display: "grid", gridTemplateColumns: "1.25fr 0.85fr", gap: "clamp(36px, 4vw, 64px)", alignItems: "flex-start" }}>
+          <div className="contact-layout" style={{ display: "grid", gridTemplateColumns: "1.25fr 0.85fr", gap: "clamp(36px, 4vw, 64px)", alignItems: "flex-start" }}>
             
             {/* Left: Interactive Smart Contact Form */}
             <InteractiveContactForm />
@@ -153,7 +153,7 @@ export default function ContactoPage() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px" }}>
+          <div className="contact-faq-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px" }}>
             {faqs.map((faq, idx) => (
               <div key={idx} style={{ background: "#ffffff", padding: "28px", borderRadius: "20px", border: "1.5px solid var(--line)", boxShadow: "var(--shadow-sm)" }}>
                 <h3 style={{ fontSize: "1.1rem", color: "var(--green-950)", margin: "0 0 10px", lineHeight: 1.3 }}>

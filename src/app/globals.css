@@ -965,3 +965,17 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
     width: 100%;
   }
 }
+
+/* Contact is intentionally authored with compact inline layout styles; these
+   named hooks keep the same composition usable on narrow screens. */
+@media (max-width: 760px) {
+  .contact-layout { grid-template-columns: 1fr !important; }
+  .contact-form-row { grid-template-columns: 1fr !important; }
+  .contact-faq-grid { grid-template-columns: 1fr !important; }
+  .contact-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; padding: 20px !important; }
+  .contact-profile-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 430px) {
+  .contact-metrics { grid-template-columns: 1fr !important; }
+}

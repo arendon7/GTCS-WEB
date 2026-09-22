@@ -123,7 +123,7 @@ export function InteractiveContactForm() {
         )}
 
         {/* Profile Selector Chips */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+        <div className="contact-profile-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
           {profileOptions.map((opt) => (
             <button
               key={opt.id}
@@ -149,7 +149,7 @@ export function InteractiveContactForm() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+      <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
           <label htmlFor="contact-name" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Nombre Completo / Cargo *
@@ -187,7 +187,7 @@ export function InteractiveContactForm() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+      <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
           <label htmlFor="contact-email" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Correo Electrónico *
@@ -227,7 +227,7 @@ export function InteractiveContactForm() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+      <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
           <label htmlFor="contact-location" style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
             Municipio y Departamento *
@@ -284,7 +284,7 @@ export function InteractiveContactForm() {
         className="button button--primary"
         style={{ width: "100%", padding: "16px", fontSize: "1rem", textAlign: "center", boxShadow: "0 10px 24px rgba(0, 107, 69, 0.2)" }}
       >
-        <span>Enviar solicitud y conectar con un ingeniero →</span>
+        <span>Preparar mensaje y conectar con un ingeniero →</span>
       </button>
       {submitted ? (
         <p role="status" aria-live="polite" style={{ margin: "14px 0 0", color: "var(--green-800)", fontSize: "0.82rem", lineHeight: 1.5 }}>
