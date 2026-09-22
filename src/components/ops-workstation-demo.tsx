@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
 type PlantId = "yarumal" | "tamesis";
@@ -154,6 +155,10 @@ export function OpsWorkstationDemo() {
       <div className="ops-station__topbar">
         <div className="ops-station__brand"><span aria-hidden="true">G</span><div><strong>GREENATICS</strong><small>OPS · Estación operativa</small></div></div>
         <div className="ops-station__demo-lock"><span>Demostración funcional</span><strong>Datos ilustrativos, no operación en vivo</strong></div>
+        <div className="ops-station__topbar-actions" aria-label="Navegación de la estación">
+          <Link href="/plataforma/usuarios/">Usuarios y permisos</Link>
+          <Link href="/" aria-label="Volver al sitio Greenatics">Volver a Greenatics</Link>
+        </div>
       </div>
 
       <div className="ops-station__body">
