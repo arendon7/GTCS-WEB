@@ -245,14 +245,21 @@ main [id] {
   }
 }
 
-@media (max-width: 990px) {
+@media (max-width: 1400px) {
   .site-header .desktop-nav,
-  .site-header .header-ops-btn {
+  .site-header .header-contact-btn,
+  .site-header .header-search-btn {
     display: none;
   }
 
   .site-header .mobile-toggle-btn {
     display: block;
+  }
+}
+
+@media (max-width: 990px) {
+  .site-header .header-ops-btn {
+    display: none;
   }
 }
 
