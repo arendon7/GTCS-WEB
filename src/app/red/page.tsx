@@ -52,14 +52,14 @@ export default function RedPage() {
       <ToolAccessRail
         id="red"
         name="GREENATICS Red"
-        status={runtimeLinks.red ? "Runtime conectado" : "Estación demo disponible"}
+        status={runtimeLinks.red ? "Espacio operativo conectado" : "Estación demo disponible"}
         copy="Esta landing explica la solución completa: Proyecto 360, FIELD, QA/QC, hallazgos, línea base, PMIRS STUDIO y PMIRS VIVO. La estación navegable permite explorar la experiencia; la operación productiva se configura con datos, roles y permisos del proyecto."
         runtimeHref={runtimeLinks.red || undefined}
         runtimeLabel="Entrar a la estación Red"
         demoHref="/red/app/"
         demoLabel="Entrar a la estación demo"
         accessHref="/contacto/?interes=red"
-        accessLabel="Diseñar la implementación"
+        accessLabel="Configurar un entorno propio"
       />
 
       <section className="red-v4-sequence"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Una cadena de trabajo</span><h2>Red no termina cuando termina la recolección.</h2></div><p>La microrruta es una capacidad dentro de un sistema más amplio. La información capturada en el territorio se revisa, se interpreta y se convierte en un plan que puede seguirse en el tiempo.</p></div><ol>{redSequence.map(([number, title, copy]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}</ol></div></section>

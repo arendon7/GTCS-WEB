@@ -67,10 +67,10 @@ const proofPoints = [
 ] as const;
 
 const readiness = [
-  ["Base funcional", "Golden Path transaccional desde identidad y lote hasta proyecto, campo, cosecha, venta, liquidación y cierre."],
-  ["Capacidades de ecosistema", "Control Tower, Digital Twin, AGROWAY Invest minimizado, impacto/circularidad, pasaportes y gobierno de catálogo."],
-  ["Certificación técnica", "Instalación completa, typecheck, pruebas, PostgreSQL/PostGIS/RLS, builds productivos y reconstrucción de proyectores."],
-  ["Configuración productiva", "Autenticación, hosting privado, variables de entorno, observabilidad, backups, integraciones y datos reales por organización."],
+  ["Ciclo trazable", "Desde identidad y lote hasta proyecto, campo, cosecha, venta, liquidación y cierre, cada etapa conserva su contexto."],
+  ["Capacidades conectadas", "Control de portafolio, campo, impacto, circularidad, pasaportes y catálogo pueden crecer alrededor del ciclo productivo."],
+  ["Espacio protegido", "Identidad, roles, observabilidad, respaldos, integraciones y datos separados por organización para trabajar con confianza."],
+  ["Acompañamiento continuo", "Configuramos el proyecto, formamos al equipo y ajustamos reglas, indicadores y permisos a medida que la operación aprende."],
 ] as const;
 
 export default function AgrowayPage() {
@@ -90,7 +90,7 @@ export default function AgrowayPage() {
               <Link className="button button--neon" href="/agroway/app/">Entrar como usuario demo</Link>
               <Link className="button button--outline-light" href="#recorrido">Ver el recorrido</Link>
             </div>
-            <p className="agroway-v1-hero__note"><strong>Estado:</strong> demo navegable disponible para pruebas. AGROWAY registra y organiza la información agrícola; la operación productiva se habilita después por organización, proyecto y rol. SANA utiliza esa base junto con la ciencia y las soluciones de Greenatics y Wondergreen.</p>
+            <p className="agroway-v1-hero__note"><strong>Listo para explorar:</strong> entra a la demo y recorre el ciclo completo con datos ilustrativos. AGROWAY registra y organiza la información agrícola; cuando el proyecto trabaja con datos propios, el espacio se configura por organización, proyecto y rol. SANA utiliza esa base junto con la ciencia y las soluciones de Greenatics y Wondergreen.</p>
           </div>
           <aside className="agroway-v1-hero__visual" aria-label="Cadena de valor AGROWAY">
             <div className="agroway-v1-hero__visual-top"><span>AGROWAY V1</span><small>CAMPO → DATOS → SANA</small></div>
@@ -108,7 +108,7 @@ export default function AgrowayPage() {
         demoHref="/agroway/app/"
         demoLabel="Entrar como usuario demo"
         accessHref="/contacto/?interes=agroway"
-        accessLabel="Diseñar implementación"
+        accessLabel="Configurar un entorno propio"
       />
 
       <section className="agroway-v1-intro">
@@ -134,7 +134,7 @@ export default function AgrowayPage() {
 
       <section className="agroway-v1-greenatics"><div className="container agroway-v1-greenatics__grid"><div><span className="eyebrow">La relación con SANA</span><h2>Agroway registra. Greenatics aporta ciencia. SANA conecta el ecosistema.</h2></div><div><p><strong>AGROWAY</strong> es la aplicación de trazabilidad agrícola: captura datos del productor, la finca, el lote, el cultivo, las labores, los insumos, la evidencia y la cosecha a medida que el proyecto avanza.</p><p><strong>Greenatics y Wondergreen</strong> aportan conocimiento agronómico, fertilizantes, bioinsumos, protocolos y acompañamiento. <strong>SANA</strong> usa esa información para estructurar y acompañar inversión en proyectos productivos con una lectura más completa del campo.</p><div className="button-row"><Link className="button button--dark" href="/sana/">Conocer SANA</Link><Link className="button button--ghost" href="/wondergreen/">Conocer Wondergreen</Link></div></div></div></section>
 
-      <section className="agroway-v1-readiness"><div className="container agroway-v1-readiness__grid"><div><span className="eyebrow">Puesta en marcha</span><h2>Una arquitectura lista para conectar el campo con SANA.</h2><p>La propuesta funcional y sus dominios ya están definidos. La operación productiva se habilita por fases, con runtime certificado, identidad, observabilidad y datos aislados por organización.</p><Link className="button button--primary" href="/contacto/?interes=agroway">Diseñar la implementación</Link></div><div className="agroway-v1-readiness__list">{readiness.map(([label, copy], index) => <article key={`${label}-${index}`} className={index > 1 ? "is-pending" : ""}><span>{index < 2 ? "✓" : "→"}</span><div><strong>{label}</strong><p>{copy}</p></div></article>)}</div></div></section>
+      <section className="agroway-v1-readiness"><div className="container agroway-v1-readiness__grid"><div><span className="eyebrow">Puesta en marcha</span><h2>De la demo a una operación acompañada.</h2><p>El ciclo productivo ya tiene una estructura clara. El siguiente paso es configurarla para tu organización, con los datos, roles, indicadores y reglas que el proyecto necesita para trabajar de forma consistente.</p><Link className="button button--primary" href="/contacto/?interes=agroway">Configurar un entorno propio</Link></div><div className="agroway-v1-readiness__list">{readiness.map(([label, copy], index) => <article key={`${label}-${index}`}><span>✓</span><div><strong>{label}</strong><p>{copy}</p></div></article>)}</div></div></section>
 
       <section className="agroway-v1-cta"><div className="container"><span className="eyebrow eyebrow--light">Del campo a SANA</span><h2>Si el proyecto importa, su historia también.</h2><p>Hablemos del cultivo, el nivel de trazabilidad y la información que debe estar disponible para acompañar el próximo ciclo productivo.</p><Link className="button button--neon" href="/contacto/?interes=agroway">Hablar sobre AGROWAY <span aria-hidden="true">→</span></Link></div></section>
     </>

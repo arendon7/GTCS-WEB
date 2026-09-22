@@ -60,7 +60,7 @@ export default function CarbonPage() {
         demoHref="/huella/#calculadora"
         demoLabel="Explorar estimador demo"
         accessHref="/acceso/?interes=calcula-tu-huella"
-        accessLabel="Preparar entorno real"
+        accessLabel="Configurar un entorno propio"
       />
 
       <section className="carbon-v4-product-deck" id="plataforma" aria-labelledby="huella-product-title">

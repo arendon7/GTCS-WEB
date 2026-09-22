@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Centro Greenatics | Plataformas y aplicaciones",
     description:
-      "Un solo lugar para conocer, explorar y solicitar acceso a las herramientas digitales de Greenatics.",
+      "Un solo lugar para conocer, explorar y entrar a las herramientas digitales de Greenatics.",
     url: "/plataforma/",
     images: ["/brand/greenatics-horizontal.webp"],
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const applications = [
   {
     code: "SANA",
-    state: "Ecosistema en estructuración",
+    state: "Demo pública disponible",
     name: "SANA",
     copy: "El ecosistema que articula inversión y proyectos productivos con datos de trazabilidad de AGROWAY, ciencia Greenatics, soluciones Wondergreen y acompañamiento de campo.",
     route: "/sana/",
@@ -60,7 +60,7 @@ const applications = [
   },
   {
     code: "AG",
-    state: "Entorno privado en evolución",
+    state: "Demo pública disponible",
     name: "AGROWAY",
     copy: "La aplicación de trazabilidad agrícola: productor, finca, lote, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha.",
     route: "/agroway/",
@@ -106,9 +106,9 @@ export default function PlatformPage() {
             </div>
             {configuredRuntimes.some(([, url]) => url) && (
               <div className="platform-v4-hero__availability" role="status">
-                <span>{configuredRuntimes.every(([, url]) => url && isLocalRuntime(url)) ? "Entorno local" : "Entornos conectados"}</span>
+                <span>{configuredRuntimes.every(([, url]) => url && isLocalRuntime(url)) ? "Disponible en este sitio" : "Herramientas conectadas"}</span>
                 <strong>{configuredRuntimes.filter(([, url]) => url).map(([name]) => name).join(" · ")}</strong>
-                <small>Los accesos abren cada runtime sin mezclar sus permisos ni sus datos.</small>
+                <small>Cada acceso conserva sus permisos, usuarios y datos separados.</small>
               </div>
             )}
           </div>
@@ -125,7 +125,7 @@ export default function PlatformPage() {
         <div className="container">
           <div className="platform-v4-heading">
             <div><span className="eyebrow">Aplicaciones y productos</span><h2>Cada herramienta tiene una tarea distinta.</h2></div>
-            <p>El centro organiza las entradas y hace visible el papel de cada capa. No convierte una demo en producción ni mezcla permisos entre organizaciones: cada aplicación conserva su alcance y evoluciona hacia una plataforma común. AGROWAY registra y relaciona datos de campo; SANA los usa junto con Greenatics y Wondergreen para estructurar y acompañar proyectos productivos.</p>
+            <p>El centro organiza las entradas y hace visible el papel de cada capa. Puedes conocer cada solución, abrir su demo pública y, cuando trabajes con datos propios, entrar a un espacio separado por organización. AGROWAY registra y relaciona datos de campo; SANA los usa junto con Greenatics y Wondergreen para estructurar y acompañar proyectos productivos.</p>
           </div>
           <div className="platform-v4-apps__grid">
             {applications.map((application) => {
@@ -138,10 +138,9 @@ export default function PlatformPage() {
                     : "";
               const demoHref = application.code === "OPS" ? "/app/#estacion" : application.code === "CO₂" ? "/huella/#calculadora" : application.code === "RED" ? "/red/app/" : application.code === "AG" ? "/agroway/app/" : "/sana/app/";
               const state = configuredUrl
-                ? isLocalRuntime(configuredUrl) ? "Runtime local disponible" : "Runtime conectado"
+                ? isLocalRuntime(configuredUrl) ? "Disponible en este sitio" : "Espacio operativo conectado"
                 : demoHref ? "Demo navegable disponible" : application.state;
-              const runtimeName = application.code === "CO₂" ? "Calcula tu Huella" : application.code === "RED" ? "Red" : "OPS";
-              const demoLabel = application.code === "OPS" ? "Explorar estación demo" : application.code === "CO₂" ? "Explorar estimador" : application.code === "RED" ? "Entrar a la estación demo" : "Entrar como usuario demo";
+              const demoLabel = application.code === "OPS" ? "Explorar estación demo" : application.code === "CO₂" ? "Explorar estimador" : application.code === "RED" ? "Entrar a la estación demo" : `Abrir demo de ${application.name}`;
 
               return (
                 <article className={`platform-v4-card platform-v4-card--${application.accent}`} key={application.code}>
@@ -152,7 +151,7 @@ export default function PlatformPage() {
                   <div className="platform-v4-card__actions">
                     <Link className="text-link" href={application.route}>{application.cta} <span aria-hidden="true">↗</span></Link>
                     {configuredUrl ? (
-                      <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar a {runtimeName} <span aria-hidden="true">↗</span></a>
+                      <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar al espacio operativo <span aria-hidden="true">↗</span></a>
                     ) : demoHref ? (
                       <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link>
                     ) : (
@@ -175,7 +174,7 @@ export default function PlatformPage() {
           <div className="platform-v4-access-map__grid">
             <article><span>01</span><div><strong>Landing</strong><p>Qué resuelve, para quién está diseñada y qué módulos reúne.</p></div><small>Leer antes de entrar</small></article>
             <article><span>02</span><div><strong>Demo pública</strong><p>Un recorrido navegable con datos ilustrativos y acciones visibles.</p></div><small>Explorar sin configurar una cuenta</small></article>
-            <article><span>03</span><div><strong>Entorno real</strong><p>Un espacio separado por organización, rol, permisos, persistencia y soporte.</p></div><small>Se habilita con una implementación</small></article>
+            <article><span>03</span><div><strong>Espacio operativo</strong><p>Un entorno separado por organización, rol, permisos, persistencia y soporte.</p></div><small>Se activa para tu organización</small></article>
           </div>
         </div>
       </section>

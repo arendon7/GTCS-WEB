@@ -110,14 +110,14 @@ export default function AppPage() {
       <ToolAccessRail
         id="ops"
         name="GREENATICS OPS"
-        status={runtimeLinks.ops ? "Runtime operativo disponible" : "Demostración pública disponible"}
+        status={runtimeLinks.ops ? "Espacio operativo disponible" : "Demostración pública disponible"}
         copy="Esta landing presenta la arquitectura completa de OPS. Desde aquí puedes recorrer la demostración y, si el entorno está disponible, entrar a la estación operativa separada. Los datos de demo no representan una planta conectada."
         runtimeHref={runtimeLinks.opsApp}
         runtimeLabel="Entrar a la estación OPS"
         demoHref="/app/#estacion"
         demoLabel="Explorar estación demo"
         accessHref="/contacto/?interes=greenatics-ops"
-        accessLabel="Preparar entorno real"
+        accessLabel="Configurar un entorno propio"
       />
 
       <section className="gt-ops-ribbon" aria-label="Capacidades transversales de Greenatics OPS">

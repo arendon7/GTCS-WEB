@@ -48,7 +48,7 @@ export default function SanaPage() {
             <h1>Invertir en proyectos agrícolas con más contexto, trazabilidad y acompañamiento.</h1>
             <p className="lead">SANA conecta oportunidades productivas con capital, ciencia agronómica y seguimiento. Usa los datos que AGROWAY registra en el campo para acompañar decisiones de inversión con una lectura más cercana a la realidad.</p>
             <div className="button-row"><Link className="button button--neon" href="/sana/app/">Entrar como usuario demo</Link><Link className="button button--outline-light" href="#como-funciona">Cómo funciona</Link></div>
-            <p className="sana-v1-hero__note"><strong>Demo disponible:</strong> puedes entrar como usuario demo y recorrer el espacio de trabajo. AGROWAY es la aplicación de trazabilidad; SANA es el ecosistema que usa esa información para estructurar, acompañar y evaluar proyectos productivos.</p>
+            <p className="sana-v1-hero__note"><strong>Listo para explorar:</strong> entra como usuario demo y recorre el espacio de trabajo. AGROWAY es la aplicación de trazabilidad; SANA es el ecosistema que usa esa información para estructurar, acompañar y evaluar proyectos productivos.</p>
           </div>
           <figure className="sana-v1-hero__image"><Image src="/projects/tamesis/paisaje-tamesis.jpg" alt="Paisaje productivo del proyecto Támesis" fill priority sizes="(max-width: 760px) 100vw, 46vw" /><figcaption><span>Campo · ciencia · inversión</span><strong>Los proyectos se entienden mejor cuando su historia se puede seguir.</strong></figcaption></figure>
         </div>
@@ -62,7 +62,7 @@ export default function SanaPage() {
         demoHref="/sana/app/"
         demoLabel="Entrar como usuario demo"
         accessHref="/contacto/?interes=sana"
-        accessLabel="Diseñar implementación"
+        accessLabel="Configurar un entorno propio"
       />
 
       <section className="sana-v1-definition"><div className="container sana-v1-definition__grid"><div><span className="eyebrow">La propuesta SANA</span><h2>La inversión productiva necesita una capa que conecte el propósito con lo que realmente ocurre.</h2></div><div><p>SANA no es una pantalla de rentabilidad aislada ni una aplicación de captura. Es un ecosistema para organizar proyectos productivos, reunir capacidades y seguir la relación entre capital, decisiones agronómicas, trabajo de campo y resultados.</p><p>La información se alimenta de AGROWAY con datos oportunos y sincronizados según la conectividad del campo, y se complementa con la ciencia, los fertilizantes, los bioinsumos y el acompañamiento de Greenatics y Wondergreen. Así, cada proyecto puede ser leído con más contexto y menos suposiciones.</p></div></div></section>

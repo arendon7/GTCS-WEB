@@ -30,19 +30,19 @@ export function ToolAccessRail({
   accessLabel,
 }: ToolAccessRailProps) {
   const accessNote = runtimeHref && demoHref
-    ? "Demo pública con datos ilustrativos · entorno real separado."
+    ? "Demo pública con datos ilustrativos · espacio operativo separado por organización."
     : demoHref
-      ? "Demo navegable sin contraseña · datos ilustrativos."
+      ? "Demo navegable sin contraseña · datos ilustrativos y módulos abiertos."
       : runtimeHref
-        ? "Entorno disponible · acceso según identidad y permisos."
-        : "La experiencia se configura por organización, usuarios y permisos.";
+        ? "Espacio operativo disponible · acceso según identidad y permisos."
+        : "El espacio propio se configura por organización, usuarios y permisos.";
 
   return (
     <section className="tool-access-rail" aria-labelledby={`${id}-access-title`}>
       <div className="container tool-access-rail__grid">
         <div>
-          <span className="eyebrow">Entrada a la plataforma</span>
-          <h2 id={`${id}-access-title`}>Elige cómo entrar a {name}.</h2>
+          <span className="eyebrow">Elige tu recorrido</span>
+          <h2 id={`${id}-access-title`}>Conoce {name}, pruébalo y entra a tu espacio.</h2>
           <p>{copy}</p>
           <div className="tool-access-rail__status" aria-label={`Estado de ${name}`}>
             <span>{status}</span>
@@ -84,8 +84,8 @@ export function ToolAccessRail({
             </Link>
           </div>
           <p className="tool-access-rail__next">
-            <span>Para organizaciones</span>
-            <Link href="/plataforma/usuarios/">Gestionar usuarios, roles y aplicaciones en el Centro Greenatics <span aria-hidden="true">→</span></Link>
+            <span>Para equipos y organizaciones</span>
+            <Link href="/plataforma/usuarios/">Gestionar usuarios, roles y aplicaciones desde el Centro Greenatics <span aria-hidden="true">→</span></Link>
           </p>
         </div>
       </div>
