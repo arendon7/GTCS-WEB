@@ -43,7 +43,7 @@ export function EspSystemVisualizer() {
                 background: isSelected ? "#f0f8ec" : "#fafcf9",
                 cursor: "pointer",
                 textAlign: "left",
-                transition: "all 0.2s ease",
+                transition: "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease",
                 transform: isSelected ? "translateY(-2px)" : "none",
                 boxShadow: isSelected ? "0 8px 20px rgba(0, 107, 69, 0.12)" : "none",
               }}

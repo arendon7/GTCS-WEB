@@ -93,7 +93,7 @@ export default function CompatibilidadPage() {
                       border: isChecked ? "2px solid var(--green-800)" : "1px solid var(--line)",
                       background: isChecked ? "#eef7eb" : "#fafcf9",
                       cursor: "pointer",
-                      transition: "all 0.15s ease"
+                      transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                     }}
                   >
                     <input

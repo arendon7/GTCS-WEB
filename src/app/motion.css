@@ -164,7 +164,7 @@ article[class*="__serviceCard"]:hover {
   color: #ffffff;
   background: var(--green-800, #006b45);
   box-shadow: 0 4px 12px rgba(0, 107, 69, 0.25);
-  transition: all var(--duration-normal) var(--ease-smooth);
+  transition: color var(--duration-normal) var(--ease-smooth), background-color var(--duration-normal) var(--ease-smooth), box-shadow var(--duration-normal) var(--ease-smooth);
 }
 
 /* 5. Floating Badge & Live Indicator Pulse */

@@ -160,7 +160,7 @@ export function CasaJardinInteractive() {
                     fontSize: "0.86rem",
                     textAlign: "left",
                     cursor: "pointer",
-                    transition: "all 0.15s ease"
+                    transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                   }}
                 >
                   {opt.label}
@@ -196,7 +196,7 @@ export function CasaJardinInteractive() {
                     fontSize: "0.86rem",
                     textAlign: "left",
                     cursor: "pointer",
-                    transition: "all 0.15s ease"
+                    transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                   }}
                 >
                   {opt.label}
@@ -231,7 +231,7 @@ export function CasaJardinInteractive() {
                     fontSize: "0.86rem",
                     textAlign: "left",
                     cursor: "pointer",
-                    transition: "all 0.15s ease"
+                    transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                   }}
                 >
                   {opt.label}
@@ -375,7 +375,7 @@ export function CasaJardinInteractive() {
                 boxShadow: potSizeSelect === pot.id ? "var(--shadow-sm)" : "none",
                 textAlign: "center",
                 cursor: "pointer",
-                transition: "all 0.15s ease"
+                transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
               }}
             >
               <strong style={{ fontSize: "1rem", color: potSizeSelect === pot.id ? "var(--green-900)" : "var(--ink-soft)", display: "block", marginBottom: "4px" }}>

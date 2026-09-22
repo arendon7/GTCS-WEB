@@ -89,7 +89,7 @@ export function PlantIsometricVisualizer() {
                 color: "#ffffff",
                 cursor: "pointer",
                 textAlign: "center",
-                transition: "all 0.2s ease",
+                transition: "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease",
                 transform: isSelected ? "translateY(-3px)" : "none",
                 boxShadow: isSelected ? "0 8px 24px rgba(152, 207, 79, 0.2)" : "none"
               }}

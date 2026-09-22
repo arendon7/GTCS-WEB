@@ -82,7 +82,7 @@ export function SoilSimulator() {
                 cursor: "pointer",
                 background: selectedSoil === s.id ? "var(--green-800)" : "transparent",
                 color: selectedSoil === s.id ? "#ffffff" : "var(--muted)",
-                transition: "all 0.2s ease"
+                transition: "background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease"
               }}
             >
               {s.name.split(" ")[0]}

@@ -45,7 +45,7 @@ export function GalleryEvidence() {
               cursor: "pointer",
               background: tab === "plant" ? "var(--green-800)" : "transparent",
               color: tab === "plant" ? "#ffffff" : "var(--muted)",
-              transition: "all 0.2s ease"
+              transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease"
             }}
           >
             Planta de Bioprocesos
@@ -62,7 +62,7 @@ export function GalleryEvidence() {
               cursor: "pointer",
               background: tab === "routes" ? "var(--green-800)" : "transparent",
               color: tab === "routes" ? "#ffffff" : "var(--muted)",
-              transition: "all 0.2s ease"
+              transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease"
             }}
           >
             Rutas & Motocargueros
@@ -75,6 +75,9 @@ export function GalleryEvidence() {
         <img
           src={current.src}
           alt={current.caption}
+          width={1600}
+          height={1067}
+          decoding="async"
           style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity 0.3s ease" }}
         />
         <div style={{ position: "absolute", bottom: 0, insetInline: 0, padding: "20px 24px", background: "linear-gradient(to top, rgba(10, 41, 32, 0.9) 0%, transparent 100%)", color: "#ffffff" }}>
@@ -102,10 +105,10 @@ export function GalleryEvidence() {
                 padding: 0,
                 cursor: "pointer",
                 opacity: isSelected ? 1 : 0.65,
-                transition: "all 0.2s ease"
+                transition: "opacity 0.2s ease, border-color 0.2s ease"
               }}
             >
-              <img src={img.src} alt="Thumbnail" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={img.src} alt={`Miniatura: ${img.caption}`} width={1600} height={1067} loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </button>
           );
         })}

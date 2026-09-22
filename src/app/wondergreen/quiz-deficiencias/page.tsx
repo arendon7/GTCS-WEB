@@ -140,7 +140,7 @@ export default function QuizDeficienciasPage() {
                       fontSize: "0.94rem",
                       fontWeight: 600,
                       color: "var(--green-950)",
-                      transition: "all 0.15s ease"
+                      transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                     }}
                   >
                     {opt.label}

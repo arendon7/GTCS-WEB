@@ -79,7 +79,7 @@ export function CropDeficiencyViewer() {
                 fontSize: "0.82rem",
                 cursor: "pointer",
                 color: selectedId === d.id ? "var(--green-950)" : "var(--muted)",
-                transition: "all 0.15s ease"
+                transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease"
               }}
             >
               {d.symbol} · {d.nutrient}

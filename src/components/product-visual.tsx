@@ -17,7 +17,7 @@ export function ProductVisual({ product, context }: ProductVisualProps) {
   if (canRenderPublicPackshot(media) && media.src && media.alt) {
     return (
       <div className={`product-packshot product-packshot--${context}`}>
-        <img src={media.src} alt={media.alt} />
+        <img src={media.src} alt={media.alt} width={760} height={1074} loading={context === "card" ? "lazy" : "eager"} decoding="async" />
       </div>
     );
   }
@@ -25,7 +25,7 @@ export function ProductVisual({ product, context }: ProductVisualProps) {
   if (product.image) {
     return (
       <figure className={`product-reference-visual product-reference-visual--${context}`}>
-        <img src={product.image} alt={combinedReference ? `Referencia visual combinada de ${combinedReference} Wondergreen` : `Ficha visual de la familia ${product.family}`} />
+        <img src={product.image} alt={combinedReference ? `Referencia visual combinada de ${combinedReference} Wondergreen` : `Ficha visual de la familia ${product.family}`} width={760} height={1074} loading={context === "card" ? "lazy" : "eager"} decoding="async" />
         <figcaption>{combinedReference ? `Referencia visual combinada: ${combinedReference}. La ficha individual y la cotización orientan la presentación adecuada.` : context === "card" ? "Vista de la familia Wondergreen. La ficha y la cotización orientan la presentación adecuada para cada solicitud." : "Vista de referencia de la familia. La ficha técnica y la cotización organizan presentación, suministro y programa de uso."}</figcaption>
       </figure>
     );

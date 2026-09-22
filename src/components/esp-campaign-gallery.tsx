@@ -33,6 +33,10 @@ export function EspCampaignGallery() {
           <img
             src={current.img}
             alt={current.title}
+            width={1500}
+            height={844}
+            loading="lazy"
+            decoding="async"
             style={{ width: "100%", height: "100%", objectFit: "contain" }}
           />
         </div>
@@ -56,7 +60,7 @@ export function EspCampaignGallery() {
                   display: "flex",
                   gap: "12px",
                   alignItems: "center",
-                  transition: "all 0.15s ease"
+                  transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease"
                 }}
               >
                 <span style={{ fontSize: "0.9rem", fontWeight: 800, color: isSelected ? "var(--green-700)" : "var(--muted)" }}>

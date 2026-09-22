@@ -88,6 +88,10 @@ export function WondergreenPackshots() {
           <img
             src={current.image}
             alt={current.name}
+            width={760}
+            height={1074}
+            loading="lazy"
+            decoding="async"
           />
           <span>{current.tag}</span>
         </div>

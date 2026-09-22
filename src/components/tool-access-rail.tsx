@@ -42,7 +42,7 @@ export function ToolAccessRail({
       <div className="container tool-access-rail__grid">
         <div>
           <span className="eyebrow">Entrada a la plataforma</span>
-          <h2 id={`${id}-access-title`}>Conoce la herramienta. Entra al entorno correcto.</h2>
+          <h2 id={`${id}-access-title`}>Elige cómo entrar a {name}.</h2>
           <p>{copy}</p>
           <div className="tool-access-rail__status" aria-label={`Estado de ${name}`}>
             <span>{status}</span>
@@ -80,22 +80,14 @@ export function ToolAccessRail({
               </Link>
             )}
             <Link className="button button--ghost" href="/herramientas/">
-              Ver todas las herramientas
+              Ver el ecosistema digital
             </Link>
           </div>
-          <p className="tool-access-rail__admin-note">
-            <span>Administración de acceso</span>
-            ¿Gestionas una organización? <Link href="/plataforma/usuarios/">Revisa usuarios, roles y aplicaciones en el Centro Greenatics <span aria-hidden="true">→</span></Link>
+          <p className="tool-access-rail__next">
+            <span>Para organizaciones</span>
+            <Link href="/plataforma/usuarios/">Gestionar usuarios, roles y aplicaciones en el Centro Greenatics <span aria-hidden="true">→</span></Link>
           </p>
         </div>
-        <aside className="tool-access-rail__route" aria-label={`Ruta de acceso a ${name}`}>
-          <span>Ruta recomendada</span>
-          <ol>
-            <li><b>01</b><div><strong>Entender</strong><p>Qué resuelve {name} y quién la usa.</p></div></li>
-            <li><b>02</b><div><strong>Explorar</strong><p>Sus módulos, datos y flujo de trabajo.</p></div></li>
-            <li><b>03</b><div><strong>Entrar</strong><p>{runtimeHref && demoHref ? "Elegir la demo pública o el entorno configurado." : runtimeHref ? "Abrir el entorno disponible." : demoHref ? "Abrir la demo o preparar el entorno de la organización." : "Preparar un entorno configurado con el equipo."}</p></div></li>
-          </ol>
-        </aside>
       </div>
     </section>
   );

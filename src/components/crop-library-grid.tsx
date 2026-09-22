@@ -24,7 +24,7 @@ export function CropLibraryGrid() {
       {cropList.map((crop, index) => (
         <article className="crop-library-card" key={crop.slug}>
           <div className="crop-library-card__cover">
-            <img src={crop.cover} alt={`Portada de la guía técnica de ${crop.name}`} loading="lazy" />
+            <img src={crop.cover} alt={`Portada de la guía técnica de ${crop.name}`} width={1173} height={1657} loading="lazy" decoding="async" />
             <span>Guía técnica</span>
             <small>{String(index + 1).padStart(2, "0")}</small>
           </div>

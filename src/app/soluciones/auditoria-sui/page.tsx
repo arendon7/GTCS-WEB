@@ -76,7 +76,7 @@ export default function AuditoriaSuiPage() {
                       border: isDone ? "1.5px solid var(--green-800)" : "1px solid var(--line)",
                       background: isDone ? "#f0f8ec" : "#fafcf9",
                       cursor: "pointer",
-                      transition: "all 0.15s ease"
+                      transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
                     }}
                   >
                     <input

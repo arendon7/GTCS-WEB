@@ -841,10 +841,8 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
 .tool-access-rail__grid {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.55fr);
-  gap: clamp(38px, 8vw, 130px);
-  align-items: center;
+  display: block;
+  max-width: 1020px;
 }
 
 .tool-access-rail h2 {
@@ -892,7 +890,7 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
   font-size: 0.78rem;
 }
 
-.tool-access-rail__admin-note {
+.tool-access-rail__next {
   display: flex;
   flex-wrap: wrap;
   gap: 7px 12px;
@@ -904,7 +902,7 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
   line-height: 1.5;
 }
 
-.tool-access-rail__admin-note > span {
+.tool-access-rail__next > span {
   color: var(--green-800);
   font-size: 0.66rem;
   font-weight: 850;
@@ -912,7 +910,7 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
   text-transform: uppercase;
 }
 
-.tool-access-rail__admin-note a {
+.tool-access-rail__next a {
   color: var(--green-800);
   font-weight: 800;
   text-decoration: underline;
@@ -920,61 +918,8 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
   text-underline-offset: 4px;
 }
 
-.tool-access-rail__admin-note a:hover {
+.tool-access-rail__next a:hover {
   text-decoration-color: currentColor;
-}
-
-.tool-access-rail__route {
-  padding: 25px 26px 26px;
-  border: 1px solid #c6d6c3;
-  border-radius: 24px 24px 24px 6px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 18px 42px rgba(5, 31, 23, 0.07);
-}
-
-.tool-access-rail__route > span {
-  display: block;
-  margin-bottom: 18px;
-  color: var(--green-700);
-  font-size: 0.68rem;
-  font-weight: 850;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.tool-access-rail__route ol {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tool-access-rail__route li {
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  gap: 12px;
-  padding: 14px 0;
-  border-top: 1px solid #dce6d9;
-}
-
-.tool-access-rail__route li b {
-  color: var(--green-700);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-}
-
-.tool-access-rail__route li strong {
-  display: block;
-  color: var(--ink);
-  font-size: 0.95rem;
-}
-
-.tool-access-rail__route li p {
-  margin-top: 2px;
-  color: #617269;
-  font-size: 0.8rem;
-  line-height: 1.45;
 }
 
 .platform-v4-card__actions {
@@ -990,16 +935,6 @@ body:has(.homegarden-public-subpage) .floating-action-bar {
 
 .platform-v4-card__actions .text-link--secondary:hover {
   color: var(--green-800);
-}
-
-@media (max-width: 860px) {
-  .tool-access-rail__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .tool-access-rail__route {
-    max-width: 640px;
-  }
 }
 
 @media (max-width: 560px) {

@@ -91,7 +91,7 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .preset-card:hover {
   transform: translateY(-2px);
@@ -142,7 +142,7 @@
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 .filter-btn:hover {
   border-color: var(--green-700);
@@ -189,7 +189,7 @@
   display: grid;
   place-items: center;
   color: var(--green-800);
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .stepper-btn:hover:not(:disabled) {
   background: var(--green-800);
