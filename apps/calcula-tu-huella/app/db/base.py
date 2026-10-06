@@ -20,7 +20,8 @@ ENGINE = create_engine(settings.database_url, **_engine_options)
 
 if settings.database_schema:
     # Keep every pooled connection on the same isolated schema, not just the
-    # connection used by Alembic during the deployment step.
+    # connection used by Alembic during the deployment step. The transaction
+    # hook below is authoritative when DATABASE_URL uses transaction pooling.
     @event.listens_for(ENGINE, "connect")
     def _set_isolated_schema(dbapi_connection, _connection_record) -> None:
         cursor = dbapi_connection.cursor()
@@ -29,6 +30,19 @@ if settings.database_schema:
         cursor.close()
 
 SessionLocal = sessionmaker(bind=ENGINE, autoflush=False, expire_on_commit=False)
+
+
+def _set_transaction_schema(_session, _transaction, connection) -> None:
+    # Transaction poolers can assign a different PostgreSQL backend after
+    # every commit, so a session-level SET from the connect hook is not
+    # sufficient for ORM queries. SET LOCAL is scoped to this transaction.
+    connection.exec_driver_sql(
+        f'SET LOCAL search_path TO "{settings.database_schema}", public'
+    )
+
+
+if settings.database_schema:
+    event.listen(SessionLocal, "after_begin", _set_transaction_schema)
 
 
 class Base(DeclarativeBase):
