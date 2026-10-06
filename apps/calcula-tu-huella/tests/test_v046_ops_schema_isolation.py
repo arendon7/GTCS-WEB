@@ -14,3 +14,22 @@ def test_v046_accepts_a_safe_private_postgres_schema():
 def test_v046_rejects_unsafe_postgres_schema_names(schema: str):
     with pytest.raises(ValueError, match="DATABASE_SCHEMA"):
         Settings(database_schema=schema)
+
+
+def test_v046_sets_private_schema_inside_each_orm_transaction(monkeypatch):
+    from app.db import base
+
+    statements = []
+
+    class Connection:
+        def exec_driver_sql(self, statement):
+            statements.append(statement)
+
+    monkeypatch.setattr(base, "settings", Settings(
+        database_url="postgresql+psycopg://localhost/huella",
+        database_schema="huella_staging",
+    ))
+
+    base._set_transaction_schema(None, None, Connection())
+
+    assert statements == ['SET LOCAL search_path TO "huella_staging", public']
