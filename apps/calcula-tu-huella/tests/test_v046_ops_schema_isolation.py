@@ -16,7 +16,7 @@ def test_v046_rejects_unsafe_postgres_schema_names(schema: str):
         Settings(database_schema=schema)
 
 
-def test_v046_sets_private_schema_inside_each_orm_transaction(monkeypatch):
+def test_v046_sets_private_schema_inside_each_database_transaction(monkeypatch):
     from app.db import base
 
     statements = []
@@ -30,6 +30,6 @@ def test_v046_sets_private_schema_inside_each_orm_transaction(monkeypatch):
         database_schema="huella_staging",
     ))
 
-    base._set_transaction_schema(None, None, Connection())
+    base._set_transaction_schema(Connection())
 
     assert statements == ['SET LOCAL search_path TO "huella_staging", public']
