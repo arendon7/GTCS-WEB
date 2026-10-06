@@ -32,17 +32,20 @@ if settings.database_schema:
 SessionLocal = sessionmaker(bind=ENGINE, autoflush=False, expire_on_commit=False)
 
 
-def _set_transaction_schema(_session, _transaction, connection) -> None:
+def _set_transaction_schema(connection) -> None:
     # Transaction poolers can assign a different PostgreSQL backend after
     # every commit, so a session-level SET from the connect hook is not
-    # sufficient for ORM queries. SET LOCAL is scoped to this transaction.
+    # sufficient for ORM and direct Engine transactions. SET LOCAL is scoped
+    # to the active transaction.
     connection.exec_driver_sql(
         f'SET LOCAL search_path TO "{settings.database_schema}", public'
     )
 
 
 if settings.database_schema:
-    event.listen(SessionLocal, "after_begin", _set_transaction_schema)
+    # Engine-level coverage includes ORM sessions and startup code using
+    # ENGINE.begin(); a Session-only hook would miss non-ORM transactions.
+    event.listen(ENGINE, "begin", _set_transaction_schema)
 
 
 class Base(DeclarativeBase):
