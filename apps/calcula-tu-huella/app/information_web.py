@@ -230,7 +230,7 @@ def register_information_routes(
         session: Session = Depends(get_db),
         user: dict = Depends(require_user),
     ):
-        if not user["can_provide_data"] and not user["can_review"]:
+        if not user["can_provide_data"]:
             raise HTTPException(403, "Tu rol no puede editar datos")
         record = session.scalar(
             select(ActivityData)
