@@ -1,12 +1,14 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 19: /bin/ps: Operation not permitted
 from __future__ import annotations
 
 import re
+from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
-from app.database import Base, ENGINE, EmissionCalculation, SessionLocal, init_db
+from app.database import Base, ENGINE, EmissionCalculation, Inventory, SessionLocal, init_db
 from app.main import app
 from app.product_experience import journey_detail, navigation_for
 
@@ -109,6 +111,39 @@ def test_source_page_distinguishes_period_coverage_from_calculation_review() -> 
         assert "Periodos completos" in response.text
         assert "no confirma que los factores y cálculos estén libres de alertas" in response.text
         assert 'href="#memoria-de-calculo"' in response.text
+
+
+def test_sources_page_never_offers_a_dead_next_step_link() -> None:
+    with TestClient(app) as client:
+        login(client, "consultor@calculatuhuella.local")
+        response = client.get("/inventarios/1/fuentes")
+        assert response.status_code == 200
+        assert 'href="/informacion#datos"' in response.text
+        assert 'href="#"' not in response.text
+
+
+def test_empty_source_map_keeps_first_action_on_source_setup() -> None:
+    with SessionLocal() as session:
+        organization_id = session.get(Inventory, 1).organization_id
+        inventory = Inventory(
+            organization_id=organization_id,
+            name="Inventario sin fuentes",
+            start_date=date(2025, 1, 1),
+            end_date=date(2025, 12, 31),
+            base_year=2025,
+            methodology="GHG Protocol",
+        )
+        session.add(inventory)
+        session.commit()
+        inventory_id = inventory.id
+
+    with TestClient(app) as client:
+        login(client, "consultor@calculatuhuella.local")
+        response = client.get(f"/inventarios/{inventory_id}/fuentes")
+        assert response.status_code == 200
+        assert 'href="#configuracion-asistida">Elegir fuentes sugeridas</a>' in response.text
+        assert 'id="configuracion-asistida" open' in response.text
+        assert ">Cargar primer dato</a>" not in response.text
 
 
 def test_dashboard_uses_calculated_monthly_data_not_placeholder_trend() -> None:

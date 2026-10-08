@@ -1,10 +1,11 @@
+/opt/homebrew/Library/Homebrew/cmd/shellenv.sh: line 19: /bin/ps: Operation not permitted
 {% extends "base.html" %}
 {% block title %}Fuentes · Calcula tu Huella{% endblock %}
 {% block page_label %}Inventario / Fuentes{% endblock %}
 {% block content %}
 <div class="page-head">
   <div><p class="breadcrumb">{{ inventory.name }} / Fuentes</p><h1>Confirma el mapa de fuentes</h1><p>Revisa qué actividades generan emisiones, dónde ocurren, quién entrega la información y con qué frecuencia.</p></div>
-  <div class="head-actions"><a class="btn btn-outline" href="/inventarios/{{ inventory.id }}">Ver inventario</a><a class="btn btn-primary" href="/informacion">Cargar primer dato</a></div>
+  <div class="head-actions"><a class="btn btn-outline" href="/inventarios/{{ inventory.id }}">Ver inventario</a>{% if sources %}<a class="btn btn-primary" href="/informacion">Cargar primer dato</a>{% elif user.can_manage_sources %}<a class="btn btn-primary" href="#configuracion-asistida">Elegir fuentes sugeridas</a>{% else %}<a class="btn btn-primary" href="/soporte">Solicitar apoyo</a>{% endif %}</div>
 </div>
 
 <section class="first-inventory-route card">
@@ -23,7 +24,7 @@
 </div>
 
 {% if user.can_manage_sources %}
-<details class="card starter-library" {% if not sources %}open{% endif %}>
+<details class="card starter-library" id="configuracion-asistida" {% if not sources %}open{% endif %}>
   <summary><div><small>CONFIGURACIÓN ASISTIDA</small><strong>Agregar un paquete de fuentes</strong><p>Solo se crean las fuentes que todavía no existan.</p></div><span>Ver opciones</span></summary>
   <div class="starter-library-grid">
     {% for pack in starter_packs %}
@@ -71,6 +72,6 @@
 
 <section class="card source-next-step">
   <div><small>SIGUIENTE PASO</small><h2>{{ 'Carga el primer dato y su soporte' if sources else 'Crea o agrega al menos una fuente' }}</h2><p>{{ 'Empieza con una factura, registro operativo o certificado fácil de verificar.' if sources else 'El mapa de fuentes define qué información deberá solicitarse y calcularse.' }}</p></div>
-  {% if sources %}<a class="btn btn-primary" href="/informacion#datos">Ir a datos y evidencias</a>{% else %}<a class="btn btn-outline" href="#">Usar configuración asistida</a>{% endif %}
+  {% if sources %}<a class="btn btn-primary" href="/informacion#datos">Ir a datos y evidencias</a>{% elif user.can_manage_sources %}<a class="btn btn-outline" href="#configuracion-asistida">Ver paquetes sugeridos</a>{% else %}<a class="btn btn-outline" href="/soporte">Solicitar apoyo para configurar fuentes</a>{% endif %}
 </section>
 {% endblock %}
