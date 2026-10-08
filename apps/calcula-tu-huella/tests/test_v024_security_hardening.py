@@ -1,3 +1,4 @@
+from dataclasses import replace
 from io import BytesIO
 from pathlib import Path
 import zipfile
@@ -9,6 +10,7 @@ from sqlalchemy import select
 from app.database import AuditEvent, Base, ENGINE, SessionLocal, add_audit, init_db
 from app.main import app
 from app.operations import create_backup, verify_audit_integrity, verify_backup_archive
+from app import security
 from app.security import login_throttle, validate_upload_bytes
 
 
@@ -27,12 +29,16 @@ def test_v024_health_and_request_id():
         assert response.headers["x-request-id"] == "test-request-024"
 
 
-def test_v024_csrf_cookie_is_issued():
-    with TestClient(app) as client:
+def test_v024_csrf_cookie_is_issued(monkeypatch):
+    # CI disables CSRF for business tests; this test exercises the enabled control.
+    monkeypatch.setattr(security, "settings", replace(security.settings, csrf_enabled=True))
+    with TestClient(app, client=("198.51.100.24", 50000)) as client:
         response = client.get("/login")
         assert response.status_code == 200
         assert client.cookies.get("cth_csrf")
         assert "_csrf_token" in response.text or "app.js" in response.text
+        rejected = client.post("/login", data={"email": "csrf@example.test", "password": "invalid"})
+        assert rejected.status_code == 403
 
 
 def test_v024_persistent_login_throttle_survives_instances():
