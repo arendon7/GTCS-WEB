@@ -290,6 +290,7 @@ def test_reviewer_cannot_edit_activity_data_or_see_edit_action():
         login(client, "revisor@calculatuhuella.local")
         page = client.get(f"/fuentes/{source_id}")
         assert page.status_code == 200
+        assert "aria-label=\"Estado del registro:" in page.text
         assert f"/informacion/datos/{record_id}/editar" not in page.text
         response = client.post(
             f"/informacion/datos/{record_id}/editar",
