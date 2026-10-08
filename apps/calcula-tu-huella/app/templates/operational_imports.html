@@ -21,6 +21,7 @@
   </div>
 </section>
 
+{% if summary.metrics.profiles or summary.metrics.batches or summary.metrics.rows or summary.metrics.applied or summary.metrics.open_findings %}
 <section class="kpi-grid five operational-kpis">
   <article class="kpi-card featured"><div class="kpi-icon green">⇄</div><div><small>PERFILES</small><strong>{{ summary.metrics.profiles }}</strong><p>mapeos reutilizables</p></div></article>
   <article class="kpi-card"><div class="kpi-icon blue">▤</div><div><small>LOTES</small><strong>{{ summary.metrics.batches }}</strong><p>archivos validados</p></div></article>
@@ -28,6 +29,7 @@
   <article class="kpi-card"><div class="kpi-icon lime">✓</div><div><small>APLICADAS</small><strong>{{ summary.metrics.applied }}</strong><p>datos incorporados</p></div></article>
   <article class="kpi-card"><div class="kpi-icon">!</div><div><small>HALLAZGOS</small><strong>{{ summary.metrics.open_findings }}</strong><p>abiertos</p></div></article>
 </section>
+{% endif %}
 
 {% if can_manage %}
 <section class="card operational-upload-card">
@@ -148,6 +150,8 @@
       <label>Nombre del perfil<input name="profile_name" value="{{ staging.profile.name if staging.profile else '' }}" placeholder="Ej. Facturación eléctrica mensual"></label>
     </div>
 
+    <div class="callout" role="note"><strong>Qué pasa con las estimaciones:</strong> si una fila tiene el origen “Estimación” o marcas que los datos sin columna propia son estimados, al aplicar el lote quedará como dato estimado, calidad C y estado Provisional. Revisa el origen y la marca antes de continuar.</div>
+
     <div class="preview-block">
       <div class="card-head"><div><small>PREVISUALIZACIÓN</small><h3>Primeras filas del archivo</h3></div><span>{{ staging.inspection.preview|length }} filas</span></div>
       <div class="responsive-table"><table class="preview-table"><thead><tr><th>Fila</th>{% for header in staging.inspection.headers %}<th>{{ header }}</th>{% endfor %}</tr></thead><tbody>
@@ -236,10 +240,10 @@
           <label>Fecha final<input type="date" name="period_end" value="{{ row.period_end or '' }}" required></label>
           <label>Valor<input name="value" inputmode="decimal" value="{{ row.value if row.value is not none else '' }}" required></label>
           <label>Unidad<input name="unit" value="{{ row.unit }}" required></label>
-          <label>Origen<select name="origin">{% for origin in origins %}<option value="{{ origin }}" {% if row.data_origin == origin %}selected{% endif %}>{{ origin }}</option>{% endfor %}</select></label>
+          <label>Origen<select name="origin" data-estimated-origin>{% for origin in origins %}<option value="{{ origin }}" {% if row.data_origin == origin %}selected{% endif %}>{{ origin }}</option>{% endfor %}</select></label>
           <label class="wide-field">Referencia de evidencia<input name="evidence" value="{{ row.evidence_reference }}" placeholder="Factura, certificado, archivo o enlace"></label>
           <label class="wide-field">Notas<input name="notes" value="{{ row.correction_notes }}" placeholder="Justificación o detalle de la corrección"></label>
-          <label class="check-line compact-check"><input type="checkbox" name="estimated" value="true" {% if row.is_estimated %}checked{% endif %}> Dato estimado</label>
+          <label class="check-line compact-check"><input type="checkbox" name="estimated" value="true" data-estimated-flag {% if row.is_estimated %}checked{% endif %}> Dato estimado</label><small data-estimated-note hidden>El origen “Estimación” conserva la fila como provisional y de calidad C.</small>
         </div>
         <div class="row-correction-actions"><button type="button" class="btn btn-outline" data-row-editor-close="editor-{{ row.id }}">Cancelar</button><button class="btn btn-primary" type="submit">Guardar y revalidar fila</button></div>
       </form>

@@ -496,7 +496,7 @@ def update_operational_row(
     parsed_value = _parse_float(value)
     clean_unit = str(unit or "").strip()
     clean_origin = str(origin or "Registro operativo").strip()
-    is_estimated = _parse_bool(estimated, False)
+    is_estimated = _parse_bool(estimated, False) or clean_origin == "Estimación"
     clean_evidence = str(evidence or "").strip()
     clean_notes = str(notes or "").strip()
     messages: list[dict[str, str]] = []
@@ -734,7 +734,7 @@ def create_operational_batch(
         value = _parse_float(_mapped(payload, mapping, "value"))
         unit = str(_mapped(payload, mapping, "unit", default_unit) or default_unit).strip()
         origin = str(_mapped(payload, mapping, "origin", default_origin) or default_origin).strip()
-        estimated = _parse_bool(_mapped(payload, mapping, "estimated", default_estimated), default_estimated)
+        estimated = _parse_bool(_mapped(payload, mapping, "estimated", default_estimated), default_estimated) or origin == "Estimación"
         evidence = str(_mapped(payload, mapping, "evidence") or "").strip()
         notes = str(_mapped(payload, mapping, "notes") or "").strip()
         messages: list[dict[str, str]] = []

@@ -15,10 +15,13 @@
 </section>
 
 {% if not summary.execution %}
-<section class="card empty-state">
-  <h2>Primero inicia el piloto Greenatics</h2>
-  <p>El centro de calidad se conecta con las fuentes y solicitudes creadas por la ejecución controlada.</p>
-  <a class="btn btn-primary" href="/piloto-greenatics/ejecucion">Ir a ejecución del piloto</a>
+<section class="card empty-state quality-empty-state">
+  <span class="quality-empty-mark" aria-hidden="true">✓</span>
+  <small>CONTROL PREVIO POR LOTES</small>
+  <h2>Aún no hay una carga controlada para revisar</h2>
+  <p>Esta revisión previa valida los archivos del piloto Greenatics antes de aplicarlos. Los datos que ya capturaste en el inventario se revisan desde el registro de actividad y la calidad de cada fuente.</p>
+  <div class="quality-empty-actions"><a class="btn btn-primary" href="/informacion">Revisar datos y evidencias</a><a class="btn btn-outline" href="/cargas-operativas">Cargar un archivo operativo</a></div>
+  <a class="quality-pilot-link" href="/piloto-greenatics/ejecucion">¿Vas a usar el piloto Greenatics? Inicia su ejecución →</a>
 </section>
 {% else %}
 <section class="kpi-grid five">

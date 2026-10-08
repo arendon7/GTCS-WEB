@@ -281,7 +281,7 @@ def create_import_batch(
         origin = str(values[5] or "Registro operativo").strip()
         if origin not in ALLOWED_ORIGINS:
             origin = "Registro operativo"
-        estimated = _bool_value(values[6])
+        estimated = _bool_value(values[6]) or origin == "Estimación"
         evidence = str(values[7] or "").strip()
         notes = str(values[8] or "").strip()
         link = links.get(code)

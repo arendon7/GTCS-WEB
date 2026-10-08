@@ -10,6 +10,9 @@ from pathlib import Path
 from fastapi import Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse, Response
 from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.workbook.defined_name import DefinedName
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -182,12 +185,12 @@ def register_information_routes(
             raise HTTPException(409, str(exc)) from exc
         duplicate = session.scalar(select(ActivityData).where(ActivityData.source_id == source.id, ActivityData.period_start == start_date, ActivityData.period_end == end_date))
         if duplicate:
-            set_flash(request, "Ya existe un registro para esa fuente y periodo.", "error")
-            return RedirectResponse("/informacion", status_code=303)
+            set_flash(request, "Ya existe un dato para esa fuente y periodo. Revisa el registro existente y edítalo si necesitas corregirlo.", "error")
+            return RedirectResponse(f"/fuentes/{source.id}#registros-del-periodo", status_code=303)
         evidence = session.get(EvidenceDocument, evidence_id) if evidence_id else None
         if evidence and evidence.inventory_id != inventory.id:
             raise HTTPException(400, "Evidencia inválida")
-        estimated = is_estimated == "on"
+        estimated = is_estimated == "on" or data_origin == "Estimación"
         record = ActivityData(
             source_id=source.id,
             evidence_id=evidence.id if evidence else None,
@@ -219,7 +222,6 @@ def register_information_routes(
         value: float = Form(...),
         unit: str = Form(...),
         data_origin: str = Form(...),
-        status: str = Form("Cargado"),
         evidence_id: int | None = Form(None),
         is_estimated: str | None = Form(None),
         uncertainty_percentage: float = Form(0),
@@ -228,7 +230,7 @@ def register_information_routes(
         session: Session = Depends(get_db),
         user: dict = Depends(require_user),
     ):
-        if not user["can_provide_data"] and not user["can_review"]:
+        if not user["can_provide_data"]:
             raise HTTPException(403, "Tu rol no puede editar datos")
         record = session.scalar(
             select(ActivityData)
@@ -249,7 +251,7 @@ def register_information_routes(
         evidence = session.get(EvidenceDocument, evidence_id) if evidence_id else None
         if evidence and evidence.inventory_id != record.source.inventory_id:
             raise HTTPException(400, "Evidencia inválida")
-        estimated = is_estimated == "on"
+        estimated = is_estimated == "on" or data_origin == "Estimación"
         record.value = max(value, 0)
         record.unit = unit
         record.data_origin = data_origin
@@ -259,7 +261,9 @@ def register_information_routes(
         record.uncertainty_basis = uncertainty_basis.strip()
         record.quality_level = quality_from(data_origin, estimated, evidence is not None)
         record.notes = notes.strip()
-        record.status = status if status in {"Cargado", "En revisión", "Aprobado", "Devuelto", "Provisional"} else "Cargado"
+        # Editing activity data changes the evidence behind any prior review.
+        # The submitter cannot approve the record through this data-entry route.
+        record.status = "Provisional" if estimated else "En revisión"
         # SessionLocal usa autoflush=False. Persistir antes de recargar la fuente evita
         # recalcular con los valores anteriores y perder incertidumbre/ediciones.
         session.flush()
@@ -366,13 +370,37 @@ def register_information_routes(
     def activity_template(session: Session = Depends(get_db), user: dict = Depends(require_user)):
         inventory = get_inventory(session, user)
         workbook = Workbook()
-        sheet = workbook.active
-        sheet.title = "Datos"
+        guide = workbook.active
+        guide.title = "Instrucciones"
+        guide.append(["PLANTILLA DE DATOS DE ACTIVIDAD", "Calcula tu Huella"])
+        guide.append(["1 · Completa la hoja Datos", "Una fila por fuente y periodo. Usa las listas desplegables y conserva el formato AAAA-MM."])
+        guide.append(["2 · Usa los catálogos", "El nombre de la fuente, la unidad y el origen deben coincidir exactamente con la hoja Catálogos."])
+        guide.append(["3 · Identifica estimaciones", "Marca Sí en Estimado o usa el origen Estimación. El dato quedará con calidad C y estado Provisional."])
+        guide.append(["4 · Adjunta evidencia en la plataforma", "La plantilla registra los datos y observaciones; carga los soportes desde Información después de importar."])
+        guide.append(["Ejemplo", "La hoja Ejemplo (no importar) es ilustrativa. Solo se procesa la hoja Datos."])
+        guide.column_dimensions["A"].width = 38
+        guide.column_dimensions["B"].width = 92
+        guide.freeze_panes = "A2"
+        guide.sheet_view.showGridLines = False
+        guide.row_dimensions[1].height = 30
+        guide.row_dimensions[1].font = Font(bold=True, color="FFFFFF", size=14)
+        guide.row_dimensions[1].fill = PatternFill("solid", fgColor="173D36")
+        for row in guide.iter_rows(min_row=2):
+            row[0].font = Font(bold=True, color="173D36")
+            row[1].alignment = Alignment(wrap_text=True, vertical="top")
+            guide.row_dimensions[row[0].row].height = 34
+
+        sheet = workbook.create_sheet("Datos")
         headers = ["Fuente", "Periodo", "Valor", "Unidad", "Origen", "Estimado", "Incertidumbre %", "Base incertidumbre", "Observaciones"]
         sheet.append(headers)
-        sheet.append(["Electricidad", "2025-01", 18450, "kWh", "Factura", "No", 5, "Facturación medida", "Ejemplo; reemplaza o elimina esta fila"])
         sheet.freeze_panes = "A2"
-        sheet.auto_filter.ref = "A1:I2"
+        sheet.auto_filter.ref = "A1:I1001"
+        sheet.sheet_view.showGridLines = False
+        sheet.row_dimensions[1].height = 30
+        for cell in sheet[1]:
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill("solid", fgColor="173D36")
+            cell.alignment = Alignment(wrap_text=True, vertical="center")
         for column, width in {"A": 26, "B": 14, "C": 15, "D": 14, "E": 26, "F": 12, "G": 18, "H": 28, "I": 45}.items():
             sheet.column_dimensions[column].width = width
         catalog = workbook.create_sheet("Catálogos")
@@ -384,6 +412,92 @@ def register_information_routes(
                 ALLOWED_UNITS[index] if index < len(ALLOWED_UNITS) else "",
                 DATA_ORIGINS[index] if index < len(DATA_ORIGINS) else "",
             ])
+        catalog.sheet_view.showGridLines = False
+        catalog.freeze_panes = "A2"
+        catalog.auto_filter.ref = f"A1:C{max_rows + 1}"
+        for cell in catalog[1]:
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill("solid", fgColor="173D36")
+        for column in "ABC":
+            catalog.column_dimensions[column].width = 32
+
+        # Las listas con nombre evitan el límite de longitud de las validaciones
+        # literales de Excel y permiten usar opciones de catálogo en cada fila.
+        catalog_ranges = {
+            "ListaFuentes": ("A", len(inventory.sources)),
+            "ListaUnidades": ("B", len(ALLOWED_UNITS)),
+            "ListaOrigenes": ("C", len(DATA_ORIGINS)),
+        }
+        for name, (column, count) in catalog_ranges.items():
+            if count:
+                workbook.defined_names.add(
+                    DefinedName(name, attr_text=f"'Catálogos'!${column}$2:${column}${count + 1}")
+                )
+
+        for name, column, prompt in [
+            ("ListaFuentes", "A", "Selecciona una fuente de este inventario."),
+            ("ListaUnidades", "D", "Selecciona una unidad del catálogo."),
+            ("ListaOrigenes", "E", "Selecciona cómo se obtuvo el dato."),
+        ]:
+            if name not in workbook.defined_names:
+                continue
+            validation = DataValidation(type="list", formula1=f"={name}", allow_blank=True)
+            validation.errorTitle = "Opción no válida"
+            validation.error = "Selecciona una opción de la lista Catálogos."
+            validation.promptTitle = "Usa el catálogo"
+            validation.prompt = prompt
+            validation.showErrorMessage = True
+            validation.showInputMessage = True
+            sheet.add_data_validation(validation)
+            validation.add(f"{column}2:{column}1001")
+
+        estimated_validation = DataValidation(type="list", formula1='"Sí,No"', allow_blank=True)
+        estimated_validation.errorTitle = "Marca no válida"
+        estimated_validation.error = "Selecciona Sí o No."
+        estimated_validation.showErrorMessage = True
+        sheet.add_data_validation(estimated_validation)
+        estimated_validation.add("F2:F1001")
+
+        period_validation = DataValidation(
+            type="custom",
+            formula1='=AND(LEN(B2)=7,MID(B2,5,1)="-",ISNUMBER(VALUE(LEFT(B2,4))),ISNUMBER(VALUE(RIGHT(B2,2))),VALUE(RIGHT(B2,2))>=1,VALUE(RIGHT(B2,2))<=12)',
+            allow_blank=True,
+        )
+        period_validation.errorTitle = "Revisa el periodo"
+        period_validation.error = "Escribe el periodo como AAAA-MM, por ejemplo 2025-01."
+        period_validation.promptTitle = "Periodo mensual"
+        period_validation.prompt = "Usa cuatro dígitos para el año y dos para el mes: AAAA-MM."
+        period_validation.showErrorMessage = True
+        period_validation.showInputMessage = True
+        sheet.add_data_validation(period_validation)
+        period_validation.add("B2:B1001")
+
+        nonnegative_validation = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True)
+        nonnegative_validation.errorTitle = "Valor no válido"
+        nonnegative_validation.error = "El valor debe ser un número igual o mayor que cero."
+        nonnegative_validation.showErrorMessage = True
+        sheet.add_data_validation(nonnegative_validation)
+        nonnegative_validation.add("C2:C1001")
+
+        example = workbook.create_sheet("Ejemplo (no importar)")
+        example.append(headers)
+        example.append(["Electricidad", "2025-01", 18450, "kWh", "Factura", "No", 5, "Facturación medida", "Ejemplo ilustrativo; esta hoja no se procesa"])
+        example.sheet_view.showGridLines = False
+        example.freeze_panes = "A2"
+        example.auto_filter.ref = "A1:I2"
+        example.row_dimensions[1].height = 30
+        example.row_dimensions[2].height = 32
+        for cell in example[1]:
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill("solid", fgColor="173D36")
+            cell.alignment = Alignment(wrap_text=True, vertical="center")
+        for column, width in {"A": 26, "B": 14, "C": 15, "D": 14, "E": 26, "F": 12, "G": 18, "H": 28, "I": 52}.items():
+            example.column_dimensions[column].width = width
+        for row in example.iter_rows(min_row=2):
+            for cell in row:
+                cell.alignment = Alignment(wrap_text=True, vertical="top")
+        example["C2"].number_format = "#,##0.##"
+        example["G2"].number_format = "0.0"
         output = BytesIO()
         workbook.save(output)
         filename = f"Plantilla_datos_{inventory.base_year}.xlsx"
@@ -473,7 +587,7 @@ def register_information_routes(
                 errors.append(f"Fila {row_number}: ya existe un dato para {source.name} en {start:%Y-%m}.")
                 continue
             seen.add(key)
-            estimated = str(estimated_text or "").strip().casefold() in {"sí", "si", "s", "yes", "true", "1"}
+            estimated = str(estimated_text or "").strip().casefold() in {"sí", "si", "s", "yes", "true", "1"} or origin == "Estimación"
             try:
                 uncertainty = max(0.0, float(uncertainty_raw or 0))
             except (TypeError, ValueError):
