@@ -222,7 +222,6 @@ def register_information_routes(
         value: float = Form(...),
         unit: str = Form(...),
         data_origin: str = Form(...),
-        status: str = Form("Cargado"),
         evidence_id: int | None = Form(None),
         is_estimated: str | None = Form(None),
         uncertainty_percentage: float = Form(0),
@@ -262,7 +261,9 @@ def register_information_routes(
         record.uncertainty_basis = uncertainty_basis.strip()
         record.quality_level = quality_from(data_origin, estimated, evidence is not None)
         record.notes = notes.strip()
-        record.status = "Provisional" if estimated else (status if status in {"Cargado", "En revisión", "Aprobado", "Devuelto", "Provisional"} else "Cargado")
+        # Editing activity data changes the evidence behind any prior review.
+        # The submitter cannot approve the record through this data-entry route.
+        record.status = "Provisional" if estimated else "En revisión"
         # SessionLocal usa autoflush=False. Persistir antes de recargar la fuente evita
         # recalcular con los valores anteriores y perder incertidumbre/ediciones.
         session.flush()
