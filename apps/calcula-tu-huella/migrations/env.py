@@ -26,7 +26,10 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     connectable = engine_from_config(config.get_section(config.config_ini_section) or {}, prefix="sqlalchemy.", poolclass=pool.NullPool)
-    with connectable.connect() as connection:
+    # Schema setup starts a SQLAlchemy transaction before Alembic configures
+    # its context. Own that transaction so successful revisions are committed
+    # instead of being rolled back when the connection closes.
+    with connectable.begin() as connection:
         if settings.database_schema:
             # The identifier is validated in Settings before interpolating it here.
             connection.exec_driver_sql(f'CREATE SCHEMA IF NOT EXISTS "{settings.database_schema}"')
