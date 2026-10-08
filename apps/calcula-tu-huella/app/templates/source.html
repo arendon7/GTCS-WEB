@@ -2,7 +2,7 @@
 {% block title %}{{ source.name }} · Calcula tu Huella{% endblock %}
 {% block page_label %}Fuente / cálculo y trazabilidad{% endblock %}
 {% block content %}
-<div class="page-head"><div><p class="breadcrumb">Fuentes / {{ source.category }} / {{ source.name }}</p><h1>{{ source.name }} <span class="status-chip {{ 'complete' if source.status == 'Completado' else 'progressing' if source.status == 'En progreso' else 'pending' }}">{{ source.status }}</span></h1><p>{{ source.facility.name if source.facility else 'Nivel corporativo' }} · {{ source.responsible }} · materialidad {{ source.materiality|lower }}</p></div><div class="head-actions"><a class="btn btn-outline" href="/inventarios/{{ inventory.id }}/fuentes">Volver</a>{% if user.can_view_methodology %}<form method="post" action="/fuentes/{{ source.id }}/recalcular"><button class="btn btn-primary">↻ Recalcular</button></form>{% endif %}</div></div>
+<div class="page-head"><div><p class="breadcrumb">Fuentes / {{ source.category }} / {{ source.name }}</p><h1>{{ source.name }} <span class="status-chip {{ 'complete' if source.status == 'Completado' else 'progressing' if source.status == 'En progreso' else 'pending' }}">{{ 'Periodos completos' if source.status == 'Completado' else source.status }}</span></h1><p>{{ source.facility.name if source.facility else 'Nivel corporativo' }} · {{ source.responsible }} · materialidad {{ source.materiality|lower }}</p></div><div class="head-actions"><a class="btn btn-outline" href="/inventarios/{{ inventory.id }}/fuentes">Volver</a>{% if user.can_view_methodology %}<form method="post" action="/fuentes/{{ source.id }}/recalcular"><button class="btn btn-primary">↻ Recalcular</button></form>{% endif %}</div></div>
 
 <div class="calculation-notice notice-success"><span>TRAZABLE</span><p><strong>Dato, conversión, factor, gas, GWP y resultado ya están conectados.</strong><small>Los factores precargados son demostrativos; la trazabilidad del motor sí es funcional.</small></p></div>
 
@@ -26,11 +26,12 @@
 {% endif %}
 
 <div class="source-summary-grid">
-  <article class="mini-card"><small>AVANCE</small><strong>{{ source.progress }}%</strong><p>{{ source.data_frequency }}</p></article>
+  <article class="mini-card"><small>COBERTURA DE PERIODOS</small><strong>{{ source.progress }}%</strong><p>{{ source.data_frequency }}</p></article>
   <article class="mini-card"><small>ACTIVIDAD ACUMULADA</small><strong>{{ total_activity|number_es(2) }}</strong><p>{{ calculation.activity_unit }}</p></article>
   <article class="mini-card"><small>EMISIONES CALCULADAS</small><strong>{{ source.emissions|number_es(3) }}</strong><p>tCO₂e</p></article>
   <article class="mini-card"><small>ESTADO DEL MOTOR</small><strong>{% if summary.errors %}{{ summary.errors }} errores{% elif summary.alerts %}{{ summary.alerts }} alertas{% else %}OK{% endif %}</strong><p>{{ summary.calculations|length }} componentes</p></article>
 </div>
+{% if summary.errors or summary.alerts %}<div class="callout source-review-note" role="note"><strong>Hay una revisión pendiente.</strong> La cobertura confirma que hay registros en los periodos requeridos; no confirma que los factores y cálculos estén libres de alertas. Revisa los <a href="#memoria-de-calculo">hallazgos del motor</a> antes del cierre.</div>{% endif %}
 
 <div class="calculation-layout calculation-v04">
   <div class="calculation-stack">
@@ -51,7 +52,7 @@
       <div class="result-total"><small>RESULTADO TOTAL REAL DEL MOTOR</small><strong>{{ (summary.total_co2e_kg / 1000)|number_es(6) }} tCO₂e</strong><p>Motor {{ summary.calculations[0].engine_version if summary.calculations else '0.4.0' }} · {{ inventory.gwp_version }}</p></div>
     </section>
 
-    <section class="card calculation-card"><div class="card-head"><div><small>4. MEMORIA DE CÁLCULO</small><h3>Fórmulas congeladas</h3></div><span class="counter">{{ summary.calculations|length }}</span></div><div class="formula-history">{% for item in summary.calculations[:18] %}<article><div><strong>{{ item.activity_data.period_start.strftime('%m/%Y') }} · {{ item.gas_code }}</strong><span class="calc-state {{ 'state-error' if item.status == 'Error' else 'state-alert' if item.status == 'Con alerta' else 'state-ok' }}">{{ item.status }}</span></div><code>{{ item.formula_snapshot }}</code>{% if item.warning %}<p>{{ item.warning }}</p>{% endif %}</article>{% else %}<p class="muted">Sin memoria de cálculo.</p>{% endfor %}</div></section>
+    <section class="card calculation-card" id="memoria-de-calculo"><div class="card-head"><div><small>4. MEMORIA DE CÁLCULO</small><h3>Fórmulas congeladas</h3></div><span class="counter">{{ summary.calculations|length }}</span></div><div class="formula-history">{% for item in summary.calculations[:18] %}<article><div><strong>{{ item.activity_data.period_start.strftime('%m/%Y') }} · {{ item.gas_code }}</strong><span class="calc-state {{ 'state-error' if item.status == 'Error' else 'state-alert' if item.status == 'Con alerta' else 'state-ok' }}">{{ item.status }}</span></div><code>{{ item.formula_snapshot }}</code>{% if item.warning %}<p>{{ item.warning }}</p>{% endif %}</article>{% else %}<p class="muted">Sin memoria de cálculo.</p>{% endfor %}</div></section>
   </div>
 
   <aside class="card trace-card"><h3>Trazabilidad completa</h3>

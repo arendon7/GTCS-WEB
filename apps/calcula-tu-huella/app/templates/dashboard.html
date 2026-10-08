@@ -33,7 +33,7 @@
   </div>
 </section>
 
-<div class="kpi-grid">
+<div class="kpi-grid dashboard-kpis">
   <article class="kpi-card featured"><span class="kpi-icon">◌</span><div><small>EMISIONES TOTALES</small><strong>{{ total|number_es }}</strong><p>tCO₂e · periodo seleccionado</p></div></article>
   <article class="kpi-card"><span class="kpi-icon green">▥</span><div><small>ALCANCE 1</small><strong>{{ scopes[1]|number_es }}</strong><p>tCO₂e · emisiones directas</p></div></article>
   <article class="kpi-card"><span class="kpi-icon blue">⌁</span><div><small>ALCANCE 2</small><strong>{{ scopes[2]|number_es }}</strong><p>tCO₂e · energía adquirida</p></div></article>
@@ -42,16 +42,26 @@
 
 <div class="dashboard-grid">
   <section class="card chart-card">
-    <div class="card-head"><div><small>EVOLUCIÓN MENSUAL</small><h3>Emisiones del periodo</h3></div><span class="status-chip active">{{ inventory.status }}</span></div>
+    <div class="card-head"><div><small>DETALLE POR PERIODO</small><h3>Resultados calculados por mes</h3></div><span class="status-chip active">{{ inventory.status }}</span></div>
     {% if has_monthly_data %}
-    <div class="monthly-chart" role="img" aria-label="Emisiones mensuales calculadas del inventario">
-      {% for point in monthly_series %}<div class="monthly-column"><span class="monthly-value">{{ point.value|number_es(1) }}</span><i style="height:{{ point.height }}%"></i><small>{{ point.month }}</small></div>{% endfor %}
+    <div class="monthly-chart" role="img" aria-label="Resultados mensuales calculados del inventario {{ inventory.base_year }}, en toneladas de CO₂ equivalente">
+      {% for point in monthly_series %}<div class="monthly-column"><span class="monthly-value">{{ point.value|number_es(1) }}</span><i style="height:{{ point.bar_height }}px" title="{{ point.month }}: {{ point.value|number_es(2) }} tCO₂e"></i><small>{{ point.month }}</small></div>{% endfor %}
     </div>
+    <table class="visually-hidden"><caption>Resultados calculados por mes del inventario {{ inventory.base_year }}</caption><thead><tr><th>Mes</th><th>Toneladas de CO₂ equivalente</th></tr></thead><tbody>{% for point in monthly_series %}<tr><th scope="row">{{ point.month }}</th><td>{{ point.value|number_es(2) }}</td></tr>{% endfor %}</tbody></table>
+    {% if not monthly_matches_total %}<div class="chart-method-note chart-method-warning" role="note"><p>Los registros con cálculo mensual suman <strong>{{ monthly_total|number_es(1) }} tCO₂e</strong>, cifra que no coincide con el total del inventario (<strong>{{ total|number_es(1) }} tCO₂e</strong>). El gráfico muestra resultados que tienen periodo y cálculo; revisa la cobertura de datos y el estado del motor antes de usarlo como consolidado.</p>{% if monthly_has_alerts %}<p>También hay resultados con alertas metodológicas pendientes de revisión.</p>{% endif %}<a href="/informacion">Revisar datos</a> · <a href="/calculos">Revisar cálculos →</a></div>
+    {% elif monthly_has_alerts %}<p class="chart-method-note">Incluye resultados con alertas metodológicas; revísalas antes de aprobar el inventario.</p>{% endif %}
     {% else %}
-    <div class="empty-chart"><strong>Aún no hay resultados mensuales calculados.</strong><p>Los valores aparecerán al cargar datos, asignar factores y ejecutar el motor.</p><a href="/calculos">Ir al motor de cálculo →</a></div>
+    <div class="empty-chart">
+      {% if total > 0 %}<strong>El total aún no tiene un desglose mensual calculado.</strong><p>Se registran {{ total|number_es(1) }} tCO₂e en el inventario, pero los resultados disponibles no producen una serie mensual que explique esa cifra. Revisa los periodos, los factores y el estado del motor.</p><div class="empty-chart-actions"><a href="/informacion">Revisar datos</a><a href="/calculos">Revisar cálculos →</a></div>
+      {% else %}<strong>Aún no hay resultados mensuales calculados.</strong><p>Los valores aparecerán al cargar datos, asignar factores y ejecutar el motor.</p><a href="/calculos">Ir al motor de cálculo →</a>{% endif %}
+    </div>
     {% endif %}
   </section>
-  <section class="card scope-card"><div class="card-head"><div><small>DISTRIBUCIÓN</small><h3>Por alcance</h3></div></div><div class="donut-wrap"><div class="donut" style="--s1:{{ (scopes[1]/total*100)|round(1) if total else 0 }}%;--s2:{{ ((scopes[1]+scopes[2])/total*100)|round(1) if total else 0 }}%"><span>{{ total|number_es(0) }}<small>tCO₂e</small></span></div><ul class="legend"><li><i class="dot d1"></i><b>Alcance 1</b><span>{{ scopes[1]|number_es }}</span></li><li><i class="dot d2"></i><b>Alcance 2</b><span>{{ scopes[2]|number_es }}</span></li><li><i class="dot d3"></i><b>Alcance 3</b><span>{{ scopes[3]|number_es }}</span></li></ul></div></section>
+  {% set donut_circumference = 439.823 %}
+  {% set scope1_arc = donut_circumference * scopes[1] / total if total else 0 %}
+  {% set scope2_arc = donut_circumference * scopes[2] / total if total else 0 %}
+  {% set scope3_arc = donut_circumference * scopes[3] / total if total else 0 %}
+  <section class="card scope-card"><div class="card-head"><div><small>DISTRIBUCIÓN</small><h3>Por alcance</h3></div></div><div class="donut-wrap"><svg class="donut-chart" viewBox="0 0 180 180" role="img" aria-label="Distribución por alcance: {{ total|number_es(1) }} toneladas de CO₂ equivalente"><circle class="donut-track" cx="90" cy="90" r="70"/><g class="donut-segments" transform="rotate(-90 90 90)"><circle class="donut-segment d1" cx="90" cy="90" r="70" stroke-dasharray="{{ scope1_arc }} {{ donut_circumference - scope1_arc }}" stroke-dashoffset="0"/><circle class="donut-segment d2" cx="90" cy="90" r="70" stroke-dasharray="{{ scope2_arc }} {{ donut_circumference - scope2_arc }}" stroke-dashoffset="-{{ scope1_arc }}"/><circle class="donut-segment d3" cx="90" cy="90" r="70" stroke-dasharray="{{ scope3_arc }} {{ donut_circumference - scope3_arc }}" stroke-dashoffset="-{{ scope1_arc + scope2_arc }}"/></g><text class="donut-total" x="90" y="86">{{ total|number_es(0) }}</text><text class="donut-unit" x="90" y="106">tCO₂e</text></svg><ul class="legend"><li><i class="dot d1"></i><b>Alcance 1</b><span>{{ scopes[1]|number_es }}</span></li><li><i class="dot d2"></i><b>Alcance 2</b><span>{{ scopes[2]|number_es }}</span></li><li><i class="dot d3"></i><b>Alcance 3</b><span>{{ scopes[3]|number_es }}</span></li></ul></div></section>
   <section class="card focus-card"><div class="card-head"><div><small>COMPLETITUD</small><h3>Calidad del levantamiento</h3></div></div><div class="progress-ring" style="--progress:{{ completeness }}"><span>{{ completeness }}%<small>fuentes completas</small></span></div><p>Revisa la cobertura de fuentes, identifica información pendiente y avanza hacia un inventario listo para revisión.</p><a href="/informacion">Revisar pendientes →</a></section>
 </div>
 

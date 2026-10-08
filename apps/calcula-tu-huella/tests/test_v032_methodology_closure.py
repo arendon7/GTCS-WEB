@@ -6,12 +6,13 @@ from pathlib import Path
 import pytest
 from openpyxl import load_workbook
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from app.analytics import inventory_total
 from app.calculations import recalculate_source
 from app.database import (
     ActivityData,
+    ActivityIndicator,
     Base,
     BaseYearRecalculation,
     EmissionSource,
@@ -204,3 +205,15 @@ def test_calculation_workbook_contains_methodological_closure(tmp_path: Path) ->
     headers = [cell.value for cell in next(workbook["Cálculos"].iter_rows(min_row=1, max_row=1))]
     assert "Partida" in headers
     assert "Incertidumbre %" in headers
+
+
+def test_missing_production_intensity_is_reported_as_unavailable_in_workbook(tmp_path: Path) -> None:
+    output = tmp_path / "memoria_sin_produccion.xlsx"
+    with SessionLocal() as session:
+        session.execute(delete(ActivityIndicator).where(ActivityIndicator.inventory_id == 1, ActivityIndicator.indicator_type == "Producción"))
+        inventory = session.get(Inventory, 1)
+        generate_calculation_workbook(session, inventory, output)
+    workbook = load_workbook(output, read_only=True)
+    summary = {row[0]: row[1:] for row in workbook["Resumen"].iter_rows(min_col=1, max_col=3, values_only=True) if row[0]}
+    assert summary["Intensidad productiva"][0] == "N/D"
+    assert "Registra producción en Análisis" in summary["Disponibilidad de intensidad productiva"][0]

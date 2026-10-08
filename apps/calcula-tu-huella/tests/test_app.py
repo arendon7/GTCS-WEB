@@ -164,6 +164,28 @@ def test_excel_template_downloads():
         response = client.get("/informacion/plantilla.xlsx")
         assert response.status_code == 200
         assert response.content[:2] == b"PK"
+        workbook = load_workbook(BytesIO(response.content), data_only=True)
+        assert workbook.sheetnames == ["Instrucciones", "Datos", "Catálogos", "Ejemplo (no importar)"]
+        assert workbook["Datos"].max_row == 1
+        assert workbook["Datos"][1][0].value == "Fuente"
+        assert "listas desplegables" in workbook["Instrucciones"]["B2"].value
+        assert "Provisional" in workbook["Instrucciones"]["B4"].value
+        assert "ilustrativa" in workbook["Instrucciones"]["B6"].value
+        assert "no se procesa" in workbook["Ejemplo (no importar)"]["I2"].value
+        assert {item.type for item in workbook["Datos"].data_validations.dataValidation} == {"list", "custom", "decimal"}
+        assert "ListaFuentes" in workbook.defined_names
+        assert "ListaUnidades" in workbook.defined_names
+        assert "ListaOrigenes" in workbook.defined_names
+
+
+def test_import_page_explains_estimated_record_status():
+    with TestClient(app) as client:
+        login(client)
+        response = client.get("/informacion/importar")
+        assert response.status_code == 200
+        assert "calidad C" in response.text
+        assert "provisional" in response.text
+        assert "No cambies los encabezados ni cargues la hoja de ejemplo" in response.text
 
 
 def test_activity_data_can_be_created_and_calculated():
@@ -255,6 +277,10 @@ def test_duplicate_activity_redirects_to_existing_source_record():
         )
         assert response.status_code == 303
         assert response.headers["location"] == f"/fuentes/{source_id}#registros-del-periodo"
+        redirected = client.get(response.headers["location"])
+        assert redirected.status_code == 200
+        assert 'role="alert" aria-live="assertive"' in redirected.text
+        assert "Revisa el registro existente y edítalo" in redirected.text
 
 
 def test_report_page_explains_missing_production_intensity_and_draft():
@@ -269,6 +295,20 @@ def test_report_page_explains_missing_production_intensity_and_draft():
         assert "Registra producción en" in page.text
         assert "Se generará como borrador" in page.text
         assert 'href="/control"' in page.text
+
+
+def test_customer_report_page_explains_role_limit_without_promising_generation():
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        page = client.get("/reportes")
+        assert page.status_code == 200
+        assert "Informes disponibles" in page.text
+        assert "Consulta los resultados y los documentos" in page.text
+        assert "Formatos de informe" in page.text
+        assert "Generación restringida por rol" in page.text
+        assert "solicita a una persona con permisos" in page.text
+        assert "Cuando una persona autorizada genere un informe" in page.text
+        assert '<button class="btn btn-primary">Generar</button>' not in page.text
 
 
 def test_evidence_upload_and_download():

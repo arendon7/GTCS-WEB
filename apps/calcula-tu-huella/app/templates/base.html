@@ -22,7 +22,7 @@
     {% for section in navigation.core %}
     <nav class="nav-group{% if not loop.first %} compact-nav{% endif %}">
       <p class="nav-label">{{ section["label"] }}</p>
-      {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon"] }}</span>{{ item["label"] }}</a>{% endfor %}
+      {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon_svg"] }}</span>{{ item["label"] }}</a>{% endfor %}
     </nav>
     {% endfor %}
 
@@ -32,7 +32,7 @@
       {% for section in navigation.advanced %}
       <nav class="nav-group compact-nav">
         <p class="nav-label">{{ section["label"] }}</p>
-        {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon"] }}</span>{{ item["label"] }}</a>{% endfor %}
+        {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon_svg"] }}</span>{{ item["label"] }}</a>{% endfor %}
       </nav>
       {% endfor %}
     </details>
@@ -44,7 +44,7 @@
       {% for section in navigation.internal %}
       <nav class="nav-group compact-nav">
         <p class="nav-label">{{ section["label"] }}</p>
-        {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon"] }}</span>{{ item["label"] }}</a>{% endfor %}
+        {% for item in section["items"] %}<a class="nav-item {% if active == item["active"] %}active{% endif %}" href="{{ item["href"] }}"><span>{{ item["icon_svg"] }}</span>{{ item["label"] }}</a>{% endfor %}
       </nav>
       {% endfor %}
     </details>
@@ -76,7 +76,7 @@
       <button class="icon-button mobile-only" id="menuButton" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menú">☰</button>
       <div class="topbar-title">{% block page_label %}Calcula tu Huella{% endblock %}</div>
       <div class="topbar-actions">
-        <a class="greenatics-return-link" href="{{ app_settings.greenatics_public_url }}">Volver a Greenatics</a>
+        <a class="greenatics-return-link" href="{{ app_settings.greenatics_public_url }}" aria-label="Volver a Greenatics"><span class="greenatics-return-desktop">Volver a Greenatics</span><span class="greenatics-return-mobile" aria-hidden="true">Greenatics</span></a>
         <a class="version-pill" href="/inteligencia-producto">Perfil y alcance</a>
         <a class="icon-button" href="/recorrido-inventario" title="Ayuda y recorrido">?</a>
         <a class="icon-button notification" href="/notificaciones" title="Notificaciones">♢{% if unread_notifications %}<b>{{ unread_notifications }}</b>{% endif %}</a>
@@ -84,7 +84,7 @@
       </div>
     </header>
     <div class="page-content" id="contenido-aplicacion">
-      {% if flash %}<div class="flash flash-{{ flash.level }}">{{ flash.message }}</div>{% endif %}
+      {% if flash %}<div class="flash flash-{{ flash.level }}" role="{{ 'alert' if flash.level == 'error' else 'status' }}" aria-live="{{ 'assertive' if flash.level == 'error' else 'polite' }}" aria-atomic="true">{{ flash.message }}</div>{% endif %}
       {% if inventory is defined and inventory.locked %}
       <div class="locked-banner"><span>🔒</span><div><strong>Inventario cerrado e inmutable</strong><small>Los datos, evidencias, factores y cálculos de la versión {{ inventory.version }} están bloqueados. Para corregirlos debe crearse una nueva versión desde Control.</small></div></div>
       {% endif %}

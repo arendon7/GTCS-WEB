@@ -8,6 +8,7 @@ primary product and advanced/internal functions do not overwhelm daily users.
 """
 
 from typing import Any
+from markupsafe import Markup
 
 VIEW_MODES = {"essential", "complete"}
 
@@ -39,6 +40,71 @@ ROLE_PROFILES: dict[str, dict[str, str]] = {
     },
 }
 
+NAV_ICON_BY_ACTIVE = {
+    "dashboard": "grid", "onboarding": "play", "product_intelligence": "spark",
+    "journey": "route", "inventories": "layers", "sources": "leaf", "information": "rows",
+    "operational_imports": "upload", "data_quality": "shield", "period_close": "calendar",
+    "calculations": "calculator", "control": "check", "methodology_closure": "book_check",
+    "reports": "document", "verification": "badge", "analysis": "chart", "reduction": "sprout",
+    "methodology": "book", "methodology_core": "layers", "colombia_library": "map",
+    "methodology_governance": "scale", "sectorization": "grid", "supply_chain": "network",
+    "scenarios": "sliders", "impact": "globe", "climate_risk": "cloud", "climate_disclosure": "document_check",
+    "compliance": "checklist", "documents": "files", "greenatics_pilot": "sprout",
+    "greenatics_pilot_execution": "play", "organization": "building", "users": "users",
+    "portfolio": "briefcase", "demo_environment": "monitor", "executive": "chart",
+    "service_account": "wallet", "support": "support", "commercial": "briefcase",
+    "commercial_operations": "document_check", "customer_success": "heart", "integrations": "network",
+    "automations": "sliders", "platform_admin": "settings", "operations": "settings",
+    "saas_admin": "box", "readiness": "badge", "modules": "grid", "consolidation": "merge",
+}
+
+NAV_ICON_SHAPES = {
+    "grid": '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    "play": '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+    "spark": '<path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z"/><path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/>',
+    "route": '<circle cx="6" cy="5" r="2"/><circle cx="18" cy="19" r="2"/><path d="M6 7v2a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4v0"/>',
+    "layers": '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
+    "leaf": '<path d="M20 4c-8 0-14 3-14 10a6 6 0 0 0 6 6c7 0 10-6 8-16Z"/><path d="M4 21c3-5 7-8 13-11"/>',
+    "rows": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11m6-11v11"/>',
+    "upload": '<path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>',
+    "shield": '<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/>',
+    "calendar": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2m4 0h2m-8 4h2"/>',
+    "calculator": '<rect x="4" y="2.5" width="16" height="19" rx="2"/><path d="M8 6h8M8 11h2m4 0h2M8 15h2m4 0h2M8 19h2m4 0h2"/>',
+    "check": '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
+    "book_check": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="m10 11 2 2 4-4"/>',
+    "document": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8m-8 4h8"/>',
+    "badge": '<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/>',
+    "chart": '<path d="M3 3v18h18M7 14l4-4 3 3 6-7"/><path d="M17 6h3v3"/>',
+    "sprout": '<path d="M12 22v-9M12 13C5 13 4 7 4 4c6 0 10 3 8 9Zm0 2c0-5 4-8 9-8 0 5-2 9-9 9ZM5 22h14"/>',
+    "book": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',
+    "map": '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z"/><path d="M9 3v15m6-12v15"/>',
+    "scale": '<path d="M12 3v18m-7 0h14M5 7h14M8 7l-4 7h8L8 7Zm8 0-4 7h8l-4-7Z"/>',
+    "network": '<circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="m10 10-3-3m7 3 3-3m-7 7-3 3m7-3 3 3"/>',
+    "sliders": '<path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4"/>',
+    "globe": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18m-9-9a15 15 0 0 1 0 18m0-18a15 15 0 0 0 0 18"/>',
+    "cloud": '<path d="M20 16.5A4.5 4.5 0 0 0 18 8h-1.2A7 7 0 1 0 4 16.2M3 20h18"/>',
+    "document_check": '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6m-12 5 2 2 4-4"/>',
+    "checklist": '<path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2m-3 7 1 1 2-2m-3 7 1 1 2-2"/>',
+    "files": '<path d="M15 2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V6Z"/><path d="M15 2v4h4M8 11h7m-7 4h7M8 20v2h11a2 2 0 0 0 2-2V8"/>',
+    "building": '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2m2 0h2M9 11h2m2 0h2M9 15h2m2 0h2m-5 6v-3h2v3"/>',
+    "users": '<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m6-11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10 11v-2a4 4 0 0 0-3-3.9m-1-13a4 4 0 0 1 0 7.8"/>',
+    "briefcase": '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-13 6h18m-11-1v2h4v-2"/>',
+    "monitor": '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4m-4-9 3-3 2 2 3-4"/>',
+    "wallet": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18m-5 5h2M7 5V3h10v2"/>',
+    "support": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m5.6 5.6 3.6 3.6m5.6 5.6 3.6 3.6m0-12.8-3.6 3.6m-5.6 5.6-3.6 3.6"/>',
+    "heart": '<path d="M20.8 8.7c0 5.5-8.8 11.3-8.8 11.3S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.8 2.3Z"/>',
+    "settings": '<circle cx="12" cy="12" r="3"/><path d="m19 15 1 1-3 3-1-1a2 2 0 0 0-3 1v1h-4v-1a2 2 0 0 0-3-1l-1 1-3-3 1-1a2 2 0 0 0-1-3H1v-4h1a2 2 0 0 0 1-3L2 4l3-3 1 1a2 2 0 0 0 3-1V0h4v1a2 2 0 0 0 3 1l1-1 3 3-1 1a2 2 0 0 0 1 3h1v4h-1a2 2 0 0 0-1 3Z"/>',
+    "box": '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8m-9 5v9"/>',
+    "merge": '<circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h2a6 6 0 0 1 6 6v4m0 0 3-3m-3 3-3-3M6 8v10a2 2 0 0 0 2 2h8"/>',
+    "default": '<circle cx="12" cy="12" r="8"/><path d="M12 8v8m-4-4h8"/>',
+}
+
+
+def _nav_icon_svg(active: str) -> Markup:
+    shape = NAV_ICON_BY_ACTIVE.get(active, "default")
+    path = NAV_ICON_SHAPES.get(shape, NAV_ICON_SHAPES["default"])
+    return Markup(f'<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{path}</svg>')
+
 
 def _item(
     label: str,
@@ -54,6 +120,7 @@ def _item(
         "href": href,
         "active": active,
         "icon": icon,
+        "icon_svg": _nav_icon_svg(active),
         "any_capability": any_capability,
         "roles": roles,
     }

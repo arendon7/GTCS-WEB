@@ -164,6 +164,17 @@ def test_v026_page_and_download_are_available():
         assert download.headers["content-type"].startswith("application/vnd.openxmlformats")
 
 
+def test_v026_without_pilot_guides_users_to_general_inventory_data():
+    with TestClient(app) as client:
+        _login(client)
+        page = client.get("/calidad-datos")
+        assert page.status_code == 200
+        assert "Aún no hay una carga controlada para revisar" in page.text
+        assert 'href="/informacion"' in page.text
+        assert 'href="/cargas-operativas"' in page.text
+        assert 'href="/piloto-greenatics/ejecucion"' in page.text
+
+
 def test_v026_client_can_view_but_cannot_upload():
     with TestClient(app) as client:
         _login(client, "cliente@calculatuhuella.local")

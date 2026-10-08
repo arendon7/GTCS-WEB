@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import re
+
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import delete
 
-from app.database import Base, ENGINE, init_db
+from app.database import Base, ENGINE, EmissionCalculation, SessionLocal, init_db
 from app.main import app
 from app.product_experience import journey_detail, navigation_for
 
@@ -40,6 +43,8 @@ def test_navigation_defaults_to_inventory_core() -> None:
     assert "Cierre metodológico" in labels
     assert navigation["advanced"] == []
     assert navigation["internal"] == []
+    visible_items = [item for section in navigation["core"] for item in section["items"]]
+    assert all('<svg class="nav-icon"' in item["icon_svg"] for item in visible_items)
 
 
 def test_complete_navigation_preserves_advanced_capabilities() -> None:
@@ -59,6 +64,8 @@ def test_complete_navigation_preserves_advanced_capabilities() -> None:
     assert "Organización" in internal
     assert "Operación y seguridad" in internal
     assert "Consolidación V1.0" in internal
+    all_items = [item for group in navigation["core"] + navigation["advanced"] + navigation["internal"] for item in group["items"]]
+    assert all('<svg class="nav-icon"' in item["icon_svg"] for item in all_items)
 
 
 def test_dashboard_switches_between_essential_and_complete_view() -> None:
@@ -89,8 +96,19 @@ def test_inventory_journey_has_five_decision_stages() -> None:
         assert response.status_code == 200
         for stage in ["Configurar", "Recolectar", "Calcular", "Revisar", "Reportar"]:
             assert stage in response.text
-        assert "Responsable de información" in response.text
-        assert "Un solo proceso, cinco etapas" in response.text
+        assert '<progress max="100" value="' in response.text
+        assert 'aria-label="Avance del recorrido:' in response.text
+
+
+def test_source_page_distinguishes_period_coverage_from_calculation_review() -> None:
+    with TestClient(app) as client:
+        login(client, "consultor@calculatuhuella.local")
+        response = client.get("/fuentes/1")
+        assert response.status_code == 200
+        assert "COBERTURA DE PERIODOS" in response.text
+        assert "Periodos completos" in response.text
+        assert "no confirma que los factores y cálculos estén libres de alertas" in response.text
+        assert 'href="#memoria-de-calculo"' in response.text
 
 
 def test_dashboard_uses_calculated_monthly_data_not_placeholder_trend() -> None:
@@ -100,7 +118,36 @@ def test_dashboard_uses_calculated_monthly_data_not_placeholder_trend() -> None:
         assert response.status_code == 200
         assert "▼ 8,4%" not in response.text
         assert "periodo seleccionado" in response.text
+        assert 'class="nav-icon"' in response.text
         assert "monthly-chart" in response.text or "Aún no hay resultados mensuales calculados" in response.text
+        assert 'class="donut-chart"' in response.text
+        assert 'aria-label="Distribución por alcance:' in response.text
+        assert 'class="donut-segment d1"' in response.text
+        assert 'height:150px' in response.text
+        assert "Los registros con cálculo mensual suman" in response.text
+        assert "no coincide con el total del inventario" in response.text
+        assert 'href="/informacion">Revisar datos</a>' in response.text
+        assert 'href="/calculos">Revisar cálculos' in response.text
+        assert "resultados con alertas metodológicas" in response.text
+        assert "Resultados calculados por mes del inventario" in response.text
+        monthly_table = response.text.split('<table class="visually-hidden">', 1)[1].split("</table>", 1)[0]
+        monthly_values = re.findall(r"<td>([\d.,]+)</td>", monthly_table)
+        assert len(monthly_values) == 12
+        assert any(float(value.replace(".", "").replace(",", ".")) > 0 for value in monthly_values)
+
+
+def test_dashboard_explains_when_inventory_total_has_no_monthly_results() -> None:
+    with TestClient(app) as client:
+        login(client, "consultor@calculatuhuella.local")
+        with SessionLocal() as session:
+            session.execute(delete(EmissionCalculation))
+            session.commit()
+        response = client.get("/dashboard")
+        assert response.status_code == 200
+        assert "El total aún no tiene un desglose mensual calculado" in response.text
+        assert "Revisa los periodos, los factores y el estado del motor" in response.text
+        assert 'href="/informacion">Revisar datos' in response.text
+        assert 'href="/calculos">Revisar cálculos' in response.text
 
 
 def test_journey_detail_marks_only_one_current_stage() -> None:

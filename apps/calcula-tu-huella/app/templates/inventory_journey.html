@@ -23,7 +23,7 @@
   <div class="journey-score">
     <strong>{{ journey.score }}%</strong>
     <span>{{ journey.completed }} de {{ journey.total }} etapas completas</span>
-    <div class="progress"><i style="width:{{ journey.score }}%"></i></div>
+    <progress max="100" value="{{ journey.score }}" aria-label="Avance del recorrido: {{ journey.score }}%">{{ journey.score }}%</progress>
   </div>
 </section>
 

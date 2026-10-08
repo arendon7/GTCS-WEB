@@ -371,27 +371,41 @@ def inventory_metrics(inventory: Inventory) -> dict[str, object]:
     scopes = {scope: round(sum(source.emissions for source in included_sources if source.scope == scope), 1) for scope in (1, 2, 3)}
     completeness = round(sum(source.progress for source in included_sources) / max(len(included_sources), 1))
     monthly = {month: 0.0 for month in range(1, 13)}
+    monthly_has_alerts = False
     for source in included_sources:
         for record in source.activity_records:
             if record.period_start.year != inventory.base_year:
                 continue
+            eligible_calculations = [
+                calculation for calculation in record.calculations
+                if calculation.status in {"Calculado", "Con alerta"}
+            ]
+            monthly_has_alerts = monthly_has_alerts or any(
+                calculation.status == "Con alerta" for calculation in eligible_calculations
+            )
             monthly[record.period_start.month] += sum(
-                calculation.co2e_kg for calculation in record.calculations if calculation.status == "Calculado"
+                calculation.co2e_kg for calculation in eligible_calculations
             ) / 1000
     month_labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
     monthly_series = [
         {"month": month_labels[month - 1], "value": round(monthly[month], 2)}
         for month in range(1, 13)
     ]
+    monthly_total = round(sum(monthly.values()), 2)
+    monthly_matches_total = abs(monthly_total - total) <= max(0.1, abs(total) * 0.001)
     max_monthly = max((item["value"] for item in monthly_series), default=0) or 1
     for item in monthly_series:
         item["height"] = round(item["value"] / max_monthly * 100, 1) if max_monthly else 0
+        item["bar_height"] = round(item["height"] * 1.5) if item["value"] > 0 else 0
     return {
         "total": total,
         "scopes": scopes,
         "completeness": completeness,
         "monthly_series": monthly_series,
+        "monthly_total": monthly_total,
+        "monthly_matches_total": monthly_matches_total,
         "has_monthly_data": any(item["value"] > 0 for item in monthly_series),
+        "monthly_has_alerts": monthly_has_alerts,
         "source_max": max((source.emissions for source in included_sources), default=0) or 1,
     }
 

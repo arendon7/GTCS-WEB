@@ -57,6 +57,8 @@ def test_v0455_health_and_customer_facing_import_page():
         assert page.status_code == 200
         assert 'Importa, valida y corrige tus datos' in page.text
         assert 'INTEGRACIÓN DE DATOS · V0.45' not in page.text
+        assert 'class="kpi-grid five operational-kpis"' not in page.text
+        assert 'Previsualizar y mapear' in page.text
 
 
 def test_v0455_estimation_origin_marks_imported_activity_provisional():
