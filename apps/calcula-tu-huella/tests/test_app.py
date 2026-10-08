@@ -261,6 +261,27 @@ def test_editing_with_estimation_origin_cannot_leave_record_approved():
         assert record.status == "Provisional"
 
 
+def test_editing_approved_activity_data_returns_it_to_review_and_ignores_submitted_approval():
+    with SessionLocal() as session:
+        record = session.scalar(select(ActivityData).where(ActivityData.is_estimated.is_(False)).limit(1))
+        assert record is not None
+        record.status = "Aprobado"
+        record_id = record.id
+        session.commit()
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        response = client.post(
+            f"/informacion/datos/{record_id}/editar",
+            data={"value": "25", "unit": "kWh", "data_origin": "Factura", "status": "Aprobado"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+    with SessionLocal() as session:
+        record = session.get(ActivityData, record_id)
+        assert record is not None
+        assert record.status == "En revisión"
+
+
 def test_duplicate_activity_redirects_to_existing_source_record():
     with SessionLocal() as session:
         record = session.scalar(select(ActivityData).limit(1))
