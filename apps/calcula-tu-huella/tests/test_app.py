@@ -282,6 +282,23 @@ def test_editing_approved_activity_data_returns_it_to_review_and_ignores_submitt
         assert record.status == "En revisión"
 
 
+def test_reviewer_cannot_edit_activity_data_or_see_edit_action():
+    with SessionLocal() as session:
+        record = session.scalar(select(ActivityData).limit(1))
+        record_id, source_id = record.id, record.source_id
+    with TestClient(app) as client:
+        login(client, "revisor@calculatuhuella.local")
+        page = client.get(f"/fuentes/{source_id}")
+        assert page.status_code == 200
+        assert f"/informacion/datos/{record_id}/editar" not in page.text
+        response = client.post(
+            f"/informacion/datos/{record_id}/editar",
+            data={"value": "25", "unit": "kWh", "data_origin": "Factura"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 403
+
+
 def test_duplicate_activity_redirects_to_existing_source_record():
     with SessionLocal() as session:
         record = session.scalar(select(ActivityData).limit(1))
