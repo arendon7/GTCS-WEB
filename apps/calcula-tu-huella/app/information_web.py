@@ -182,12 +182,12 @@ def register_information_routes(
             raise HTTPException(409, str(exc)) from exc
         duplicate = session.scalar(select(ActivityData).where(ActivityData.source_id == source.id, ActivityData.period_start == start_date, ActivityData.period_end == end_date))
         if duplicate:
-            set_flash(request, "Ya existe un registro para esa fuente y periodo.", "error")
-            return RedirectResponse("/informacion", status_code=303)
+            set_flash(request, "Ya existe un dato para esa fuente y periodo. Revisa el registro existente y edítalo si necesitas corregirlo.", "error")
+            return RedirectResponse(f"/fuentes/{source.id}#registros-del-periodo", status_code=303)
         evidence = session.get(EvidenceDocument, evidence_id) if evidence_id else None
         if evidence and evidence.inventory_id != inventory.id:
             raise HTTPException(400, "Evidencia inválida")
-        estimated = is_estimated == "on"
+        estimated = is_estimated == "on" or data_origin == "Estimación"
         record = ActivityData(
             source_id=source.id,
             evidence_id=evidence.id if evidence else None,
@@ -249,7 +249,7 @@ def register_information_routes(
         evidence = session.get(EvidenceDocument, evidence_id) if evidence_id else None
         if evidence and evidence.inventory_id != record.source.inventory_id:
             raise HTTPException(400, "Evidencia inválida")
-        estimated = is_estimated == "on"
+        estimated = is_estimated == "on" or data_origin == "Estimación"
         record.value = max(value, 0)
         record.unit = unit
         record.data_origin = data_origin
@@ -259,7 +259,7 @@ def register_information_routes(
         record.uncertainty_basis = uncertainty_basis.strip()
         record.quality_level = quality_from(data_origin, estimated, evidence is not None)
         record.notes = notes.strip()
-        record.status = status if status in {"Cargado", "En revisión", "Aprobado", "Devuelto", "Provisional"} else "Cargado"
+        record.status = "Provisional" if estimated else (status if status in {"Cargado", "En revisión", "Aprobado", "Devuelto", "Provisional"} else "Cargado")
         # SessionLocal usa autoflush=False. Persistir antes de recargar la fuente evita
         # recalcular con los valores anteriores y perder incertidumbre/ediciones.
         session.flush()
@@ -473,7 +473,7 @@ def register_information_routes(
                 errors.append(f"Fila {row_number}: ya existe un dato para {source.name} en {start:%Y-%m}.")
                 continue
             seen.add(key)
-            estimated = str(estimated_text or "").strip().casefold() in {"sí", "si", "s", "yes", "true", "1"}
+            estimated = str(estimated_text or "").strip().casefold() in {"sí", "si", "s", "yes", "true", "1"} or origin == "Estimación"
             try:
                 uncertainty = max(0.0, float(uncertainty_raw or 0))
             except (TypeError, ValueError):

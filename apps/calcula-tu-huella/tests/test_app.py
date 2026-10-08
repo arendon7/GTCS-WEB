@@ -196,6 +196,81 @@ def test_activity_data_can_be_created_and_calculated():
         assert calculation_count == 1
 
 
+def test_estimation_origin_is_saved_as_provisional_without_checkbox():
+    with SessionLocal() as session:
+        source = session.scalar(select(EmissionSource).where(EmissionSource.name == "Transporte contratado"))
+        session.execute(delete(ActivityData).where(ActivityData.source_id == source.id, ActivityData.period_start == date(2025, 4, 1)))
+        session.commit()
+        source_id = source.id
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        response = client.post(
+            "/informacion/datos/nuevo",
+            data={"source_id": source_id, "period_start": "2025-04-01", "period_end": "2025-04-30", "value": "12", "unit": "t·km", "data_origin": "Estimación"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+    with SessionLocal() as session:
+        record = session.scalar(select(ActivityData).where(ActivityData.source_id == source_id, ActivityData.period_start == date(2025, 4, 1)))
+        assert record is not None
+        assert record.is_estimated is True
+        assert record.quality_level == "C"
+        assert record.status == "Provisional"
+
+
+def test_editing_with_estimation_origin_cannot_leave_record_approved():
+    with SessionLocal() as session:
+        record = session.scalar(select(ActivityData).limit(1))
+        record_id, source_id = record.id, record.source_id
+        session.commit()
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        response = client.post(
+            f"/informacion/datos/{record_id}/editar",
+            data={"value": "25", "unit": "kWh", "data_origin": "Estimación", "status": "Aprobado"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+    with SessionLocal() as session:
+        record = session.get(ActivityData, record_id)
+        assert record is not None and record.source_id == source_id
+        assert record.is_estimated is True
+        assert record.quality_level == "C"
+        assert record.status == "Provisional"
+
+
+def test_duplicate_activity_redirects_to_existing_source_record():
+    with SessionLocal() as session:
+        record = session.scalar(select(ActivityData).limit(1))
+        assert record is not None
+        source_id = record.source_id
+        period_start = record.period_start
+        period_end = record.period_end
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        response = client.post(
+            "/informacion/datos/nuevo",
+            data={"source_id": source_id, "period_start": str(period_start), "period_end": str(period_end), "value": "12", "unit": "kWh", "data_origin": "Factura"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+        assert response.headers["location"] == f"/fuentes/{source_id}#registros-del-periodo"
+
+
+def test_report_page_explains_missing_production_intensity_and_draft():
+    with SessionLocal() as session:
+        session.execute(delete(ActivityIndicator).where(ActivityIndicator.inventory_id == 1, ActivityIndicator.indicator_type == "Producción"))
+        session.commit()
+    with TestClient(app) as client:
+        login(client)
+        page = client.get("/reportes")
+        assert page.status_code == 200
+        assert "N/D" in page.text
+        assert "Registra producción en" in page.text
+        assert "Se generará como borrador" in page.text
+        assert 'href="/control"' in page.text
+
+
 def test_evidence_upload_and_download():
     with TestClient(app) as client:
         login(client, "cliente@calculatuhuella.local")

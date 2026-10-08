@@ -15,6 +15,7 @@ from app.database import (
     ActivityData,
     Base,
     DataImportBatch,
+    DataImportRow,
     DataQualityFinding,
     ENGINE,
     SessionLocal,
@@ -89,6 +90,25 @@ def test_v026_valid_batch_is_created_without_modifying_inventory():
         assert batch.error_rows == 0
         assert before == after
         assert batch.total_rows == 1
+
+
+def test_v026_estimation_origin_overrides_false_estimated_column():
+    with SessionLocal() as session:
+        start_pilot_execution(session, 1, "consultor@test", "Consultor prueba")
+        session.commit()
+        content = _workbook_with_values(session, [("YAR-ELEC", 1000, "kWh", "Factura enero")])
+        workbook = load_workbook(BytesIO(content))
+        sheet = workbook["Carga de datos"]
+        sheet.cell(2, 6).value = "Estimación"
+        sheet.cell(2, 7).value = "No"
+        output = BytesIO()
+        workbook.save(output)
+        batch = create_import_batch(session, 1, "estimacion.xlsx", output.getvalue(), "consultor@test")
+        session.commit()
+        row = session.scalar(select(DataImportRow).where(DataImportRow.batch_id == batch.id))
+        assert row is not None
+        assert row.is_estimated is True
+        assert row.quality_level == "C"
 
 
 def test_v026_negative_value_creates_blocking_finding():

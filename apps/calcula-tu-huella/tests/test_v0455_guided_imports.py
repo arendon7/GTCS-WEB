@@ -9,9 +9,9 @@ from fastapi.testclient import TestClient
 from openpyxl import Workbook
 from sqlalchemy import select
 
-from app.database import Base, DataImportRow, ENGINE, EmissionSource, Inventory, SessionLocal, init_db
+from app.database import ActivityData, Base, DataImportRow, ENGINE, EmissionSource, Inventory, SessionLocal, init_db
 from app.main import app
-from app.operational_imports import create_operational_batch, inspect_import_file, update_operational_row
+from app.operational_imports import apply_operational_batch, create_operational_batch, inspect_import_file, update_operational_row
 
 
 @pytest.fixture(autouse=True)
@@ -57,6 +57,39 @@ def test_v0455_health_and_customer_facing_import_page():
         assert page.status_code == 200
         assert 'Importa, valida y corrige tus datos' in page.text
         assert 'INTEGRACIÓN DE DATOS · V0.45' not in page.text
+
+
+def test_v0455_estimation_origin_marks_imported_activity_provisional():
+    with SessionLocal() as session:
+        inventory, source = active_inventory(session)
+        content = (
+            'Fuente;Inicio;Fin;Valor;Unidad;Origen;Evidencia\n'
+            f'{source.id};2025-01-01;2025-01-31;120;kWh;Estimación;\n'
+        ).encode()
+        batch = create_operational_batch(
+            session, organization_id=1, inventory=inventory, filename='estimacion.csv', content=content,
+            user_email='consultor@test', mapping=mapping(), defaults={'duplicate_policy': 'reject'},
+        )
+        row = batch.rows[0]
+        assert row.is_estimated is True
+        assert row.quality_level == 'C'
+        assert row.status in {'Válido', 'Advertencia'}
+        applied = apply_operational_batch(session, 1, batch.id, 'consultor@test')
+        session.commit()
+        assert applied.status == 'Aplicado'
+        activity = session.get(ActivityData, row.activity_data_id)
+        assert activity is not None
+        assert activity.is_estimated is True
+        assert activity.status == 'Provisional'
+
+
+def test_v0455_estimation_origin_sync_is_available_in_record_forms():
+    with TestClient(app) as client:
+        login(client)
+        page = client.get('/informacion')
+        assert 'data-estimated-origin' in page.text
+        assert 'data-estimated-flag' in page.text
+        assert 'El origen “Estimación”' in page.text
 
 
 def test_v0455_xlsx_can_use_a_non_first_header_row():

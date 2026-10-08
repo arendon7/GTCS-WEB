@@ -236,10 +236,10 @@
           <label>Fecha final<input type="date" name="period_end" value="{{ row.period_end or '' }}" required></label>
           <label>Valor<input name="value" inputmode="decimal" value="{{ row.value if row.value is not none else '' }}" required></label>
           <label>Unidad<input name="unit" value="{{ row.unit }}" required></label>
-          <label>Origen<select name="origin">{% for origin in origins %}<option value="{{ origin }}" {% if row.data_origin == origin %}selected{% endif %}>{{ origin }}</option>{% endfor %}</select></label>
+          <label>Origen<select name="origin" data-estimated-origin>{% for origin in origins %}<option value="{{ origin }}" {% if row.data_origin == origin %}selected{% endif %}>{{ origin }}</option>{% endfor %}</select></label>
           <label class="wide-field">Referencia de evidencia<input name="evidence" value="{{ row.evidence_reference }}" placeholder="Factura, certificado, archivo o enlace"></label>
           <label class="wide-field">Notas<input name="notes" value="{{ row.correction_notes }}" placeholder="Justificación o detalle de la corrección"></label>
-          <label class="check-line compact-check"><input type="checkbox" name="estimated" value="true" {% if row.is_estimated %}checked{% endif %}> Dato estimado</label>
+          <label class="check-line compact-check"><input type="checkbox" name="estimated" value="true" data-estimated-flag {% if row.is_estimated %}checked{% endif %}> Dato estimado</label><small data-estimated-note hidden>El origen “Estimación” conserva la fila como provisional y de calidad C.</small>
         </div>
         <div class="row-correction-actions"><button type="button" class="btn btn-outline" data-row-editor-close="editor-{{ row.id }}">Cancelar</button><button class="btn btn-primary" type="submit">Guardar y revalidar fila</button></div>
       </form>
