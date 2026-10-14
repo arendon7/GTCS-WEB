@@ -296,3 +296,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .read-settings-form{display:grid;grid-template-columns:minmax(240px,1fr) repeat(3,minmax(150px,.42fr)) auto;gap:12px;align-items:end;margin:0 24px 16px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#fbfdfc}.read-settings-form>div small{font-size:10px;color:var(--green);font-weight:800;letter-spacing:1px}.read-settings-form>div p{margin:4px 0 0;font-size:11px;line-height:1.45;color:var(--muted)}.read-settings-form label{display:grid;gap:5px;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.6px}.read-settings-form select,.read-settings-form input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff}.mapping-readiness{align-self:center;margin-right:auto;font-size:11px;font-weight:700;color:#9b3636}.mapping-readiness.ready{color:var(--green)}.correction-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 24px;background:#fff6f4;border-top:1px solid #f1d8d1;border-bottom:1px solid #f1d8d1}.correction-banner.ready{background:#f0faf4;border-color:#cce5d5}.correction-banner strong{color:var(--navy)}.correction-banner p{margin:3px 0 0;font-size:11px;color:var(--muted)}.correction-banner>span{white-space:nowrap;padding:6px 10px;border-radius:999px;background:#fff;font-size:10px;font-weight:800;color:#9b3636}.correction-banner.ready>span{color:var(--green)}.batch-rows-table{min-width:1180px}.batch-rows-table tr.row-has-error>td:first-child{border-left:4px solid #c95d5d}.batch-rows-table tr.row-has-warning>td:first-child{border-left:4px solid #d7a03d}.row-findings{display:grid;gap:4px;margin:0;padding:0;list-style:none}.row-findings li{font-size:10px;line-height:1.35}.row-findings li.error{color:#9b3636}.row-findings li.advertencia{color:#8a651e}.row-findings b{margin-right:3px}.btn-compact{padding:7px 10px;font-size:10px}.row-editor-line>td{padding:0!important;background:#f7faf8}.row-correction-form{padding:20px 24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.row-correction-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.row-correction-head small{font-size:9px;color:var(--green);font-weight:800;letter-spacing:1px}.row-correction-head h3{margin:3px 0 0;font-size:16px}.mini-close{border:0;background:transparent;font-size:24px;color:var(--muted);cursor:pointer}.row-correction-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}.row-correction-grid label{display:grid;gap:5px;font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.4px}.row-correction-grid input,.row-correction-grid select{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff;color:var(--text)}.row-correction-grid .wide-field{grid-column:span 3}.row-correction-grid .compact-check{display:flex;align-items:center;gap:8px;padding-top:24px}.row-correction-grid .compact-check input{width:auto}.row-correction-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
 @media(max-width:1200px){.read-settings-form{grid-template-columns:1fr 1fr 1fr}.read-settings-form>div{grid-column:1/-1}.row-correction-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.read-settings-form{grid-template-columns:1fr;margin:0 14px 14px}.read-settings-form>div{grid-column:auto}.correction-banner{align-items:flex-start;flex-direction:column;padding:14px}.row-correction-form{padding:16px 14px}.row-correction-grid{grid-template-columns:1fr}.row-correction-grid .wide-field{grid-column:auto}.row-correction-actions{flex-direction:column-reverse}.mapping-readiness{width:100%;margin-bottom:4px}.mapping-actions{align-items:stretch}}
+
+/* Diagnóstico público: conserva las opciones operativas legibles en móvil. */
+@media (max-width: 620px) {
+  .diagnosis-option-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .diagnosis-option-grid label {
+    align-items: center;
+    min-height: 64px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 359px) {
+  .diagnosis-option-grid {
+    grid-template-columns: 1fr;
+  }
+}
