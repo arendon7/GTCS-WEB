@@ -237,6 +237,23 @@ main [id] {
   .site-header .header-contact-btn {
     display: none;
   }
+
+  .site-header .desktop-nav {
+    gap: clamp(12px, 0.85vw, 14px);
+  }
+
+  .site-header .header-search-btn {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .site-header .header-search-btn > span:not([aria-hidden="true"]),
+  .site-header .header-search-btn kbd {
+    display: none;
+  }
 }
 
 @media (max-width: 1320px) {
