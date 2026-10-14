@@ -120,7 +120,7 @@ main [id] {
 }
 
 .home-tools-bridge__number {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.7rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -148,7 +148,7 @@ main [id] {
 
 .home-tools-bridge__action,
 .home-tools-bridge__all {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.78rem;
   font-weight: 850;
 }

@@ -30,8 +30,12 @@ def test_v024_health_and_request_id():
 
 
 def test_v024_csrf_cookie_is_issued(monkeypatch):
-    # CI disables CSRF for business tests; this test exercises the enabled control.
-    monkeypatch.setattr(security, "settings", replace(security.settings, csrf_enabled=True))
+    from dataclasses import replace
+
+    from app.config import settings
+    from app import security
+
+    monkeypatch.setattr(security, "settings", replace(settings, csrf_enabled=True))
     with TestClient(app, client=("198.51.100.24", 50000)) as client:
         response = client.get("/login")
         assert response.status_code == 200

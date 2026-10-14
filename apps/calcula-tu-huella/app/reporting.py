@@ -143,10 +143,16 @@ def generate_executive_pdf(session: Session, inventory: Inventory, output: Path)
     ]
     history = analysis["history"]
     total_change = history["total_change"]
+    production_intensity = analysis["intensity_production"]
+    intensity_metric = (
+        f"{_number(production_intensity, 4)}<br/><font size=8>tCO2e/t</font>"
+        if production_intensity is not None
+        else "N/D<br/><font size=8>sin dato de producción</font>"
+    )
     metrics_data = [
         [Paragraph("EMISIONES TOTALES", styles["MetricLabel"]), Paragraph("INTENSIDAD PRODUCTIVA", styles["MetricLabel"]), Paragraph("CALIDAD DEL DATO", styles["MetricLabel"]), Paragraph("VARIACION ANUAL", styles["MetricLabel"])],
         [Paragraph(f"{_number(analysis['total'])}<br/><font size=8>tCO2e</font>", styles["Metric"]),
-         Paragraph(f"{_number(analysis['intensity_production'] or 0, 4)}<br/><font size=8>tCO2e/t</font>", styles["Metric"]),
+         Paragraph(intensity_metric, styles["Metric"]),
          Paragraph(f"{analysis['quality']['score']}%", styles["Metric"]),
          Paragraph("N/D" if total_change is None else f"{total_change:+.1f}%", styles["Metric"])],
     ]
@@ -303,11 +309,13 @@ def generate_technical_pdf(session: Session, inventory: Inventory, output: Path)
     for name, metric in analysis["indicators"].items():
         if name == "Producción":
             intensity = analysis["intensity_production"]
-            intensity_label = f"{_number(intensity or 0, 6)} tCO2e/{metric.unit}"
+            intensity_label = f"{_number(intensity, 6)} tCO2e/{metric.unit}" if intensity is not None else "N/D"
         elif name == "Empleados":
-            intensity_label = f"{_number(analysis['intensity_employee'] or 0, 6)} tCO2e/persona"
+            intensity = analysis["intensity_employee"]
+            intensity_label = f"{_number(intensity, 6)} tCO2e/persona" if intensity is not None else "N/D"
         elif name == "Ingresos":
-            intensity_label = f"{_number(analysis['intensity_revenue'] or 0, 6)} tCO2e/millon COP"
+            intensity = analysis["intensity_revenue"]
+            intensity_label = f"{_number(intensity, 6)} tCO2e/millon COP" if intensity is not None else "N/D"
         else:
             intensity_label = "-"
         indicator_rows.append([name, _number(metric.value, 2), metric.unit, intensity_label])
@@ -398,7 +406,10 @@ def generate_calculation_workbook(session: Session, inventory: Inventory, output
     for scope, value in analysis["scopes"].items():
         ws.append([f"Alcance {scope}", value, "tCO2e"])
     ws.append(["Calidad de datos", analysis["quality"]["score"], "%"])
-    ws.append(["Intensidad productiva", analysis["intensity_production"] or 0, "tCO2e/t"])
+    production_intensity = analysis["intensity_production"]
+    ws.append(["Intensidad productiva", production_intensity if production_intensity is not None else "N/D", "tCO2e/t"])
+    if production_intensity is None:
+        ws.append(["Disponibilidad de intensidad productiva", "Registra producción en Análisis para calcularla.", ""])
     ws.append(["Incertidumbre combinada", closure["uncertainty"]["combined_percentage"], "%"])
     ws.append(["Rango inferior (emisiones cubiertas)", closure["uncertainty"]["lower_tco2e"], "tCO2e"])
     ws.append(["Rango superior (emisiones cubiertas)", closure["uncertainty"]["upper_tco2e"], "tCO2e"])
