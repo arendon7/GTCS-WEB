@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ project.name }} · PMIRS {{ version.version_label }}</title>
+  <style>
+    :root { color-scheme: light; --ink:#17251c; --muted:#58655c; --line:#d7dfd8; --green:#145b31; }
+    * { box-sizing: border-box; }
+    body { margin: 0 auto; max-width: 980px; padding: 38px 48px 60px; color:var(--ink); font: 14px/1.55 Inter, system-ui, -apple-system, sans-serif; }
+    h1 { margin: 0; color:var(--green); font-size: 30px; line-height:1.12; }
+    h2 { margin: 32px 0 12px; padding-bottom:7px; border-bottom:1px solid var(--line); font-size:20px; }
+    h3 { margin: 17px 0 4px; font-size:15px; }
+    p { margin: 5px 0 10px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; padding-bottom:20px; border-bottom:2px solid var(--green); }
+    .brand { color:var(--green); font-size:11px; font-weight:800; letter-spacing:.12em; }
+    .metadata { margin:17px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+    .metadata div { padding:8px 0; border-bottom:1px solid var(--line); }
+    .metadata dt { color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+    .metadata dd { margin:3px 0 0; font-weight:650; overflow-wrap:anywhere; }
+    .disclaimer { margin-top:20px; padding:12px; background:#f3f6f3; color:#3e4a41; font-size:12px; }
+    .entry { break-inside:avoid; padding:0 0 13px; border-bottom:1px solid var(--line); }
+    .entry-code { color:var(--green); font-weight:800; font-size:11px; }
+    .entry-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px 22px; margin-top:10px; }
+    .entry-grid div { min-width:0; }
+    .entry-grid dt { color:var(--muted); font-size:10px; }
+    .entry-grid dd { margin:0; overflow-wrap:anywhere; white-space:pre-wrap; }
+    .signature-section { margin-top:30px; break-inside:avoid; }
+    .signature-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .signature-card { border:1px solid var(--line); border-radius:8px; padding:12px; break-inside:avoid; }
+    .signature-card svg { display:block; width:100%; height:100px; border-bottom:1px solid var(--line); }
+    .signature-card p { font-size:11px; }
+    .signature-hash { overflow-wrap:anywhere; font:10px/1.4 ui-monospace,monospace; }
+    ul { margin:5px 0; padding-left:18px; }
+    footer { margin-top:34px; padding-top:10px; border-top:1px solid var(--line); color:var(--muted); font-size:10px; }
+    @media print {
+      @page { margin:17mm; }
+      body { max-width:none; padding:0; font-size:11pt; }
+      h2 { break-after:avoid; }
+      .masthead, .entry, .metadata div { break-inside:avoid; }
+      .signature-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      a { color:inherit; text-decoration:none; }
+    }
+    @media (max-width:620px) { body { padding:22px 18px; } .masthead { display:block; } .entry-grid,.metadata { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  {% set captured_project = snapshot.get('project', {}) %}
+  <header class="masthead"><div><div class="brand">GREENATICS RED · DOCUMENTO DE TRABAJO</div><h1>Plan de gestión integral de residuos de la copropiedad</h1><p>{{ captured_project.get('name', project.name) }}{% if captured_project.get('address') %} · {{ captured_project.get('address') }}{% endif %} · {{ captured_project.get('municipality', project.municipality) }}, {{ captured_project.get('department', project.department) }}</p></div><div><strong>{{ version.version_label }}</strong><br>{{ status_label }}</div></header>
+  <dl class="metadata">
+    <div><dt>Versión</dt><dd>{{ version.version_label }}</dd></div>
+    <div><dt>Fecha de captura</dt><dd>{{ version.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</dd></div>
+    <div><dt>Estado de identificación</dt><dd>{% if captured_project.get('identity_status') == 'confirmada' %}Confirmada{% elif captured_project.get('identity_status') == 'pendiente' %}Pendiente de confirmar{% else %}No conservado en esta versión histórica{% endif %}</dd></div>
+    <div><dt>Referencia de confirmación</dt><dd>{{ captured_project.get('identity_reference') or 'Sin referencia' }}</dd></div>
+    <div><dt>Fecha de cotejo</dt><dd>{{ captured_project.get('identity_confirmed_at') or 'Sin confirmación registrada' }}</dd></div>
+    <div><dt>Motivo del cambio</dt><dd>{{ version.change_reason.replace('_',' ') }}</dd></div>
+    <div><dt>Resumen</dt><dd>{{ version.change_summary }}</dd></div>
+    <div><dt>Línea Base de referencia</dt><dd>{{ version.baseline_reference or 'Sin referencia registrada' }}</dd></div>
+    <div><dt>Estado interno</dt><dd>{{ status_label }}</dd></div>
+  </dl>
+  <p class="disclaimer"><strong>Alcance y estado:</strong> {{ scope_notice }}</p>
+  <p class="disclaimer"><strong>Identificación de la unidad:</strong> {{ identity_notice }}</p>
+  <p class="disclaimer"><strong>Comparación con el expediente actual:</strong> {{ currentness_notice }}</p>
+  {% set headings = {'hallazgo':'Hallazgos técnicos','programa':'Programas','accion':'Plan de acciones','indicador':'Indicadores y metas'} %}
+  {% for kind in ['hallazgo','programa','accion','indicador'] %}
+    <h2>{{ headings[kind] }}</h2>
+    {% set objects = snapshot['items']|selectattr('item_type','equalto',kind)|list %}
+    {% if objects %}
+      {% for item in objects %}
+        <article class="entry"><div class="entry-code">{{ item.code }} · {{ item.item_type_label }} · {{ review_status_labels.get(item.review_status, item.review_status) }}</div><h3>{{ item.title }}</h3><p>{{ item.description }}</p>
+          <dl class="entry-grid">
+            {% for label, value in item_export_fields.get(item.id, []) %}
+              <div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+            {% endfor %}
+          </dl>
+        </article>
+      {% endfor %}
+    {% else %}<p>No hay objetos de este tipo en esta versión.</p>{% endif %}
+  {% endfor %}
+  <h2>Referencia de Línea Base</h2>
+  <p>{{ snapshot.baseline.review_note or 'No se incluyó un fundamento en el snapshot.' }}</p>
+  <footer>Documento {{ version.version_label }} · GREENATICS RED · Generado desde una captura inmutable de trabajo. Conserva el expediente y las evidencias originales para la trazabilidad.</footer>
+  <section class="signature-section">
+    <h2>Constancias de lectura y recepción</h2>
+    {% if signatures_valid and signatures %}
+      <p>Las constancias siguientes se vinculan a la huella de contenido de esta versión PMIRS.</p>
+      <div class="signature-list">{% for signature in signatures %}<article class="signature-card"><svg viewBox="0 0 600 180" role="img" aria-label="Firma manuscrita de {{ signature.signer_name }}"><path d="{{ signature.signature_path }}" fill="none" stroke="#17251c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><p><strong>{{ signature.signer_name }}</strong><br>{{ signature.signer_email }} · rol {{ signature.signer_role }}<br>Fecha UTC: {{ signature.signed_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p><p>{{ signature.declaration }}</p><p class="signature-hash">SHA-256 del contenido canónico de esta versión PMIRS: {{ signature.document_sha256 }}</p></article>{% endfor %}</div>
+    {% elif not signatures_valid %}<p>No fue posible verificar la correspondencia entre las firmas registradas y el contenido de esta versión. Solicita revisión antes de usar esta copia.</p>
+    {% else %}<p>No se han registrado constancias de firma para esta versión.</p>{% endif %}
+    <p class="disclaimer">La firma capturada es una constancia electrónica vinculada a una cuenta autenticada y a esta versión. No es por sí sola una firma digital certificada, no acredita facultades de representación, ni equivale a aprobación de autoridad.</p>
+  </section>
+</body>
+</html>

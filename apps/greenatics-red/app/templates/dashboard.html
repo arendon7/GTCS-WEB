@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
+<header class="page-header">
+      <div><p class="eyebrow">GREENATICS RED · Bello, Antioquia</p><h1>Proyectos</h1><p class="lede">Cada copropiedad mantiene su propio expediente, registros y PMIRS.</p></div>
+  <div class="header-actions">
+    {% if user.is_platform_admin and red_operational_writes_enabled() %}<a class="button primary" href="/admin/projects/new">Agregar proyecto</a>{% elif user.is_platform_admin %}<span class="quiet" aria-disabled="true">Crear proyectos está deshabilitado en modo consulta.</span>{% endif %}
+  </div>
+</header>
+{% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+{% if user.is_platform_admin and production_issues %}
+<section class="notice warning" aria-label="Configuración pendiente">
+  <strong>Configuración pendiente para el despliegue</strong>
+  <p>Este entorno todavía requiere valores de producción antes de manejar datos reales.</p>
+  <ul>{% for item in production_issues %}<li>{{ item }}</li>{% endfor %}</ul>
+</section>
+{% endif %}
+{% if user.is_platform_admin and storage_capacity %}
+<section class="panel storage-capacity-panel" aria-labelledby="storage-capacity-heading">
+  <div class="section-head">
+    <div><h2 id="storage-capacity-heading">Almacenamiento de evidencias</h2><p class="quiet">Uso registrado en RED frente a los topes configurados. Estos topes son controles de la aplicación; no confirman la capacidad contratada del proveedor.</p></div>
+  </div>
+  <div class="storage-total">
+    <div class="storage-total-copy"><strong>RED completo</strong><small>{{ storage_capacity.total_used_mb }} MB usados de {{ storage_capacity.total_limit_mb }} MB · {{ storage_capacity.total_remaining_mb }} MB disponibles</small></div>
+    <progress value="{{ storage_capacity.total_percent }}" max="100" aria-label="Uso total de evidencia en RED: {{ storage_capacity.total_percent }} por ciento"></progress>
+    {% if storage_capacity.total_over_limit %}<span class="status-pill status-attention">Supera el tope actual</span>{% endif %}
+  </div>
+  <ul class="storage-project-list" aria-label="Uso de evidencia por expediente">
+    {% for item in storage_capacity.projects %}
+    <li class="storage-project-row">
+      <div class="storage-project-copy"><strong>{{ item.name }}</strong><small>{{ item.used_mb }} MB usados de {{ item.limit_mb }} MB · {{ item.remaining_mb }} MB disponibles</small></div>
+      <progress value="{{ item.percent }}" max="100" aria-label="Uso de evidencia en {{ item.name }}: {{ item.percent }} por ciento"></progress>
+      {% if item.over_limit %}<span class="status-pill status-attention">Supera el tope actual</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="quiet small storage-capacity-help">Para ajustar estos topes, modifica RED_MAX_EVIDENCE_TOTAL_MB y RED_MAX_EVIDENCE_PROJECT_MB en la configuración autorizada del runtime RED.</p>
+</section>
+{% endif %}
+<section class="panel table-panel" aria-labelledby="projects-heading">
+  <div class="section-head"><div><h2 id="projects-heading">Conjuntos en preparación</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS. Confirma con su administración el nombre oficial, la dirección y el alcance; registra las fuentes y los datos de cada unidad por separado.</p></div><span class="count-badge">{{ projects|length }} proyectos</span></div>
+  {% if projects %}
+    <div class="project-list">
+      {% for row in projects %}
+        <a class="project-row" href="/projects/{{ row.project.id }}">
+          <span class="project-mark">{{ loop.index }}</span>
+          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Alistamiento · D-01 {{ row.startup_identity }} · D-02 {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
+          <span class="project-count"><strong>{{ row.records }}</strong><small>registros</small></span>
+          {% if row.can_review %}
+            <span class="project-count"><strong>{{ row.pending_forms }}</strong><small>formularios por revisar</small></span>
+            <span class="project-count"><strong>{{ row.pending_pmirs }}</strong><small>objetos PMIRS por revisar</small></span>
+            <span class="project-count"><strong>{{ row.pending_action_reviews }}</strong><small>{{ 'acción' if row.pending_action_reviews == 1 else 'acciones' }} con evidencia para QA/QC</small></span>
+          {% endif %}
+          <span class="row-arrow" aria-hidden="true">↗</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><h3>No tienes proyectos asignados</h3><p>Solicita a la administración que te invite a la copropiedad correspondiente.</p></div>
+  {% endif %}
+</section>
+<section class="process-strip" aria-label="Flujo de trabajo RED">
+  <div><span>01</span><strong>Diagnóstico</strong><small>D-01 a D-14</small></div>
+  <div><span>02</span><strong>Revisión</strong><small>Q-01 · QA/QC</small></div>
+  <div><span>03</span><strong>PMIRS</strong><small>P-01 a P-15</small></div>
+</section>
+{% endblock %}
