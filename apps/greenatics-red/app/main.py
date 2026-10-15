@@ -1171,17 +1171,48 @@ def pending_pmirs_action_reviews(session: Session, project_id: str) -> list[PMIR
     ).distinct().order_by(PMIRSItem.updated_at, PMIRSItem.code)))
 
 
-def project_work_route(session: Session, project: Project, role: str, baseline_missing: list[str]) -> dict:
+def project_work_route(
+    session: Session, project: Project, role: str, baseline_missing: list[str], user_id: str | None = None,
+) -> dict:
     """Offer a role-specific next-step guide without treating it as a compliance decision."""
     form_titles = {item["code"]: item["title"].split("—")[-1].strip() for item in FORM_CATALOG["forms"]}
+    resumable_records: dict[str, FormRecord] = {}
+    if user_id:
+        open_records = session.scalars(
+            select(FormRecord)
+            .where(
+                FormRecord.project_id == project.id,
+                FormRecord.created_by == user_id,
+                FormRecord.status.in_({"RAW", "CORRECTION_REQUESTED"}),
+            )
+            .order_by(FormRecord.updated_at.desc(), FormRecord.created_at.desc(), FormRecord.id.desc())
+        )
+        for record in open_records:
+            resumable_records.setdefault(record.form_code, record)
+    field_capture_allowed = (
+        role != "campo" or visit_authorization_active(latest_visit_authorization(session, project.id))
+    )
 
     def form_step(code: str, detail: str) -> dict:
-        return {
+        step = {
             "title": f"{code} · {form_titles.get(code, 'Formulario RED')}",
             "detail": detail,
             "href": f"/projects/{project.id}/records/new?form_code={code}",
             "cta": "Abrir formulario",
         }
+        record = resumable_records.get(code)
+        if not record:
+            return step
+        can_resume = (
+            settings.operational_writes_enabled
+            and can_write_form(role, code)
+            and field_capture_allowed
+        )
+        if not can_resume:
+            return step
+        step["href"] = f"/records/{record.id}/edit"
+        step["cta"] = "Continuar borrador" if record.status == "RAW" else "Corregir registro"
+        return step
 
     if role == "admin":
         if not getattr(settings, "drive_external_actions_enabled", False):
@@ -2193,7 +2224,7 @@ def project_page(project_id: str, request: Request, session: Session = Depends(g
     return templates.TemplateResponse(request=request, name="project.html", context=page_context(
         request, project=project, role=role, records=record_rows, assigned_actions=assigned_actions,
         startup_checklist=project_startup_checklist(session, project, role),
-        work_route=project_work_route(session, project, role, missing),
+        work_route=project_work_route(session, project, role, missing, user.id),
         action_states=PMIRS_ACTION_STATES,
         forms=FORM_CATALOG["forms"], can_write=role != "lector",
         can_export_records=role in PROJECT_EXPORT_ROLES,
