@@ -133,18 +133,37 @@ def main() -> int:
             }
             for schema in schemas:
                 migration_env = {**env, "DATABASE_SCHEMA": schema}
-                migration = subprocess.run(
-                    [sys.executable, "-m", "alembic", "upgrade", "head"],
-                    cwd=APP_DIR,
-                    env=migration_env,
-                    capture_output=True,
-                    text=True,
-                    timeout=180,
-                    check=False,
-                )
-                if migration.returncode:
-                    print("Falló Alembic en el esquema temporal de QA:\n" + _safe_output(migration, raw_url), file=sys.stderr)
-                    return 1
+                targets = ["head", "head"] if schema == source_schema else [
+                    "0001_red_workspace", "head", "head",
+                ]
+                for target in targets:
+                    migration = subprocess.run(
+                        [sys.executable, "-m", "alembic", "upgrade", target],
+                        cwd=APP_DIR,
+                        env=migration_env,
+                        capture_output=True,
+                        text=True,
+                        timeout=180,
+                        check=False,
+                    )
+                    if migration.returncode:
+                        print("Falló Alembic en el esquema temporal de QA:\n" + _safe_output(migration, raw_url), file=sys.stderr)
+                        return 1
+                    if target == "0001_red_workspace":
+                        # Reproduce the default 32-character Alembic table from an older install.
+                        with maintenance_engine.begin() as connection:
+                            connection.exec_driver_sql(
+                                f'ALTER TABLE "{schema}".alembic_version ALTER COLUMN version_num TYPE VARCHAR(32)'
+                            )
+                with maintenance_engine.connect() as connection:
+                    revision_length = connection.execute(text(
+                        "SELECT character_maximum_length FROM information_schema.columns "
+                        "WHERE table_schema = :schema AND table_name = 'alembic_version' "
+                        "AND column_name = 'version_num'"
+                    ), {"schema": schema}).scalar_one()
+                    if revision_length != 128:
+                        raise RuntimeError("El registro de revisiones PostgreSQL no admite los IDs descriptivos de RED.")
+            print("PostgreSQL QA: instalación nueva, actualización desde tabla de revisión de 32 caracteres e idempotencia OK.")
 
             scoped_engine = create_engine(
                 database_url,
