@@ -71,6 +71,7 @@
     {% if not red_operational_writes_enabled() %}<p class="quiet small" id="visit-authorization-write-help">La escritura administrativa sigue cerrada por el gate global de RED.</p>{% endif %}
   {% else %}<p class="quiet small">Solo administración GREENATICS RED puede consultar las referencias y registrar o revocar este control.</p>{% endif %}
 </section>
+</details>{% endif %}
 {% if role == 'campo' %}<div class="notice warning field-connectivity-note" role="note" aria-label="Captura requiere conexión"><strong>RED no guarda formularios en el dispositivo.</strong><p>Trabaja con conexión al servidor y confirma el estado del formulario antes de salir. Si se pierde la conexión o no llega respuesta, conserva abierta la misma pantalla. Revisa el expediente antes de iniciar otro registro; si el primero no aparece, reintenta desde la pantalla original para que la clave del envío evite duplicados. No uses datos reales fuera del entorno autorizado ni papel sin el procedimiento de contingencia aprobado.</p></div><section class="panel role-route" aria-labelledby="assigned-actions-heading">
   <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="assigned-actions-heading">Mis acciones asignadas</h2><p class="quiet">Solo aparecen acciones PMIRS validadas que consultoría asignó a tu usuario en este expediente.</p></div></div>
   {% if assigned_actions %}<div class="role-route-steps">
@@ -106,7 +107,6 @@
     </details>
   {% endif %}
 </section>
-</details>{% endif %}
 {% if can_export_records %}<p class="source-note">Las hojas de cálculo incluyen los datos del formulario; los archivos adjuntos se consultan desde el expediente.</p>{% endif %}
 <section class="panel pmirs-launch" aria-labelledby="pmirs-launch-heading">
   <div><h2 id="pmirs-launch-heading">PMIRS Studio</h2><p class="quiet">Construye el plan con hallazgos, programas, acciones asignadas, indicadores y versiones auditables.</p><small>{{ pmirs_item_count }} objetos · {{ pmirs_version_count }} versiones · la información es independiente de las otras copropiedades</small></div>
@@ -128,7 +128,7 @@
     <summary><span>Diseño e implementación del PMIRS</span><span class="quiet">P-01 a P-15</span></summary>
     <div class="form-list">
       {% for form in forms if form.code.startswith('P-') %}
-        <div class="form-row"><span class="form-code pmirs-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>Actor del formato fuente: {{ form.actor }} · {{ form.fields|length }} campos</small></span>
+        <div class="form-row"><span class="form-code pmirs-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small></span>
           {% if form.code == 'P-12' %}<a class="button compact secondary" href="/projects/{{ project.id }}/pmirs#versions-heading">Ver control documental</a>{% elif form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
         </div>
       {% endfor %}

@@ -35,17 +35,17 @@
     </li>
     {% endfor %}
   </ul>
-  <p class="quiet small storage-capacity-help">La capacidad efectiva depende del proveedor de almacenamiento.</p>
+  <p class="quiet small storage-capacity-help">Estos topes RED no confirman la capacidad contratada del proveedor. Límite configurado por RED_MAX_EVIDENCE_TOTAL_MB.</p>
 </details>
 {% endif %}
 <section class="panel table-panel" aria-labelledby="projects-heading">
-  <div class="section-head"><div><h2 id="projects-heading">Conjuntos</h2><p class="quiet">Cada unidad tiene su propio expediente PMIRS.</p></div><span class="count-badge">{{ projects|length }} conjuntos</span></div>
+  <div class="section-head"><div><h2 id="projects-heading">Conjuntos</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} conjuntos</span></div>
   {% if projects %}
     <div class="project-list">
       {% for row in projects %}
         <a class="project-row" href="/projects/{{ row.project.id }}">
           <span class="project-mark">{{ loop.index }}</span>
-          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Identificación · {{ row.startup_identity }} · Información administrativa · {{ row.startup_admin_info }}</small></span>
+          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Identificación · {{ row.startup_identity }} · Información administrativa · {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
           <span class="project-count"><strong>{{ row.records }}</strong><small>registros</small></span>
           {% if row.can_review %}
             <span class="project-count"><strong>{{ row.pending_forms }}</strong><small>formularios por revisar</small></span>
@@ -62,6 +62,7 @@
 </section>
 <details class="panel process-details">
   <summary>Ver el flujo de trabajo PMIRS</summary>
+  <p class="quiet">Antes de iniciar, confirma el nombre oficial, la dirección y el alcance con la administración de cada unidad.</p>
   <section class="process-strip" aria-label="Flujo de trabajo RED">
   <div><span>01</span><strong>Diagnóstico</strong><small>D-01 a D-14</small></div>
   <div><span>02</span><strong>Revisión</strong><small>Q-01 · QA/QC</small></div>
