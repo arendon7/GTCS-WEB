@@ -2114,6 +2114,16 @@ def logout(request: Request, csrf: str = Form(...), session: Session = Depends(g
     return RedirectResponse("/login", status_code=303)
 
 
+@app.get("/guide", response_class=HTMLResponse)
+def field_guide_page(request: Request, session: Session = Depends(get_db)):
+    current_user(request, session)
+    return templates.TemplateResponse(
+        request=request,
+        name="guide.html",
+        context=page_context(request),
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 def dashboard(request: Request, session: Session = Depends(get_db)):
     user = current_user(request, session)
