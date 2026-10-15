@@ -38,6 +38,9 @@ class StorageService:
         elif self.backend == "s3" and self._client is None:
             if not self.bucket:
                 raise StorageError("S3_BUCKET es obligatorio para almacenamiento S3.")
+            transport_issue = settings.s3_endpoint_transport_issue()
+            if transport_issue:
+                raise StorageError(transport_issue)
             try:
                 import boto3
                 from botocore.config import Config

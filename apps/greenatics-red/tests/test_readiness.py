@@ -970,6 +970,73 @@ def test_s3_endpoint_transport_is_safe_for_each_environment(app_env, endpoint_ur
         assert transport_issues == []
 
 
+@pytest.mark.parametrize(
+    ("app_env", "endpoint_url"),
+    [
+        ("production", "http://objects.example.invalid"),
+        ("staging", "http://objects.example.invalid"),
+        ("local", "http://objects.example.invalid"),
+        ("local", "ftp://objects.example.invalid"),
+    ],
+)
+def test_storage_service_rejects_unsafe_s3_endpoint_before_client_creation(
+    monkeypatch, app_env, endpoint_url
+):
+    import boto3
+    import app.storage as storage_module
+    from app.config import Settings
+    from app.storage import StorageError
+
+    configured = Settings(
+        app_env=app_env,
+        storage_backend="s3",
+        s3_bucket="greenatics-red-private",
+        s3_access_key="synthetic-access-key",
+        s3_secret_key="synthetic-secret-key",
+        s3_endpoint_url=endpoint_url,
+    )
+    monkeypatch.setattr(storage_module, "settings", configured)
+    monkeypatch.setattr(
+        boto3, "client",
+        lambda *args, **kwargs: pytest.fail("No debe crearse un cliente con transporte inseguro."),
+    )
+    with pytest.raises(StorageError, match="S3_ENDPOINT_URL"):
+        StorageService()
+
+
+@pytest.mark.parametrize(
+    ("app_env", "endpoint_url"),
+    [
+        ("production", "https://objects.example.invalid"),
+        ("staging", "https://objects.example.invalid"),
+        ("local", "http://localhost:9000"),
+        ("local", ""),
+    ],
+)
+def test_storage_service_allows_safe_s3_endpoint(monkeypatch, app_env, endpoint_url):
+    import boto3
+    import app.storage as storage_module
+    from app.config import Settings
+
+    configured = Settings(
+        app_env=app_env,
+        storage_backend="s3",
+        s3_bucket="greenatics-red-private",
+        s3_access_key="synthetic-access-key",
+        s3_secret_key="synthetic-secret-key",
+        s3_endpoint_url=endpoint_url,
+    )
+    captured = {}
+    monkeypatch.setattr(storage_module, "settings", configured)
+    monkeypatch.setattr(
+        boto3, "client",
+        lambda service, **kwargs: captured.update(service=service, **kwargs) or object(),
+    )
+    StorageService()
+    assert captured["service"] == "s3"
+    assert captured["endpoint_url"] == (endpoint_url or None)
+
+
 def test_hosted_runtime_requires_a_dedicated_database_not_a_shared_schema(monkeypatch):
     from dataclasses import replace
     from app.config import Settings

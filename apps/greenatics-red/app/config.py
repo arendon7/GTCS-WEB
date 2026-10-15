@@ -230,6 +230,36 @@ class Settings:
         except ValueError:
             return None
 
+    def s3_endpoint_transport_issue(self) -> str | None:
+        if not self.s3_endpoint_url:
+            return None
+        try:
+            endpoint = urlsplit(self.s3_endpoint_url)
+            hostname = endpoint.hostname
+        except ValueError:
+            endpoint = None
+            hostname = None
+        local_http = (
+            self.app_env == "local"
+            and endpoint is not None
+            and endpoint.scheme == "http"
+            and hostname in {"localhost", "127.0.0.1", "::1"}
+        )
+        if (
+            endpoint is None
+            or not hostname
+            or endpoint.username is not None
+            or endpoint.password is not None
+            or endpoint.scheme not in {"https", "http"}
+            or (self.app_env in {"staging", "production"} and endpoint.scheme != "https")
+            or (self.app_env == "local" and endpoint.scheme == "http" and not local_http)
+        ):
+            return (
+                "S3_ENDPOINT_URL debe usar HTTPS en staging/production; "
+                "HTTP solo se permite en localhost para desarrollo local."
+            )
+        return None
+
     def _deployment_configuration_issues(self) -> list[str]:
         issues: list[str] = []
         issues.extend(self.database_migration_issues())
@@ -260,31 +290,9 @@ class Settings:
                 issues.append("S3_ACCESS_KEY y S3_SECRET_KEY deben configurarse juntos.")
             if self.s3_endpoint_url and not (self.s3_access_key and self.s3_secret_key):
                 issues.append("El endpoint S3 compatible requiere credenciales de acceso configuradas.")
-            if self.s3_endpoint_url:
-                try:
-                    endpoint = urlsplit(self.s3_endpoint_url)
-                    hostname = endpoint.hostname
-                except ValueError:
-                    endpoint = None
-                    hostname = None
-                local_http = (
-                    self.app_env == "local"
-                    and endpoint is not None
-                    and endpoint.scheme == "http"
-                    and hostname in {"localhost", "127.0.0.1", "::1"}
-                )
-                if (
-                    endpoint is None
-                    or not hostname
-                    or endpoint.username is not None
-                    or endpoint.password is not None
-                    or endpoint.scheme not in {"https", "http"}
-                    or (self.app_env in {"staging", "production"} and endpoint.scheme != "https")
-                    or (self.app_env == "local" and endpoint.scheme == "http" and not local_http)
-                ):
-                    issues.append(
-                        "S3_ENDPOINT_URL debe usar HTTPS en staging/production; HTTP solo se permite en localhost para desarrollo local."
-                    )
+            transport_issue = self.s3_endpoint_transport_issue()
+            if transport_issue:
+                issues.append(transport_issue)
         if not self.database_url.startswith("postgresql"):
             issues.append("Producción requiere PostgreSQL.")
         if not self.google_oauth_ready:
