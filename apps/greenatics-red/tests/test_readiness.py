@@ -3955,6 +3955,49 @@ def test_project_page_shows_role_specific_work_routes(client, workspace):
     assert f"/records/{pending_id}" in reader_page.text
 
 
+def test_project_work_route_resumes_only_the_current_users_editable_records(client, workspace):
+    project_id = workspace["project_ids"][0]
+    field_id = workspace["user_ids"]["field"]
+    admin_id = workspace["user_ids"]["admin"]
+    with SessionLocal() as session:
+        own_draft = FormRecord(
+            project_id=project_id, form_code="D-03", title="Visita propia en borrador",
+            status="RAW", created_by=field_id, updated_by=field_id,
+        )
+        own_correction = FormRecord(
+            project_id=project_id, form_code="D-05", title="Flujo propio devuelto",
+            status="CORRECTION_REQUESTED", created_by=field_id, updated_by=field_id,
+        )
+        other_draft = FormRecord(
+            project_id=project_id, form_code="D-04", title="Inspección de otra persona",
+            status="RAW", created_by=admin_id, updated_by=admin_id,
+        )
+        session.add_all([own_draft, own_correction, other_draft])
+        session.commit()
+        own_draft_id, own_correction_id, other_draft_id = (
+            own_draft.id, own_correction.id, other_draft.id,
+        )
+
+    sign_in(client, "field@red.test")
+    page = client.get(f"/projects/{project_id}")
+    assert page.status_code == 200
+    route = re.search(
+        r'<section class="panel role-route" aria-labelledby="role-route-heading">(.*?)</section>',
+        page.text, re.DOTALL,
+    )
+    assert route
+    if settings.operational_writes_enabled:
+        assert f'href="/records/{own_draft_id}/edit">Continuar borrador</a>' in route.group(1)
+        assert f'href="/records/{own_correction_id}/edit">Corregir registro</a>' in route.group(1)
+    else:
+        assert f'/records/{own_draft_id}/edit' not in route.group(1)
+        assert f'/records/{own_correction_id}/edit' not in route.group(1)
+        assert f"/projects/{project_id}/records/new?form_code=D-03" in route.group(1)
+        assert f"/projects/{project_id}/records/new?form_code=D-05" in route.group(1)
+    assert f"/records/{other_draft_id}" not in route.group(1)
+    assert f"/projects/{project_id}/records/new?form_code=D-04" in route.group(1)
+
+
 def test_project_startup_checklist_tracks_latest_identity_and_admin_review(client, workspace):
     project_id = workspace["project_ids"][0]
     author = workspace["user_ids"]["consultant"]
