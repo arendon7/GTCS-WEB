@@ -1,0 +1,52 @@
+name: GREENATICS RED quality
+
+on:
+  pull_request:
+    paths:
+      - "apps/greenatics-red/**"
+      - ".github/workflows/greenatics-red-quality.yml"
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - "apps/greenatics-red/**"
+      - ".github/workflows/greenatics-red-quality.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: red-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  red-quality:
+    name: RED Python, JavaScript and catalog
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/greenatics-red
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/greenatics-red/requirements-dev.txt
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install RED test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run complete RED candidate verification
+        run: RED_PYTHON=python RED_NODE=node scripts/verify_local_candidate.sh
