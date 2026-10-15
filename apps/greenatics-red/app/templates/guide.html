@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Guía rápida{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">GREENATICS RED · Capacitación</p>
+    <h1>Guía rápida de campo</h1>
+    <p class="lede">Cómo preparar una visita, capturar información con trazabilidad y cerrar el trabajo.</p>
+  </div>
+  <div class="header-actions"><a class="button secondary" href="/">Volver a proyectos</a><button class="button secondary" type="button" onclick="window.print()">Imprimir guía</button></div>
+</header>
+
+<div class="notice warning" role="note">
+  <strong>Antes de usar con datos reales:</strong> verifica que RED esté en el entorno aprobado, con base y archivos persistentes, HTTPS, respaldos recuperables, privacidad aprobada y prueba de campo en teléfonos. La demostración local solo admite datos sintéticos.
+</div>
+
+<section class="panel" aria-labelledby="projects-guide">
+  <div class="section-head"><div><h2 id="projects-guide">Los cuatro expedientes del piloto</h2><p class="quiet">Confirma con cada administración el nombre y la dirección oficial.</p></div></div>
+  <ol>
+    <li>Parque Alto - Apartamaentos</li>
+    <li>Urbanización Tulipanes</li>
+    <li>Majagua - Unidad Residencial</li>
+    <li>Unidad Residencial Trigales</li>
+  </ol>
+  <p class="quiet">Que los conjuntos sean contiguos no significa que compartan administración, contratos, rutas, datos, infraestructura o responsables.</p>
+</section>
+
+<section class="panel" aria-labelledby="roles-guide">
+  <div class="section-head"><div><h2 id="roles-guide">Quién hace qué</h2></div></div>
+  <ul>
+    <li><strong>Administración de plataforma:</strong> crea cuentas individuales, asigna perfiles y expedientes, gestiona invitaciones y bloqueos. No compartas cuentas.</li>
+    <li><strong>Consultoría:</strong> confirma alcance y fuentes, coordina visitas, interpreta resultados y construye la Línea Base y el PMIRS.</li>
+    <li><strong>Administración de la copropiedad:</strong> aporta información de su unidad y soportes autorizados. Sus respuestas son declaradas hasta que se contrasten.</li>
+    <li><strong>Operario de campo:</strong> registra observaciones y mediciones, adjunta evidencia pertinente y envía su trabajo a revisión. No aprueba la Línea Base.</li>
+    <li><strong>Revisoría QA/QC:</strong> verifica fuente, coherencia y suficiencia; aprueba o devuelve con una razón concreta.</li>
+  </ul>
+  <p class="quiet">Cada persona usa su propia cuenta. Si no ves el expediente o la acción que necesitas, pide revisar tu asignación; no uses la cuenta de otra persona.</p>
+</section>
+
+<section class="panel" aria-labelledby="before-visit-guide">
+  <div class="section-head"><div><h2 id="before-visit-guide">Antes de salir a campo</h2></div></div>
+  <ul>
+    <li>Confirma copropiedad, dirección, contacto, alcance, fecha, acompañamiento y autorización de ingreso.</li>
+    <li>Asigna el expediente correcto a cada integrante y confirma que pueda iniciar sesión.</li>
+    <li>Prepara instrumentos y elementos de protección aplicables. Identifica la báscula, su unidad y condición.</li>
+    <li>Registra la fuente y fecha de cada dato disponible. Si un dato no se conoce, déjalo pendiente y asigna un siguiente paso.</li>
+    <li>Lleva el teléfono cargado y pide permiso antes de fotografiar espacios o documentos. Evita rostros, placas y documentos personales que no sean necesarios.</li>
+  </ul>
+</section>
+
+<section class="panel" aria-labelledby="sequence-guide">
+  <div class="section-head"><div><h2 id="sequence-guide">Secuencia de formularios</h2><p class="quiet">Usa solo los formularios que correspondan al alcance; no inventes observaciones.</p></div></div>
+  <ol>
+    <li><strong>Preparación:</strong> D-01 ficha maestra y D-02 información de administración.</li>
+    <li><strong>Apertura y recorrido:</strong> D-03 visita, D-04 infraestructura, D-05 flujo interno y D-10 acceso/logística.</li>
+    <li><strong>Medición:</strong> D-06 jornada, D-07 pesajes, D-08 caracterización y D-09 calidad/impropios.</li>
+    <li><strong>Soporte y novedades:</strong> D-11 evidencia, D-12 incidencias y D-13 equipos.</li>
+    <li><strong>Cierre y revisión:</strong> D-14 cierre y Q-01 revisión QA/QC.</li>
+  </ol>
+  <ul>
+    <li>Describe hechos observados; no atribuyas causas ni declares cumplimiento sin soporte.</li>
+    <li>Separa medición, documento, estimación y declaración; anota fuente, fecha y método.</li>
+    <li>Un valor cero es válido únicamente cuando se verificó. No uses cero para representar un dato desconocido.</li>
+    <li>Usa las unidades solicitadas y no cambies resultados calculados automáticamente.</li>
+  </ul>
+</section>
+
+<section class="panel" aria-labelledby="unknowns-guide">
+  <div class="section-head"><div><h2 id="unknowns-guide">Datos desconocidos y soportes</h2></div></div>
+  <p>En D-02-021 agrega una fila por cada dato requerido que no se conoce: selecciona el dato, registra el estado de la consulta y documenta quién lo gestionará o cuál será el siguiente paso. “La administración no sabe” o “no reporta” describen la respuesta recibida; no significan cero, “No” ni “no aplica”.</p>
+  <p>Una fotografía debe responder a una pregunta concreta y quedar ligada al espacio, objeto o registro correcto. Si pierdes conexión, no supongas que se guardó: vuelve al expediente, comprueba el estado y evita cargar el mismo archivo varias veces. La candidata no garantiza trabajo sin conexión.</p>
+</section>
+
+<section class="panel" aria-labelledby="review-guide">
+  <div class="section-head"><div><h2 id="review-guide">Guardar, corregir y pasar a Línea Base</h2></div></div>
+  <ul>
+    <li><strong>Borrador:</strong> trabajo incompleto; confirma que aparece en el expediente antes de salir.</li>
+    <li><strong>En revisión:</strong> captura enviada a QA/QC; consulta el estado.</li>
+    <li><strong>Corrección solicitada:</strong> lee el motivo, edita el registro propio y vuelve a enviarlo; no crees un duplicado.</li>
+    <li><strong>Pendiente de revisión:</strong> consulta el registro en modo lectura mientras QA/QC lo revisa.</li>
+  </ul>
+  <p>La Línea Base solo se acepta después de revisar la identidad, la información administrativa, el diagnóstico y sus soportes. Un pendiente de D02-021 no reemplaza los datos que aún falten. No presentes hallazgos ni metas como validados antes de ese paso.</p>
+</section>
+
+<section class="panel" aria-labelledby="signatures-guide">
+  <div class="section-head"><div><h2 id="signatures-guide">Firmas y cierre de jornada</h2></div></div>
+  <p>Antes de firmar, lee la declaración completa. La firma trazada en pantalla queda asociada a una versión y constituye una constancia; no verifica por sí sola identidad, representación legal ni firma digital certificada. Sigue el consentimiento y el procedimiento de privacidad aprobado.</p>
+  <ul>
+    <li>Confirma que D-03 y D-14 reflejan actividades, interrupciones y pendientes.</li>
+    <li>Comprueba el estado de cada registro enviado y que no haya archivos aún cargándose.</li>
+    <li>Informa a consultoría sobre datos no disponibles, mediciones repetidas, fallas de equipos y restricciones.</li>
+    <li>En un dispositivo compartido, cierra sesión y no dejes fotos o documentos en una galería personal.</li>
+  </ul>
+</section>
+
+<style>
+  @media print {
+    .sidebar, .header-actions, .skip-link, .notice.warning.operational-read-only, .local-practice-warning { display: none !important; }
+    .app-shell, .main-area { display: block !important; margin: 0 !important; padding: 0 !important; }
+    .panel { break-inside: avoid; box-shadow: none !important; border: 1px solid #bbb !important; }
+    body { background: white !important; color: #111 !important; }
+  }
+</style>
+{% endblock %}
