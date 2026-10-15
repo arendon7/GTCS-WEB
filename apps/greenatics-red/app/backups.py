@@ -1263,6 +1263,8 @@ def restore_backup_archive(
                             created_at=_datetime_from_backup(row.get("created_at")) or now,
                             updated_at=_datetime_from_backup(row.get("updated_at")) or now,
                         ))
+                    # Ensure PostgreSQL sees parent records before dependent rows are inserted.
+                    session.flush()
                     for row in data["form_revisions"]:
                         session.add(FormRevision(
                             id=row["id"], record_id=row["record_id"], revision=row["revision"],
