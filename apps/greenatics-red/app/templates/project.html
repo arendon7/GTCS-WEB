@@ -43,7 +43,7 @@
 <section class="panel role-route startup-route" aria-labelledby="startup-route-heading">
   <div class="section-head"><div><p class="eyebrow">Alistamiento de esta copropiedad</p><h2 id="startup-route-heading">Antes de iniciar el trabajo</h2><p class="quiet">{% if project.origin == 'synthetic_demo' %}Este expediente es un sandbox aislado con contenido ficticio. Sus registros, soportes, autorización y estado de Línea Base solo sirven para practicar; no representan una copropiedad ni permisos reales. Los cuatro expedientes residenciales siguen vacíos y separados.{% else %}Este expediente parte sin fuentes ni caracterización. Completa los pasos de forma independiente para cada unidad; la app muestra estados registrados, no confirma permisos externos.{% endif %}</p></div></div>
   {% if visit_authorization_status == 'vencida' %}<p class="notice warning" role="status"><strong>Autorización vencida.</strong> La captura de campo sigue bloqueada hasta que la administración revise un soporte vigente.</p>{% endif %}
-  <p class="quiet small">Línea Base: {% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO (solo práctica){% else %}Aceptada{% endif %}{% else %}Pendiente{% endif %}</p>
+  <p class="quiet small">Línea Base: {% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO. Esta aceptación es sintética y existe solo para practicar el flujo.{% else %}Aceptada{% endif %}{% else %}No aceptada{% endif %}</p>
   <div class="role-route-steps">
     {% for step in startup_checklist %}<div class="role-route-step startup-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span><span class="status-pill {{ step.status_class }}">{{ step.status }}</span>{% if step.href and red_operational_writes_enabled() %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% elif step.href %}<a class="button compact secondary" href="{{ step.href }}">Ver {{ step.title.split(' · ')[0] }}</a>{% endif %}</div>{% endfor %}
   </div>
@@ -122,7 +122,7 @@
     <summary><span>Diagnóstico y trabajo de campo</span><span class="quiet">D-01 a D-14 · Q-01</span></summary>
     <div class="form-list">
       {% for form in forms if form.code.startswith('D-') or form.code == 'Q-01' %}
-        <div class="form-row"><span class="form-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small></span>
+        <div class="form-row"><span class="form-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small>{% if role == 'campo' and form.actor %}<small>Actor del formato fuente: {{ form.actor }}</small>{% endif %}</span>
           {% if form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
         </div>
       {% endfor %}
@@ -132,7 +132,7 @@
     <summary><span>Diseño e implementación del PMIRS</span><span class="quiet">P-01 a P-15</span></summary>
     <div class="form-list">
       {% for form in forms if form.code.startswith('P-') %}
-        <div class="form-row"><span class="form-code pmirs-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small></span>
+        <div class="form-row"><span class="form-code pmirs-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small>{% if role == 'campo' and form.actor %}<small>Actor del formato fuente: {{ form.actor }}</small>{% endif %}</span>
           {% if form.code == 'P-12' %}<a class="button compact secondary" href="/projects/{{ project.id }}/pmirs#versions-heading">Ver control documental</a>{% elif form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
         </div>
       {% endfor %}
