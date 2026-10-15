@@ -71,19 +71,6 @@
     {% if not red_operational_writes_enabled() %}<p class="quiet small" id="visit-authorization-write-help">La escritura administrativa sigue cerrada por el gate global de RED.</p>{% endif %}
   {% else %}<p class="quiet small">Solo administración GREENATICS RED puede consultar las referencias y registrar o revocar este control.</p>{% endif %}
 </section>
-</details>{% endif %}
-{% if role == 'campo' %}<div class="notice warning field-connectivity-note" role="note" aria-label="Captura requiere conexión"><strong>RED no guarda formularios en el dispositivo.</strong><p>Trabaja con conexión al servidor y confirma el estado del formulario antes de salir. Si se pierde la conexión o no llega respuesta, conserva abierta la misma pantalla. Revisa el expediente antes de iniciar otro registro; si el primero no aparece, reintenta desde la pantalla original para que la clave del envío evite duplicados. No uses datos reales fuera del entorno autorizado ni papel sin el procedimiento de contingencia aprobado.</p></div><section class="panel role-route" aria-labelledby="assigned-actions-heading">
-  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="assigned-actions-heading">Mis acciones asignadas</h2><p class="quiet">Solo aparecen acciones PMIRS validadas que consultoría asignó a tu usuario en este expediente.</p></div></div>
-  {% if assigned_actions %}<div class="role-route-steps">
-    {% for action in assigned_actions %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ action.code }} · {{ action.title }}</strong><small>Prioridad {{ action.data.priority or 'pendiente' }} · Fecha objetivo {{ action.data.due_date or 'sin fecha' }} · {{ action.data.progress_pct or 0 }}% · {{ action_states.get(action.data.execution_status, 'Pendiente') }}</small></span><a class="button secondary" href="/projects/{{ project.id }}/pmirs#action-{{ action.id }}">Abrir acción</a></div>{% endfor %}
-  </div>{% else %}<div class="empty-state"><h3>No tienes acciones PMIRS asignadas</h3><p>Consulta con tu responsable del proyecto. Las acciones aparecerán aquí cuando estén revisadas como válidas y asignadas a tu usuario.</p></div>{% endif %}
-</section>{% endif %}
-<section class="panel role-route" aria-labelledby="role-route-heading">
-  <div class="section-head"><div><p class="eyebrow">Ruta de trabajo · {{ role|replace('_',' ')|title }}</p><h2 id="role-route-heading">{{ work_route.title }}</h2><p class="quiet">{{ work_route.description }}</p></div></div>
-  <div class="role-route-steps">
-    {% for step in work_route.steps %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span>{% if step.href %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% endif %}</div>{% endfor %}
-  </div>
-</section>
 <section class="panel baseline-panel" id="baseline-panel" aria-labelledby="baseline-heading">
   <div class="section-head"><div><p class="eyebrow">Gate de calidad</p><h2 id="baseline-heading">Línea Base</h2><p class="quiet">Los formularios PMIRS se conservan como borrador hasta que la Línea Base tenga registros validados con al menos una respuesta y una nota de fuente.</p></div><span class="status-pill {% if project.baseline_status == 'validada' %}status-ok{% else %}status-attention{% endif %}">{% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO{% else %}Aceptada{% endif %}{% else %}No aceptada{% endif %}</span></div>
   {% if project.baseline_status == 'validada' %}
@@ -106,6 +93,19 @@
       {% if not red_operational_writes_enabled() %}<p class="quiet small" id="baseline-write-help">La revisión de Línea Base se habilita cuando el gate operativo esté aprobado.</p>{% elif baseline_missing %}<p class="quiet small">El botón se habilita cuando estén revisados los registros indicados. No se aceptan líneas base vacías.</p>{% endif %}
     </details>
   {% endif %}
+</section>
+</details>{% endif %}
+{% if role == 'campo' %}<div class="notice warning field-connectivity-note" role="note" aria-label="Captura requiere conexión"><strong>RED no guarda formularios en el dispositivo.</strong><p>Trabaja con conexión al servidor y confirma el estado del formulario antes de salir. Si se pierde la conexión o no llega respuesta, conserva abierta la misma pantalla. Revisa el expediente antes de iniciar otro registro; si el primero no aparece, reintenta desde la pantalla original para que la clave del envío evite duplicados. No uses datos reales fuera del entorno autorizado ni papel sin el procedimiento de contingencia aprobado.</p></div><section class="panel role-route" aria-labelledby="assigned-actions-heading">
+  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="assigned-actions-heading">Mis acciones asignadas</h2><p class="quiet">Solo aparecen acciones PMIRS validadas que consultoría asignó a tu usuario en este expediente.</p></div></div>
+  {% if assigned_actions %}<div class="role-route-steps">
+    {% for action in assigned_actions %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ action.code }} · {{ action.title }}</strong><small>Prioridad {{ action.data.priority or 'pendiente' }} · Fecha objetivo {{ action.data.due_date or 'sin fecha' }} · {{ action.data.progress_pct or 0 }}% · {{ action_states.get(action.data.execution_status, 'Pendiente') }}</small></span><a class="button secondary" href="/projects/{{ project.id }}/pmirs#action-{{ action.id }}">Abrir acción</a></div>{% endfor %}
+  </div>{% else %}<div class="empty-state"><h3>No tienes acciones PMIRS asignadas</h3><p>Consulta con tu responsable del proyecto. Las acciones aparecerán aquí cuando estén revisadas como válidas y asignadas a tu usuario.</p></div>{% endif %}
+</section>{% endif %}
+<section class="panel role-route" aria-labelledby="role-route-heading">
+  <div class="section-head"><div><p class="eyebrow">Ruta de trabajo · {{ role|replace('_',' ')|title }}</p><h2 id="role-route-heading">{{ work_route.title }}</h2><p class="quiet">{{ work_route.description }}</p></div></div>
+  <div class="role-route-steps">
+    {% for step in work_route.steps %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span>{% if step.href %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% endif %}</div>{% endfor %}
+  </div>
 </section>
 {% if can_export_records %}<p class="source-note">Las hojas de cálculo incluyen los datos del formulario; los archivos adjuntos se consultan desde el expediente.</p>{% endif %}
 <section class="panel pmirs-launch" aria-labelledby="pmirs-launch-heading">
