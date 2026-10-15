@@ -43,17 +43,18 @@
   {% if projects %}
     <div class="project-list">
       {% for row in projects %}
-        <a class="project-row" href="/projects/{{ row.project.id }}">
+        <article class="project-row" data-project-id="{{ row.project.id }}">
           <span class="project-mark">{{ loop.index }}</span>
-          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Alistamiento · D-01 {{ row.startup_identity }} · D-02 {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
+          <span class="grow"><strong><a href="/projects/{{ row.project.id }}" class="project-name-link">{{ row.project.name }}</a></strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Alistamiento · D-01 {{ row.startup_identity }} · D-02 {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
           <span class="project-count"><strong>{{ row.records }}</strong><small>registros</small></span>
           {% if row.can_review %}
             <span class="project-count"><strong>{{ row.pending_forms }}</strong><small>formularios por revisar</small></span>
             <span class="project-count"><strong>{{ row.pending_pmirs }}</strong><small>objetos PMIRS por revisar</small></span>
             <span class="project-count"><strong>{{ row.pending_action_reviews }}</strong><small>{{ 'acción' if row.pending_action_reviews == 1 else 'acciones' }} con evidencia para QA/QC</small></span>
           {% endif %}
+          {% if row.setup_actions %}<nav class="project-setup-actions" aria-label="Alistamiento de {{ row.project.name }}">{% for action in row.setup_actions %}<a class="button compact secondary" href="{{ action.href }}">{% if action.label.startswith('Iniciar') and not red_operational_writes_enabled() %}Ver {{ action.code }}{% else %}{{ action.label }}{% endif %}</a>{% endfor %}</nav>{% endif %}
           <span class="row-arrow" aria-hidden="true">↗</span>
-        </a>
+        </article>
       {% endfor %}
     </div>
   {% else %}
