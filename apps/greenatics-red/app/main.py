@@ -3947,9 +3947,46 @@ def new_record_page(project_id: str, request: Request, form_code: str, session: 
         or (role == "campo" and not visit_authorization_active(visit_authorization))
         or field_authorization_required
     )
+    resume_record = session.scalar(
+        select(FormRecord)
+        .where(
+            FormRecord.project_id == project.id,
+            FormRecord.form_code == form_code,
+            FormRecord.created_by == user.id,
+            FormRecord.status.in_({"RAW", "CORRECTION_REQUESTED", "PENDING_REVIEW"}),
+        )
+        .order_by(FormRecord.updated_at.desc(), FormRecord.created_at.desc(), FormRecord.id.desc())
+        .limit(1)
+    )
+    resume_record_message = ""
+    resume_record_href = ""
+    resume_record_cta = ""
+    if resume_record:
+        if resume_record.status == "RAW":
+            resume_record_message = "Ya tienes un borrador de este formulario sin enviar."
+        elif resume_record.status == "CORRECTION_REQUESTED":
+            resume_record_message = "QA/QC devolvió tu último registro de este formulario para corrección."
+        else:
+            resume_record_message = "Tu último registro de este formulario está pendiente de revisión."
+        can_resume = (
+            resume_record.status in {"RAW", "CORRECTION_REQUESTED"}
+            and can_write_form(role, form_code)
+            and not view_only
+        )
+        resume_record_href = (
+            f"/records/{resume_record.id}/edit" if can_resume else f"/records/{resume_record.id}"
+        )
+        if can_resume and resume_record.status == "RAW":
+            resume_record_cta = "Continuar borrador"
+        elif can_resume:
+            resume_record_cta = "Corregir registro"
+        else:
+            resume_record_cta = "Consultar registro"
     return templates.TemplateResponse(request=request, name="record_form.html", context=page_context(
         request, project=project, form_spec=form_spec, record=None, error="", notice="",
         view_only=view_only, field_authorization_required=field_authorization_required,
+        resume_record=resume_record, resume_record_message=resume_record_message,
+        resume_record_href=resume_record_href, resume_record_cta=resume_record_cta,
         submission_key=secrets.token_urlsafe(32),
         operational_reference_values=operational_reference_values(session, project.id) if form_code == "P-14" else {},
         relation_options=d08_relation_options(session, project.id) if form_code == "D-08" else [],
