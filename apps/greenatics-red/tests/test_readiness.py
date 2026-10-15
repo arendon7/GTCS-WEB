@@ -205,8 +205,8 @@ def test_dashboard_shows_project_review_queues_only_to_reviewers(client, workspa
     assert "Cada copropiedad tiene un expediente separado para alistar su PMIRS." in dashboard.text
     assert "el nombre oficial, la dirección y el alcance" in dashboard.text
     assert "para cotizar los primeros cuatro PMIRS" not in dashboard.text
-    first_row = re.search(rf'<a class="project-row" href="/projects/{first_project}">(.*?)</a>', dashboard.text, re.S)
-    second_row = re.search(rf'<a class="project-row" href="/projects/{second_project}">(.*?)</a>', dashboard.text, re.S)
+    first_row = re.search(rf'<article class="project-row" data-project-id="{first_project}">(.*?)</article>', dashboard.text, re.S)
+    second_row = re.search(rf'<article class="project-row" data-project-id="{second_project}">(.*?)</article>', dashboard.text, re.S)
     assert first_row and second_row
     assert "Alistamiento · D-01 En revisión · D-02 Sin registro" in first_row.group(1)
     assert "Alistamiento · D-01 Sin registro · D-02 En revisión" in second_row.group(1)
@@ -245,7 +245,7 @@ def test_dashboard_shows_baseline_and_visit_gates_per_project_without_crossing_d
     dashboard = client.get("/")
     rows = {
         project_id: re.search(
-            rf'<a class="project-row" href="/projects/{project_id}">(.*?)</a>', dashboard.text, re.S,
+            rf'<article class="project-row" data-project-id="{project_id}">(.*?)</article>', dashboard.text, re.S,
         )
         for project_id in project_ids
     }
@@ -270,12 +270,57 @@ def test_dashboard_shows_baseline_and_visit_gates_per_project_without_crossing_d
 def test_bello_projects_keep_the_order_supplied_for_the_four_pmirs(client, workspace):
     sign_in(client, "admin@red.test")
     dashboard = client.get("/")
-    visible_project_ids = re.findall(r'<a class="project-row" href="/projects/([^" ]+)">', dashboard.text)
+    visible_project_ids = re.findall(r'<article class="project-row" data-project-id="([^"]+)">', dashboard.text)
     assert visible_project_ids == workspace["project_ids"]
     users_page = client.get("/admin/users")
     project_options = re.findall(r'<option value="[^"]+">([^<]+)</option>', users_page.text)
     ordered_names = [name for _slug, name in BELLO_PROJECTS]
     assert [name for name in project_options if name in ordered_names] == ordered_names
+
+
+def test_dashboard_offers_role_aware_start_and_resume_links_for_setup_forms(client, workspace):
+    project_id = workspace["project_ids"][0]
+    admin_id = workspace["user_ids"]["admin"]
+    with SessionLocal() as session:
+        d01 = FormRecord(
+            project_id=project_id, form_code="D-01", title="D-01 borrador",
+            status="RAW", created_by=admin_id, updated_by=admin_id,
+        )
+        d02 = FormRecord(
+            project_id=project_id, form_code="D-02", title="D-02 con correcciones",
+            status="CORRECTION_REQUESTED", created_by=admin_id, updated_by=admin_id,
+        )
+        session.add_all([d01, d02])
+        session.commit()
+        d01_id, d02_id = d01.id, d02.id
+
+    sign_in(client, "admin@red.test")
+    dashboard = client.get("/")
+    row = re.search(
+        rf'<article class="project-row" data-project-id="{project_id}">(.*?)</article>',
+        dashboard.text, re.S,
+    )
+    assert row
+    assert f'href="/records/{d01_id}">Continuar D-01</a>' in row.group(1)
+    assert f'href="/records/{d02_id}">Corregir D-02</a>' in row.group(1)
+    empty_project = workspace["project_ids"][1]
+    empty_row = re.search(
+        rf'<article class="project-row" data-project-id="{empty_project}">(.*?)</article>',
+        dashboard.text, re.S,
+    )
+    assert empty_row
+    assert f'href="/projects/{empty_project}/records/new?form_code=D-01">Iniciar D-01</a>' in empty_row.group(1)
+    assert f'href="/projects/{empty_project}/records/new?form_code=D-02">Iniciar D-02</a>' in empty_row.group(1)
+
+    sign_in(client, "field@red.test")
+    field_dashboard = client.get("/")
+    assert "Iniciar D-01" not in field_dashboard.text
+    assert "Iniciar D-02" not in field_dashboard.text
+
+    sign_in(client, "reader@red.test")
+    reader_dashboard = client.get("/")
+    assert "Iniciar D-01" not in reader_dashboard.text
+    assert "Iniciar D-02" not in reader_dashboard.text
 
 
 def test_privacy_case_log_is_admin_only_and_discloses_its_boundaries(client, workspace):
