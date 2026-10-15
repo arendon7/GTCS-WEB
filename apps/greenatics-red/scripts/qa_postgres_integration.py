@@ -195,6 +195,8 @@ def main() -> int:
             roundtrip_env = {
                 **env,
                 "DATABASE_SCHEMA": source_schema,
+                # The helper uses write routes only inside disposable synthetic schemas.
+                "RED_OPERATIONAL_WRITES_ENABLED": "true",
                 "RED_QA_RESTORE_SCHEMA": restore_schema,
                 "RED_QA_RESTORE_STORAGE_ROOT": str(temp / "restored-private"),
             }
