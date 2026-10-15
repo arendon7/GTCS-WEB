@@ -935,6 +935,41 @@ def test_operational_writes_default_closed_until_explicit_opt_in(monkeypatch):
     assert wrong_oauth_path.operational_writes_enabled is False
 
 
+@pytest.mark.parametrize(
+    ("app_env", "endpoint_url", "should_reject"),
+    [
+        ("production", "http://objects.example.invalid", True),
+        ("staging", "http://objects.example.invalid", True),
+        ("production", "https://objects.example.invalid", False),
+        ("staging", "https://objects.example.invalid", False),
+        ("local", "http://localhost:9000", False),
+        ("local", "http://objects.example.invalid", True),
+        ("local", "ftp://objects.example.invalid", True),
+        ("local", "", False),
+    ],
+)
+def test_s3_endpoint_transport_is_safe_for_each_environment(app_env, endpoint_url, should_reject):
+    from app.config import Settings
+
+    settings = Settings(
+        app_env=app_env,
+        storage_backend="s3",
+        s3_bucket="greenatics-red-private",
+        s3_access_key="synthetic-access-key",
+        s3_secret_key="synthetic-secret-key",
+        s3_endpoint_url=endpoint_url,
+    )
+    transport_issues = [
+        issue for issue in settings._deployment_configuration_issues()
+        if "S3_ENDPOINT_URL" in issue
+    ]
+    if should_reject:
+        assert len(transport_issues) == 1
+        assert "HTTPS" in transport_issues[0]
+    else:
+        assert transport_issues == []
+
+
 def test_hosted_runtime_requires_a_dedicated_database_not_a_shared_schema(monkeypatch):
     from dataclasses import replace
     from app.config import Settings
