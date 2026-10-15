@@ -1183,7 +1183,8 @@ def project_work_route(
             .where(
                 FormRecord.project_id == project.id,
                 FormRecord.created_by == user_id,
-                FormRecord.status.in_({"RAW", "CORRECTION_REQUESTED"}),
+                FormRecord.form_code.in_(form_titles),
+                FormRecord.status.in_({"RAW", "CORRECTION_REQUESTED", "PENDING_REVIEW"}),
             )
             .order_by(FormRecord.updated_at.desc(), FormRecord.created_at.desc(), FormRecord.id.desc())
         )
@@ -1203,15 +1204,21 @@ def project_work_route(
         record = resumable_records.get(code)
         if not record:
             return step
+        if record.status == "PENDING_REVIEW":
+            step["href"] = f"/records/{record.id}"
+            step["cta"] = "Ver registro en revisión"
+            return step
         can_resume = (
             settings.operational_writes_enabled
             and can_write_form(role, code)
             and field_capture_allowed
         )
-        if not can_resume:
-            return step
-        step["href"] = f"/records/{record.id}/edit"
-        step["cta"] = "Continuar borrador" if record.status == "RAW" else "Corregir registro"
+        if can_resume:
+            step["href"] = f"/records/{record.id}/edit"
+            step["cta"] = "Continuar borrador" if record.status == "RAW" else "Corregir registro"
+        else:
+            step["href"] = f"/records/{record.id}"
+            step["cta"] = "Consultar borrador"
         return step
 
     if role == "admin":
