@@ -1000,11 +1000,11 @@ def _startup_form_status(record: FormRecord | None) -> tuple[str, str]:
     }.get(record.status, (status_label(record.status), "status-raw"))
 
 
-def project_startup_form_statuses(session: Session, project_ids: list[str]) -> dict[tuple[str, str], tuple[str, str]]:
-    """Read the latest D-01/D-02 state for all visible projects in one query."""
+def project_startup_form_statuses(session: Session, project_ids: list[str]) -> dict[tuple[str, str], FormRecord]:
+    """Read the latest D-01/D-02 records for all visible projects in one query."""
     if not project_ids:
         return {}
-    status_by_key: dict[tuple[str, str], tuple[str, str]] = {}
+    records_by_key: dict[tuple[str, str], FormRecord] = {}
     records = session.scalars(
         select(FormRecord)
         .where(FormRecord.project_id.in_(project_ids), FormRecord.form_code.in_({"D-01", "D-02"}))
@@ -1012,9 +1012,38 @@ def project_startup_form_statuses(session: Session, project_ids: list[str]) -> d
     )
     for record in records:
         key = (record.project_id, record.form_code)
-        if key not in status_by_key:
-            status_by_key[key] = _startup_form_status(record)
-    return status_by_key
+        if key not in records_by_key:
+            records_by_key[key] = record
+    return records_by_key
+
+
+def project_dashboard_setup_actions(
+    project: Project,
+    role: str,
+    latest_records: dict[tuple[str, str], FormRecord],
+) -> list[dict[str, str]]:
+    """Offer role-aware links to start or resume the two first setup forms."""
+    actions = []
+    for code in ("D-01", "D-02"):
+        record = latest_records.get((project.id, code))
+        can_edit = can_write_form(role, code)
+        if record is None:
+            if not can_edit:
+                continue
+            actions.append({
+                "code": code,
+                "label": f"Iniciar {code}",
+                "href": f"/projects/{project.id}/records/new?form_code={code}",
+            })
+            continue
+        if record.status == "RAW" and can_edit:
+            label = f"Continuar {code}"
+        elif record.status == "CORRECTION_REQUESTED" and can_edit:
+            label = f"Corregir {code}"
+        else:
+            label = f"Consultar {code}"
+        actions.append({"code": code, "label": label, "href": f"/records/{record.id}"})
+    return actions
 
 
 def project_startup_checklist(session: Session, project: Project, role: str) -> list[dict]:
@@ -2112,8 +2141,9 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
             "project": project,
             "records": session.scalar(select(func.count(FormRecord.id)).where(FormRecord.project_id == project.id)) or 0,
             "can_review": user.is_platform_admin or role == "revisor",
-            "startup_identity": startup_statuses.get((project.id, "D-01"), ("Sin registro", "status-attention"))[0],
-            "startup_admin_info": startup_statuses.get((project.id, "D-02"), ("Sin registro", "status-attention"))[0],
+            "startup_identity": _startup_form_status(startup_statuses.get((project.id, "D-01")))[0],
+            "startup_admin_info": _startup_form_status(startup_statuses.get((project.id, "D-02")))[0],
+            "setup_actions": project_dashboard_setup_actions(project, role, startup_statuses),
             "baseline_summary": baseline_summary,
             "visit_summary": visit_summary,
         }
