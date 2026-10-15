@@ -3887,11 +3887,11 @@ def test_project_page_shows_role_specific_work_routes(client, workspace):
     )
     assert field_route
     ordered_codes = ["D-03", "D-04", "D-05", "D-10", "D-06", "D-13", "D-07", "D-08", "D-09", "D-11", "D-12", "D-14", "P-14"]
-    ordered_positions = [field_route.group(1).index(f"form_code={code}") for code in ordered_codes]
+    ordered_positions = [field_route.group(1).index(f"{code} ·") for code in ordered_codes]
     assert ordered_positions == sorted(ordered_positions)
+    assert f'href="/records/{pending_id}">Ver registro en revisión</a>' in field_route.group(1)
     for code in ordered_codes:
         path = f"/projects/{project_id}/records/new?form_code={code}"
-        assert path in field_route.group(1)
         form_page = client.get(path)
         assert form_page.status_code == 200, f"El perfil de campo no puede abrir {code}."
     assert "Espera que QA/QC lo valide antes de enviar pesajes" in field_route.group(1)
@@ -3968,14 +3968,18 @@ def test_project_work_route_resumes_only_the_current_users_editable_records(clie
             project_id=project_id, form_code="D-05", title="Flujo propio devuelto",
             status="CORRECTION_REQUESTED", created_by=field_id, updated_by=field_id,
         )
+        own_review = FormRecord(
+            project_id=project_id, form_code="D-07", title="Pesaje propio en revisión",
+            status="PENDING_REVIEW", created_by=field_id, updated_by=field_id,
+        )
         other_draft = FormRecord(
             project_id=project_id, form_code="D-04", title="Inspección de otra persona",
             status="RAW", created_by=admin_id, updated_by=admin_id,
         )
-        session.add_all([own_draft, own_correction, other_draft])
+        session.add_all([own_draft, own_correction, own_review, other_draft])
         session.commit()
-        own_draft_id, own_correction_id, other_draft_id = (
-            own_draft.id, own_correction.id, other_draft.id,
+        own_draft_id, own_correction_id, own_review_id, other_draft_id = (
+            own_draft.id, own_correction.id, own_review.id, other_draft.id,
         )
 
     sign_in(client, "field@red.test")
@@ -3991,9 +3995,10 @@ def test_project_work_route_resumes_only_the_current_users_editable_records(clie
         assert f'href="/records/{own_correction_id}/edit">Corregir registro</a>' in route.group(1)
     else:
         assert f'/records/{own_draft_id}/edit' not in route.group(1)
+        assert f'/records/{own_draft_id}">Consultar borrador</a>' in route.group(1)
         assert f'/records/{own_correction_id}/edit' not in route.group(1)
-        assert f"/projects/{project_id}/records/new?form_code=D-03" in route.group(1)
-        assert f"/projects/{project_id}/records/new?form_code=D-05" in route.group(1)
+        assert f'/records/{own_correction_id}">Consultar borrador</a>' in route.group(1)
+    assert f'/records/{own_review_id}">Ver registro en revisión</a>' in route.group(1)
     assert f"/records/{other_draft_id}" not in route.group(1)
     assert f"/projects/{project_id}/records/new?form_code=D-04" in route.group(1)
 
