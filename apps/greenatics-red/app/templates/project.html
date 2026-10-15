@@ -39,12 +39,16 @@
     </details>
   {% endif %}
 </section>
+</details>{% endif %}
 <section class="panel role-route startup-route" aria-labelledby="startup-route-heading">
   <div class="section-head"><div><p class="eyebrow">Alistamiento de esta copropiedad</p><h2 id="startup-route-heading">Antes de iniciar el trabajo</h2><p class="quiet">{% if project.origin == 'synthetic_demo' %}Este expediente es un sandbox aislado con contenido ficticio. Sus registros, soportes, autorización y estado de Línea Base solo sirven para practicar; no representan una copropiedad ni permisos reales. Los cuatro expedientes residenciales siguen vacíos y separados.{% else %}Este expediente parte sin fuentes ni caracterización. Completa los pasos de forma independiente para cada unidad; la app muestra estados registrados, no confirma permisos externos.{% endif %}</p></div></div>
+  {% if visit_authorization_status == 'vencida' %}<p class="notice warning" role="status"><strong>Autorización vencida.</strong> La captura de campo sigue bloqueada hasta que la administración revise un soporte vigente.</p>{% endif %}
+  <p class="quiet small">Línea Base: {% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO (solo práctica){% else %}Aceptada{% endif %}{% else %}Pendiente{% endif %}</p>
   <div class="role-route-steps">
     {% for step in startup_checklist %}<div class="role-route-step startup-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span><span class="status-pill {{ step.status_class }}">{{ step.status }}</span>{% if step.href and red_operational_writes_enabled() %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% elif step.href %}<a class="button compact secondary" href="{{ step.href }}">Ver {{ step.title.split(' · ')[0] }}</a>{% endif %}</div>{% endfor %}
   </div>
 </section>
+{% if role != 'campo' %}<details class="panel project-admin-details"><summary>Autorización de visita y Línea Base <span class="quiet">Requisitos para iniciar</span></summary>
 <section class="panel visit-authorization-panel" id="visit-authorization" aria-labelledby="visit-authorization-heading">
   <div class="section-head"><div><h2 id="visit-authorization-heading">Autorización de visita</h2><p class="quiet">La autorización se revisa por copropiedad. RED conserva identificadores de soportes y quién hizo la revisión; no almacena aquí contratos, datos de residentes ni documentos de identidad.</p></div><span class="status-pill {% if visit_authorization_is_active %}status-ok{% else %}status-attention{% endif %}">{% if visit_authorization_is_active %}Vigente hasta {{ visit_authorization.valid_until.isoformat() }}{% elif visit_authorization_status == 'vencida' %}Vencida{% elif visit_authorization_status == 'revocada' %}Revocada{% else %}Pendiente{% endif %}</span></div>
   {% if visit_authorization %}<p class="quiet">Estado administrativo registrado: {{ visit_authorization_status }}. La vigencia depende de que los soportes externos sigan aplicando y la autorización no haya sido revocada.</p>{% else %}<p class="notice warning" role="status"><strong>Campo no habilitado.</strong> Completa la revisión externa antes de iniciar visitas, mediciones o capturas reales.</p>{% endif %}

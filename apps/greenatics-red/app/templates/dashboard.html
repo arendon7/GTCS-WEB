@@ -45,7 +45,7 @@
       {% for row in projects %}
         <a class="project-row" href="/projects/{{ row.project.id }}">
           <span class="project-mark">{{ loop.index }}</span>
-          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Identificación · {{ row.startup_identity }} · Información administrativa · {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
+          <span class="grow"><strong>{{ row.project.name }}</strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Alistamiento · D-01 {{ row.startup_identity }} · D-02 {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
           <span class="project-count"><strong>{{ row.records }}</strong><small>registros</small></span>
           {% if row.can_review %}
             <span class="project-count"><strong>{{ row.pending_forms }}</strong><small>formularios por revisar</small></span>
