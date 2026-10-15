@@ -12,6 +12,7 @@
   <div><small>Ubicación</small><strong>{% if project.identity_status == 'confirmada' %}{{ project.address }} · {% else %}Por verificar · {% endif %}{{ project.municipality }}, {{ project.department }}</strong></div>
   <div><small>Registros capturados</small><strong>{{ records|length }} recientes</strong></div>
 </section>
+{% if role != 'campo' %}<details class="panel project-admin-details"><summary>Datos y requisitos de la unidad <span class="quiet">Identificación · visita · Línea Base</span></summary>
 <section class="panel project-identity-panel" id="project-identity" aria-labelledby="project-identity-heading">
   <div class="section-head"><div><p class="eyebrow">Datos propios de esta copropiedad</p><h2 id="project-identity-heading">Identificación y dirección</h2><p class="quiet">Cada unidad conserva sus datos y su fuente de confirmación por separado. El nombre recibido se mantiene como borrador hasta cotejarlo con la administración o un soporte institucional.</p></div><span class="status-pill {% if project.identity_status == 'confirmada' %}status-ok{% else %}status-attention{% endif %}">{% if project.identity_status == 'confirmada' %}Confirmada{% else %}Pendiente{% endif %}</span></div>
   {% if project.identity_status == 'confirmada' %}
@@ -105,19 +106,19 @@
     </details>
   {% endif %}
 </section>
-{% if can_export_records %}<p class="source-note">Las exportaciones CSV y Excel contienen una fila por campo y conservan valores vacíos, fuente, estado y versión. Los adjuntos no se incluyen; siguen disponibles con los permisos del expediente.</p>{% endif %}
+</details>{% endif %}
+{% if can_export_records %}<p class="source-note">Las hojas de cálculo incluyen los datos del formulario; los archivos adjuntos se consultan desde el expediente.</p>{% endif %}
 <section class="panel pmirs-launch" aria-labelledby="pmirs-launch-heading">
   <div><h2 id="pmirs-launch-heading">PMIRS Studio</h2><p class="quiet">Construye el plan con hallazgos, programas, acciones asignadas, indicadores y versiones auditables.</p><small>{{ pmirs_item_count }} objetos · {{ pmirs_version_count }} versiones · la información es independiente de las otras copropiedades</small></div>
   <a class="button primary" href="/projects/{{ project.id }}/pmirs">Abrir PMIRS Studio</a>
 </section>
 <section class="panel form-catalog" aria-labelledby="forms-heading">
   <div class="section-head"><div><p class="eyebrow">Formatos maestros v7-2</p><h2 id="forms-heading">Formularios del expediente</h2><p class="quiet">Los formularios conservan los campos, reglas y trazabilidad del paquete RED Bello.</p></div></div>
-  <p class="notice info form-actor-note"><strong>Cómo leer los responsables:</strong> “Actor del formato fuente” conserva el nombre que aparece en el maestro v7-2, incluso si menciona equipos de otro proyecto. Los permisos reales los define el perfil RED asignado a cada persona en este expediente; esa referencia no asigna usuarios ni confirma responsabilidades contractuales.</p>
-  <details open>
+  <details>
     <summary><span>Diagnóstico y trabajo de campo</span><span class="quiet">D-01 a D-14 · Q-01</span></summary>
     <div class="form-list">
       {% for form in forms if form.code.startswith('D-') or form.code == 'Q-01' %}
-        <div class="form-row"><span class="form-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>Actor del formato fuente: {{ form.actor }} · {{ form.fields|length }} campos</small></span>
+        <div class="form-row"><span class="form-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small></span>
           {% if form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
         </div>
       {% endfor %}
@@ -150,5 +151,5 @@
     {% endif %}
   </div>{% endif %}
 </section>
-<p class="source-note">La cercanía entre los cuatro conjuntos fue informada por el usuario; todavía no se ha verificado en campo. Cada PMIRS se mantiene como expediente separado.</p>
+<p class="source-note">Cada copropiedad conserva su expediente por separado.</p>
 {% endblock %}
