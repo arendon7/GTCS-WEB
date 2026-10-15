@@ -323,6 +323,48 @@ def test_dashboard_offers_role_aware_start_and_resume_links_for_setup_forms(clie
     assert "Iniciar D-02" not in reader_dashboard.text
 
 
+def test_new_form_offers_resume_link_for_current_users_unfinished_record(client, workspace):
+    project_id = workspace["project_ids"][0]
+    field_id = workspace["user_ids"]["field"]
+    admin_id = workspace["user_ids"]["admin"]
+    with SessionLocal() as session:
+        own_draft = FormRecord(
+            project_id=project_id, form_code="D-06", title="D-06 borrador propio",
+            status="RAW", created_by=field_id, updated_by=field_id,
+        )
+        own_review = FormRecord(
+            project_id=project_id, form_code="D-07", title="D-07 pendiente propio",
+            status="PENDING_REVIEW", created_by=field_id, updated_by=field_id,
+        )
+        other_draft = FormRecord(
+            project_id=project_id, form_code="D-08", title="D-08 borrador de administración",
+            status="RAW", created_by=admin_id, updated_by=admin_id,
+        )
+        session.add_all([own_draft, own_review, other_draft])
+        session.commit()
+        own_draft_id, own_review_id = own_draft.id, own_review.id
+        other_draft_id = other_draft.id
+
+    sign_in(client, "field@red.test")
+    draft_page = client.get(f"/projects/{project_id}/records/new?form_code=D-06")
+    assert draft_page.status_code == 200
+    assert "Ya tienes un borrador de este formulario sin enviar." in draft_page.text
+    if settings.operational_writes_enabled:
+        assert f'href="/records/{own_draft_id}/edit">Continuar borrador</a>' in draft_page.text
+    else:
+        assert f'href="/records/{own_draft_id}">Consultar registro</a>' in draft_page.text
+
+    review_page = client.get(f"/projects/{project_id}/records/new?form_code=D-07")
+    assert review_page.status_code == 200
+    assert "pendiente de revisión" in review_page.text
+    assert f'href="/records/{own_review_id}">Consultar registro</a>' in review_page.text
+
+    other_user_page = client.get(f"/projects/{project_id}/records/new?form_code=D-08")
+    assert other_user_page.status_code == 200
+    assert "resume-record-notice" not in other_user_page.text
+    assert f"/records/{other_draft_id}" not in other_user_page.text
+
+
 def test_privacy_case_log_is_admin_only_and_discloses_its_boundaries(client, workspace):
     sign_in(client, "admin@red.test")
     page = client.get("/admin/privacy")
