@@ -50,3 +50,65 @@ jobs:
 
       - name: Run complete RED candidate verification
         run: RED_PYTHON=python RED_NODE=node scripts/verify_local_candidate.sh
+
+  red-postgres:
+    name: RED PostgreSQL migration and recovery
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/greenatics-red
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: greenatics_red_test
+          POSTGRES_USER: red_qa
+          POSTGRES_PASSWORD: red_ci_synthetic_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U red_qa -d greenatics_red_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      # Dedicated disposable service: no hosted databases, secrets or client data.
+      RED_TEST_POSTGRES_URL: postgresql+psycopg://red_qa:red_ci_synthetic_only@127.0.0.1:5432/greenatics_red_test
+      RED_TEST_POSTGRES_EXPECTED_DATABASE: greenatics_red_test
+      RED_TEST_POSTGRES_ALLOW_SCHEMA_CREATE: DROP_ONLY_TEMP_SCHEMA
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: apps/greenatics-red/requirements-dev.txt
+
+      - name: Install RED test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Migrate, back up and restore synthetic RED data
+        run: python scripts/qa_postgres_integration.py
+
+      - name: Verify temporary schemas were removed
+        run: |
+          python - <<'PY'
+          import os
+          from sqlalchemy import create_engine, text
+
+          engine = create_engine(os.environ["RED_TEST_POSTGRES_URL"])
+          try:
+              with engine.connect() as connection:
+                  remaining = connection.execute(text(
+                      "SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'red_qa_%'"
+                  )).scalars().all()
+              if remaining:
+                  raise SystemExit("RED QA left temporary schemas in the disposable database.")
+              print("RED QA cleanup verified: no temporary schemas remain.")
+          finally:
+              engine.dispose()
+          PY
