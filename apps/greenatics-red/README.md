@@ -23,6 +23,8 @@ RED admite administración de la plataforma, consultoría, administración de la
 
 Un porcentaje de avance no aprueba ni cierra una acción. Los registros sintéticos de la demostración no se transfieren a los expedientes de Bello.
 
+La guía para preparar la jornada, capturar datos y cerrar pendientes está en [Guía rápida de campo RED](GUIA_RAPIDA_DE_CAMPO_RED.md).
+
 ## Abrir la demostración en macOS
 
 Si el entorno `.venv` ya está preparado, abre `Abrir_DEMO_RED.command` desde Finder. Levanta un sandbox temporal con seis perfiles ficticios y abre el navegador y una ventana con credenciales efímeras. No requiere Git, Docker ni Command Line Tools. Si macOS bloquea la primera apertura, haz clic derecho sobre el archivo y selecciona **Abrir**.
