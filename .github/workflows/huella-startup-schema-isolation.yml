@@ -2,6 +2,7 @@ name: Huella startup schema isolation
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited]
     paths:
       - apps/calcula-tu-huella/start_prod.sh
       - apps/calcula-tu-huella/tests/test_startup_schema_isolation.py
