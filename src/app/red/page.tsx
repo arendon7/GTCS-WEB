@@ -52,8 +52,8 @@ export default function RedPage() {
       <ToolAccessRail
         id="red"
         name="GREENATICS Red"
-        status={runtimeLinks.red ? "Espacio operativo conectado" : "Estación demo disponible"}
-        copy="Esta landing explica la solución completa: Proyecto 360, FIELD, QA/QC, hallazgos, línea base, PMIRS STUDIO y PMIRS VIVO. La estación navegable permite explorar la experiencia; la operación productiva se configura con datos, roles y permisos del proyecto."
+        status={runtimeLinks.red ? "Enlace de acceso configurado" : "Estación demo disponible"}
+        copy="Esta landing explica la solución completa: Proyecto 360, FIELD, QA/QC, hallazgos, línea base, PMIRS STUDIO y PMIRS VIVO. La estación navegable usa información ilustrativa. Si tu organización tiene un entorno operativo, el enlace lo abre en un servicio independiente; su disponibilidad y los permisos se confirman al ingresar."
         runtimeHref={runtimeLinks.red || undefined}
         runtimeLabel="Entrar a la estación Red"
         demoHref="/red/app/"
