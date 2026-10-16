@@ -13,9 +13,10 @@ test.describe("GREENATICS Red application shell", () => {
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { name: "Resumen de proyecto" })).toBeVisible();
     await expect(page.getByText("RED-024 · Támesis")).toBeVisible();
+    const navigation = page.getByRole("navigation", { name: "Módulos de la aplicación" });
 
     for (const module of ["Territorio", "Generadores", "Rutas", "FIELD", "QA/QC", "Hallazgos", "PMIRS STUDIO", "PMIRS VIVO", "Indicadores", "Evidencias", "Coordinación"]) {
-      await expect(page.getByRole("button", { name: new RegExp(module) })).toBeVisible();
+      await expect(navigation.getByRole("button", { name: new RegExp(module) })).toBeVisible();
     }
 
     await navigation.getByRole("button", { name: /Territorio/ }).click();
@@ -39,7 +40,7 @@ test.describe("GREENATICS Red application shell", () => {
     await expect(page.getByRole("heading", { name: /El plan deja de ser documento/ })).toBeVisible();
     await page.getByRole("button", { name: "+ Registrar avance" }).click();
     await expect(page.getByText(/A-014: avance local registrado en 68 %/)).toBeVisible();
-    await page.getByRole("button", { name: /QA\/QC/ }).click();
+    await navigation.getByRole("button", { name: /QA\/QC/ }).click();
     await page.getByRole("button", { name: "Aprobar", exact: true }).click();
     await expect(page.getByText(/QA-108: aprobada en esta sesión/)).toBeVisible();
     await navigation.getByRole("button", { name: /Evidencias/ }).click();
