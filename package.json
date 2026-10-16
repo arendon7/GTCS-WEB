@@ -17,7 +17,8 @@
     "test:visual": "playwright test tests/visual-smoke.spec.ts",
     "test:a11y": "playwright test tests/accessibility.spec.ts",
     "test:red": "playwright test tests/red-app.spec.ts",
-    "test:red-landing": "playwright test tests/red-landing.spec.ts --project=desktop"
+    "test:red-landing": "playwright test tests/red-landing.spec.ts --project=desktop",
+    "test:red-app": "playwright test tests/red-app.spec.ts --project=desktop"
   },
   "dependencies": {
     "next": "^16.1.0",
