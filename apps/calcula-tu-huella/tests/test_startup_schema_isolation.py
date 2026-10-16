@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
 import unittest
 import uuid
 from pathlib import Path
@@ -34,6 +35,7 @@ class StartupSchemaIsolationTests(unittest.TestCase):
                 "APP_ENV": "staging",
                 "DATABASE_SCHEMA": schema,
                 "DATABASE_URL": DATABASE_URL,
+                "CTH_PYTHON_BIN": sys.executable,
                 "SESSION_SECRET": "startup-test-session-secret-only-64-characters",
                 "SESSION_HTTPS_ONLY": "true",
                 "PUBLIC_BASE_URL": "https://localhost",
