@@ -332,11 +332,29 @@ def register_information_routes(
         set_flash(request, "La evidencia fue cargada y protegida con huella SHA-256.")
         return RedirectResponse("/informacion", status_code=303)
     @app.get("/evidencias/{document_id}/descargar")
-    def evidence_download(document_id: int, session: Session = Depends(get_db), user: dict = Depends(require_user)):
+    def evidence_download(document_id: int, request: Request, session: Session = Depends(get_db), user: dict = Depends(require_user)):
         document = session.scalar(select(EvidenceDocument).join(Inventory).where(EvidenceDocument.id == document_id, Inventory.organization_id == int(user["organization_id"])))
         if not document:
             raise HTTPException(404, "Documento no encontrado")
-        if not document.stored_name or not storage.exists(document.stored_name):
+        if not document.stored_name:
+            raise HTTPException(404, "El archivo físico no está disponible")
+        try:
+            file_is_available = storage.check_exists(document.stored_name)
+        except StorageError:
+            return templates.TemplateResponse(
+                request=request,
+                name="error.html",
+                context=common_context(
+                    request,
+                    session,
+                    user,
+                    "information",
+                    title="No pudimos consultar el archivo",
+                    message="El almacenamiento no respondió. Intenta descargarlo de nuevo más tarde o contacta al equipo de soporte. No vuelvas a cargar el archivo todavía.",
+                ),
+                status_code=503,
+            )
+        if not file_is_available:
             raise HTTPException(404, "El archivo físico no está disponible")
         add_audit(session, int(user["organization_id"]), str(user["email"]), "DESCARGAR", "Evidencia", document.name, "Descarga autorizada")
         session.commit()
