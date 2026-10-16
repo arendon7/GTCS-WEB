@@ -1151,3 +1151,22 @@
   color: #d8ffbe !important;
 }
 
+
+
+/* Casa & Jardín contrast: retain the approved layout and artwork. */
+body:has(.homegarden-v4-hero) .homegarden-v4-start article > span,
+body:has(.homegarden-v4-hero) .homegarden-v4-spaces article > div > span,
+body:has(.homegarden-v4-hero) .homegarden-v4-spaces__links a,
+body:has(.homegarden-v4-hero) .homegarden-v4-visual-notes article > div > span,
+body:has(.homegarden-v4-hero) .homegarden-v4-care li > span,
+body:has(.homegarden-v4-hero) .homegarden-v4-diagnostic header > .eyebrow {
+  color: #425449;
+}
+
+body:has(.homegarden-v4-hero) .homegarden-v4-stages__intro > div > .eyebrow--light.eyebrow {
+  color: #d8ffbe;
+}
+
+body:has(.homegarden-v4-hero) .homegarden-v4-stages ol > li > strong {
+  color: #fff;
+}
