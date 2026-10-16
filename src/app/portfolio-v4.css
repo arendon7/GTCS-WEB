@@ -1182,3 +1182,9 @@ body:has(.library-context-nav) .eyebrow-badge > span:nth-child(2),
 body:has(.library-context-nav) #library-results > article > div:first-child > div:nth-child(2) > span {
   color: #425449 !important;
 }
+
+
+/* Contact route contrast: first form step label on the white request form. */
+body:has(.contact-layout) .contact-layout > form > div:first-child > span {
+  color: #425449 !important;
+}
