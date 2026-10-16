@@ -7012,3 +7012,13 @@ body:has(.gt-route-hero--municipal) .gt-operating-model > div > .eyebrow--light.
 body:has(.gt-route-hero--municipal) .gt-operating-model > div > h2 {
   color: #fff;
 }
+
+
+/* Company route contrast: preserve cards and sections, strengthen small labels. */
+body:has(.gt-route-hero--company) .gt-segment-grid article > span,
+body:has(.gt-route-hero--company) .gt-segment-grid article > div small,
+body:has(.gt-route-hero--company) .gt-pmirs-story__visual li > span,
+body:has(.gt-route-hero--company) .gt-evidence-grid article > span,
+body:has(.gt-route-hero--company) .gt-service-preview-grid article > span {
+  color: #425449;
+}
