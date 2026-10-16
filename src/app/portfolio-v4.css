@@ -1175,3 +1175,10 @@ body:has(.homegarden-v4-hero) .homegarden-v4-stages ol > li > strong {
 body:has(.homegarden-v4-hero) .homegarden-v4-spaces .wg-v4-heading > div > .eyebrow {
   color: #425449;
 }
+
+
+/* Library route contrast: fix inline category labels on the pale page and white cards. */
+body:has(.library-context-nav) .eyebrow-badge > span:nth-child(2),
+body:has(.library-context-nav) #library-results > article > div:first-child > div:nth-child(2) > span {
+  color: #425449 !important;
+}
