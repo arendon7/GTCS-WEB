@@ -2,17 +2,13 @@
 @media(max-width:1050px){.park-page-module-grid,.park-question-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.park-page-hero-grid,.park-config-grid,.park-biorefinery-grid,.park-data-grid{grid-template-columns:1fr}.park-phase-grid{grid-template-columns:1fr}.park-page-boundary .container{grid-template-columns:1fr}}
 @media(max-width:650px){.park-page-hero,.park-page-modules,.park-page-questions,.park-page-phases,.park-page-configurations,.park-page-biorefinery,.park-page-data{padding:72px 0}.park-page-module-grid,.park-question-grid,.park-config-list,.park-data-stack{grid-template-columns:1fr}.park-page-module-grid article{min-height:0}}
-
 .park-page-evidence{padding:104px 0;background:#f1f4ec}.park-page-evidence__grid{display:grid;grid-template-columns:.75fr 1.5fr .75fr;gap:14px}.park-page-evidence figure{margin:0;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:24px 24px 24px 6px}.park-page-evidence figure>div{position:relative;min-height:300px;overflow:hidden}.park-page-evidence figure.is-featured>div{min-height:430px}.park-page-evidence img{object-fit:cover}.park-page-evidence figcaption{padding:24px}.park-page-evidence figcaption>span{display:block;margin-bottom:18px;color:var(--green-700);font-size:.68rem;font-weight:850}.park-page-evidence figcaption strong{display:block;font-family:var(--font-rounded);font-size:1.2rem}.park-page-evidence figcaption p{margin:9px 0 0;color:var(--muted);font-size:.82rem}
 @media(max-width:900px){.park-page-evidence__grid{grid-template-columns:1fr}.park-page-evidence figure>div,.park-page-evidence figure.is-featured>div{min-height:360px}}
 @media(max-width:650px){.park-page-evidence{padding:72px 0}.park-page-evidence figure>div,.park-page-evidence figure.is-featured>div{min-height:280px}}
-
-
-/* Parque Ambiental: contraste WCAG para titulares y numeración. */
-main:has(> .park-page-hero) .park-page-evidence figure.is-featured figcaption > span {
+/* Parque Ambiental: contraste WCAG para titulares y pies de foto. */
+main:has(> .park-page-hero) .park-page-evidence figcaption > span {
   color: #006b45;
 }
-
 main:has(> .park-page-hero) .park-page-questions .section-heading h2,
 main:has(> .park-page-hero) .park-page-biorefinery .park-biorefinery-grid > div > h2 {
   color: #fff;
