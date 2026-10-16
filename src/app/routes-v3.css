@@ -7022,3 +7022,9 @@ body:has(.gt-route-hero--company) .gt-evidence-grid article > span,
 body:has(.gt-route-hero--company) .gt-service-preview-grid article > span {
   color: #425449;
 }
+
+
+/* Projects route contrast: maintain a clear label on the dark comparison panel. */
+body:has(.gt-projects-hero) .gt-projects-compare .gt-route-heading--light > div > .eyebrow--light.eyebrow {
+  color: #d8ffbe;
+}
