@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   postgres-migration:
+    if: github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:
