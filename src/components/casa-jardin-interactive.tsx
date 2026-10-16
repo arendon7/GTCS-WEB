@@ -403,7 +403,7 @@ export function CasaJardinInteractive() {
           </div>
 
           <div>
-            <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "var(--green-700)", fontWeight: 800, display: "block", marginBottom: "4px" }}>
+            <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "#425449", fontWeight: 800, display: "block", marginBottom: "4px" }}>
               Orientación preliminar:
             </span>
             <strong style={{ fontSize: "1.1rem", color: "var(--green-900)", display: "block", marginBottom: "4px" }}>
