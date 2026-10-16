@@ -16,7 +16,8 @@
     "qa:tool-contracts": "node scripts/check-tool-contracts.mjs",
     "test:visual": "playwright test tests/visual-smoke.spec.ts",
     "test:a11y": "playwright test tests/accessibility.spec.ts",
-    "test:red": "playwright test tests/red-app.spec.ts"
+    "test:red": "playwright test tests/red-app.spec.ts",
+    "test:red-landing": "playwright test tests/red-landing.spec.ts --project=desktop"
   },
   "dependencies": {
     "next": "^16.1.0",
