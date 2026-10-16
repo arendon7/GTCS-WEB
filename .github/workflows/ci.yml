@@ -32,6 +32,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run isolated GREENATICS RED landing check
         run: npm run test:red-landing
+      - name: Run isolated GREENATICS RED app walkthrough
+        run: npm run test:red-app
       - name: Run desktop and mobile visual smoke
         run: npm run test:visual
       - name: Run accessibility gate
