@@ -378,7 +378,7 @@ def test_evidence_download_reports_storage_outage_without_requesting_reupload(mo
         uploaded = client.post(
             "/informacion/evidencias/nueva",
             data={"document_type": "Certificado", "period_label": "Prueba", "notes": "Archivo de prueba"},
-            files={"file": ("soporte_falla.csv", b"fuente,valor\\nElectricidad,10\\n", "text/csv")},
+            files={"file": ("soporte_falla.csv", b"fuente,valor\nElectricidad,10\n", "text/csv")},
             follow_redirects=False,
         )
         assert uploaded.status_code == 303
@@ -405,7 +405,7 @@ def test_evidence_download_returns_not_found_when_storage_confirms_missing(monke
         uploaded = client.post(
             "/informacion/evidencias/nueva",
             data={"document_type": "Certificado", "period_label": "Prueba", "notes": "Archivo de prueba"},
-            files={"file": ("soporte_ausente.csv", b"fuente,valor\\nElectricidad,10\\n", "text/csv")},
+            files={"file": ("soporte_ausente.csv", b"fuente,valor\nElectricidad,10\n", "text/csv")},
             follow_redirects=False,
         )
         assert uploaded.status_code == 303
