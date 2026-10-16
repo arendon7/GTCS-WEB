@@ -31,6 +31,8 @@ test.describe("GREENATICS Red application shell", () => {
     await page.getByRole("button", { name: /PMIRS STUDIO/ }).click();
     await expect(page.getByRole("heading", { name: /Convertir hallazgos/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Reducir impropios en la fuente" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Acciones por coordinar" })).toBeVisible();
+    await expect(page.getByText("Trabajo listo para coordinar", { exact: true })).toHaveCount(0);
     await page.getByRole("button", { name: /Hallazgos/ }).click();
     await expect(page.getByRole("heading", { name: /Un hallazgo no es una opinión/ })).toBeVisible();
     await page.getByRole("button", { name: /PMIRS VIVO/ }).click();
@@ -43,6 +45,8 @@ test.describe("GREENATICS Red application shell", () => {
     await page.getByRole("button", { name: /Evidencias/ }).click();
     await expect(page.getByRole("heading", { name: /La evidencia no es un archivo/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Fotografía de punto de almacenamiento" })).toBeVisible();
+    await expect(page.getByText("Trazabilidad del expediente", { exact: true })).toBeVisible();
+    await expect(page.getByText("Expediente listo", { exact: true })).toHaveCount(0);
     await page.getByRole("button", { name: /Coordinación/ }).click();
     await expect(page.getByRole("heading", { name: "Confirmar horario de visita" })).toBeVisible();
 
