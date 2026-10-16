@@ -284,3 +284,13 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Quote builder contrast on cards and dark estimate summary. */
+.preset-cta {
+  color: #425449;
+}
+
+.quote-summary .eyebrow--light {
+  color: #d8ffbe;
+}

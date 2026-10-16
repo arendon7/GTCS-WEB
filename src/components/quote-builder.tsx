@@ -187,10 +187,11 @@ export function QuoteBuilder() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="quote-filter-bar" role="tablist" aria-label="Filtrar catálogo">
+      <div className="quote-filter-bar" role="group" aria-label="Filtrar catálogo">
         <button
           type="button"
           className={`filter-btn ${activeFilter === "all" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "all"}
           onClick={() => setActiveFilter("all")}
         >
           Todo el catálogo ({catalogOffers.length})
@@ -198,6 +199,7 @@ export function QuoteBuilder() {
         <button
           type="button"
           className={`filter-btn ${activeFilter === "solido" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "solido"}
           onClick={() => setActiveFilter("solido")}
         >
           Sólidos (40 kg)
@@ -205,6 +207,7 @@ export function QuoteBuilder() {
         <button
           type="button"
           className={`filter-btn ${activeFilter === "liquido" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "liquido"}
           onClick={() => setActiveFilter("liquido")}
         >
           Líquidos (1 L a 1000 L)
@@ -212,6 +215,7 @@ export function QuoteBuilder() {
         <button
           type="button"
           className={`filter-btn ${activeFilter === "compost" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "compost"}
           onClick={() => setActiveFilter("compost")}
         >
           Compost
@@ -219,6 +223,7 @@ export function QuoteBuilder() {
         <button
           type="button"
           className={`filter-btn ${activeFilter === "2grow" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "2grow"}
           onClick={() => setActiveFilter("2grow")}
         >
           2GROW
@@ -226,6 +231,7 @@ export function QuoteBuilder() {
         <button
           type="button"
           className={`filter-btn ${activeFilter === "2fruit" ? "is-active" : ""}`}
+          aria-pressed={activeFilter === "2fruit"}
           onClick={() => setActiveFilter("2fruit")}
         >
           2FRUIT

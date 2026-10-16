@@ -6991,3 +6991,40 @@ main:has(> .gt-service-hero) .gt-service-scope .eyebrow--light {
 main:has(> .gt-service-hero) .gt-engagement-model__grid > div > p {
   color: #d3e0d8;
 }
+
+
+/* Municipal route contrast: keep the established card and forest-section design. */
+body:has(.gt-route-hero--municipal) .gt-decision-grid article > span,
+body:has(.gt-route-hero--municipal) .gt-moment-stack article > span,
+body:has(.gt-route-hero--municipal) .gt-module-list > div > span,
+body:has(.gt-route-hero--municipal) .gt-service-preview-grid article > span {
+  color: #425449;
+}
+
+body:has(.gt-route-hero--municipal) .gt-moment-stack small {
+  color: #52665b;
+}
+
+body:has(.gt-route-hero--municipal) .gt-operating-model > div > .eyebrow--light.eyebrow {
+  color: #d8ffbe;
+}
+
+body:has(.gt-route-hero--municipal) .gt-operating-model > div > h2 {
+  color: #fff;
+}
+
+
+/* Company route contrast: preserve cards and sections, strengthen small labels. */
+body:has(.gt-route-hero--company) .gt-segment-grid article > span,
+body:has(.gt-route-hero--company) .gt-segment-grid article > div small,
+body:has(.gt-route-hero--company) .gt-pmirs-story__visual li > span,
+body:has(.gt-route-hero--company) .gt-evidence-grid article > span,
+body:has(.gt-route-hero--company) .gt-service-preview-grid article > span {
+  color: #425449;
+}
+
+
+/* Projects route contrast: maintain a clear label on the dark comparison panel. */
+body:has(.gt-projects-hero) .gt-projects-compare .gt-route-heading--light > div > .eyebrow--light.eyebrow {
+  color: #d8ffbe;
+}
