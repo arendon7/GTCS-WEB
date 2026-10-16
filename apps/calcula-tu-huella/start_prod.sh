@@ -121,7 +121,7 @@ if ENGINE.dialect.name == "postgresql":
                 duration_ms INTEGER NOT NULL DEFAULT 0
             )
         """
-        index_targets = [schema_name] if schema_name == "public" else [schema_name, "public"]
+        index_targets = [schema_name]
         for target_schema in index_targets:
             qualified_table = f'"{target_schema}"."login_security_states"'
             connection.execute(text(table_sql.format(qualified_table=qualified_table)))
