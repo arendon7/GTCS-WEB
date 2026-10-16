@@ -35,3 +35,9 @@ body:has(.tech-hero--depth) .anaerobic-stage-list h3,
 body:has(.tech-hero--depth) .science-grid > div:first-child h2 {
   color: #fff;
 }
+
+
+/* Product route contrast: catalog return link on the pale detail navigation. */
+body:has(.product-detail-index) .product-route-nav__catalog {
+  color: #425449;
+}
