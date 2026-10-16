@@ -2,6 +2,7 @@ name: Huella migration transaction
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited]
     paths:
       - apps/calcula-tu-huella/migrations/env.py
       - apps/calcula-tu-huella/tests/test_migration_transaction.py
