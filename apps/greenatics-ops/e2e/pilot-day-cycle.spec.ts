@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 
 function operationalDateFromLotCode(lotCode: string) {
   const match = lotCode.match(/TAM-FORSU-(\d{2})(\d{2})(\d{2})-\d{3}/);
@@ -31,7 +32,9 @@ function bogotaLocalMinuteForDate(operationalDate: string) {
  * chain keeps its identity across reception, execution, maintenance, compost,
  * finished production, inventory and the integrated dashboard.
  */
-test("pilot day preserves cross-module traceability from intake to dashboard", async ({ page }) => {
+test("synthetic day preserves traceability through reload and downloaded report", async ({ page }) => {
+  test.setTimeout(180_000);
+  page.setDefaultTimeout(20_000);
   // 1) The day starts from the operational planning surface.
   await page.goto("/calendar");
   await expect(page.getByRole("heading", { name: "Calendario operativo" })).toBeVisible();
@@ -149,4 +152,53 @@ test("pilot day preserves cross-module traceability from intake to dashboard", a
   const timeline = page.locator("section.panel").filter({ has: page.getByRole("heading", { name: "Eventos operativos recientes" }) });
   await expect(timeline).toContainText(/Producción TAM-PROD-/);
   await expect(timeline).toContainText("Wondergreen sólido · 300 kg");
+
+  // 9) A full reload must hydrate the same facts without creating a second production.
+  await page.reload();
+  await page.getByLabel("Fecha", { exact: true }).fill(operationalDate);
+  await expect(indicators.locator("article").filter({ hasText: "Recibido" })).toContainText("1.50 t");
+  await expect(periodProduction).toContainText("300 kg");
+  await expect(currentStock).toContainText("300 kg");
+  await expect(timeline).toContainText("Wondergreen sólido · 300 kg");
+
+  async function downloadReport() {
+    const downloaded = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Exportar CSV", exact: true }).click();
+    const file = await downloaded;
+    expect(await file.failure()).toBeNull();
+    const path = await file.path();
+    expect(path).not.toBeNull();
+    return { filename: file.suggestedFilename(), csv: await readFile(path!, "utf8") };
+  }
+
+  // 10) Download the browser's actual report, rather than inspecting an in-memory helper.
+  const report = await downloadReport();
+  expect(report.filename).toBe(`greenatics-dashboard-${operationalDate}-${operationalDate}.csv`);
+  expect(report.csv).toContain("Recibido kg;1500.00");
+  expect(report.csv).toContain("Planta seleccionada;Todas");
+  expect(report.csv).toContain("Modo de datos;local");
+  expect(report.csv).toContain("Procesado kg (peso inicial medido de pilas iniciadas);1500.00");
+  const [periodSection, stockSection] = report.csv.split("STOCK ACTUAL (snapshot, no depende del periodo)");
+  expect(periodSection).toContain("PRODUCCIÓN DEL PERIODO");
+  expect(periodSection).toContain("Wondergreen sólido;kg;300.00");
+  expect(stockSection).toContain("Wondergreen sólido;kg;300.00;1");
+
+  // 11) The same report cannot leak this plant's production into another plant's cut.
+  await page.getByRole("combobox", { name: "Planta", exact: true }).selectOption("yarumal");
+  await expect(currentStock).toContainText("Sin stock registrado.");
+  const otherPlant = await downloadReport();
+  expect(otherPlant.csv).toContain("Recibido kg;0.00");
+  expect(otherPlant.csv).toContain("Planta seleccionada;Yarumal");
+  expect(otherPlant.csv).not.toContain("Wondergreen sólido;kg;300.00");
+
+  // 12) Historical flow is empty while stock remains an explicitly current snapshot.
+  await page.getByRole("combobox", { name: "Planta", exact: true }).selectOption("tamesis");
+  await page.getByLabel("Fecha", { exact: true }).fill("2000-01-01");
+  await expect(periodProduction).toContainText("Sin producción terminada registrada en este periodo.");
+  await expect(currentStock).toContainText("300 kg");
+  const historical = await downloadReport();
+  expect(historical.filename).toBe("greenatics-dashboard-2000-01-01-2000-01-01.csv");
+  const [historicalFlow, currentSnapshot] = historical.csv.split("STOCK ACTUAL (snapshot, no depende del periodo)");
+  expect(historicalFlow).not.toContain("Wondergreen sólido;kg;300.00");
+  expect(currentSnapshot).toContain("Wondergreen sólido;kg;300.00;1");
 });

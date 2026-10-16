@@ -1,0 +1,54 @@
+name: OPS synthetic demo
+
+on:
+  pull_request:
+    paths:
+      - 'apps/greenatics-ops/**'
+      - '.github/workflows/ops-demo-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ops-demo-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic-day:
+    name: OPS reception to report (desktop and mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/greenatics-ops
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build the local synthetic runtime
+        env:
+          NEXT_PUBLIC_DATA_MODE: local
+        run: pnpm exec next build --webpack
+      - name: Verify the synthetic journey and report
+        env:
+          OPS_E2E_PORT: '4317'
+          OPS_E2E_PRODUCTION: '1'
+        run: pnpm exec playwright test e2e/pilot-day-cycle.spec.ts --workers=1
+      - name: Preserve failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-demo-diagnostics
+          path: |
+            apps/greenatics-ops/test-results/
+            apps/greenatics-ops/playwright-report/
+          retention-days: 7
