@@ -4,14 +4,14 @@ const baseUrl = (process.env.GREENATICS_SITE_URL || "http://localhost:3001").rep
 const contracts = [
   ["/app/", "Explorar estación demo", "/app/#estacion"],
   ["/huella/", "Explorar estimador demo", "/huella/#calculadora"],
-  ["/red/", "Entrar a la estación demo", "/red/app/"],
+  ["/red/", "Entrar a la estación demo", "/red/app/", "la disponibilidad y los permisos se confirman al ingresar"],
   ["/agroway/", "Entrar como usuario demo", "/agroway/app/"],
   ["/sana/", "Entrar como usuario demo", "/sana/app/"],
 ];
 
 let failures = 0;
 
-for (const [path, demoLabel, demoHref] of contracts) {
+for (const [path, demoLabel, demoHref, requiredCopy] of contracts) {
   try {
     const response = await fetch(`${baseUrl}${path}`);
     const body = await response.text();
@@ -19,8 +19,10 @@ for (const [path, demoLabel, demoHref] of contracts) {
       && body.includes(demoLabel)
       && body.includes(demoHref)
       && body.includes('href="/herramientas/"')
-      && body.includes('href="/"');
-    if (!valid) throw new Error("landing, demo o navegación institucional incompleta");
+      && body.includes('href="/"')
+      && (!requiredCopy || body.includes(requiredCopy))
+      && (path !== "/red/" || !body.includes("Espacio operativo conectado"));
+    if (!valid) throw new Error("landing, demo, estado de acceso o navegación institucional incompleta");
     console.log(`PASS ${path} · landing + demo + navegación`);
   } catch (error) {
     failures += 1;
