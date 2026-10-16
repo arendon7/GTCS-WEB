@@ -1170,3 +1170,8 @@ body:has(.homegarden-v4-hero) .homegarden-v4-stages__intro > div > .eyebrow--lig
 body:has(.homegarden-v4-hero) .homegarden-v4-stages ol > li > strong {
   color: #fff;
 }
+
+
+body:has(.homegarden-v4-hero) .homegarden-v4-spaces .wg-v4-heading > div > .eyebrow {
+  color: #425449;
+}
