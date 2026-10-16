@@ -23,7 +23,7 @@ test.describe("GREENATICS Red application shell", () => {
     await expect(page.getByRole("heading", { name: /Una línea base que explica/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Infraestructura" })).toBeVisible();
     await navigation.getByRole("button", { name: /Rutas/ }).click();
-    await expect(page.getByRole("heading", { name: "Plaza y restaurantes" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Plaza y restaurantes", level: 2 })).toBeVisible();
     await navigation.getByRole("button", { name: /FIELD/ }).click();
     await expect(page.getByRole("heading", { name: "Medición" })).toBeVisible();
     await navigation.getByRole("button", { name: /Generadores/ }).click();
