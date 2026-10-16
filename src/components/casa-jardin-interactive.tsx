@@ -22,7 +22,7 @@ const diagnosticMatrix: Record<string, DiagnosticResult> = {
     product: "Wondergreen 2GROW",
     formula: "15-3-3 Organomineral",
     badge: "Etapa: Crecimiento & Brotación",
-    color: "#e65100",
+    color: "#b23c00",
     bgLight: "#fff3e0",
     headline: "La etapa observada es compatible con una orientación hacia crecimiento vegetativo.",
     description: "2GROW está orientado a acompañar establecimiento, brotación y crecimiento. Antes de aplicarlo conviene revisar humedad, drenaje, tamaño de maceta y condición general de la planta.",
@@ -122,7 +122,7 @@ export function CasaJardinInteractive() {
       {/* ========================================================= */}
       <section style={{ background: "#ffffff", borderRadius: "24px", padding: "clamp(24px, 4vw, 48px)", border: "1.5px solid var(--line)", boxShadow: "var(--shadow-md)", marginBottom: "70px" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto 36px", textAlign: "center" }}>
-          <span style={{ fontSize: "0.76rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--green-700)", background: "#eaf5e6", padding: "6px 14px", borderRadius: "999px", display: "inline-block", marginBottom: "12px" }}>
+          <span style={{ fontSize: "0.76rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "#425449", background: "#eaf5e6", padding: "6px 14px", borderRadius: "999px", display: "inline-block", marginBottom: "12px" }}>
             Orientador botánico inicial
           </span>
           <h2 style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)", color: "var(--green-950)", margin: "0 0 10px", lineHeight: 1.2 }}>
@@ -349,7 +349,7 @@ export function CasaJardinInteractive() {
       {/* ========================================================= */}
       <section id="calculadora" style={{ background: "#f8faf6", borderRadius: "24px", padding: "clamp(24px, 4vw, 48px)", border: "1.5px solid var(--line)", marginBottom: "70px" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto 32px", textAlign: "center" }}>
-          <span style={{ fontSize: "0.76rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--green-700)", background: "#eaf5e6", padding: "6px 14px", borderRadius: "999px", display: "inline-block", marginBottom: "12px" }}>
+          <span style={{ fontSize: "0.76rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: "#425449", background: "#eaf5e6", padding: "6px 14px", borderRadius: "999px", display: "inline-block", marginBottom: "12px" }}>
             Criterios de aplicación doméstica
           </span>
           <h2 style={{ fontSize: "clamp(1.8rem, 3vw, 2.4rem)", color: "var(--green-950)", margin: "0 0 10px" }}>
