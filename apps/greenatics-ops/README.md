@@ -50,6 +50,25 @@ npm run build
 npm run test:e2e
 ```
 
+## Comprobar el recorrido sintético sin Supabase
+
+```bash
+NEXT_PUBLIC_DATA_MODE=local corepack pnpm exec next build --webpack
+OPS_E2E_PRODUCTION=1 OPS_E2E_PORT=4317 corepack pnpm exec playwright test e2e/pilot-day-cycle.spec.ts --workers=1
+```
+
+El ensayo abre su propio servidor local y perfiles de navegador aislados, con datos
+ficticios. Comprueba recepción, lote, ejecución, compostaje, producción, inventario,
+recarga y descarga real del informe CSV en escritorio y móvil. También comprueba
+que el filtro de planta no mezcle el stock y que el informe distinga producción
+del periodo de stock actual. No prueba el backend Supabase ni certifica un piloto.
+
+`OPS_E2E_PORT` permite elegir un puerto libre (1024–65535). El runner falla si el
+puerto está ocupado: no reutiliza previews. Con `OPS_E2E_PRODUCTION=1` usa el build
+previo y habilita el acceso local únicamente en su proceso de QA, ligado a loopback.
+Sin esa variable usa desarrollo con Webpack. Ninguno de esos modos configura un
+servicio remoto ni demuestra persistencia multiusuario.
+
 ## Activar Supabase
 
 Copiar el archivo de entorno:

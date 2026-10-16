@@ -13,6 +13,7 @@ import { buildInventoryAnalytics, buildInventoryCriticality, inventoryAnalyticsC
 import { buildCommercialAnalytics, commercialAnalyticsCsvSection } from "@/lib/commercial-analytics";
 import { buildExpenseAnalytics, expenseAnalyticsCsvSection } from "@/lib/expense-analytics";
 import { bogotaDateKey } from "@/lib/time";
+import { withDashboardReportScope } from "@/lib/dashboard-report";
 
 const KPI_GROUP_GRID_CLASS = "grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5";
 
@@ -82,7 +83,12 @@ export function IntegratedDashboardView({initialNowIso}:{initialNowIso:string}){
   function exportCsv(){
     const operational=analyticsCsv(analytics);
     const extra=[inventoryAnalyticsCsvSection(inventoryAnalytics),commercialAnalyticsCsvSection(commercialAnalytics),expenseAnalyticsCsvSection(expenseAnalytics)].join("\n\n");
-    downloadText(`greenatics-dashboard-${analytics.period.startKey}-${analytics.period.endKey}.csv`,`${operational}\n\n${extra}`);
+    const report=withDashboardReportScope(`${operational}\n\n${extra}`,{
+      plantName:plantOptions.find((plant)=>plant.id===plantId)?.name??plantId,
+      sourceMode:backend.mode,
+      generatedAt:new Date().toISOString(),
+    });
+    downloadText(`greenatics-dashboard-${analytics.period.startKey}-${analytics.period.endKey}.csv`,report);
   }
 
   return <>
