@@ -4,7 +4,7 @@ const baseUrl = (process.env.GREENATICS_SITE_URL || "http://localhost:3001").rep
 const contracts = [
   ["/app/", "Explorar estación demo", "/app/#estacion"],
   ["/huella/", "Explorar estimador demo", "/huella/#calculadora"],
-  ["/red/", "Entrar a la estación demo", "/red/app/", "la disponibilidad y los permisos se confirman al ingresar"],
+  ["/red/", "Entrar a la estación demo", "/red/app/", "su disponibilidad y los permisos se confirman al ingresar"],
   ["/agroway/", "Entrar como usuario demo", "/agroway/app/"],
   ["/sana/", "Entrar como usuario demo", "/sana/app/"],
 ];
