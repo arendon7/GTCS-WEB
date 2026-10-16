@@ -45,7 +45,7 @@ test.describe("GREENATICS Red application shell", () => {
     await expect(page.getByText(/QA-108: aprobada en esta sesión/)).toBeVisible();
     await navigation.getByRole("button", { name: /Evidencias/ }).click();
     await expect(page.getByRole("heading", { name: /La evidencia no es un archivo/ })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Fotografía de punto de almacenamiento" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Fotografía de punto de almacenamiento", level: 2 })).toBeVisible();
     await expect(page.getByText("Trazabilidad del expediente", { exact: true })).toBeVisible();
     await expect(page.getByText("Expediente listo", { exact: true })).toHaveCount(0);
     await navigation.getByRole("button", { name: /Coordinación/ }).click();
