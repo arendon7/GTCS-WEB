@@ -25,3 +25,14 @@ main:has(> .service-detail-hero) .service-detail-inputs .eyebrow--light {
 main:has(> .service-detail-hero) .service-detail-inputs li {
   color: #e2ece6;
 }
+
+
+/* Service fiche contrast follow-up for process labels and activity markers. */
+main:has(> .service-detail-hero) .service-detail-process .section-heading > .eyebrow--light.eyebrow {
+  color: #d1f59e;
+}
+
+main:has(> .service-detail-hero) .service-detail-facts dt,
+main:has(> .service-detail-hero) .service-detail-activities span {
+  color: #006b45;
+}
