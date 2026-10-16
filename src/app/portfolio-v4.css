@@ -1188,3 +1188,15 @@ body:has(.library-context-nav) #library-results > article > div:first-child > di
 body:has(.contact-layout) .contact-layout > form > div:first-child > span {
   color: #425449 !important;
 }
+
+
+/* Product mobile catalog contrast: provide a stable pale link surface. */
+@media (max-width: 700px) {
+  body:has(.product-detail) .product-route-nav__catalog {
+    padding: 6px 10px;
+    color: #425449 !important;
+    background: #f8fbf7;
+    border: 1px solid #d4dfd4;
+    border-radius: 8px;
+  }
+}
