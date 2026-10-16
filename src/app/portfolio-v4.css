@@ -1119,3 +1119,35 @@
   .wg-biol-index { align-items: flex-start; flex-direction: column; border-radius: 18px; }
   .wg-biol-index a { width: 100%; padding-top: 7px; border-top: 1px solid #dfe8dc; }
 }
+
+/* Wondergreen: WCAG AA contrast fixes for the accessibility gate. Keep the
+   approved compositions and make only the affected text colors explicit. */
+.wg-v4-levels__grid article:not(:nth-child(2)) > span {
+  color: #3f5a4d !important;
+}
+.wg-v4-levels__grid article:nth-child(2) h3,
+.wg-v4-levels__grid article:nth-child(2) li {
+  color: #f0f6f2 !important;
+}
+.wg-v4-decision__intro .eyebrow--light,
+.wg-v4-tools__grid > div:first-child > .eyebrow--light {
+  color: #d8ffbe !important;
+}
+.wg-v4-decision ol li > strong {
+  color: #fff !important;
+}
+.wg-science-layer--nutrients > span {
+  color: #843e12 !important;
+}
+.wg-family-map__top > small,
+.wg-bio-method__links > span,
+.wg-bio-lines__top > small,
+.wg-bio-lines__truth > span,
+.wg-docs__body > small,
+.wg-docs__body a + a {
+  color: #425449 !important;
+}
+.wg-bio-method__evidence > div > .eyebrow {
+  color: #d8ffbe !important;
+}
+
