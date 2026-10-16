@@ -228,10 +228,28 @@ function initializeSourceInclusion() {
   });
 }
 
+function initializeEstimatedOriginSync() {
+  document.querySelectorAll('form').forEach((form) => {
+    const origin = form.querySelector('[data-estimated-origin]');
+    const estimated = form.querySelector('[data-estimated-flag]');
+    const note = form.querySelector('[data-estimated-note]');
+    if (!origin || !estimated) return;
+    const sync = () => {
+      const isEstimation = origin.value === 'Estimación';
+      if (isEstimation) estimated.checked = true;
+      estimated.disabled = isEstimation;
+      if (note) note.hidden = !isEstimation;
+    };
+    origin.addEventListener('change', sync);
+    sync();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initializeInventoryWizard();
   initializeActivityUnitSuggestion();
   initializeSourceInclusion();
+  initializeEstimatedOriginSync();
 });
 
 

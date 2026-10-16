@@ -7,7 +7,8 @@
 <div class="import-layout">
   <section class="card import-guide">
     <div class="card-head"><div><small>PROCESO CONTROLADO</small><h3>Cómo importar</h3></div></div>
-    <ol class="numbered-guide"><li><span>1</span><div><strong>Descarga la plantilla oficial</strong><p>Contiene los nombres exactos de las fuentes, unidades y orígenes permitidos.</p></div></li><li><span>2</span><div><strong>Completa una fila por fuente y mes</strong><p>Usa el periodo como AAAA-MM. No cambies los encabezados.</p></div></li><li><span>3</span><div><strong>Carga el archivo</strong><p>Validaremos fuentes, periodos, unidades, valores y duplicados.</p></div></li><li><span>4</span><div><strong>Corrige o confirma</strong><p>Solo se guardan los datos cuando todas las filas son válidas.</p></div></li></ol>
+    <ol class="numbered-guide"><li><span>1</span><div><strong>Descarga la plantilla oficial</strong><p>Trae listas desplegables para las fuentes, unidades y orígenes permitidos, además de una hoja de ejemplo separada.</p></div></li><li><span>2</span><div><strong>Completa una fila por fuente y mes</strong><p>Usa el periodo como AAAA-MM. No cambies los encabezados ni cargues la hoja de ejemplo.</p></div></li><li><span>3</span><div><strong>Carga el archivo</strong><p>Validaremos fuentes, periodos, unidades, valores y duplicados.</p></div></li><li><span>4</span><div><strong>Corrige o confirma</strong><p>Solo se guardan los datos cuando todas las filas son válidas.</p></div></li></ol>
+    <div class="callout" role="note"><strong>Cuando un dato es estimado:</strong> marca “Sí” en la columna Estimado o usa el origen “Estimación”. La plataforma lo guardará como provisional y de calidad C, para que puedas identificarlo y completarlo con evidencia después.</div>
     <div class="catalog-preview"><strong>Fuentes disponibles</strong>{% for source in sources %}<span>{{ source.name }}</span>{% endfor %}</div>
   </section>
   <aside class="card upload-drop-card">

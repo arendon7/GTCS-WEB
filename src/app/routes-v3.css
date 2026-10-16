@@ -6961,3 +6961,33 @@
     grid-column: 2;
   }
 }
+
+
+/* Servicios: corrección focal de contraste del gate WCAG. */
+main:has(> .gt-service-hero) .gt-portfolio-universes__grid article:first-child h3 {
+  color: #fff;
+}
+
+main:has(> .gt-service-hero) .gt-portfolio-universes__grid article:not(:first-child) > span,
+main:has(> .gt-service-hero) .gt-service-chain figcaption > span,
+main:has(> .gt-service-hero) .gt-service-nav a > span,
+main:has(> .gt-service-hero) .gt-starting-grid small,
+main:has(> .gt-service-hero) .gt-service-category__head > span,
+main:has(> .gt-service-hero) .gt-service-category__head small,
+main:has(> .gt-service-hero) .gt-service-cards .gt-service-card__meta > span {
+  color: #006b45;
+}
+
+main:has(> .gt-service-hero) .gt-starting-grid article > span,
+main:has(> .gt-service-hero) .gt-service-cards .gt-service-card__meta > em {
+  color: #526359;
+}
+
+main:has(> .gt-service-hero) .gt-engagement-model__grid > div > .eyebrow--light,
+main:has(> .gt-service-hero) .gt-service-scope .eyebrow--light {
+  color: #d1f59e;
+}
+
+main:has(> .gt-service-hero) .gt-engagement-model__grid > div > p {
+  color: #d3e0d8;
+}
