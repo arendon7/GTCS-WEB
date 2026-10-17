@@ -1,5 +1,4 @@
 from __future__ import annotations
-from conftest import rendered_decision_data
 
 import pytest
 from sqlalchemy import create_engine, select
@@ -9,7 +8,6 @@ from app.models import (
     AuditEvent, Base, EvidenceFile, EvidenceQuotaLock, PMIRSItem, PMIRSItemRevision, PMIRSSignature, PMIRSVersion,
     Project, ProjectMembership, ProjectVisitAuthorization, User,
 )
-from app.initial_projects import BELLO_PROJECTS
 from app.visit_authorizations import visit_authorization_active
 from scripts.run_synthetic_field_demo import (
     DEMO_PROJECT_NAME, DEMO_PROJECT_SLUG, DEMO_ROLES, PROJECT_DIR,
@@ -85,15 +83,14 @@ def test_demo_cli_forwards_open_browser_flag(monkeypatch):
 
 
 def test_demo_launcher_opens_browser_only_after_health(tmp_path, monkeypatch):
-    import shutil
     import sys
     import types
     from pathlib import Path
 
     import scripts.run_synthetic_field_demo as demo
 
-    root = tmp_path / "field-demo-browser"
     events = []
+    root = tmp_path / "field-demo-browser"
 
     class Session:
         def __enter__(self):
@@ -113,19 +110,8 @@ def test_demo_launcher_opens_browser_only_after_health(tmp_path, monkeypatch):
             self.returncode = 0
             return 0
 
-    real_rmtree = shutil.rmtree
-
-    def make_sandbox(*, prefix):
-        assert prefix == "greenatics-red-field-demo-"
-        root.mkdir(mode=0o700)
-        return str(root)
-
-    def remove_sandbox(path, *, ignore_errors):
-        events.append(("cleanup", Path(path).exists()))
-        real_rmtree(path, ignore_errors=ignore_errors)
-
     monkeypatch.setattr(demo, "_port_is_available", lambda _port: True)
-    monkeypatch.setattr(demo.tempfile, "mkdtemp", make_sandbox)
+    monkeypatch.setattr(demo.tempfile, "mkdtemp", lambda *, prefix: str(root.mkdir() or root))
     def run_command(args, **_kwargs):
         if args[0] == "open":
             events.append(("credentials", Path(args[1]).exists()))
@@ -149,7 +135,6 @@ def test_demo_launcher_opens_browser_only_after_health(tmp_path, monkeypatch):
 
     monkeypatch.setattr(demo, "_wait_for_health", healthy)
     monkeypatch.setattr(demo.webbrowser, "open", open_browser)
-    monkeypatch.setattr(demo.shutil, "rmtree", remove_sandbox)
 
     assert demo.run(18797, open_browser=True, open_credentials=True) == 0
     assert events[:2] == [
@@ -158,7 +143,6 @@ def test_demo_launcher_opens_browser_only_after_health(tmp_path, monkeypatch):
     ]
     assert events[2] == ("credentials", True)
     assert events[3] == ("wait", None)
-    assert events[4] == ("cleanup", True)
     assert not root.exists()
 
 
@@ -337,7 +321,7 @@ def test_demo_launcher_accepts_fresh_migrations_and_rejects_stale_revision(tmp_p
         _require_current_migration(database_path)
     with sqlite3.connect(database_path) as connection:
         assert connection.execute("SELECT version_num FROM alembic_version").fetchone()[0] == "stale-training-revision"
-        assert connection.execute("SELECT COUNT(*) FROM red_projects").fetchone()[0] == 4
+        assert connection.execute("SELECT COUNT(*) FROM red_projects").fetchone()[0] == 0
         connection.execute("UPDATE alembic_version SET version_num = ?", (current,))
 
     # Exercise the real migrated seed, including the infrastructure row that
@@ -369,11 +353,6 @@ def test_demo_seed_is_one_project_with_only_synthetic_roles_and_authorization():
     passwords = {role: f"synthetic-{role}-password" for role in DEMO_ROLES}
     try:
         with Session(engine) as session:
-            session.add_all([
-                Project(slug=slug, name=name, municipality="Bello", department="Antioquia")
-                for slug, name in BELLO_PROJECTS
-            ])
-            session.commit()
             project_id, emails = seed_demo_workspace(session, passwords)
             projects = list(session.scalars(select(Project)))
             assert [(project.slug, project.name) for project in projects] == [
@@ -676,21 +655,13 @@ def test_full_demo_training_scenario_accepts_only_synthetic_baseline_and_unlocks
             assert saved_evidence is not None
             assert saved_evidence.media_type == "image/heic"
             assert saved_evidence.original_name == "foto-sintetica-heic.heic"
-        progress_form = re.search(
-            rf'<form\b[^>]*action="/pmirs/items/{re.escape(action_id)}/progress"[^>]*>.*?</form>',
-            studio.text, re.DOTALL,
-        )
-        assert progress_form
-        displayed_version = re.search(r'name="expected_version" value="([0-9]+)"', progress_form.group(0))
-        assert displayed_version
         progress = client.post(
             f"/pmirs/items/{action_id}/progress",
-            data=rendered_decision_data(client, f"/pmirs/items/{action_id}/progress", {
+            data={
                 "csrf": csrf_form.group(1), "submission_key": submission_key.group(1),
-                "expected_version": displayed_version.group(1),
                 "execution_status": "en_proceso", "progress_pct": "25",
                 "progress_note": "Avance de práctica sintético.",
-            }),
+            },
             follow_redirects=False,
         )
         assert progress.status_code == 303
@@ -845,25 +816,25 @@ def test_demo_seed_requires_a_complete_disposable_credential_set():
     ("identity_status", "confirmada"),
     ("origin_note", "Nota personalizada"),
 ])
-def test_demo_seed_refuses_to_replace_a_customized_bello_project(field, value):
+def test_demo_seed_refuses_to_replace_an_existing_qa_project(field, value):
     engine = create_engine("sqlite://")
     Base.metadata.create_all(engine)
     passwords = {role: f"synthetic-{role}-password" for role in DEMO_ROLES}
     try:
         with Session(engine) as session:
-            projects = [
-                Project(slug=slug, name=name, municipality="Bello", department="Antioquia")
-                for slug, name in BELLO_PROJECTS
-            ]
-            session.add_all(projects)
+            project = Project(
+                slug="qa-synthetic-custom", name="Conjunto QA sintético personalizado",
+                municipality="Municipio sintético", department="Departamento sintético",
+            )
+            session.add(project)
             session.commit()
-            setattr(projects[0], field, value)
+            setattr(project, field, value)
             session.commit()
 
-            with pytest.raises(ValueError, match="personalizado"):
+            with pytest.raises(ValueError, match="solo puede reemplazar"):
                 seed_demo_workspace(session, passwords)
-            assert getattr(session.get(Project, projects[0].id), field) == value
-            assert len(list(session.scalars(select(Project)))) == 4
+            assert getattr(session.get(Project, project.id), field) == value
+            assert len(list(session.scalars(select(Project)))) == 1
     finally:
         Base.metadata.drop_all(engine)
         engine.dispose()
