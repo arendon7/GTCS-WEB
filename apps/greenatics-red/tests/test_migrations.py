@@ -7,7 +7,6 @@ from pathlib import Path
 
 from sqlalchemy import create_engine, text
 
-from app.initial_projects import BELLO_PROJECTS
 
 
 def test_local_defaults_isolate_new_database_and_private_storage(tmp_path):
@@ -39,7 +38,7 @@ def test_local_defaults_isolate_new_database_and_private_storage(tmp_path):
     assert Path(storage_root) == instance_dir / "private"
 
 
-def test_fresh_alembic_install_seeds_exactly_the_four_bello_workspaces(tmp_path):
+def test_fresh_alembic_install_keeps_customer_projects_empty_and_rerunnable(tmp_path):
     app_dir = Path(__file__).resolve().parents[1]
     database_path = tmp_path / "fresh-red.sqlite3"
     instance_dir = tmp_path / "instance"
@@ -65,6 +64,22 @@ def test_fresh_alembic_install_seeds_exactly_the_four_bello_workspaces(tmp_path)
     )
     assert result.returncode == 0, result.stdout + result.stderr
 
+    with create_engine(f"sqlite:///{database_path}").begin() as connection:
+        connection.execute(text(
+            "INSERT INTO red_projects "
+            "(id, slug, name, municipality, department, status, baseline_status, baseline_reference, baseline_note, "
+            "origin, origin_note, created_at) VALUES "
+            "('synthetic-project', 'qa-synthetic-project', 'Conjunto QA sintético', 'Bello (dato sintético)', "
+            "'Antioquia (dato sintético)', 'preparacion', 'no_iniciada', '', '', 'qa_sintetico', "
+            "'Fixture sintético de migración; no representa una copropiedad real.', CURRENT_TIMESTAMP)"
+        ))
+
+    rerun = subprocess.run(
+        [sys.executable, "-m", "alembic", "upgrade", "head"],
+        cwd=app_dir, env=env, check=False, capture_output=True, text=True, timeout=60,
+    )
+    assert rerun.returncode == 0, rerun.stdout + rerun.stderr
+
     engine = create_engine(f"sqlite:///{database_path}")
     with engine.connect() as connection:
         rows = connection.execute(
@@ -75,9 +90,8 @@ def test_fresh_alembic_install_seeds_exactly_the_four_bello_workspaces(tmp_path)
         ).scalars().all()
     engine.dispose()
 
-    assert [(row.slug, row.name) for row in rows] == sorted(BELLO_PROJECTS)
-    assert len(rows) == 4
-    assert applied_revisions[-1] == "0020_form_signature_snapshots"
+    assert [(row.slug, row.name) for row in rows] == [("qa-synthetic-project", "Conjunto QA sintético")]
+    assert applied_revisions[-1] == "0021_private_database_api_boundary"
     with create_engine(f"sqlite:///{database_path}").connect() as connection:
         assert connection.execute(text("PRAGMA table_info(red_pmirs_signatures)")).all()
         assert connection.execute(text("PRAGMA table_info(red_form_signatures)")).all()
@@ -123,8 +137,11 @@ def test_fresh_postgres_migrations_render_offline_sql(tmp_path):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "CREATE TABLE red_projects" in result.stdout
-    assert "INSERT INTO red_projects" in result.stdout
-    assert all(name in result.stdout for _slug, name in BELLO_PROJECTS)
+    assert "INSERT INTO red_projects" not in result.stdout
+    assert "Parque Alto - Apartamaentos" not in result.stdout
+    assert "Urbanización Tulipanes" not in result.stdout
+    assert "Majagua - Unidad Residencial" not in result.stdout
+    assert "Unidad Residencial Trigales" not in result.stdout
     assert "WITH ordered_versions AS" in result.stdout
     assert "regexp_match(version_label" in result.stdout
     assert "CREATE TABLE red_pmirs_signatures" in result.stdout
@@ -147,6 +164,9 @@ def test_fresh_postgres_migrations_render_offline_sql(tmp_path):
     assert "ALTER TABLE red_form_signatures ADD document_snapshot JSON" in result.stdout or "ADD COLUMN document_snapshot JSON" in result.stdout
     assert "CREATE TABLE red_evidence_quota_locks" in result.stdout
     assert "ix_red_login_throttles_window_start" in result.stdout
+    assert "ENABLE ROW LEVEL SECURITY" in result.stdout
+    assert "REVOKE ALL PRIVILEGES ON TABLE" in result.stdout
+    assert "ALTER DEFAULT PRIVILEGES" in result.stdout
 
 
 def test_fresh_postgres_migrations_render_inside_configured_schema(tmp_path):
@@ -406,8 +426,16 @@ def test_upgrade_from_legacy_0008_preserves_form_and_pmirs_history(tmp_path):
 
     engine = create_engine(f"sqlite:///{database_path}")
     with engine.begin() as connection:
+        connection.execute(text(
+            "INSERT INTO red_projects "
+            "(id, slug, name, municipality, department, status, baseline_status, baseline_reference, baseline_note, "
+            "origin, origin_note, created_at) VALUES "
+            "('synthetic-project', 'qa-synthetic-project', 'Conjunto QA sintético', 'Bello (dato sintético)', "
+            "'Antioquia (dato sintético)', 'preparacion', 'no_iniciada', '', '', 'qa_sintetico', "
+            "'Fixture sintético para upgrade histórico.', CURRENT_TIMESTAMP)"
+        ))
         project_id = connection.execute(
-            text("SELECT id FROM red_projects WHERE slug='bello-parque-alto'")
+            text("SELECT id FROM red_projects WHERE slug='qa-synthetic-project'")
         ).scalar_one()
         connection.execute(text(
             "INSERT INTO red_users "
@@ -501,7 +529,7 @@ def test_upgrade_from_legacy_0008_preserves_form_and_pmirs_history(tmp_path):
         )).one()
     engine.dispose()
 
-    assert revision == "0020_form_signature_snapshots"
+    assert revision == "0021_private_database_api_boundary"
     assert record == ("synthetic-record", "D-01", "D-01 sintético de migración", 1)
     assert form_revision_count == 1
     assert item == ("synthetic-item", "hallazgo", "H-TEST-001", "Hallazgo sintético", 1)
