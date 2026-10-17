@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import pytest
+
+from conftest import rendered_decision_data
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
@@ -655,13 +657,15 @@ def test_full_demo_training_scenario_accepts_only_synthetic_baseline_and_unlocks
             assert saved_evidence is not None
             assert saved_evidence.media_type == "image/heic"
             assert saved_evidence.original_name == "foto-sintetica-heic.heic"
+        progress_url = f"/pmirs/items/{action_id}/progress"
+        progress_data = rendered_decision_data(client, progress_url, {
+            "csrf": csrf_form.group(1), "submission_key": submission_key.group(1),
+            "execution_status": "en_proceso", "progress_pct": "25",
+            "progress_note": "Avance de práctica sintético.",
+        })
         progress = client.post(
-            f"/pmirs/items/{action_id}/progress",
-            data={
-                "csrf": csrf_form.group(1), "submission_key": submission_key.group(1),
-                "execution_status": "en_proceso", "progress_pct": "25",
-                "progress_note": "Avance de práctica sintético.",
-            },
+            progress_url,
+            data=progress_data,
             follow_redirects=False,
         )
         assert progress.status_code == 303
