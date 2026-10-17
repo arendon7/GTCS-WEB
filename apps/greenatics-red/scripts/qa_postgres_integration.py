@@ -22,7 +22,6 @@ from sqlalchemy.engine import make_url
 
 APP_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(APP_DIR))
-from app.initial_projects import BELLO_PROJECTS  # noqa: E402
 
 
 CONFIRMATION = "DROP_ONLY_TEMP_SCHEMA"
@@ -183,19 +182,50 @@ def main() -> int:
                     projects = connection.execute(text(
                         "SELECT slug, name FROM red_projects ORDER BY slug"
                     )).all()
+                    rls_tables = set(connection.execute(text(
+                        "SELECT c.relname FROM pg_class c "
+                        "JOIN pg_namespace n ON n.oid = c.relnamespace "
+                        "WHERE n.nspname = :schema AND c.relkind IN ('r', 'p') "
+                        "AND left(c.relname, 4) = 'red_' AND c.relrowsecurity"
+                    ), {"schema": source_schema}).scalars())
+                    expected_red_tables = {name for name in tables if name.startswith("red_")}
+                    if expected_red_tables - rls_tables:
+                        print("Tablas RED sin RLS: " + ", ".join(sorted(expected_red_tables - rls_tables)), file=sys.stderr)
+                        return 1
+                    api_roles = set(connection.execute(text(
+                        "SELECT rolname FROM pg_roles WHERE rolname IN ('anon', 'authenticated')"
+                    )).scalars())
+                    for role in sorted(api_roles):
+                        exposed = connection.execute(text(
+                            "SELECT table_name FROM information_schema.tables "
+                            "WHERE table_schema = :schema AND table_name LIKE 'red\\_%' "
+                            "AND has_table_privilege(:role, quote_ident(table_schema) || '.' || quote_ident(table_name), 'SELECT') "
+                            "ORDER BY table_name"
+                        ), {"schema": source_schema, "role": role}).scalars().all()
+                        if exposed:
+                            print(f"El rol de API {role} tiene SELECT en tablas RED: " + ", ".join(exposed), file=sys.stderr)
+                            return 1
                     if revision != expected_revision:
                         print(f"Revisión inesperada: {revision}", file=sys.stderr)
                         return 1
-                    if [(row.slug, row.name) for row in projects] != sorted(BELLO_PROJECTS):
-                        print("La siembra de los cuatro expedientes iniciales no coincide con el catálogo aprobado.", file=sys.stderr)
+                    if projects:
+                        print("La migración inicial insertó registros de proyectos; el esquema QA debe comenzar vacío.", file=sys.stderr)
                         return 1
+                with scoped_engine.begin() as connection:
+                    connection.execute(text(
+                        "INSERT INTO red_projects "
+                        "(id, slug, name, municipality, department, status, baseline_status, baseline_reference, baseline_note, origin, origin_note, created_at) "
+                        "VALUES "
+                        "('qa-synthetic-project-a', 'qa-synthetic-a', 'Conjunto QA sintético A', 'Municipio sintético', 'Departamento sintético', 'preparacion', 'no_iniciada', '', '', 'qa_sintetico', 'Fixture aislado; no representa un cliente.', CURRENT_TIMESTAMP), "
+                        "('qa-synthetic-project-b', 'qa-synthetic-b', 'Conjunto QA sintético B', 'Municipio sintético', 'Departamento sintético', 'preparacion', 'no_iniciada', '', '', 'qa_sintetico', 'Fixture aislado; no representa un cliente.', CURRENT_TIMESTAMP)"
+                    ))
             finally:
                 scoped_engine.dispose()
 
             roundtrip_env = {
                 **env,
                 "DATABASE_SCHEMA": source_schema,
-                # The helper uses write routes only inside disposable synthetic schemas.
+                # All records and routes in this disposable schema use synthetic QA fixtures.
                 "RED_OPERATIONAL_WRITES_ENABLED": "true",
                 "RED_QA_RESTORE_SCHEMA": restore_schema,
                 "RED_QA_RESTORE_STORAGE_ROOT": str(temp / "restored-private"),
@@ -212,7 +242,7 @@ def main() -> int:
             if roundtrip.returncode:
                 print("Falló el respaldo/restauración sintética PostgreSQL:\n" + _safe_output(roundtrip, raw_url), file=sys.stderr)
                 return 1
-            print(f"PostgreSQL OK: Alembic {expected_revision}, cuatro expedientes y ciclo de respaldo/restauración en {len(schemas)} esquemas.")
+            print(f"PostgreSQL OK: Alembic {expected_revision}, esquema vacío, RLS/API privada, dos proyectos sintéticos y ciclo de respaldo/restauración en {len(schemas)} esquemas.")
         return 0
     except Exception as exc:
         print(f"Falló la verificación PostgreSQL ({type(exc).__name__}); revisa la conectividad y los permisos del esquema.", file=sys.stderr)
