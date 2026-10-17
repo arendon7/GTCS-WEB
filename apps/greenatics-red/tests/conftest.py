@@ -95,6 +95,67 @@ def workspace():
     Base.metadata.drop_all(engine)
 
 
+def rendered_decision_data(client, url, data):
+    """Add the document snapshot that an ordinary decision form renders."""
+    import re
+    from sqlalchemy import select
+    from app.models import EvidenceFile, FormRecord, PMIRSItem
+    from app import main as app_main
+
+    copied = dict(data)
+    record_match = re.fullmatch(r"/records/([^/]+)/(review|sign)", str(url))
+    pmirs_match = re.fullmatch(r"/pmirs/items/([^/]+)/(review|progress)", str(url))
+    if not record_match and not pmirs_match:
+        return copied
+    with SessionLocal() as session:
+        obj = session.get(FormRecord if record_match else PMIRSItem, (record_match or pmirs_match).group(1))
+        if not obj:
+            return copied
+        project = session.get(Project, obj.project_id)
+        field = EvidenceFile.record_id if record_match else EvidenceFile.pmirs_item_id
+        evidence = list(session.scalars(select(EvidenceFile).where(field == obj.id)))
+        digest = (
+            app_main.form_record_document_sha256(project, obj, evidence)
+            if record_match else app_main.pmirs_item_document_hash(project, obj, evidence)
+        )
+        version = obj.version
+        page_path = f"/records/{obj.id}" if record_match else f"/projects/{project.id}/pmirs"
+    page = client.get(page_path)
+    form = re.search(r'<form[^>]+action="' + re.escape(str(url)) + r'".*?</form>', page.text, re.S)
+    if form:
+        token = re.search(r'name="expected_document_sha256" value="([^"]+)"', form.group())
+        if token:
+            digest = token.group(1)
+    copied.setdefault("expected_document_sha256", digest)
+    if record_match and record_match.group(2) == "sign":
+        copied.setdefault("expected_version", str(version))
+    return copied
+
+
+def bind_synthetic_fraction_source(session, project_id):
+    """Bind synthetic validated D-08 fixtures to a synthetic D-07 source."""
+    from sqlalchemy import select
+    from app.models import FormRecord
+
+    session.flush()
+    rows = list(session.scalars(select(FormRecord).where(FormRecord.project_id == project_id)))
+    for row in rows:
+        if row.form_code != "D-08" or row.status != "VALIDATED":
+            continue
+        payload = dict(row.payload or {})
+        source = next((item for item in rows if item.id == payload.get("D08-001")), None)
+        if source is None:
+            source = next((item for item in rows if item.form_code == "D-07" and item.status == "VALIDATED"), None)
+        assert source and source.project_id == project_id and source.form_code == "D-07" and source.status == "VALIDATED"
+        row.payload = {
+            **payload,
+            "D08-001": source.id,
+            "_red_d07_source_version": source.version,
+            "_red_d07_source_status": source.status,
+        }
+    session.flush()
+
+
 @pytest.fixture
 def client():
     from fastapi.testclient import TestClient
