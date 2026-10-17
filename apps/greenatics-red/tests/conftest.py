@@ -22,15 +22,18 @@ os.environ["PUBLIC_BASE_URL"] = "http://testserver"
 os.environ["RED_PUBLIC_ACCESS_ENABLED"] = "false"
 
 from app.db import Base, SessionLocal, engine  # noqa: E402
-from app.initial_projects import BELLO_PROJECTS  # noqa: E402
 from app.models import Project, ProjectMembership, ProjectVisitAuthorization, User  # noqa: E402
 from app.security import hash_password  # noqa: E402
 
 
 PASSWORD = "Synthetic-RED-Password-2026"
 PASSWORD_HASH = hash_password(PASSWORD)
-PROJECT_NAMES = [name for _slug, name in BELLO_PROJECTS]
-PROJECT_SLUGS = [slug for slug, _name in BELLO_PROJECTS]
+SYNTHETIC_PROJECTS = tuple(
+    (f"qa-synthetic-{letter}", f"Conjunto QA sintético {letter.upper()}")
+    for letter in "abcd"
+)
+PROJECT_NAMES = [name for _slug, name in SYNTHETIC_PROJECTS]
+PROJECT_SLUGS = [slug for slug, _name in SYNTHETIC_PROJECTS]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -100,59 +103,3 @@ def client():
 
     with TestClient(app) as test_client:
         yield test_client
-
-
-def rendered_decision_data(client, url, data):
-    """Capture hidden context; fixture fallback supports forbidden/duplicate requests.
-
-    Supplied old/malformed tokens are never replaced. Negative wire-contract tests
-    call client.request directly and do not use this caller helper.
-    """
-    import re
-    from sqlalchemy import select
-    from app.models import FormRecord, PMIRSItem, EvidenceFile
-    from app import main as app_main
-    copied = dict(data)
-    match = re.fullmatch(r"/records/([^/]+)/(review|sign)", str(url))
-    pmirs = re.fullmatch(r"/pmirs/items/([^/]+)/(review|progress)", str(url))
-    if not match and not pmirs:
-        return copied
-    with SessionLocal() as session:
-        obj = session.get(FormRecord if match else PMIRSItem, (match or pmirs).group(1))
-        if not obj:
-            return copied
-        project = session.get(Project, obj.project_id)
-        field = EvidenceFile.record_id if match else EvidenceFile.pmirs_item_id
-        rows = list(session.scalars(select(EvidenceFile).where(field == obj.id)))
-        digest = app_main.form_record_document_sha256(project, obj, rows) if match else app_main.pmirs_item_document_hash(project, obj, rows)
-        version = obj.version
-        page_path = f"/records/{obj.id}" if match else f"/projects/{project.id}/pmirs"
-    page = client.get(page_path)
-    form = re.search(r'<form[^>]+action="' + re.escape(str(url)) + r'".*?</form>', page.text, re.S)
-    if form:
-        token = re.search(r'name="expected_document_sha256" value="([^"]+)"', form.group())
-        if token:
-            digest = token.group(1)
-    copied.setdefault("expected_document_sha256", digest)
-    if match and match.group(2) == "sign":
-        copied.setdefault("expected_version", str(version))
-    return copied
-
-
-def bind_synthetic_fraction_source(session, project_id):
-    """Only explicit positive fixtures: bind their synthetic reviewed source."""
-    from sqlalchemy import select
-    from app.models import FormRecord
-    session.flush()
-    rows = list(session.scalars(select(FormRecord).where(FormRecord.project_id == project_id)))
-    for row in rows:
-        if row.form_code != "D-08" or row.status != "VALIDATED":
-            continue
-        payload = dict(row.payload or {})
-        source = next((source for source in rows if source.id == payload.get("D08-001")), None)
-        if source is None:
-            source = next((source for source in rows if source.form_code == "D-07" and source.status == "VALIDATED"), None)
-        assert source and source.project_id == project_id and source.form_code == "D-07" and source.status == "VALIDATED"
-        row.payload = {**payload, "D08-001": source.id, "_red_d07_source_version": source.version,
-                       "_red_d07_source_status": source.status}
-    session.flush()
