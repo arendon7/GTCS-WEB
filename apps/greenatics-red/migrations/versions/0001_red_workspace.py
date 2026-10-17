@@ -1,11 +1,9 @@
-"""Create isolated RED workspaces and seed the four client leads.
+"""Create the RED application schema without loading customer records.
 
 Revision ID: 0001_red_workspace
 Revises:
 Create Date: 2026-10-07
 """
-from uuid import NAMESPACE_URL, uuid5
-
 import sqlalchemy as sa
 from alembic import op
 
@@ -13,14 +11,6 @@ revision = "0001_red_workspace"
 down_revision = None
 branch_labels = None
 depends_on = None
-
-
-PROJECTS = [
-    ("bello-parque-alto", "Parque Alto - Apartamaentos"),
-    ("bello-tulipanes", "Urbanización Tulipanes"),
-    ("bello-majagua", "Majagua - Unidad Residencial"),
-    ("bello-trigales", "Unidad Residencial Trigales"),
-]
 
 
 def upgrade() -> None:
@@ -172,38 +162,6 @@ def upgrade() -> None:
         sa.Column("window_start", sa.DateTime(timezone=True), nullable=False),
         sa.Column("blocked_until", sa.DateTime(timezone=True), nullable=True),
     )
-    project_table = sa.table(
-        "red_projects",
-        sa.column("id", sa.String(length=36)),
-        sa.column("slug", sa.String(length=100)),
-        sa.column("name", sa.String(length=240)),
-        sa.column("municipality", sa.String(length=120)),
-        sa.column("department", sa.String(length=120)),
-        sa.column("status", sa.String(length=40)),
-        sa.column("baseline_status", sa.String(length=32)),
-        sa.column("baseline_reference", sa.Text()),
-        sa.column("baseline_note", sa.Text()),
-        sa.column("origin", sa.String(length=80)),
-        sa.column("origin_note", sa.Text()),
-        sa.column("created_at", sa.DateTime(timezone=True)),
-    )
-    for slug, name in PROJECTS:
-        op.execute(sa.insert(project_table).values(
-            id=str(uuid5(NAMESPACE_URL, f"greenatics-red:{slug}")),
-            slug=slug,
-            name=name,
-            municipality="Bello",
-            department="Antioquia",
-            status="preparacion",
-            baseline_status="no_iniciada",
-            baseline_reference="",
-            baseline_note="",
-            origin="instruccion_usuario",
-            origin_note="Nombre recibido para estructurar uno de los primeros cuatro PMIRS. Dirección, datos y alcance pendientes de validación con la copropiedad.",
-            created_at=sa.func.now(),
-        ))
-
-
 def downgrade() -> None:
     op.drop_table("red_login_throttles")
     op.drop_table("red_backups")
