@@ -92,7 +92,7 @@ jobs:
       DATABASE_URL: sqlite+pysqlite:///./instance/ci.sqlite3
       SEED_DEMO: "true"
       OPEN_BROWSER: "0"
-      CSRF_ENABLED: "false"
+      CSRF_ENABLED: "true"
       SCHEDULER_ENABLED: "false"
       DEPLOYMENT_STRICT: "false"
     steps:
