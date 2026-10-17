@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
+<header class="page-header">
+      <div><p class="eyebrow">GREENATICS RED · Bello, Antioquia</p><h1>Mis conjuntos</h1><p class="lede">Abre un expediente para continuar el trabajo de esa copropiedad.</p></div>
+  <div class="header-actions">
+    {% if user.is_platform_admin and red_operational_writes_enabled() %}<a class="button primary" href="/admin/projects/new">Agregar proyecto</a>{% elif user.is_platform_admin %}<span class="quiet" aria-disabled="true">Crear proyectos está deshabilitado en modo consulta.</span>{% endif %}
+  </div>
+</header>
+{% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+{% if user.is_platform_admin and production_issues %}
+<details class="panel readiness-details">
+  <summary><span>Requisitos técnicos pendientes</span><span class="status-pill status-attention">{{ production_issues|length }} por resolver</span></summary>
+  <p class="quiet">Completa estos puntos antes de habilitar datos reales.</p>
+  <ul>{% for item in production_issues %}<li>{{ item }}</li>{% endfor %}</ul>
+</details>
+{% endif %}
+{% if user.is_platform_admin and storage_capacity %}
+<details class="panel storage-capacity-panel readiness-details" aria-labelledby="storage-capacity-heading">
+  <summary><span>Almacenamiento de evidencias</span><span class="quiet">{{ storage_capacity.total_used_mb }} MB usados</span></summary>
+  <div class="section-head">
+    <div><h2 id="storage-capacity-heading">Uso por expediente</h2><p class="quiet">Los límites visibles son controles configurados en RED.</p></div>
+  </div>
+  <div class="storage-total">
+    <div class="storage-total-copy"><strong>RED completo</strong><small>{{ storage_capacity.total_used_mb }} MB usados de {{ storage_capacity.total_limit_mb }} MB · {{ storage_capacity.total_remaining_mb }} MB disponibles</small></div>
+    <progress value="{{ storage_capacity.total_percent }}" max="100" aria-label="Uso total de evidencia en RED: {{ storage_capacity.total_percent }} por ciento"></progress>
+    {% if storage_capacity.total_over_limit %}<span class="status-pill status-attention">Supera el tope actual</span>{% endif %}
+  </div>
+  <ul class="storage-project-list" aria-label="Uso de evidencia por expediente">
+    {% for item in storage_capacity.projects %}
+    <li class="storage-project-row">
+      <div class="storage-project-copy"><strong>{{ item.name }}</strong><small>{{ item.used_mb }} MB usados de {{ item.limit_mb }} MB · {{ item.remaining_mb }} MB disponibles</small></div>
+      <progress value="{{ item.percent }}" max="100" aria-label="Uso de evidencia en {{ item.name }}: {{ item.percent }} por ciento"></progress>
+      {% if item.over_limit %}<span class="status-pill status-attention">Supera el tope actual</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="quiet small storage-capacity-help">Estos topes RED no confirman la capacidad contratada del proveedor. Límite configurado por RED_MAX_EVIDENCE_TOTAL_MB.</p>
+</details>
+{% endif %}
+<section class="panel table-panel" aria-labelledby="projects-heading">
+  <div class="section-head"><div><h2 id="projects-heading">Conjuntos</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} conjuntos</span></div>
+  {% if projects %}
+    <div class="project-list">
+      {% for row in projects %}
+        <article class="project-row" data-project-id="{{ row.project.id }}">
+          <span class="project-mark">{{ loop.index }}</span>
+          <span class="grow"><strong><a href="/projects/{{ row.project.id }}" class="project-name-link">{{ row.project.name }}</a></strong><small>{{ row.project.municipality }}, {{ row.project.department }} · En preparación</small><small>Alistamiento · D-01 {{ row.startup_identity }} · D-02 {{ row.startup_admin_info }}</small><small>Línea Base · {{ row.baseline_summary }}</small><small>Visita · {{ row.visit_summary }}{% if row.visit_summary.startswith('Control RED registrado') %} · confirma que los soportes externos sigan vigentes{% endif %}</small></span>
+          <span class="project-count"><strong>{{ row.records }}</strong><small>registros</small></span>
+          {% if row.can_review %}
+            <span class="project-count"><strong>{{ row.pending_forms }}</strong><small>formularios por revisar</small></span>
+            <span class="project-count"><strong>{{ row.pending_pmirs }}</strong><small>objetos PMIRS por revisar</small></span>
+            <span class="project-count"><strong>{{ row.pending_action_reviews }}</strong><small>{{ 'acción' if row.pending_action_reviews == 1 else 'acciones' }} con evidencia para QA/QC</small></span>
+          {% endif %}
+          {% if row.setup_actions %}<nav class="project-setup-actions" aria-label="Alistamiento de {{ row.project.name }}">{% for action in row.setup_actions %}<a class="button compact secondary" href="{{ action.href }}">{% if action.label.startswith('Iniciar') and not red_operational_writes_enabled() %}Ver {{ action.code }}{% else %}{{ action.label }}{% endif %}</a>{% endfor %}</nav>{% endif %}
+          <span class="row-arrow" aria-hidden="true">↗</span>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><h3>No tienes proyectos asignados</h3><p>Solicita a la administración que te invite a la copropiedad correspondiente.</p></div>
+  {% endif %}
+</section>
+<details class="panel process-details">
+  <summary>Ver el flujo de trabajo PMIRS</summary>
+  <p class="quiet">Antes de iniciar, confirma el nombre oficial, la dirección y el alcance con la administración de cada unidad.</p>
+  <section class="process-strip" aria-label="Flujo de trabajo RED">
+  <div><span>01</span><strong>Diagnóstico</strong><small>D-01 a D-14</small></div>
+  <div><span>02</span><strong>Revisión</strong><small>Q-01 · QA/QC</small></div>
+  <div><span>03</span><strong>PMIRS</strong><small>P-01 a P-15</small></div>
+</section>
+</details>
+{% endblock %}

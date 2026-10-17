@@ -30,11 +30,11 @@ export function ToolAccessRail({
   accessLabel,
 }: ToolAccessRailProps) {
   const accessNote = runtimeHref && demoHref
-    ? "Demo pública con datos ilustrativos · espacio operativo separado por organización."
+    ? "Demo pública con datos ilustrativos · el acceso operativo abre un servicio separado por organización."
     : demoHref
       ? "Demo navegable sin contraseña · datos ilustrativos y módulos abiertos."
       : runtimeHref
-        ? "Espacio operativo disponible · acceso según identidad y permisos."
+        ? "Enlace de acceso operativo · disponibilidad, identidad y permisos se verifican al ingresar."
         : "El espacio propio se configura por organización, usuarios y permisos.";
 
   return (

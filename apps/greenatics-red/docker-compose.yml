@@ -1,0 +1,43 @@
+name: greenatics-red-local
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: greenatics_red
+      POSTGRES_USER: greenatics_red
+      POSTGRES_PASSWORD: ${RED_DB_PASSWORD:?Define RED_DB_PASSWORD in apps/greenatics-red/.env}
+    volumes:
+      - red_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: local
+      DATABASE_URL: postgresql+psycopg://greenatics_red:${RED_DB_PASSWORD:?Define RED_DB_PASSWORD in apps/greenatics-red/.env}@postgres:5432/greenatics_red
+      SESSION_HTTPS_ONLY: "false"
+      PUBLIC_BASE_URL: http://127.0.0.1:${RED_PORT:-8787}
+      TRUSTED_HOSTS: localhost,127.0.0.1
+      RED_STORAGE_ROOT: /var/data/red/private
+      STORAGE_BACKEND: filesystem
+      PORT: "10000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${RED_PORT:-8787}:10000"
+    volumes:
+      - red_private_data:/var/data/red/private
+
+volumes:
+  red_postgres_data:
+  red_private_data:

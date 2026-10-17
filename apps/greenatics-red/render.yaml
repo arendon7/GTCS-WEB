@@ -1,0 +1,66 @@
+services:
+  - type: web
+    name: greenatics-red
+    runtime: docker
+    # Solo preview sintético; no cumple persistencia ni disponibilidad de piloto.
+    plan: free
+    rootDir: apps/greenatics-red
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      # Archive the provider-side isolation review before setting this value.
+      - key: RED_DATABASE_ISOLATION_REFERENCE
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: SESSION_HTTPS_ONLY
+        value: "true"
+      - key: TRUSTED_HOSTS
+        sync: false
+      - key: TRUSTED_CLIENT_IP_HEADER
+        value: CF-Connecting-IP
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: STORAGE_BACKEND
+        value: s3
+      - key: RED_MAX_EVIDENCE_TOTAL_MB
+        value: "1024"
+      - key: RED_MAX_EVIDENCE_PROJECT_MB
+        value: "256"
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ENDPOINT_URL
+        sync: false
+      - key: S3_REGION
+        value: us-east-1
+      - key: S3_ACCESS_KEY
+        sync: false
+      - key: S3_SECRET_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: TOKEN_ENCRYPTION_KEY
+        sync: false
+      - key: RED_PUBLIC_ACCESS_ENABLED
+        value: "false"
+      - key: RED_PUBLIC_SITE_ORIGINS
+        sync: false
+      - key: RED_PRIVACY_APPROVED
+        value: "false"
+      - key: RED_PRIVACY_APPROVAL_REFERENCE
+        sync: false
+      - key: RED_SUPERVISED_PILOT_APPROVED
+        value: "false"
+      - key: RED_SUPERVISED_PILOT_APPROVAL_REFERENCE
+        sync: false
+      - key: RED_OPERATIONAL_WRITES_ENABLED
+        value: "false"
