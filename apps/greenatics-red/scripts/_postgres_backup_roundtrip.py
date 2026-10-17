@@ -46,7 +46,7 @@ def main() -> int:
 
     try:
         with SessionLocal() as session:
-            project = session.scalar(select(Project).where(Project.slug == "bello-parque-alto"))
+            project = session.scalar(select(Project).where(Project.slug == "qa-synthetic-a"))
             if project is None:
                 raise RuntimeError("No existe el expediente sintético esperado en el esquema de origen.")
             admin = User(
@@ -118,7 +118,7 @@ def main() -> int:
                     raise RuntimeError("El operario sintético no pudo aceptar la invitación.")
                 if field_client.get(f"/projects/{project.id}").status_code != 200:
                     raise RuntimeError("El operario no recibió acceso al expediente asignado.")
-                other_project = field_client.get("/projects/bello-tulipanes")
+                other_project = field_client.get("/projects/qa-synthetic-b")
                 if other_project.status_code != 404:
                     raise RuntimeError("El operario recibió acceso fuera del expediente invitado.")
                 if field_client.get(invite_path).status_code != 410:
@@ -215,8 +215,8 @@ def main() -> int:
                 admin = session.scalar(select(User).where(User.email == "qa-postgres-admin@red.test"))
                 field_user = session.scalar(select(User).where(User.email == "qa-postgres-field@red.test"))
                 membership = session.scalar(select(ProjectMembership).where(ProjectMembership.user_id == field_user.id)) if field_user else None
-                if project_count != 4 or restored_record is None or evidence is None or not admin or not admin.active:
-                    raise RuntimeError("La recuperación no restauró los cuatro proyectos, el registro, la evidencia y el administrador.")
+                if project_count != 2 or restored_record is None or evidence is None or not admin or not admin.active:
+                    raise RuntimeError("La recuperación no restauró los dos proyectos sintéticos, el registro, la evidencia y el administrador.")
                 if not field_user or field_user.active or not membership or membership.project_id != restored_record.project_id or membership.role != "campo":
                     raise RuntimeError("La recuperación no conservó inactiva la cuenta previa y la membresía de campo.")
                 restored_bytes = restore_storage.get_bytes(f"evidence/{evidence.storage_name}")
