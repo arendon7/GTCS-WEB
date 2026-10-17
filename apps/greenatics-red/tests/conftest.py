@@ -129,6 +129,8 @@ def rendered_decision_data(client, url, data):
     copied.setdefault("expected_document_sha256", digest)
     if record_match and record_match.group(2) == "sign":
         copied.setdefault("expected_version", str(version))
+    if pmirs_match and pmirs_match.group(2) == "progress":
+        copied.setdefault("expected_version", str(version))
     return copied
 
 
