@@ -137,7 +137,22 @@ def test_action_progress_requires_a_positive_displayed_version(client, progress_
         values.pop("expected_version")
     else:
         values["expected_version"] = version
-    assert client.post(f"/pmirs/items/{progress_action['id']}/progress", data=rendered_decision_data(client, f"/pmirs/items/{progress_action['id']}/progress", values), follow_redirects=False).status_code == 422
+    endpoint = f"/pmirs/items/{progress_action['id']}/progress"
+    submitted = rendered_decision_data(client, endpoint, values)
+    if version is None:
+        # The helper restores hidden fields from the rendered form; remove this
+        # one again to exercise a genuinely missing version in the POST body.
+        submitted.pop("expected_version", None)
+    response = client.post(endpoint, data=submitted, follow_redirects=False)
+    assert response.status_code == 422, response.text
+
+    with SessionLocal() as session:
+        current = session.get(PMIRSItem, progress_action["id"])
+        assert current.version == 1
+        assert current.data["execution_status"] == "evidencia_cargada"
+        assert session.scalar(
+            select(PMIRSItemRevision).where(PMIRSItemRevision.item_id == current.id)
+        ) is None
 
 
 def test_action_progress_version_does_not_grant_an_unassigned_field_user_access(client, progress_action):
