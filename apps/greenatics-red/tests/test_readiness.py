@@ -227,7 +227,7 @@ def test_dashboard_shows_project_review_queues_only_to_reviewers(client, workspa
         assert "objetos PMIRS por revisar" not in role_dashboard.text
 
 
-def test_field_dashboard_lists_only_validated_actions_assigned_in_accessible_projects(client, workspace):
+def test_field_dashboard_lists_assigned_actions_and_only_own_recent_records(client, workspace):
     project_id, outside_project_id = workspace["project_ids"][:2]
     field_id = workspace["user_ids"]["field"]
     with SessionLocal() as session:
@@ -251,11 +251,34 @@ def test_field_dashboard_lists_only_validated_actions_assigned_in_accessible_pro
                 data={"assignee_user_ids": [field_id]}, review_status="PENDING_REVIEW", created_by=field_id, updated_by=field_id,
             ),
         ])
+        own_record = FormRecord(
+            project_id=project_id, form_code="D-03", title="Registro propio reciente",
+            status="RAW", source_note="Fuente sintética para prueba.",
+            payload={}, created_by=field_id, updated_by=field_id,
+        )
+        peer_record = FormRecord(
+            project_id=project_id, form_code="D-06", title="Registro de otro operario",
+            status="RAW", source_note="Fuente sintética para prueba.",
+            payload={}, created_by=workspace["user_ids"]["consultant"],
+            updated_by=workspace["user_ids"]["consultant"],
+        )
+        outside_record = FormRecord(
+            project_id=outside_project_id, form_code="D-04", title="Registro sin membresía activa",
+            status="RAW", source_note="Fuente sintética para prueba.",
+            payload={}, created_by=field_id, updated_by=field_id,
+        )
+        session.add_all([own_record, peer_record, outside_record])
         session.commit()
+        own_record_id = own_record.id
 
     sign_in(client, "field@red.test")
     dashboard = client.get("/")
     assert "Mis acciones asignadas" in dashboard.text
+    assert "Mis registros recientes" in dashboard.text
+    assert "Registro propio reciente" in dashboard.text
+    assert f'href="/records/{own_record_id}"' in dashboard.text
+    assert "Registro de otro operario" not in dashboard.text
+    assert "Registro sin membresía activa" not in dashboard.text
     assert "Acción prioritaria de campo" in dashboard.text
     assert "Prioridad alta · Fecha objetivo 2026-11-02 · 25% · En Proceso" in dashboard.text
     assert f'href="/projects/{project_id}/pmirs#action-' in dashboard.text
