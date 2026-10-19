@@ -44,6 +44,10 @@ test("synthetic day preserves traceability through reload and downloaded report"
 
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Operación de hoy" })).toBeVisible();
+  const maintenanceAlert = page.locator("#alertas").getByRole("link").filter({ hasText: "Obstrucción recurrente" });
+  await expect(maintenanceAlert).toContainText("Alta");
+  await expect(maintenanceAlert).toContainText("Obstrucción");
+  await expect(maintenanceAlert).toContainText(/\d+ (?:min|h|d)(?: \d+ (?:min|h))? fuera de servicio/);
 
   // 2) A measured physical reception creates the day's source lot.
   await page.goto("/receptions/new");
