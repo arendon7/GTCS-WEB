@@ -10,8 +10,8 @@
       <input type="hidden" name="csrf" value="{{ csrf }}">
       <label>Nombre del proyecto<input name="name" required maxlength="240" placeholder="Nombre de la copropiedad"></label>
       <div class="form-grid two-columns">
-        <label>Municipio<input name="municipality" value="Bello" required></label>
-        <label>Departamento<input name="department" value="Antioquia" required></label>
+        <label>Municipio<input name="municipality" required placeholder="Municipio"></label>
+        <label>Departamento<input name="department" required placeholder="Departamento"></label>
       </div>
       <div class="form-actions"><a class="button secondary" href="/">Cancelar</a><button class="button primary" type="submit">Crear expediente</button></div>
     </fieldset>
