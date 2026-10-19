@@ -42,12 +42,12 @@ jobs:
         env:
           OPS_E2E_PORT: '4317'
           OPS_E2E_PRODUCTION: '1'
-        run: pnpm exec playwright test e2e/pilot-day-cycle.spec.ts --workers=1
-      - name: Preserve failure diagnostics
-        if: failure()
+        run: pnpm exec playwright test e2e/pilot-day-cycle.spec.ts e2e/inventory-correction-persistence.spec.ts --workers=1
+      - name: Preserve journey evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ops-demo-diagnostics
+          name: ops-demo-evidence
           path: |
             apps/greenatics-ops/test-results/
             apps/greenatics-ops/playwright-report/

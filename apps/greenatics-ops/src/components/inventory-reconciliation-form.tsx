@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useInventoryStore } from "@/components/inventory-store";
 import { useOpsStore } from "@/components/ops-store";
 import { stockForLot } from "@/lib/inventory-domain";
+import { parseMassInput } from "@/lib/reception-v2";
 
 const RECONCILIATION_ROLES = new Set(["supervisor","technical","admin","director"]);
 
@@ -41,7 +42,7 @@ export function InventoryReconciliationForm(){
       .sort((a,b)=>a.productName.localeCompare(b.productName,"es")||a.lotCode.localeCompare(b.lotCode,"es"));
   },[effectivePlantId,movements,productMap]);
   const selected=lotOptions.find((lot)=>lot.key===lotKey)??lotOptions[0];
-  const countedNumber=Number(counted);
+  const countedNumber=parseMassInput(counted);
   const hasValidCount=counted.trim()!==""&&Number.isFinite(countedNumber)&&countedNumber>=0;
   const difference=selected&&hasValidCount?countedNumber-selected.expected:undefined;
 
