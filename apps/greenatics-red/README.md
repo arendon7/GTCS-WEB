@@ -1,92 +1,71 @@
 # GREENATICS RED
 
-Aplicación independiente para preparar y dar seguimiento a Planes de Manejo Integral de Residuos Sólidos (PMIRS) de propiedades horizontales. Organiza expedientes, formularios, evidencias privadas, revisión QA/QC, versiones y acciones. La aplicación apoya el trabajo técnico; no reemplaza la revisión profesional ni aprueba un PMIRS por sí sola.
+GREENATICS RED es una aplicación independiente para preparar y hacer seguimiento a PMIRS de propiedad horizontal. Mantiene separados los expedientes, usuarios, permisos, formularios, revisiones, evidencias, firmas, exportaciones y respaldos.
 
-## Estado de esta candidata
+## Estado actual
 
-Esta es una candidata de desarrollo y capacitación. La demostración local usa datos ficticios y temporales. No está conectada a la base de datos ni al Drive del usuario, no habilita acceso público y no está aprobada para capturar información real.
+- **No es un servicio publicado ni está autorizado para datos reales.** El PR de la candidata sigue en borrador y el runtime RED aún no está conectado a infraestructura.
+- El proyecto dedicado `greenatics-red-qa` de Supabase tiene migraciones hasta Alembic 0022 y controles RLS verificados. Está vacío de cuentas, expedientes y evidencias, salvo una fila técnica de control de cuota. No está conectado a la aplicación.
+- No hay runtime RED, almacenamiento privado de evidencias, OAuth de RED ni respaldo real al Drive personal configurados.
+- Los controles de acceso público y escritura operativa permanecen cerrados por defecto. No activar las compuertas de privacidad, piloto o acceso público sin sus aprobaciones archivadas.
+- El sitio institucional todavía no está publicado en `www.greenatics.com.co`.
 
-El catálogo incluye 30 formularios y 342 campos. Los expedientes iniciales corresponden a los cuatro conjuntos de Bello solicitados; nombres, direcciones, responsables, caracterización, pesajes, prestadores y demás datos deben confirmarse con cada administración y sus fuentes. Los datos ausentes permanecen pendientes. No se generan resultados, rutas ni obligaciones técnicas por inferencia.
+El avance por gates y las dependencias vigentes están en [`progress.json`](progress.json). La ejecución y el handoff vigentes se registran en [RED_ESTADO_ACTUAL_Y_SIGUIENTE_PAQUETE.md](../../docs/knowledge/RED_ESTADO_ACTUAL_Y_SIGUIENTE_PAQUETE.md).
 
-Los cambios de formulario, evidencias, decisiones QA/QC, firmas de constancia, objetos PMIRS y avances se asocian al proyecto, actor y versión que los generó. La firma manuscrita en pantalla es una constancia de la declaración mostrada; no acredita identidad, representación legal, firma digital certificada ni aprobación técnica. Su uso con personas requiere consentimiento y revisión jurídica y de privacidad.
+## Qué incluye el candidato
 
-## Perfiles y recorrido
+El catálogo cuenta con **30 formularios y 342 campos** para diagnóstico, caracterización, operación, evidencias y seguimiento. La aplicación incluye cuentas por invitación, perfiles y membresías por expediente, revisión QA/QC, historial y versiones PMIRS, firmas de constancias, exportaciones y funciones de respaldo/restauración.
 
-RED admite administración de la plataforma, consultoría, administración de la copropiedad, operario de campo y revisoría QA/QC. El acceso se limita por cuenta, rol y membresía activa de cada expediente. El recorrido de práctica incluye:
+Las invitaciones se generan en la aplicación y el administrador comparte el enlace manualmente; RED no envía correos. Las firmas y aprobaciones sintéticas de la DEMO solo sirven para practicar. No acreditan identidad, autorización de una copropiedad ni aprobación profesional.
 
-1. Crear o confirmar un expediente y revisar qué información falta.
-2. Capturar formularios de diagnóstico y operación con fuentes y evidencias.
-3. Enviar registros a revisión, recibir una devolución con motivo y corregirlos.
-4. Revisar la Línea Base antes de estructurar hallazgos, programas y acciones del PMIRS.
-5. Registrar avances y evidencias, pedir revisión QA/QC, y conservar el historial.
-6. Consultar versiones y generar exportaciones PDF/DOCX asociadas al contenido versionado.
+## Recorrer la DEMO local
 
-Un porcentaje de avance no aprueba ni cierra una acción. Los registros sintéticos de la demostración no se transfieren a los expedientes de Bello.
-
-La guía para preparar la jornada, capturar datos y cerrar pendientes está en [Guía rápida de campo RED](GUIA_RAPIDA_DE_CAMPO_RED.md).
-
-## Abrir la demostración en macOS
-
-Si el entorno `.venv` ya está preparado, abre `Abrir_DEMO_RED.command` desde Finder. Levanta un sandbox temporal con seis perfiles ficticios y abre el navegador y una ventana con credenciales efímeras. No requiere Git, Docker ni Command Line Tools. Si macOS bloquea la primera apertura, haz clic derecho sobre el archivo y selecciona **Abrir**.
-
-Al terminar, vuelve a la ventana de Terminal y presiona Ctrl+C. El lanzador detiene el servidor y elimina la base, los archivos y las credenciales de esa práctica. No uses esa demostración para cargar información real.
-
-## Desarrollo local
-
-Requiere Python 3.12. Para preparar un entorno aislado:
+Requiere Python 3.12, Node.js y las dependencias locales del proyecto. Desde esta carpeta inicia un sandbox de capacitación con una base y archivos temporales:
 
 ```sh
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-cp .env.example .env
+.venv/bin/python scripts/run_synthetic_field_demo.py --full-training-scenario --with-progress-history
 ```
 
-Configura `SESSION_SECRET` únicamente en `.env` local y no lo agregues al repositorio. Para crear una base de desarrollo y los cuatro expedientes vacíos:
+Abre `http://127.0.0.1:18797/login`. La terminal indica dónde quedó el archivo privado con las credenciales aleatorias para los seis perfiles sintéticos. No copies esas credenciales a chats, repositorios o cuentas reales. Para cerrar y eliminar el sandbox, pulsa `Ctrl+C` en la terminal.
+
+La DEMO es local, efímera y aislada. Conserva datos mientras ese proceso está activo; al detenerlo se borran la base, los archivos y las credenciales. No prueba persistencia en un hosting, uso en teléfono físico, OAuth/Drive ni operación real.
+
+## Verificar el candidato local
+
+Desde la raíz del repositorio:
 
 ```sh
-set -a && . ./.env && set +a
-python -m alembic upgrade head
+apps/greenatics-red/scripts/verify_local_candidate.sh
+```
+
+El script valida la regresión Python y JavaScript, compilación, sintaxis de arranque y catálogo de formularios. Para consultar porcentajes y bloqueos registrados:
+
+```sh
+python3 apps/greenatics-red/scripts/report_progress.py
+```
+
+Una verificación local no acredita servicios alojados, persistencia en PostgreSQL, almacenamiento remoto, Drive ni UAT.
+
+## Arquitectura y preparación de QA
+
+- RED usa PostgreSQL y almacenamiento privados propios. No reutilizar bases, buckets, credenciales ni datos de Calcula tu Huella u OPS.
+- `render.yaml` es una plantilla, no prueba que exista un servicio. El contenedor ejecuta `start.sh`, que aplica migraciones antes de iniciar FastAPI. La URL de base debe apuntar a una instancia dedicada a RED y `DATABASE_SCHEMA` debe permanecer vacío en hosting.
+- Render Free puede usarse solo para una vista previa sintética: el servicio duerme por inactividad y su sistema de archivos es efímero. No alojar allí evidencia operativa ni tratarlo como entorno de piloto. Revisar las [limitaciones oficiales de Render Free](https://render.com/docs/free).
+- Las evidencias requieren almacenamiento privado S3 compatible dedicado a RED. Google Drive es un destino separado para copias ZIP, no para los archivos operativos. El titular autoriza la conexión a su Drive personal; RED no comparte los respaldos automáticamente.
+- Las variables secretas se configuran en el gestor de secretos del hosting. Nunca poner `DATABASE_URL`, claves S3, secretos de sesión, tokens OAuth o contraseñas en Git, este archivo o el chat.
+- Las compuertas `RED_PUBLIC_ACCESS_ENABLED`, `RED_OPERATIONAL_WRITES_ENABLED`, `RED_PRIVACY_APPROVED` y `RED_SUPERVISED_PILOT_APPROVED` permanecen `false` hasta cerrar sus criterios y archivar las aprobaciones correspondientes.
+
+Cuando la plataforma QA esté conectada y aislada, el alta inicial prevista es:
+
+```sh
 python -m app.cli seed-bello-projects
 python -m app.cli bootstrap-admin --email admin@greenatics.local --name "Administrador RED"
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8787
 ```
 
-Abre <http://127.0.0.1:8787>. La CLI solicita la contraseña sin escribirla en el comando. La instancia local utiliza SQLite y almacenamiento local; no conecta servicios de otras aplicaciones. Identifica el origen de cualquier base existente antes de apuntar la configuración a ella.
+El primer comando crea únicamente los cuatro expedientes vacíos indicados por el usuario; no crea registros, asigna personas ni confirma identidad, dirección o alcance. Antes de datos de trabajo, cada administración debe validar esos datos y autorizar el acceso. El segundo comando solicita la contraseña de forma interactiva; usa una cuenta y correo aprobados para el entorno, no el ejemplo literal.
 
-### PostgreSQL local opcional
+## Antes de un piloto
 
-`docker-compose.yml` prepara una base y un volumen de evidencias propios para RED. Usa contraseñas locales aleatorias y conserva los volúmenes al detener el servicio. No uses una URL de Huella, OPS ni una base de producción. Para borrar deliberadamente los volúmenes de práctica, revisa primero el efecto de `docker compose down -v`.
+Conectar runtime, PostgreSQL dedicado y almacenamiento privado; crear cuentas con roles por expediente; comprobar persistencia tras reinicio, exportación, respaldo y restauración aislada; configurar HTTPS y OAuth de Drive con alcance mínimo; y completar las aprobaciones de privacidad, método técnico, SST y piloto. Después, hacer UAT con operarios y revisores en teléfonos reales y cerrar hallazgos. Hasta entonces, usar únicamente la DEMO local con datos sintéticos.
 
-## Verificación
-
-El workflow [GREENATICS RED quality](../../.github/workflows/greenatics-red-quality.yml) ejecuta la regresión propia de RED cuando cambian sus archivos. En esta candidata se validó en GitHub Actions sobre el commit del PR; el estado actual debe consultarse en el PR y sus checks.
-
-Desde esta carpeta, ejecuta:
-
-```sh
-scripts/verify_local_candidate.sh
-```
-
-El script requiere Python 3.12 y Node.js; usa `.venv/bin/python` si existe. Si Node no está en `PATH`, indica su ruta mediante `RED_NODE`. El verificador ejecuta pruebas Python y JavaScript, compilación, sintaxis de inicio y validación del catálogo. Trabaja con datos sintéticos y no verifica hosting, PostgreSQL remoto, Drive, almacenamiento del proveedor ni uso en teléfonos físicos.
-
-Para pruebas de migración PostgreSQL aisladas existe `scripts/qa_postgres_integration.py`. Solo debe usarse con una base de QA dedicada e identificada como tal: puede crear y borrar esquemas temporales. El script requiere confirmaciones explícitas y se detiene si el nombre de la base no coincide. No apunta a una base de operación.
-
-## Datos, archivos y respaldos
-
-RED usa una base de datos y almacenamiento de evidencias propios. Cada archivo se mantiene privado, asociado a un expediente y sujeto a permisos de servidor. Un respaldo Drive es una copia ZIP distinta de las evidencias operativas: OAuth requiere el alcance mínimo de Drive, la cuenta personal conectada conserva la propiedad y RED no comparte archivos automáticamente. La conexión real está pendiente de configuración y autorización explícita.
-
-En staging y producción se requiere una base PostgreSQL dedicada a RED, almacenamiento privado persistente y HTTPS. Los endpoints S3 personalizados exigen HTTPS fuera del entorno local. No uses una instancia gratuita con almacenamiento efímero, una base temporal ni este candidato para datos de campo.
-
-Las escrituras, el acceso público, la aprobación de privacidad y la autorización de piloto permanecen cerrados por defecto. No cambies esas compuertas hasta archivar las aprobaciones correspondientes y completar las verificaciones de hosting, recuperación, privacidad, método/SST y capacitación.
-
-## Estructura
-
-- `app/`: API, autenticación, permisos, formularios, operación, exportaciones y almacenamiento.
-- `app/forms.json`: catálogo RED Bello v7-2 y extensiones GREENATICS; 30 formularios y 342 campos.
-- `migrations/`: migraciones Alembic.
-- `tests/`: regresiones sintéticas de permisos, flujos, formularios y exportaciones.
-- `scripts/`: verificadores, herramientas de QA y recuperación.
-- `Abrir_DEMO_RED.command`: lanzador del sandbox sintético para macOS.
-
-El seguimiento interno de avance y los documentos de trabajo no forman parte de esta candidata pública. Los checks de CI no autorizan por sí solos la integración, el despliegue ni el uso de datos reales.
+La guía de roles, capacitación y kit de campo está en [RED_OPERACION_CAPACITACION_Y_KIT_CAMPO_BELLO_2026-10-07.md](../../docs/knowledge/RED_OPERACION_CAPACITACION_Y_KIT_CAMPO_BELLO_2026-10-07.md).
