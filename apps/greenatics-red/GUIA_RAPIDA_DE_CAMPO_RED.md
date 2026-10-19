@@ -136,7 +136,7 @@ Usa una copia de esta lista por copropiedad y marca cada dato como confirmado, p
 - Reciclador/gestor, materiales, frecuencia y soportes de entrega, si existen.
 - Manejo actual de orgánicos y de residuos especiales/posconsumo; no atribuir clasificación normativa sin revisar.
 - Cuartos, recipientes, rutas internas, acceso, restricciones e infraestructura.
-- PMIRS anterior, PGIRS municipal consultado y documentos que la copropiedad autorice a compartir.
+- PMIRS anterior y documentos que la copropiedad autorice a compartir. Para el PGIRS municipal, registra el acto o fuente oficial consultada, fecha/versión y el programa territorial pertinente; confirma si está vigente antes de usarlo como referencia. La Resolución 0555 de 2026 adopta la metodología nacional para elaborar y actualizar PGIRS municipales y distritales: úsala como contexto técnico, no como una lista automática de obligaciones de la copropiedad. Si no se logra verificar el PGIRS vigente de Bello, deja explícita la consulta pendiente y solicita confirmación a la autoridad competente.
 - Fechas y autorización de la visita, equipos requeridos, método de medición y responsables.
 - Consultas abiertas, persona responsable y fecha o siguiente paso esperado.
 
