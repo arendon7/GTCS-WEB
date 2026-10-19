@@ -76,6 +76,39 @@ El primer comando crea únicamente los cuatro expedientes vacíos indicados por 
 
 El alistamiento tiene cuatro fichas separadas, con los 27 controles de preparación pendientes para cada unidad. Sirven para solicitar y trazar fuentes antes de diligenciarlas en RED; no sustituyen formularios, validación técnica ni aprobación de la copropiedad.
 
+## Recuperación desde una copia RED
+
+La ruta de recuperación está disponible por CLI y restaura en la base RED configurada en el entorno donde se ejecuta. **Detén cualquier escritura y prepara primero una base dedicada vacía y un directorio de almacenamiento RED vacío/separado**; no apuntes a la base de Huella/OPS ni a una instancia con datos que deban conservarse.
+
+1. Desde el entorno autorizado, descarga la copia registrada en el Drive personal. La CLI vuelve a autenticar a la persona administradora, verifica la descarga contra los metadatos de Drive y registra la acción en auditoría:
+
+   ```sh
+   python -m app.cli download-drive-backup \
+     --actor-email admin@greenatics.local \
+     --backup-id ID_DEL_RESPALDO \
+     --output /ruta-segura-nueva/greenatics-red.zip
+   ```
+
+   Omite `--backup-id` para seleccionar la copia completada más reciente. No guardes la contraseña en el comando ni en el historial del shell: se solicita interactivamente.
+
+2. Verifica localmente el ZIP antes de restaurarlo:
+
+   ```sh
+   python -m app.cli verify-backup /ruta-segura-nueva/greenatics-red.zip
+   ```
+
+3. Configura `DATABASE_URL` y `RED_STORAGE_ROOT` para los destinos RED nuevos, separados y vacíos; después ejecuta la restauración. Se crea una cuenta administradora de recuperación y la contraseña se solicita de forma interactiva:
+
+   ```sh
+   python -m app.cli restore-backup /ruta-segura-nueva/greenatics-red.zip \
+     --admin-email admin-recuperacion@greenatics.local \
+     --admin-name "Administración de recuperación RED"
+   ```
+
+4. Conserva la salida de conteos, verifica expedientes, historial y evidencias restauradas contra el manifiesto, y confirma acceso con la nueva cuenta antes de reanudar escrituras. Las otras cuentas quedan desactivadas y se reactivan/restablecen individualmente desde Usuarios; la conexión OAuth/Drive no se restaura y debe autorizarse de nuevo. Nunca compartas automáticamente el ZIP.
+
+La prueba local de ida y vuelta usa transporte sintético para Drive y restaura en SQLite y almacenamiento temporal aislados; no demuestra que una copia exista en Drive, que se haya recuperado desde un proveedor real, ni que el hosting tenga persistencia. La recuperación operativa sigue pendiente hasta ensayar con una copia autorizada y el PostgreSQL/storage dedicados de RED.
+
 ## Antes de un piloto
 
 Conectar runtime, PostgreSQL dedicado y almacenamiento privado; crear cuentas con roles por expediente; comprobar persistencia tras reinicio, exportación, respaldo y restauración aislada; configurar HTTPS y OAuth de Drive con alcance mínimo; y completar las aprobaciones de privacidad, método técnico, SST y piloto. Después, hacer UAT con operarios y revisores en teléfonos reales y cerrar hallazgos. Hasta entonces, usar únicamente la DEMO local con datos sintéticos.
