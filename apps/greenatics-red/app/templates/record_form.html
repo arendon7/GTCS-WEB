@@ -268,7 +268,7 @@
     <legend>Soporte general de esta versión</legend>
     <label for="evidence-general">Adjuntar archivos relacionados con el registro</label>
     <input id="evidence-general" name="evidence__general" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.docx,.xlsx,.csv,.txt" multiple aria-describedby="evidence-general-help">
-    <small id="evidence-general-help">Se añadirán a este registro como evidencia general al guardar la nueva versión. No reemplazan ni eliminan archivos anteriores. Si el archivo responde a un campo específico, selecciónalo en ese campo. Máximo 12 archivos por guardado, hasta {{ max_upload_mb }} MB cada uno.</small>
+    <small id="evidence-general-help">Se añadirán a este registro como evidencia general al guardar la nueva versión. No reemplazan ni eliminan archivos anteriores. Si el archivo responde a un campo específico, selecciónalo en ese campo. Máximo 12 archivos por guardado, hasta {{ max_upload_mb }} MB cada uno. En fotos, evita rostros, placas, números de apartamento, firmas y documentos; RED conserva el original y sus metadatos EXIF de fecha, dispositivo o ubicación. No las cargues si su tratamiento no está autorizado.</small>
   </fieldset>{% endif %}
   {% if not view_only %}<div class="form-actions form-actions-sticky">
     <a class="button secondary" href="{% if record %}/records/{{ record.id }}{% else %}/projects/{{ project.id }}{% endif %}">Cancelar</a>
