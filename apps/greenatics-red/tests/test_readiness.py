@@ -227,6 +227,43 @@ def test_dashboard_shows_project_review_queues_only_to_reviewers(client, workspa
         assert "objetos PMIRS por revisar" not in role_dashboard.text
 
 
+def test_field_dashboard_lists_only_validated_actions_assigned_in_accessible_projects(client, workspace):
+    project_id, outside_project_id = workspace["project_ids"][:2]
+    field_id = workspace["user_ids"]["field"]
+    with SessionLocal() as session:
+        session.add_all([
+            PMIRSItem(
+                project_id=project_id, item_type="accion", code="A-DASH-HIGH", title="Acción prioritaria de campo",
+                data={"priority": "alta", "due_date": "2026-11-02", "progress_pct": 25,
+                      "execution_status": "en_proceso", "assignee_user_ids": [field_id]},
+                review_status="VALIDATED", created_by=field_id, updated_by=field_id,
+            ),
+            PMIRSItem(
+                project_id=project_id, item_type="accion", code="A-DASH-UNASSIGNED", title="Acción no asignada",
+                data={"assignee_user_ids": []}, review_status="VALIDATED", created_by=field_id, updated_by=field_id,
+            ),
+            PMIRSItem(
+                project_id=outside_project_id, item_type="accion", code="A-DASH-OUTSIDE", title="Acción de otro expediente",
+                data={"assignee_user_ids": [field_id]}, review_status="VALIDATED", created_by=field_id, updated_by=field_id,
+            ),
+            PMIRSItem(
+                project_id=project_id, item_type="accion", code="A-DASH-PENDING", title="Acción aún no validada",
+                data={"assignee_user_ids": [field_id]}, review_status="PENDING_REVIEW", created_by=field_id, updated_by=field_id,
+            ),
+        ])
+        session.commit()
+
+    sign_in(client, "field@red.test")
+    dashboard = client.get("/")
+    assert "Mis acciones asignadas" in dashboard.text
+    assert "Acción prioritaria de campo" in dashboard.text
+    assert "Prioridad alta · Fecha objetivo 2026-11-02 · 25% · En Proceso" in dashboard.text
+    assert f'href="/projects/{project_id}/pmirs#action-' in dashboard.text
+    assert "Acción no asignada" not in dashboard.text
+    assert "Acción de otro expediente" not in dashboard.text
+    assert "Acción aún no validada" not in dashboard.text
+
+
 def test_dashboard_shows_baseline_and_visit_gates_per_project_without_crossing_data(client, workspace):
     project_ids = workspace["project_ids"]
     with SessionLocal() as session:
