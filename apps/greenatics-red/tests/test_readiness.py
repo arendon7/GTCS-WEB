@@ -268,10 +268,19 @@ def test_dashboard_shows_baseline_and_visit_gates_per_project_without_crossing_d
 
 
 def test_bello_projects_keep_the_order_supplied_for_the_four_pmirs(client, workspace):
+    assert app_cli.seed_bello_projects() == 0
+    with SessionLocal() as session:
+        seeded_ids = {
+            slug: session.scalar(select(Project).where(Project.slug == slug)).id
+            for slug, _name in BELLO_PROJECTS
+        }
     sign_in(client, "admin@red.test")
     dashboard = client.get("/")
     visible_project_ids = re.findall(r'<article class="project-row" data-project-id="([^"]+)">', dashboard.text)
-    assert visible_project_ids == workspace["project_ids"]
+    assert all(project_id in visible_project_ids for project_id in workspace["project_ids"])
+    assert [project_id for project_id in visible_project_ids if project_id in seeded_ids.values()] == [
+        seeded_ids[slug] for slug, _name in BELLO_PROJECTS
+    ]
     users_page = client.get("/admin/users")
     project_options = re.findall(r'<option value="[^"]+">([^<]+)</option>', users_page.text)
     ordered_names = [name for _slug, name in BELLO_PROJECTS]
@@ -898,7 +907,7 @@ def test_primary_workspace_views_have_named_interactive_controls(client, workspa
         assert not unnamed_actions, (path, unnamed_actions)
 
 
-def test_migration_creates_four_empty_bello_projects(tmp_path):
+def test_migration_leaves_projects_empty_until_explicit_initialization(tmp_path):
     database = tmp_path / "migration.sqlite3"
     storage = tmp_path / "private"
     env = {
@@ -923,15 +932,27 @@ def test_migration_creates_four_empty_bello_projects(tmp_path):
     import sqlite3
 
     with sqlite3.connect(database) as connection:
-        projects = connection.execute(
-            "SELECT name, municipality, department FROM red_projects ORDER BY name"
-        ).fetchall()
+        projects_before_seed = connection.execute("SELECT count(*) FROM red_projects").fetchone()[0]
         records = connection.execute("SELECT count(*) FROM red_form_records").fetchone()[0]
         version_columns = {row[1] for row in connection.execute("PRAGMA table_info(red_pmirs_versions)")}
-    assert [row[0] for row in projects] == sorted(PROJECT_NAMES)
-    assert all(row[1:] == ("Bello", "Antioquia") for row in projects)
+    assert projects_before_seed == 0
     assert records == 0
     assert "previous_version_id" in version_columns
+
+    seed = subprocess.run(
+        [
+            sys.executable, "-c",
+            "from app.cli import seed_bello_projects; raise SystemExit(seed_bello_projects())",
+        ],
+        cwd=PROJECT_DIR, env=env, capture_output=True, text=True, check=False,
+    )
+    assert seed.returncode == 0, seed.stdout + seed.stderr
+    with sqlite3.connect(database) as connection:
+        projects = connection.execute(
+            "SELECT slug, name, municipality, department FROM red_projects ORDER BY rowid"
+        ).fetchall()
+    assert [(slug, name) for slug, name, _municipality, _department in projects] == list(BELLO_PROJECTS)
+    assert all(row[2:] == ("Bello", "Antioquia") for row in projects)
 
 
 def test_operational_writes_default_closed_until_explicit_opt_in(monkeypatch):
@@ -1705,6 +1726,15 @@ def test_version_chain_migration_backfills_previous_links(tmp_path):
 
     import sqlite3
 
+    seed = subprocess.run(
+        [
+            sys.executable, "-c",
+            "from app.cli import seed_bello_projects; raise SystemExit(seed_bello_projects())",
+        ],
+        cwd=PROJECT_DIR, env=env, capture_output=True, text=True, check=False,
+    )
+    assert seed.returncode == 0, seed.stdout + seed.stderr
+
     with sqlite3.connect(database) as connection:
         project_id = connection.execute("SELECT id FROM red_projects LIMIT 1").fetchone()[0]
         connection.execute(
@@ -1857,6 +1887,7 @@ def test_gps_capture_is_explicit_optional_validated_and_rendered_readably(client
 def test_public_readiness_requires_production_gate_and_verified_drive_backup(client, workspace, monkeypatch):
     from types import SimpleNamespace
 
+    assert app_cli.seed_bello_projects() == 0
     admin_id = workspace["user_ids"]["admin"]
     with SessionLocal() as session:
         session.add(DriveConnection(
@@ -2460,8 +2491,9 @@ def test_project_code_and_sequence_fields_are_generated_on_the_server(client, wo
     with SessionLocal() as session:
         records = list(session.scalars(select(FormRecord).where(FormRecord.project_id == project_id)))
         by_title = {row.title: row for row in records}
-        assert by_title["Ficha sintética"].payload["D01-001"] == "BEL-001"
-        assert by_title["Jornada sintética 1"].payload["D06-001"] == "BEL-001"
+        generated_project_code = by_title["Ficha sintética"].payload["D01-001"]
+        assert re.fullmatch(r"BEL-\d{3}", generated_project_code)
+        assert by_title["Jornada sintética 1"].payload["D06-001"] == generated_project_code
         assert by_title["Jornada sintética 1"].payload["D06-002"] == "1"
         assert by_title["Jornada sintética 2"].payload["D06-002"] == "2"
         assert by_title["Lote sintético"].payload["D07-002"] == "1"
@@ -3222,7 +3254,7 @@ def test_d04_point_id_is_server_assigned_and_visit_link_is_project_scoped(client
     record_id = saved.headers["location"].split("/records/")[-1].split("?")[0]
     with SessionLocal() as session:
         point = session.get(FormRecord, record_id)
-        assert point.payload["D04-001"].startswith("PUN-BEL-001-")
+        assert re.fullmatch(r"PUN-BEL-\d{3}-[A-F0-9]+", point.payload["D04-001"])
         assert point.payload["D04-001"] != "PUN-FAKE-999"
         assert point.payload["D04-020"] == visit_id
         stable_point_id = point.payload["D04-001"]
@@ -4562,11 +4594,13 @@ def test_project_csv_export_is_scoped_audited_and_safe_for_spreadsheets(client, 
     assert f"/projects/{own_project}/records/export.xlsx" in page.text
     response = client.get(f"/projects/{own_project}/records/export.csv")
     assert response.status_code == 200
-    assert "attachment; filename=\"greenatics-red-bello-parque-alto-registros.csv\"" == response.headers["content-disposition"]
+    with SessionLocal() as session:
+        own_project_slug = session.get(Project, own_project).slug
+    assert response.headers["content-disposition"] == f'attachment; filename="greenatics-red-{own_project_slug}-registros.csv"'
     assert response.headers["cache-control"] == "no-store, max-age=0"
     assert response.headers["x-content-type-options"] == "nosniff"
     rows = list(csv.DictReader(io.StringIO(response.content.decode("utf-8-sig"))))
-    assert rows and {row["Proyecto"] for row in rows} == {"bello-parque-alto"}
+    assert rows and {row["Proyecto"] for row in rows} == {own_project_slug}
     assert not any("dato de otro proyecto" in row["Valor"] for row in rows)
     malicious = next(row for row in rows if row["ID de campo"] == "D02-008")
     assert malicious["Valor"].startswith("'=HYPERLINK")
@@ -4588,7 +4622,7 @@ def test_project_csv_export_is_scoped_audited_and_safe_for_spreadsheets(client, 
     namespace = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     assert not sheet.findall(".//s:f", namespace)
     excel_text = [node.text or "" for node in sheet.findall(".//s:t", namespace)]
-    assert "bello-parque-alto" in excel_text
+    assert own_project_slug in excel_text
     assert "'=HYPERLINK(\"https://example.invalid\")" in excel_text
     assert "dato de otro proyecto" not in excel_text
     assert "D02-019" in excel_text
@@ -7714,7 +7748,7 @@ def test_form_draft_can_be_partial_but_blank_submission_is_blocked(client, works
     with SessionLocal() as session:
         record = session.scalar(select(FormRecord).where(FormRecord.project_id == project_id))
         assert record.status == "RAW"
-        assert record.payload["D01-001"] == "BEL-001"
+        assert re.fullmatch(r"BEL-\d{3}", record.payload["D01-001"])
         assert not any(str(value).strip() for key, value in record.payload.items() if key != "D01-001")
 
 
@@ -11086,17 +11120,6 @@ def test_restore_uses_empty_target_disables_old_accounts_and_restores_evidence(t
     target_engine = create_engine(f"sqlite:///{target_database}", connect_args={"check_same_thread": False})
     Base.metadata.create_all(target_engine)
     target_sessions = sessionmaker(bind=target_engine, autoflush=False, expire_on_commit=False)
-    with target_sessions() as target:
-        for index, (slug, name) in enumerate(zip(
-            ["bello-parque-alto", "bello-tulipanes", "bello-majagua", "bello-trigales"],
-            PROJECT_NAMES,
-        ), start=1):
-            target.add(Project(
-                slug=slug, name=name, municipality="Bello", department="Antioquia",
-                origin_note="Nombre recibido para estructurar uno de los primeros cuatro PMIRS. Dirección, datos y alcance pendientes de validación con la copropiedad.",
-            ))
-        target.commit()
-
     target_storage = tmp_path / "restored-private"
     result = backups.restore_backup_archive(
         archive_bytes,
