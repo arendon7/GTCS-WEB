@@ -251,6 +251,9 @@ def test_field_dashboard_lists_assigned_actions_and_only_own_recent_records(clie
                 data={"assignee_user_ids": [field_id]}, review_status="PENDING_REVIEW", created_by=field_id, updated_by=field_id,
             ),
         ])
+        session.add(ProjectMembership(
+            project_id=outside_project_id, user_id=field_id, role="campo", active=False,
+        ))
         own_record = FormRecord(
             project_id=project_id, form_code="D-03", title="Registro propio reciente",
             status="RAW", source_note="Fuente sintética para prueba.",
@@ -270,6 +273,7 @@ def test_field_dashboard_lists_assigned_actions_and_only_own_recent_records(clie
         session.add_all([own_record, peer_record, outside_record])
         session.commit()
         own_record_id = own_record.id
+        outside_record_id = outside_record.id
 
     sign_in(client, "field@red.test")
     dashboard = client.get("/")
@@ -277,6 +281,8 @@ def test_field_dashboard_lists_assigned_actions_and_only_own_recent_records(clie
     assert "Mis registros recientes" in dashboard.text
     assert "Registro propio reciente" in dashboard.text
     assert f'href="/records/{own_record_id}"' in dashboard.text
+    assert client.get(f"/records/{own_record_id}").status_code == 200
+    assert client.get(f"/records/{outside_record_id}").status_code == 404
     assert "Registro de otro operario" not in dashboard.text
     assert "Registro sin membresía activa" not in dashboard.text
     assert "Acción prioritaria de campo" in dashboard.text
