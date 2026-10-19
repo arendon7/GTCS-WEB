@@ -380,7 +380,9 @@ def test_demo_platform_admin_sees_four_empty_units_and_separate_training_project
         assert dashboard.status_code == 200
         assert "Mis expedientes" in dashboard.text
         assert "Copropiedades" in dashboard.text
-        assert "Bello, Antioquia" not in dashboard.text
+        assert "GREENATICS RED · PMIRS para propiedad horizontal" in dashboard.text
+        assert "GREENATICS RED · Bello, Antioquia" not in dashboard.text
+        assert "Bello, Antioquia · En preparación" in dashboard.text
         assert DEMO_PROJECT_NAME in dashboard.text
         for _slug, name in BELLO_PROJECTS:
             assert name in dashboard.text
