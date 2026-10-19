@@ -7,6 +7,7 @@ for (const product of [
 ]) {
   test(`synthetic ${product.unit} correction recovers errors and survives reload without rewriting production`, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
+    page.setDefaultTimeout(20_000);
     await page.goto("/production/new");
     await page.getByLabel("Producto terminado").selectOption(product.id);
     await page.getByLabel(/Cantidad producida/).fill("250");
@@ -81,7 +82,7 @@ for (const product of [
     await expect(production).toContainText(lotCode!);
     await expect(production).toContainText(`250 ${product.unit}`);
     await page.goto("/dashboard");
-    await page.getByLabel("Planta", { exact: true }).selectOption("tamesis");
+    await page.getByRole("combobox", { name: "Planta", exact: true }).selectOption("tamesis");
     const downloaded = page.waitForEvent("download");
     await page.getByRole("button", { name: "Exportar CSV", exact: true }).click();
     const file = await downloaded;
@@ -90,7 +91,7 @@ for (const product of [
     const [flow, currentStock] = csv.split("STOCK ACTUAL (snapshot, no depende del periodo)");
     expect(flow).toContain(`${product.name};${product.unit};250.00`);
     expect(currentStock).toContain(`${product.name};${product.unit};185.50;1`);
-    await page.getByLabel("Planta", { exact: true }).selectOption("yarumal");
+    await page.getByRole("combobox", { name: "Planta", exact: true }).selectOption("yarumal");
     await expect(page.getByLabel("Stock actual")).toContainText("Sin stock registrado.");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width + 2);
   });
