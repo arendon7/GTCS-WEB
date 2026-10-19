@@ -2163,6 +2163,7 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
         ) if project_ids else []
     startup_statuses = project_startup_form_statuses(session, [project.id for project in projects])
     rows = []
+    field_assignments = []
     for project in projects:
         role = roles_by_project.get(project.id, "lector")
         missing_baseline_forms = baseline_missing_forms(session, project.id)
@@ -2206,10 +2207,28 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
                 PMIRSItem.review_status == "PENDING_REVIEW",
             )) or 0
             row["pending_action_reviews"] = len(pending_pmirs_action_reviews(session, project.id))
+        elif role == "campo":
+            validated_actions = list(session.scalars(select(PMIRSItem).where(
+                PMIRSItem.project_id == project.id,
+                PMIRSItem.item_type == "accion",
+                PMIRSItem.review_status == "VALIDATED",
+            ).order_by(PMIRSItem.code)))
+            assigned = [item for item in validated_actions if field_user_assigned_to_action(item, user.id)]
+            for item in assigned:
+                field_assignments.append({"project": project, "action": item})
         rows.append(row)
+    if field_assignments:
+        priority_order = {"alta": 0, "media": 1, "baja": 2}
+        field_assignments.sort(key=lambda entry: (
+            priority_order.get((entry["action"].data or {}).get("priority", ""), 3),
+            (entry["action"].data or {}).get("due_date") or "9999-12-31",
+            entry["project"].name.casefold(),
+            entry["action"].code,
+        ))
     return templates.TemplateResponse(request=request, name="dashboard.html", context=page_context(
         request, projects=rows, notice=safe_notice(request), production_issues=settings.production_issues(),
-        storage_capacity=storage_capacity,
+        storage_capacity=storage_capacity, field_assignments=field_assignments[:20],
+        field_assignment_total=len(field_assignments),
     ))
 
 
