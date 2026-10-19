@@ -27,6 +27,17 @@ La ubicación común es Bello, Antioquia. No infieras que, por ser contiguos, co
 
 Cada persona debe iniciar sesión con su propia cuenta. El acceso se limita por perfil y membresía activa. Si no aparece un expediente o una acción, solicita a administración que revise tu asignación; no uses la cuenta de otra persona.
 
+### Alta y comprobación de una cuenta
+
+1. Administración RED confirma que está en el entorno aprobado y que las escrituras operativas están habilitadas. En la demostración local solo crea usuarios y datos sintéticos.
+2. En **Usuarios y accesos**, registra el nombre y correo de la persona, el conjunto exacto y el perfil de proyecto que necesita. Usa administración RED global solo para quien deba gestionar cuentas y acceder a todos los expedientes.
+3. RED genera un enlace de un solo uso que vence en siete días; **no envía un correo automáticamente**. Copia el enlace y entrégalo por el canal acordado. No envíes enlaces locales a personas que no puedan acceder a ese equipo.
+4. La persona abre el enlace, crea su contraseña individual y entra. Si ya tiene cuenta, confirma su contraseña actual para agregar el acceso.
+5. Antes de una jornada, administración confirma en **Usuarios y accesos** que la cuenta está activa y tiene la membresía correcta. La persona inicia sesión y verifica que ve solo el expediente asignado y las acciones que le corresponden.
+6. Si el enlace venció o se compartió con la persona equivocada, administración lo revoca y genera otro. Si se desactiva una cuenta, sus accesos a proyectos se revocan; reactivar la cuenta no los devuelve automáticamente.
+
+No compartas contraseñas ni uses cuentas comunes. La ausencia de una función en la pantalla no se resuelve elevando el rol sin revisar qué tarea necesita realizar la persona.
+
 ## 3. Antes de salir a campo
 
 ### Administración y consultoría
@@ -78,7 +89,7 @@ D-14 y los cálculos automáticos ayudan a revisar completitud; no demuestran po
 
 ## 5. Guardar, enviar y corregir
 
-- **Borrador:** guarda el trabajo incompleto para continuarlo más tarde. Comprueba que aparezca en el expediente.
+- **Borrador:** guarda el trabajo incompleto para continuarlo más tarde. Comprueba que aparezca en el expediente. En el inicio de campo, **Mis registros recientes** permite volver a los últimos registros creados por tu cuenta en proyectos donde conservas acceso activo de campo (hasta 12). El panel no es una bandeja compartida y no muestra registros creados por otros operarios.
 - **En revisión:** cuando la captura esté lista, usa la acción de envío disponible y confirma el estado. La persona revisora recibe el registro para QA/QC.
 - **Corrección solicitada:** abre el registro propio, lee el motivo, completa o aclara el punto indicado y vuelve a enviarlo. No crees un registro duplicado para ocultar una devolución.
 - **Pendiente de revisión:** puedes consultar el registro, pero no editarlo mientras esté en QA/QC.
