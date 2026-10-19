@@ -2164,6 +2164,7 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
     startup_statuses = project_startup_form_statuses(session, [project.id for project in projects])
     rows = []
     field_assignments = []
+    field_project_ids = []
     for project in projects:
         role = roles_by_project.get(project.id, "lector")
         missing_baseline_forms = baseline_missing_forms(session, project.id)
@@ -2208,6 +2209,7 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
             )) or 0
             row["pending_action_reviews"] = len(pending_pmirs_action_reviews(session, project.id))
         elif role == "campo":
+            field_project_ids.append(project.id)
             validated_actions = list(session.scalars(select(PMIRSItem).where(
                 PMIRSItem.project_id == project.id,
                 PMIRSItem.item_type == "accion",
@@ -2225,10 +2227,24 @@ def dashboard(request: Request, session: Session = Depends(get_db)):
             entry["project"].name.casefold(),
             entry["action"].code,
         ))
+    field_recent_records = []
+    if field_project_ids:
+        recent_records = list(session.scalars(select(FormRecord).where(
+            FormRecord.project_id.in_(field_project_ids),
+            FormRecord.created_by == user.id,
+        ).order_by(FormRecord.updated_at.desc()).limit(12)))
+        projects_by_id = {project.id: project for project in projects}
+        field_recent_records = [{
+            "project": projects_by_id[record.project_id],
+            "record": record,
+            "status_label": record_status_label(session, record),
+            "form_title": FORM_BY_CODE.get(record.form_code, {}).get("title", record.form_code),
+        } for record in recent_records if record.project_id in projects_by_id]
     return templates.TemplateResponse(request=request, name="dashboard.html", context=page_context(
         request, projects=rows, notice=safe_notice(request), production_issues=settings.production_issues(),
         storage_capacity=storage_capacity, field_assignments=field_assignments[:20],
-        field_assignment_total=len(field_assignments),
+        field_assignment_total=len(field_assignments), field_recent_records=field_recent_records,
+        is_field_operator=bool(field_project_ids),
     ))
 
 
