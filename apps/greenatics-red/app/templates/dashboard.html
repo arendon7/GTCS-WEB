@@ -40,7 +40,7 @@
 {% endif %}
 {% if field_assignments %}
 <section class="panel role-route" aria-labelledby="my-field-assignments-heading">
-  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="my-field-assignments-heading">Mis acciones asignadas</h2><p class="quiet">Acciones PMIRS validadas y asignadas a tu cuenta en expedientes a los que tienes acceso.</p></div><span class="count-badge">{{ field_assignment_total }} tareas</span></div>
+  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="my-field-assignments-heading">Mis acciones asignadas</h2><p class="quiet">Acciones PMIRS validadas y asignadas a tu cuenta en expedientes a los que tienes acceso.</p>{% if field_assignment_total > field_assignments|length %}<p class="quiet small">Se muestran las 20 más prioritarias. Las demás siguen disponibles dentro de su expediente.</p>{% endif %}</div><span class="count-badge">{{ field_assignment_total }} tareas</span></div>
   <div class="role-route-steps">
     {% for entry in field_assignments %}{% set action = entry.action %}
     <div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ entry.project.name }} · {{ action.code }} · {{ action.title }}</strong><small>Prioridad {{ action.data.priority or 'pendiente' }} · Fecha objetivo {{ action.data.due_date or 'sin fecha' }} · {{ action.data.progress_pct or 0 }}% · {{ action.data.execution_status|replace('_', ' ')|title }}</small></span><a class="button secondary" href="/projects/{{ entry.project.id }}/pmirs#action-{{ action.id }}">Abrir acción</a></div>
