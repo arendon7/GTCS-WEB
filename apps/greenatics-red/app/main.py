@@ -55,6 +55,7 @@ from .visit_authorizations import (
 from .docx_exports import build_form_record_docx, build_pmirs_version_docx
 from .export_notices import PMIRS_EXPORT_NOTICE, pmirs_project_identity_notice
 from .signature_integrity import (
+    current_verified_form_signatures,
     form_record_document_sha256 as _form_record_document_sha256,
     form_record_document_snapshot,
     form_record_snapshot_sha256,
@@ -6376,7 +6377,11 @@ def record_page(record_id: str, request: Request, session: Session = Depends(get
         FormSignature.record_id == record.id,
     ).order_by(FormSignature.signed_at)))
     record_hash = form_record_document_sha256(project, record, evidence)
-    record_signatures = [row for row in all_record_signatures if row.record_version == record.version and row.document_sha256 == record_hash and record_source_review_current(session, record)]
+    record_signatures = current_verified_form_signatures(
+        all_record_signatures, record_version=record.version, document_sha256=record_hash,
+    )
+    if not record_source_review_current(session, record):
+        record_signatures = []
     record_signatures_valid = record_source_review_current(session, record)
     field_labels = {field["id"]: field["label"] for field in form_spec["fields"]}
     can_review = record.form_code != "P-12" and (user.is_platform_admin or role == "revisor")
@@ -6489,8 +6494,12 @@ def export_form_record(record_id: str, request: Request, session: Session = Depe
     all_signatures = list(session.scalars(select(FormSignature).where(FormSignature.record_id == record.id).order_by(FormSignature.signed_at)))
     evidence = list(session.scalars(select(EvidenceFile).where(EvidenceFile.record_id == record.id).order_by(EvidenceFile.created_at)))
     document_hash = form_record_document_sha256(project, record, evidence)
-    current_signatures = [row for row in all_signatures if row.record_version == record.version and row.document_sha256 == document_hash and record_source_review_current(session, record)]
+    current_signatures = current_verified_form_signatures(
+        all_signatures, record_version=record.version, document_sha256=document_hash,
+    )
     signatures_valid = record_source_review_current(session, record)
+    if not signatures_valid:
+        current_signatures = []
     signatures = current_signatures
     audit_form_record_export(session, user=user, project=project, record=record, format_name="html",
                              signatures_valid=signatures_valid, signature_count=len(signatures), document_hash=document_hash)
@@ -6517,8 +6526,12 @@ def export_form_record_pdf(record_id: str, request: Request, session: Session = 
     all_signatures = list(session.scalars(select(FormSignature).where(FormSignature.record_id == record.id).order_by(FormSignature.signed_at)))
     evidence = list(session.scalars(select(EvidenceFile).where(EvidenceFile.record_id == record.id).order_by(EvidenceFile.created_at)))
     document_hash = form_record_document_sha256(project, record, evidence)
-    current_signatures = [row for row in all_signatures if row.record_version == record.version and row.document_sha256 == document_hash and record_source_review_current(session, record)]
+    current_signatures = current_verified_form_signatures(
+        all_signatures, record_version=record.version, document_sha256=document_hash,
+    )
     signatures_valid = record_source_review_current(session, record)
+    if not signatures_valid:
+        current_signatures = []
     signatures = current_signatures
     audit_form_record_export(session, user=user, project=project, record=record, format_name="pdf",
                              signatures_valid=signatures_valid, signature_count=len(signatures), document_hash=document_hash)
@@ -6551,11 +6564,12 @@ def export_form_record_docx(record_id: str, request: Request, session: Session =
         EvidenceFile.record_id == record.id,
     ).order_by(EvidenceFile.created_at)))
     document_hash = form_record_document_sha256(project, record, evidence)
-    current_signatures = [
-        row for row in all_signatures
-        if row.record_version == record.version and row.document_sha256 == document_hash and record_source_review_current(session, record)
-    ]
+    current_signatures = current_verified_form_signatures(
+        all_signatures, record_version=record.version, document_sha256=document_hash,
+    )
     signatures_valid = record_source_review_current(session, record)
+    if not signatures_valid:
+        current_signatures = []
     audit_form_record_export(
         session, user=user, project=project, record=record, format_name="docx",
         signatures_valid=signatures_valid, signature_count=len(current_signatures),
@@ -6614,6 +6628,7 @@ def sign_form_record(
     existing = session.scalar(select(FormSignature).where(
         FormSignature.record_id == record.id, FormSignature.signer_user_id == user.id,
         FormSignature.document_sha256 == current_document_hash,
+        FormSignature.snapshot_status == "verified",
     ))
     if existing:
         raise HTTPException(409, "Ya existe tu constancia para esta versión del registro.")

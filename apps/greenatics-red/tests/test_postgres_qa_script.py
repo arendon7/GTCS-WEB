@@ -40,7 +40,7 @@ def test_postgres_qa_resolves_the_current_alembic_head():
 
     current_head = ScriptDirectory.from_config(Config(str(APP_DIR / "alembic.ini"))).get_current_head()
     assert module.expected_migration_revision() == current_head
-    assert current_head == "0022_private_alembic_metadata"
+    assert current_head == "0023_verified_form_signature_uniqueness"
 
 
 def test_postgres_qa_requires_a_url_before_any_connection_attempt():

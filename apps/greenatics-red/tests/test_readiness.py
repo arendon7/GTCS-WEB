@@ -10341,6 +10341,62 @@ def test_field_record_signature_is_version_bound_exported_and_backed_up(client, 
     assert reader_response.status_code == 403
 
 
+def test_legacy_form_signature_is_hidden_but_does_not_block_fresh_signature(client, workspace):
+    project_id = workspace["project_ids"][0]
+    field_id = workspace["user_ids"]["field"]
+    with SessionLocal() as session:
+        record = FormRecord(
+            project_id=project_id, form_code="D-03", title="Registro sintético con firma heredada",
+            status="RAW", record_date="2026-10-10", source_kind="observado",
+            source_note="Fixture sintético para compatibilidad de firmas migradas.",
+            payload={"D03-001": "Escenario de prueba"}, created_by=field_id, updated_by=field_id,
+        )
+        session.add(record)
+        session.flush()
+        project = session.get(Project, project_id)
+        document_hash = app_main.form_record_document_sha256(project, record, [])
+        session.add(FormSignature(
+            project_id=project_id, record_id=record.id, record_version=record.version,
+            signer_user_id=field_id, signer_name="Firma heredada no verificable",
+            signer_email="field@red.test", signer_role="campo",
+            declaration="Fixture sintético legado; identidad y contenido originales no verificables.",
+            signature_path="M48.00,126.00 L96.00,72.00", document_sha256=document_hash,
+            document_snapshot=None, snapshot_status="legacy_unverifiable",
+        ))
+        session.commit()
+        record_id = record.id
+
+    sign_in(client, "field@red.test")
+    legacy_page = client.get(f"/records/{record_id}")
+    assert legacy_page.status_code == 200
+    assert "Firma heredada no verificable" not in legacy_page.text
+    assert 'id="record-signature-canvas"' in legacy_page.text
+    sign_data = rendered_decision_data(client, f"/records/{record_id}/sign", {
+        "csrf": csrf_for(client, f"/records/{record_id}"),
+        "confirm_signature": "yes", "password": PASSWORD,
+        "signature_strokes": json.dumps([[[.1, .7], [.5, .35], [.9, .7]]]),
+    })
+    response = client.post(f"/records/{record_id}/sign", data=sign_data, follow_redirects=False)
+    assert response.status_code == 303
+    with SessionLocal() as session:
+        rows = list(session.scalars(select(FormSignature).where(FormSignature.record_id == record_id)))
+        assert len(app_main.current_verified_form_signatures(rows, record_version=1, document_sha256=document_hash)) == 1
+    printable = client.get(f"/records/{record_id}/export")
+    assert "Firma heredada no verificable" not in printable.text and "Operario" in printable.text
+    pdf = client.get(f"/records/{record_id}/export.pdf")
+    pdf_text = "\n".join(page.extract_text() or "" for page in PdfReader(io.BytesIO(pdf.content)).pages)
+    assert "Firma heredada no verificable" not in pdf_text and "Operario" in pdf_text
+    docx = client.get(f"/records/{record_id}/export.docx")
+    with zipfile.ZipFile(io.BytesIO(docx.content)) as archive:
+        docx_text = archive.read("word/document.xml").decode("utf-8")
+    assert "Firma heredada no verificable" not in docx_text and "Operario" in docx_text
+    with SessionLocal() as session:
+        rows = list(session.scalars(select(FormSignature).where(FormSignature.record_id == record_id)))
+        assert len(rows) == 2
+        assert sum(row.snapshot_status == "verified" for row in rows) == 1
+        assert sum(row.snapshot_status == "legacy_unverifiable" for row in rows) == 1
+
+
 def test_signature_password_reauthentication_is_throttled_without_blocking_login(client, workspace):
     project_id = workspace["project_ids"][0]
     field_id = workspace["user_ids"]["field"]

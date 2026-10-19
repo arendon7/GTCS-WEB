@@ -70,6 +70,26 @@ def form_record_snapshot_sha256(snapshot: Mapping[str, Any]) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def current_verified_form_signatures(
+    signatures: list[Mapping[str, Any] | object],
+    *,
+    record_version: int,
+    document_sha256: str,
+) -> list[Mapping[str, Any] | object]:
+    """Return only signatures with a verifiable snapshot for the current revision."""
+    def value(row: Mapping[str, Any] | object, key: str, default: Any = None) -> Any:
+        return row.get(key, default) if isinstance(row, Mapping) else getattr(row, key, default)
+
+    return [
+        row for row in signatures
+        if value(row, "record_version") == record_version
+        and value(row, "document_sha256") == document_sha256
+        and value(row, "snapshot_status") == "verified"
+        and isinstance(value(row, "document_snapshot"), Mapping)
+        and form_record_snapshot_sha256(value(row, "document_snapshot")) == document_sha256
+    ]
+
+
 def form_record_document_sha256(
     project: Mapping[str, Any] | object,
     record: Mapping[str, Any] | object,

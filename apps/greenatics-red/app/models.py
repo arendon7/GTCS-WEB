@@ -150,7 +150,14 @@ class FormRevision(Base):
 class FormSignature(Base):
     """Authenticated handwritten acknowledgement bound to one exact form-record version."""
     __tablename__ = "red_form_signatures"
-    __table_args__ = (UniqueConstraint("record_id", "signer_user_id", "document_sha256", name="uq_red_form_signature_signer_document"),)
+    __table_args__ = (
+        Index(
+            "uq_red_form_signature_verified_document", "record_id", "signer_user_id", "document_sha256",
+            unique=True,
+            sqlite_where=text("snapshot_status = 'verified'"),
+            postgresql_where=text("snapshot_status = 'verified'"),
+        ),
+    )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     project_id: Mapped[str] = mapped_column(ForeignKey("red_projects.id", ondelete="CASCADE"), index=True)
     record_id: Mapped[str] = mapped_column(ForeignKey("red_form_records.id", ondelete="CASCADE"), index=True)

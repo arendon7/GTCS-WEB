@@ -91,7 +91,7 @@ def test_fresh_alembic_install_keeps_customer_projects_empty_and_rerunnable(tmp_
     engine.dispose()
 
     assert [(row.slug, row.name) for row in rows] == [("qa-synthetic-project", "Conjunto QA sintético")]
-    assert applied_revisions[-1] == "0022_private_alembic_metadata"
+    assert applied_revisions[-1] == "0023_verified_form_signature_uniqueness"
     with create_engine(f"sqlite:///{database_path}").connect() as connection:
         assert connection.execute(text("PRAGMA table_info(red_pmirs_signatures)")).all()
         assert connection.execute(text("PRAGMA table_info(red_form_signatures)")).all()
@@ -531,7 +531,7 @@ def test_upgrade_from_legacy_0008_preserves_form_and_pmirs_history(tmp_path):
         )).one()
     engine.dispose()
 
-    assert revision == "0022_private_alembic_metadata"
+    assert revision == "0023_verified_form_signature_uniqueness"
     assert record == ("synthetic-record", "D-01", "D-01 sintético de migración", 1)
     assert form_revision_count == 1
     assert item == ("synthetic-item", "hallazgo", "H-TEST-001", "Hallazgo sintético", 1)
