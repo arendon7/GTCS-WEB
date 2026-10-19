@@ -8,6 +8,7 @@ import { useMaintenanceStore } from "@/components/maintenance-store";
 import { useCompostStore } from "@/components/compost-store";
 import { buildOperationalAnalytics } from "@/lib/analytics";
 import { getRejectionPct, type AcceptanceStatus } from "@/lib/domain";
+import { formatDowntime, getDowntimeMinutes, maintenanceFailureTypeLabels, prioritizeActiveMaintenanceTickets } from "@/lib/maintenance-domain";
 import { bogotaDateKey, bogotaTime } from "@/lib/time";
 import { getTodaySourceControl } from "@/lib/today-source-control";
 
@@ -43,7 +44,7 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
   const delayed = activities.filter((activity) => (activity.status === "delayed" || activity.status === "missed") && bogotaDateKey(activity.plannedStart) === currentDateKey);
   const nonConforming = todayReceptions.filter((reception)=>reception.acceptance === "conditioned" || reception.acceptance === "partial_rejection" || reception.acceptance === "rejected");
   const openIncidents = incidents.filter((incident) => incident.status === "open");
-  const activeMaintenance = tickets.filter((ticket) => ticket.status !== "closed");
+  const activeMaintenance = useMemo(() => prioritizeActiveMaintenanceTickets(tickets, nowIso), [tickets, nowIso]);
   const currentAttentionCount = activeMaintenance.length + openIncidents.length + nonConforming.length + delayed.length;
   const dayLabel = dayFormatter.format(new Date(nowIso));
   const sourceControl = getTodaySourceControl(backend, ready);
@@ -78,7 +79,7 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
       <section className="panel" id="alertas">
         <div className="section-head"><div><p className="eyebrow">Atención</p><h2>Excepciones</h2></div><strong className="alert-count">{currentAttentionCount}</strong></div>
         <div className="alert-list">
-          {activeMaintenance.map((ticket) => { const asset = equipment.find((item) => item.id === ticket.equipmentId); return <Link className="alert-row no-underline" href={`/equipment/${ticket.equipmentId}`} key={`maintenance-${ticket.id}`}><StatusPill status={ticket.severity}/><strong>{asset ? `${asset.code} · ${asset.name}` : "Equipo"} · {ticket.title}</strong><span>{ticket.status === "repairing" ? "En reparación" : "Detenido"} · {ticket.plant}</span></Link>; })}
+          {activeMaintenance.map((ticket) => { const asset = equipment.find((item) => item.id === ticket.equipmentId); return <Link className="alert-row no-underline" href={`/equipment/${ticket.equipmentId}`} key={`maintenance-${ticket.id}`}><StatusPill status={ticket.severity}/><strong>{asset ? `${asset.code} · ${asset.name}` : "Equipo"} · {ticket.title}</strong><span>{ticket.status === "repairing" ? "En reparación" : "Detenido"} · {maintenanceFailureTypeLabels[ticket.failureType ?? "other"]} · {formatDowntime(getDowntimeMinutes(ticket, nowIso))} fuera de servicio · {ticket.plant}</span></Link>; })}
           {openIncidents.map((incident) => <div className="alert-row" key={incident.id}><StatusPill status={incident.severity}/><strong>{incident.title}</strong><span>{incident.detail} · {incident.plant}</span></div>)}
           {nonConforming.map((reception)=><Link className="alert-row no-underline" href="/receptions" key={reception.id}><span className="status-pill status-medium">{statusLabel[reception.acceptance]}</span><strong>{reception.lotCode} · {getRejectionPct(reception).toFixed(1)} % rechazo</strong><span>{reception.generator} · {reception.plant}</span></Link>)}
           {delayed.map((activity) => <Link className="alert-row no-underline" href={`/activities/${activity.id}`} key={activity.id}><StatusPill status={activity.status}/><strong>{activity.title}</strong><span>Actividad programada pendiente · {activity.plant}</span></Link>)}
