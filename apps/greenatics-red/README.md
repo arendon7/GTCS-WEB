@@ -36,13 +36,15 @@ zsh Abrir_DEMO_RED.command
 
 El lanzador abre `http://127.0.0.1:18797/login` en el navegador y muestra dónde quedaron las credenciales aleatorias para seis perfiles sintéticos. No copies esas credenciales a chats, repositorios o cuentas reales. Para cerrar y borrar la base temporal, los archivos y las credenciales, pulsa `Ctrl+C` en la ventana de Terminal.
 
+Al ingresar como administración RED verás los cuatro expedientes iniciales vacíos y un quinto expediente claramente rotulado DEMO. Las cuentas sintéticas de campo, revisión, consultoría, administración PH y lectura solo tienen acceso al expediente DEMO; los cuatro expedientes residenciales no reciben membresías, formularios, autorizaciones ni evidencias. Los datos ficticios de práctica viven solo en DEMO.
+
 También puedes iniciar la DEMO manualmente con:
 
 ```sh
 .venv/bin/python scripts/run_synthetic_field_demo.py --full-training-scenario --with-progress-history
 ```
 
-La DEMO es local, efímera y aislada. Conserva datos mientras ese proceso está activo; al detenerlo se borran la base, los archivos y las credenciales. No requiere Git ni Command Line Tools una vez instalado el entorno Python. No prueba persistencia en hosting, uso en teléfono físico, OAuth/Drive ni operación real.
+La DEMO es local, efímera y aislada. Los cuatro expedientes permanecen vacíos y separados del proyecto de práctica; al detener el proceso se borran la base, los archivos y las credenciales. No requiere Git ni Command Line Tools una vez instalado el entorno Python. No prueba persistencia en hosting, uso en teléfono físico, OAuth/Drive ni operación real.
 
 ## Verificar el candidato local
 
@@ -71,6 +73,8 @@ python -m app.cli bootstrap-admin --email admin@greenatics.local --name "Adminis
 ```
 
 El primer comando crea únicamente los cuatro expedientes vacíos indicados por el usuario; no crea registros, asigna personas ni confirma identidad, dirección o alcance. Antes de datos de trabajo, cada administración debe validar esos datos y autorizar el acceso. El segundo comando solicita la contraseña de forma interactiva; usa una cuenta y correo aprobados para el entorno, no el ejemplo literal.
+
+El alistamiento tiene cuatro fichas separadas, con los 27 controles de preparación pendientes para cada unidad. Sirven para solicitar y trazar fuentes antes de diligenciarlas en RED; no sustituyen formularios, validación técnica ni aprobación de la copropiedad.
 
 ## Antes de un piloto
 
