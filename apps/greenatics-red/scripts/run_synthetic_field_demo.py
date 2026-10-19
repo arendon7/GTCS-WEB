@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Run a disposable, local-only RED training workspace for field workflows.
 
-The database contains only a prominently labeled DEMO project. Its synthetic
-visit approval is intentionally scoped to that disposable workspace and is not
-evidence of access, privacy, method, or SST approval for any real copropiedad.
+The temporary database contains four empty Bello workspaces and one prominently
+labeled DEMO project. Synthetic training records and authorizations belong only
+to that disposable DEMO workspace; they do not evidence access, privacy, method,
+or SST approval for any real copropiedad.
 """
 
 from __future__ import annotations
@@ -243,7 +244,7 @@ def _seed_accepted_synthetic_baseline(session, project, users) -> None:
 def seed_demo_workspace(
     session, passwords: dict[str, str], *, include_accepted_synthetic_baseline: bool = False,
 ) -> tuple[str, dict[str, str]]:
-    """Seed only an empty database; refuse to mix the demo with any workspace."""
+    """Seed four empty Bello workspaces beside one isolated synthetic workspace."""
     from sqlalchemy import func, select
 
     from app.models import (
@@ -268,22 +269,34 @@ def seed_demo_workspace(
     if existing_projects:
         expected_projects = dict(BELLO_PROJECTS)
         if {project.slug for project in existing_projects} != set(expected_projects):
-            raise ValueError("El entorno DEMO solo puede reemplazar los cuatro expedientes iniciales vacíos.")
+            raise ValueError("El entorno DEMO solo puede conservar los cuatro expedientes iniciales vacíos.")
         try:
             _validate_pristine_seed_projects(existing_projects)
         except ValueError as exc:
-            raise ValueError("Un expediente inicial ya fue personalizado; no se reemplazará por DEMO.") from exc
+            raise ValueError("Un expediente inicial ya fue personalizado; no se agregará el sandbox DEMO.") from exc
         for table in Base.metadata.sorted_tables:
             # The pristine mutex is infrastructure seeded by migrations, not
             # operational content. Preserve it after checking its exact state.
             if table.name in {Project.__tablename__, EvidenceQuotaLock.__tablename__, "alembic_version"}:
                 continue
             if session.scalar(select(func.count()).select_from(table)):
-                raise ValueError("La base contiene información RED; el sandbox DEMO no la reemplazará.")
-        for project in existing_projects:
-            session.delete(project)
+                raise ValueError("La base contiene información RED; el sandbox DEMO no la modificará.")
+    else:
+        for slug, name in BELLO_PROJECTS:
+            session.add(Project(
+                slug=slug,
+                name=name,
+                municipality="Bello",
+                department="Antioquia",
+                status="preparacion",
+                baseline_status="no_iniciada",
+                origin="instruccion_usuario",
+                origin_note=(
+                    "Nombre suministrado por el usuario; pendiente de validar con la copropiedad. "
+                    "Expediente inicial vacío, sin datos operativos precargados."
+                ),
+            ))
         session.flush()
-
     project = Project(
         slug=DEMO_PROJECT_SLUG,
         name=DEMO_PROJECT_NAME,
