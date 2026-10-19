@@ -385,6 +385,40 @@ def test_demo_platform_admin_sees_four_empty_units_and_separate_training_project
     finally:
         Base.metadata.drop_all(app_engine)
 
+
+def test_demo_seed_preserves_existing_pristine_unit_workspaces():
+    engine = create_engine("sqlite://")
+    Base.metadata.create_all(engine)
+    passwords = {role: f"synthetic-{role}-password" for role in DEMO_ROLES}
+    try:
+        with Session(engine) as session:
+            for slug, name in BELLO_PROJECTS:
+                session.add(Project(
+                    slug=slug,
+                    name=name,
+                    municipality="Bello",
+                    department="Antioquia",
+                    status="preparacion",
+                    baseline_status="no_iniciada",
+                    origin="instruccion_usuario",
+                    origin_note=(
+                        "Nombre suministrado por el usuario; pendiente de validar con la copropiedad. "
+                        "Expediente inicial vacío, sin datos operativos precargados."
+                    ),
+                ))
+            session.commit()
+            before = {project.slug: project.id for project in session.scalars(select(Project))}
+
+            demo_id, _emails = seed_demo_workspace(session, passwords)
+
+            after = {project.slug: project.id for project in session.scalars(select(Project))}
+            assert after[DEMO_PROJECT_SLUG] == demo_id
+            assert len(after) == 5
+            assert all(after[slug] == before[slug] for slug, _name in BELLO_PROJECTS)
+    finally:
+        Base.metadata.drop_all(engine)
+        engine.dispose()
+
 def test_demo_seed_keeps_four_empty_unit_workspaces_separate_from_synthetic_training():
     engine = create_engine("sqlite://")
     Base.metadata.create_all(engine)
