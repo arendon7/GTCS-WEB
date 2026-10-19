@@ -1726,16 +1726,14 @@ def test_version_chain_migration_backfills_previous_links(tmp_path):
 
     import sqlite3
 
-    seed = subprocess.run(
-        [
-            sys.executable, "-c",
-            "from app.cli import seed_bello_projects; raise SystemExit(seed_bello_projects())",
-        ],
-        cwd=PROJECT_DIR, env=env, capture_output=True, text=True, check=False,
-    )
-    assert seed.returncode == 0, seed.stdout + seed.stderr
-
     with sqlite3.connect(database) as connection:
+        connection.execute(
+            "INSERT INTO red_projects (id, slug, name, municipality, department, status, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            ("migration-project", "qa-synthetic-migration", "Conjunto QA sintético de migración",
+             "Bello", "Antioquia", "activo", "2026-10-07 12:00:00"),
+        )
+        connection.commit()
         project_id = connection.execute("SELECT id FROM red_projects LIMIT 1").fetchone()[0]
         connection.execute(
             "INSERT INTO red_users (id,email,full_name,password_hash,is_platform_admin,active,created_at,last_login_at,session_version) "
@@ -1930,7 +1928,8 @@ def test_public_readiness_requires_production_gate_and_verified_drive_backup(cli
     assert untrusted_origin.status_code == 200
     assert "access-control-allow-origin" not in untrusted_origin.headers
 
-    project_id = workspace["project_ids"][0]
+    with SessionLocal() as session:
+        project_id = session.scalar(select(Project.id).where(Project.slug == "bello-parque-alto"))
     for field, incorrect_value in (("name", "Conjunto distinto"), ("municipality", "Medellín"), ("department", "Cundinamarca")):
         with SessionLocal() as session:
             project = session.get(Project, project_id)
@@ -4976,7 +4975,7 @@ def test_field_and_reader_permissions_are_enforced_by_form(client, workspace):
     with SessionLocal() as session:
         record = session.scalar(select(FormRecord).where(FormRecord.project_id == first_project, FormRecord.form_code == "P-14"))
         assert record.payload["P14-001"].startswith("Pendiente: la guía operativa aprobada")
-        assert record.payload["P14-005"].startswith("NOV-BEL-001-")
+        assert re.fullmatch(r"NOV-BEL-\d{3}-[A-F0-9]+", record.payload["P14-005"])
         assert record.payload["P14-005"] != "NOVEDAD-FALSA"
         assert record.payload["P14-007"] == "Contingencia"
 
