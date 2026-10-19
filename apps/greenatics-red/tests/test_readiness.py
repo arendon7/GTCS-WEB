@@ -1728,10 +1728,13 @@ def test_version_chain_migration_backfills_previous_links(tmp_path):
 
     with sqlite3.connect(database) as connection:
         connection.execute(
-            "INSERT INTO red_projects (id, slug, name, municipality, department, status, created_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO red_projects "
+            "(id, slug, name, municipality, department, status, baseline_status, baseline_reference, "
+            "baseline_note, origin, origin_note, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             ("migration-project", "qa-synthetic-migration", "Conjunto QA sintético de migración",
-             "Bello", "Antioquia", "activo", "2026-10-07 12:00:00"),
+             "Bello", "Antioquia", "activo", "no_iniciada", "", "",
+             "instruccion_usuario", "Expediente de prueba sintética para migración.", "2026-10-07 12:00:00"),
         )
         connection.commit()
         project_id = connection.execute("SELECT id FROM red_projects LIMIT 1").fetchone()[0]
