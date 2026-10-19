@@ -7094,6 +7094,57 @@ def test_invitation_cannot_change_or_reactivate_an_existing_project_membership(
         )) is None
 
 
+def test_expired_invitation_cannot_be_opened_or_accepted(client, workspace):
+    project_id = workspace["project_ids"][0]
+    invited_email = "expired.field@red.test"
+    sign_in(client, "admin@red.test")
+    created = client.post(
+        "/admin/invitations",
+        data={
+            "csrf": csrf_for(client, "/admin/users"),
+            "email": invited_email,
+            "full_name": "Invitación vencida sintética",
+            "project_id": project_id,
+            "role": "campo",
+        },
+    )
+    assert created.status_code == 200
+    invitation_url = re.search(r'id="invite-link" readonly value="([^"]+)"', created.text).group(1)
+    token = invitation_url.rsplit("/", 1)[-1]
+
+    with SessionLocal() as session:
+        invitation = session.scalar(select(Invitation).where(Invitation.email == invited_email))
+        assert invitation is not None and invitation.accepted_at is None
+        invitation_id = invitation.id
+        invitation.expires_at = now_utc() - timedelta(seconds=1)
+        session.commit()
+
+    from fastapi.testclient import TestClient
+    from app.main import app
+
+    with TestClient(app) as invitee:
+        assert invitee.get(invitation_url).status_code == 410
+        accepted = invitee.post(
+            f"/invitations/accept/{token}",
+            data={
+                "csrf": csrf_for(invitee),
+                "password": PASSWORD,
+                "password_confirm": PASSWORD,
+            },
+            follow_redirects=False,
+        )
+        assert accepted.status_code == 410
+
+    with SessionLocal() as session:
+        invitation = session.get(Invitation, invitation_id)
+        assert invitation is not None and invitation.accepted_at is None
+        assert session.scalar(select(User.id).where(User.email == invited_email)) is None
+        assert session.scalar(select(ProjectMembership.id).where(
+            ProjectMembership.project_id == project_id,
+            ProjectMembership.user_id.in_(select(User.id).where(User.email == invited_email)),
+        )) is None
+
+
 def test_pending_invitation_can_be_revoked_and_token_is_invalidated(client, workspace):
     project_id = workspace["project_ids"][0]
     sign_in(client, "admin@red.test")
