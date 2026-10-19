@@ -376,6 +376,11 @@ def test_demo_platform_admin_sees_four_empty_units_and_separate_training_project
             follow_redirects=False,
         )
         assert response.status_code == 303
+        new_project = client.get("/admin/projects/new")
+        assert new_project.status_code == 200
+        assert 'name="municipality" required placeholder="Municipio"' in new_project.text
+        assert 'name="department" required placeholder="Departamento"' in new_project.text
+        assert 'name="municipality" value="Bello"' not in new_project.text
         dashboard = client.get("/")
         assert dashboard.status_code == 200
         assert "Mis expedientes" in dashboard.text
