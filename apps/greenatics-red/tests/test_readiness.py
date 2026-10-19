@@ -3976,6 +3976,7 @@ def test_project_page_shows_role_specific_work_routes(client, workspace):
     assert "D-02 · Recopila la información previa de administración" in startup_route.group(1)
     assert startup_route.group(1).count("Sin registro") == 2
     assert "Vigente hasta" in startup_route.group(1)
+    assert "Preparar la primera reunión con la administración" not in startup_route.group(1)
     assert f"/projects/{project_id}/records/new?form_code=D-01" not in startup_route.group(1)
     assert "Captura la visita con evidencia" in field_page.text
     assert "Actor del formato fuente: Brigadista ECO ABURRÁ" in field_page.text
@@ -4014,6 +4015,11 @@ def test_project_page_shows_role_specific_work_routes(client, workspace):
         consultant_page.text, re.DOTALL,
     )
     assert consultant_startup
+    assert "Preparar la primera reunión con la administración" in consultant_startup.group(1)
+    assert 'href="#project-identity"' in consultant_startup.group(1)
+    assert 'href="#visit-authorization"' in consultant_startup.group(1)
+    assert "no completes vacíos con supuestos" in consultant_startup.group(1)
+    assert "No hagas mediciones ni capturas reales" in consultant_startup.group(1)
     assert f"/projects/{project_id}/records/new?form_code=D-01" in consultant_startup.group(1)
     assert f"/projects/{project_id}/records/new?form_code=D-02" in consultant_startup.group(1)
     assert "La vigencia del permiso y el cumplimiento" in consultant_startup.group(1)
