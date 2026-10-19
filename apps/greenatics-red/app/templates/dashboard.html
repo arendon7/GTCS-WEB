@@ -48,6 +48,25 @@
   </div>
 </section>
 {% endif %}
+{% if is_field_operator %}
+<section class="panel table-panel field-recent-records" aria-labelledby="my-recent-records-heading">
+  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="my-recent-records-heading">Mis registros recientes</h2><p class="quiet">Registros creados por tu cuenta en copropiedades donde tienes acceso de campo. Puedes abrirlos para revisar su estado o continuar un borrador.</p></div><span class="count-badge">{{ field_recent_records|length }} recientes</span></div>
+  {% if field_recent_records %}
+  <div class="record-list">
+    {% for entry in field_recent_records %}
+    <a class="record-row" href="/records/{{ entry.record.id }}">
+      <span class="form-code">{{ entry.record.form_code }}</span>
+      <span class="grow"><strong>{{ entry.record.title }}</strong><small>{{ entry.project.name }} · {{ entry.record.record_date or entry.record.updated_at.strftime('%d/%m/%Y') }} · Versión {{ entry.record.version }}</small><small>{{ entry.form_title.split('—')[-1].strip() }}</small></span>
+      <span class="status-pill {% if entry.record.status == 'VALIDATED' %}status-ok{% elif entry.record.status == 'CORRECTION_REQUESTED' %}status-attention{% else %}status-raw{% endif %}">{{ entry.status_label }}</span>
+      <span class="row-arrow" aria-hidden="true">↗</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><h3>Aún no tienes registros</h3><p>Cuando guardes un formulario en una copropiedad asignada, aparecerá aquí para que puedas retomarlo.</p></div>
+  {% endif %}
+</section>
+{% endif %}
 <section class="panel table-panel" aria-labelledby="projects-heading">
   <div class="section-head"><div><h2 id="projects-heading">Copropiedades</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} expedientes</span></div>
   {% if projects %}
