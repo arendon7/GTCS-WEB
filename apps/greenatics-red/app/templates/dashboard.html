@@ -2,7 +2,7 @@
 {% block title %}Proyectos{% endblock %}
 {% block content %}
 <header class="page-header">
-      <div><p class="eyebrow">GREENATICS RED · Bello, Antioquia</p><h1>Mis conjuntos</h1><p class="lede">Abre un expediente para continuar el trabajo de esa copropiedad.</p></div>
+      <div><p class="eyebrow">GREENATICS RED · PMIRS para propiedad horizontal</p><h1>Mis expedientes</h1><p class="lede">Abre un expediente para continuar el trabajo de esa copropiedad.</p></div>
   <div class="header-actions">
     {% if user.is_platform_admin and red_operational_writes_enabled() %}<a class="button primary" href="/admin/projects/new">Agregar proyecto</a>{% elif user.is_platform_admin %}<span class="quiet" aria-disabled="true">Crear proyectos está deshabilitado en modo consulta.</span>{% endif %}
   </div>
@@ -39,7 +39,7 @@
 </details>
 {% endif %}
 <section class="panel table-panel" aria-labelledby="projects-heading">
-  <div class="section-head"><div><h2 id="projects-heading">Conjuntos</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} conjuntos</span></div>
+  <div class="section-head"><div><h2 id="projects-heading">Copropiedades</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} expedientes</span></div>
   {% if projects %}
     <div class="project-list">
       {% for row in projects %}
