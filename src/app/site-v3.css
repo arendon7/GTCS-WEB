@@ -22,6 +22,12 @@ main [id] {
   gap: 8px;
 }
 
+/* Keep the full navigation only while it fits beside the header actions. */
+@media (min-width: 1401px) and (max-width: 1600px) {
+  .site-header .desktop-nav { display: none; }
+  .site-header .mobile-toggle-btn { display: block; }
+}
+
 .site-header .brand-link {
   padding: 7px 11px;
   border-radius: 10px;
