@@ -10,6 +10,7 @@ from app.models import (
     AuditEvent, Base, EvidenceFile, EvidenceQuotaLock, PMIRSItem, PMIRSItemRevision, PMIRSSignature, PMIRSVersion,
     Project, ProjectMembership, ProjectVisitAuthorization, User,
 )
+from app.initial_projects import BELLO_PROJECTS
 from app.visit_authorizations import visit_authorization_active
 from scripts.run_synthetic_field_demo import (
     DEMO_PROJECT_NAME, DEMO_PROJECT_SLUG, DEMO_ROLES, PROJECT_DIR,
@@ -335,7 +336,12 @@ def test_demo_launcher_accepts_fresh_migrations_and_rejects_stale_revision(tmp_p
                 session, {role: f"synthetic-{role}-password" for role in DEMO_ROLES},
             )
             assert session.get(Project, project_id).slug == DEMO_PROJECT_SLUG
-            assert len(list(session.scalars(select(Project)))) == 1
+            seeded_projects = list(session.scalars(select(Project)))
+            assert len(seeded_projects) == 5
+            assert {project.slug for project in seeded_projects} == {
+                *(slug for slug, _name in BELLO_PROJECTS),
+                DEMO_PROJECT_SLUG,
+            }
             assert set(emails) == set(DEMO_ROLES)
             assert session.execute(select(EvidenceQuotaLock.id, EvidenceQuotaLock.generation)).all() == [(1, 0)]
     finally:
@@ -349,7 +355,37 @@ def test_demo_migration_check_does_not_create_a_missing_database(tmp_path):
     assert not missing.exists()
 
 
-def test_demo_seed_is_one_project_with_only_synthetic_roles_and_authorization():
+def test_demo_platform_admin_sees_four_empty_units_and_separate_training_project(client):
+    import re
+
+    from app.db import SessionLocal, engine as app_engine
+
+    Base.metadata.drop_all(app_engine)
+    Base.metadata.create_all(app_engine)
+    passwords = {role: f"synthetic-{role}-password" for role in DEMO_ROLES}
+    try:
+        with SessionLocal() as session:
+            seed_demo_workspace(session, passwords)
+
+        login = client.get("/login")
+        csrf = re.search(r'name="csrf" value="([^\"]+)"', login.text)
+        assert login.status_code == 200 and csrf
+        response = client.post(
+            "/login",
+            data={"email": DEMO_ROLES["admin"][0], "password": passwords["admin"], "csrf": csrf.group(1)},
+            follow_redirects=False,
+        )
+        assert response.status_code == 303
+        dashboard = client.get("/")
+        assert dashboard.status_code == 200
+        assert DEMO_PROJECT_NAME in dashboard.text
+        for _slug, name in BELLO_PROJECTS:
+            assert name in dashboard.text
+        assert dashboard.text.count("Sin registro") >= 4
+    finally:
+        Base.metadata.drop_all(app_engine)
+
+def test_demo_seed_keeps_four_empty_unit_workspaces_separate_from_synthetic_training():
     engine = create_engine("sqlite://")
     Base.metadata.create_all(engine)
     passwords = {role: f"synthetic-{role}-password" for role in DEMO_ROLES}
@@ -357,12 +393,23 @@ def test_demo_seed_is_one_project_with_only_synthetic_roles_and_authorization():
         with Session(engine) as session:
             project_id, emails = seed_demo_workspace(session, passwords)
             projects = list(session.scalars(select(Project)))
-            assert [(project.slug, project.name) for project in projects] == [
-                (DEMO_PROJECT_SLUG, DEMO_PROJECT_NAME),
-            ]
-            assert all(project.origin == "synthetic_demo" for project in projects)
-            assert "no representa una copropiedad" in projects[0].origin_note.casefold()
-            assert projects[0].baseline_status == "no_iniciada"
+            by_slug = {project.slug: project for project in projects}
+            assert len(projects) == 5
+            assert (by_slug[DEMO_PROJECT_SLUG].name, by_slug[DEMO_PROJECT_SLUG].origin) == (
+                DEMO_PROJECT_NAME, "synthetic_demo",
+            )
+            assert "no representa una copropiedad" in by_slug[DEMO_PROJECT_SLUG].origin_note.casefold()
+            assert by_slug[DEMO_PROJECT_SLUG].baseline_status == "no_iniciada"
+            for slug, name in BELLO_PROJECTS:
+                workspace = by_slug[slug]
+                assert workspace.name == name
+                assert workspace.municipality == "Bello" and workspace.department == "Antioquia"
+                assert workspace.status == "preparacion"
+                assert workspace.baseline_status == "no_iniciada"
+                assert workspace.baseline_reference == "" and workspace.baseline_note == ""
+                assert workspace.identity_status == "pendiente" and workspace.address == ""
+                assert workspace.origin == "instruccion_usuario"
+                assert "expediente inicial vacío" in workspace.origin_note.casefold()
 
             users = list(session.scalars(select(User)))
             assert len(users) == len(DEMO_ROLES)
@@ -375,6 +422,8 @@ def test_demo_seed_is_one_project_with_only_synthetic_roles_and_authorization():
                 "consultor", "campo", "revisor", "administracion_ph", "lector",
             }
             assert {membership.project_id for membership in memberships} == {project_id}
+            assert session.scalar(select(ProjectVisitAuthorization.project_id)) == project_id
+            assert not list(session.scalars(select(PMIRSItem.project_id).where(PMIRSItem.project_id != project_id)))
 
             authorization = session.scalar(select(ProjectVisitAuthorization))
             assert authorization is not None
@@ -835,7 +884,7 @@ def test_demo_seed_refuses_to_replace_an_existing_qa_project(field, value):
             setattr(project, field, value)
             session.commit()
 
-            with pytest.raises(ValueError, match="solo puede reemplazar"):
+            with pytest.raises(ValueError, match="solo puede conservar"):
                 seed_demo_workspace(session, passwords)
             assert getattr(session.get(Project, project.id), field) == value
             assert len(list(session.scalars(select(Project)))) == 1
