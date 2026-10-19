@@ -18,23 +18,35 @@ El catálogo cuenta con **30 formularios y 342 campos** para diagnóstico, carac
 
 Las invitaciones se generan en la aplicación y el administrador comparte el enlace manualmente; RED no envía correos. Las firmas y aprobaciones sintéticas de la DEMO solo sirven para practicar. No acreditan identidad, autorización de una copropiedad ni aprobación profesional.
 
-## Recorrer la DEMO local
+## Recorrer la DEMO local en macOS
 
-Requiere Python 3.12. Desde esta carpeta, prepara el entorno e inicia un sandbox de capacitación con una base y archivos temporales:
+Requiere Python 3.12. Desde la raíz del repositorio, prepara una sola vez el entorno aislado de RED:
 
 ```sh
+cd apps/greenatics-red
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
+```
+
+Para abrir la DEMO de capacitación, desde la misma carpeta ejecuta:
+
+```sh
+zsh Abrir_DEMO_RED.command
+```
+
+El lanzador abre `http://127.0.0.1:18797/login` en el navegador y muestra dónde quedaron las credenciales aleatorias para seis perfiles sintéticos. No copies esas credenciales a chats, repositorios o cuentas reales. Para cerrar y borrar la base temporal, los archivos y las credenciales, pulsa `Ctrl+C` en la ventana de Terminal.
+
+También puedes iniciar la DEMO manualmente con:
+
+```sh
 .venv/bin/python scripts/run_synthetic_field_demo.py --full-training-scenario --with-progress-history
 ```
 
-Abre `http://127.0.0.1:18797/login`. La terminal indica dónde quedó el archivo privado con las credenciales aleatorias para los seis perfiles sintéticos. No copies esas credenciales a chats, repositorios o cuentas reales. Para cerrar y eliminar el sandbox, pulsa `Ctrl+C` en la terminal.
-
-La DEMO es local, efímera y aislada. Conserva datos mientras ese proceso está activo; al detenerlo se borran la base, los archivos y las credenciales. No prueba persistencia en un hosting, uso en teléfono físico, OAuth/Drive ni operación real.
+La DEMO es local, efímera y aislada. Conserva datos mientras ese proceso está activo; al detenerlo se borran la base, los archivos y las credenciales. No requiere Git ni Command Line Tools una vez instalado el entorno Python. No prueba persistencia en hosting, uso en teléfono físico, OAuth/Drive ni operación real.
 
 ## Verificar el candidato local
 
-Desde la raíz del repositorio, con Python 3.12, sus dependencias instaladas y Node.js:
+Desde la raíz del repositorio, con Python 3.12, las dependencias instaladas y Node.js:
 
 ```sh
 apps/greenatics-red/scripts/verify_local_candidate.sh
