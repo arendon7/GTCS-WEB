@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ record.form_code }} · {{ project.name }} · GREENATICS RED</title>
+  <style>
+    :root { color-scheme: light; --green:#145b31; --ink:#17251c; --muted:#58655c; --line:#d7dfd8; --pale:#f3f6f3; }
+    * { box-sizing:border-box; } body { margin:0 auto; max-width:900px; padding:30px; color:var(--ink); font:15px/1.5 Arial,sans-serif; }
+    h1,h2 { color:var(--green); } h1 { margin:.2rem 0; font-size:1.8rem; } h2 { margin:1.8rem 0 .6rem; font-size:1.15rem; }
+    .eyebrow,.muted,small { color:var(--muted); } .meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; margin:1.3rem 0; background:var(--line); border:1px solid var(--line); }
+    .meta div { padding:10px 12px; background:var(--pale); } .meta dt { color:var(--muted); font-size:.72rem; font-weight:700; text-transform:uppercase; } .meta dd { margin:2px 0 0; overflow-wrap:anywhere; }
+    .field { padding:9px 0; border-bottom:1px solid var(--line); break-inside:avoid; } .field dt { color:var(--muted); font-weight:700; font-size:.82rem; } .field dd { margin:3px 0 0; overflow-wrap:anywhere; white-space:pre-wrap; }
+    .signature-card { border:1px solid var(--line); border-radius:6px; padding:12px; margin:10px 0; break-inside:avoid; } .signature-card svg { width:min(100%,600px); height:auto; border:1px solid var(--line); border-radius:4px; }
+    .signature-card p { margin:.4rem 0; } .hash { font-size:.72rem; overflow-wrap:anywhere; } footer { border-top:1px solid var(--line); margin-top:2rem; padding-top:10px; color:var(--muted); font-size:.78rem; }
+    .warning { border-left:4px solid #a56a00; padding:8px 12px; background:#fff8e7; } .disclaimer { font-size:.8rem; }
+    @media print { body { max-width:none; padding:0; font-size:10pt; } a { color:inherit; text-decoration:none; } }
+    @media(max-width:600px) { body { padding:18px; } .meta { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <p class="eyebrow"><a href="/projects/{{ project.id }}">GREENATICS RED · {{ project.municipality }}, {{ project.department }}</a></p>
+  <h1>{{ form_spec.title }}</h1>
+  <p class="muted">{{ project.name }} · {{ form_spec.purpose }}</p>
+  <dl class="meta">
+    <div><dt>Código / versión</dt><dd>{{ record.form_code }} · v{{ record.version }}</dd></div>
+    <div><dt>Estado RED</dt><dd>{{ status_label }}</dd></div>
+    <div><dt>Fecha de registro</dt><dd>{{ record.record_date or 'Sin fecha' }}</dd></div>
+    <div><dt>Tipo de fuente</dt><dd>{{ record.source_kind|replace('_',' ')|title }}</dd></div>
+    <div><dt>Fuente / método</dt><dd>{{ record.source_note or 'Pendiente de documentar' }}</dd></div>
+    <div><dt>Estado de integridad</dt><dd>{% if signatures_valid %}Huella de contenido calculada{% else %}Hay constancias de otras versiones; omitidas{% endif %}</dd></div>
+  </dl>
+  <p class="disclaimer">Copia de trabajo generada desde GREENATICS RED. Una firma que aparezca aquí es una constancia personal de participación en la captura o revisión visible de este registro; no certifica por sí sola la veracidad técnica, no acredita representación legal ni equivale a aprobación de autoridad.</p>
+  <h2>Respuestas</h2>
+  <dl>{% for field in fields %}<div class="field"><dt>{{ field.label }} <small>· {{ field.id }}</small></dt><dd>{{ field.value }}</dd></div>{% endfor %}</dl>
+  <h2>Constancias de participación / revisión</h2>
+  {% if has_prior_signatures %}<p class="warning">Este registro tiene constancias de contenido previo o de versiones anteriores. No se muestran como vigentes en esta exportación.</p>{% endif %}
+  {% if signatures_valid and signatures %}
+    {% for signature in signatures %}<article class="signature-card"><svg viewBox="0 0 600 180" role="img" aria-label="Firma manuscrita de {{ signature.signer_name }}"><path d="{{ signature.signature_path }}" fill="none" stroke="#17251c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg><p><strong>{{ signature.signer_name }}</strong><br>{{ signature.signer_email }} · rol {{ signature.signer_role }}<br>Fecha UTC: {{ signature.signed_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}</p><p>{{ signature.declaration }}</p><p class="hash">SHA-256 del contenido canónico del registro y las evidencias vinculadas: {{ signature.document_sha256 }}</p></article>{% endfor %}
+  {% elif not signatures_valid %}<p class="warning">Hay constancias registradas para otra versión o no se pudo verificar su correspondencia. Se omiten aquí; revisa el historial antes de usar esta copia.</p>
+  {% else %}<p class="muted">No se han registrado constancias para esta versión del registro.</p>{% endif %}
+  <p class="disclaimer">El trazo se asocia a una cuenta RED autenticada y a esta versión del registro. No equivale a firma digital certificada ni reemplaza la revisión técnica, el consentimiento informado que corresponda o la autorización del empleador.</p>
+  <footer>Documento {{ record.form_code }} · versión {{ record.version }} · GREENATICS RED · <span class="hash">SHA-256 del contenido canónico del registro y las evidencias vinculadas: {{ document_hash }}</span></footer>
+</body>
+</html>

@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% macro describe(ids) -%}{% if ids %}aria-describedby="{{ ids|join(' ') }}"{% endif %}{%- endmacro %}
+{% block title %}{% if record and record.id %}Editar{% else %}Nuevo{% endif %} · {{ form_spec.code }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow"><a href="/projects/{{ project.id }}">{{ project.name }}</a> / Formulario {{ form_spec.code }}</p><h1>{{ form_spec.title.split('—')[-1].strip() }}</h1><p class="lede">{{ form_spec.purpose }}</p></div>
+  <div class="header-actions"><a class="button secondary" href="/projects/{{ project.id }}">Volver al expediente</a></div>
+</header>
+{% if error %}<div class="notice error" role="alert" tabindex="-1">
+  {% if error_items %}<p>{{ error_heading }}</p><ul data-validation-errors>{% for item in error_items %}{% set target = error_targets[loop.index0] %}<li>{% if target %}<a href="#{{ target }}" data-validation-error-link>{{ item }}</a>{% else %}{{ item }}{% endif %}</li>{% endfor %}</ul>{% if error_note %}<p data-file-error-note>{{ error_note }}</p>{% endif %}
+  {% else %}<p>{{ error }}</p>{% endif %}
+</div>{% endif %}
+{% if not view_only %}<section class="notice info network-status" data-network-status data-network-state="checking">
+  <strong>Estado de conexión del formulario</strong>
+  <p data-network-message role="status" aria-live="polite" aria-atomic="true">Comprobando que GREENATICS RED, la base de datos y el almacenamiento respondan. El envío aún requiere confirmación al guardar.</p>
+  <div class="network-session-actions" data-session-actions hidden></div>
+  <button class="button secondary network-recheck" type="button" data-network-recheck>Comprobar conexión</button>
+  <p data-unsaved-notice role="status" aria-live="polite" aria-atomic="true" hidden>Cambios sin guardar. RED no conserva borradores en el dispositivo; si sales o recargas, perderás lo que has escrito y los archivos seleccionados.</p>
+</section>{% endif %}
+{% if view_only %}<section class="notice info" role="status"><strong>Vista de consulta</strong><p>{% if field_authorization_required %}La captura, edición, firma y carga de evidencias de este formulario requieren que administración RED registre una autorización vigente para esta copropiedad. Los soportes externos deben revisarse antes de habilitar el trabajo de campo.{% else %}Los campos se muestran para inspección; este perfil o el gate global actual no permite guardar cambios.{% endif %}</p></section>{% endif %}
+{% if resume_record %}<section class="notice warning resume-record-notice" role="note"><strong>Antes de iniciar otro registro</strong><p>{{ resume_record_message }} Para no duplicar la captura, revisa este registro primero.</p><a class="button secondary" href="{{ resume_record_href }}">{{ resume_record_cta }}</a></section>{% endif %}
+{% if form_spec.code == 'P-14' and read_only_field_ids %}<div class="notice info"><strong>Registro para perfil de campo.</strong><p>Los campos de guía, contactos e identificadores se conservan de solo lectura. Registra la novedad y su seguimiento; si la guía o los contactos no aparecen en el expediente, avisa a consultoría RED.</p></div>{% endif %}
+<section class="notice info"><strong>Registro inicial · estado RAW</strong><p>{% if form_spec.code == 'D-08' %}Registra una fila por fracción y vincula todas las filas al D-07 del mismo lote, en kg. RED calcula el balance; la tolerancia y su aceptación requieren revisión técnica. Indica la fuente o método y deja lo desconocido en blanco. Un borrador no valida el diagnóstico.{% else %}RED calcula algunos resultados y sellos de fecha; los campos de solo lectura se actualizan al guardar. Registra datos respaldados, indica su fuente o método y deja lo desconocido en blanco. Guardar un borrador no valida el diagnóstico.{% endif %}</p></section>
+<form method="post" enctype="multipart/form-data" action="{% if record and record.id %}/records/{{ record.id }}/edit{% else %}/projects/{{ project.id }}/records/new{% endif %}" class="panel record-form" {% if view_only %}aria-disabled="true" onsubmit="return false"{% endif %}>
+  {% if not view_only %}<input type="hidden" name="csrf" value="{{ csrf }}">
+  <input type="hidden" name="form_code" value="{{ form_spec.code }}">
+  {% if submission_key %}<input type="hidden" name="submission_key" value="{{ submission_key }}">{% endif %}{% endif %}
+  <fieldset class="form-section" {% if view_only %}disabled{% endif %}>
+    <legend>Contexto del registro</legend>
+    <div class="form-grid two-columns">
+      <label>Título del registro<input name="record_title" maxlength="300" value="{{ record.title if record else form_spec.title }}" required></label>
+      <label>Fecha del registro<input type="date" name="record_date" value="{{ record.record_date if record else '' }}"></label>
+      <label>Tipo de fuente
+        <select name="source_kind">
+          {% for value,label in [('declarado','Declarado'),('observado','Observado en campo'),('medido','Medido'),('documental','Documento fuente'),('interpretado','Interpretado'),('derivado','Derivado') ] %}
+            <option value="{{ value }}" {% if record and record.source_kind == value %}selected{% elif not record and value == 'declarado' %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="wide-field"><span id="source-note-label">Descripción de la fuente, método o soporte</span><textarea id="source_note" name="source_note" aria-labelledby="source-note-label" aria-describedby="source-note-help" rows="2" minlength="8" maxlength="2000" required placeholder="Indica quién suministra el dato, cómo se observó o qué soporte lo respalda.">{{ record.source_note if record else '' }}</textarea><small id="source-note-help">Requerida al enviar a revisión. En un borrador puede quedar pendiente.</small></label>
+    </div>
+  </fieldset>
+  <fieldset class="form-section" {% if view_only %}disabled{% endif %}>
+    <legend>Campos de {{ form_spec.code }}</legend>
+    <details class="form-source-rules">
+      <summary>Consultar exigencia de la fuente y estado técnico</summary>
+      <ol class="form-source-rule-list">
+        {% for field in form_spec.fields %}
+        <li>
+          <a href="#{{ field.id }}">{{ field.id }} · {{ field.label }}</a>
+          <span id="{{ field.id }}-source-help">Exigencia de la fuente: {{ field.source_obligation|default('No registrada', true) }}{% if field.source_obligation and field.source_obligation != 'No' and not field.server_managed %}.{% endif %}</span>
+          <span id="{{ field.id }}-state-help">Estado técnico previsto: {{ field.data_state|default('No registrado', true) }}.</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </details>
+    <div class="field-grid">
+      {% for field in form_spec.fields %}
+        {% if field.ui_section_heading %}<h3 class="field-section-heading wide-field">{{ field.ui_section_heading }}</h3>{% endif %}
+        {% set value = (record.payload.get(field.id) or field.pending_value|default('')) if record else field.pending_value|default('') %}
+        {% if operational_reference_values.get(field.id) %}{% set value = operational_reference_values.get(field.id) %}{% endif %}
+        {% set is_subtable = field.control|lower == 'subtabla' %}
+        {% set is_gps = field.control|lower == 'gps' %}
+        {% set field_descriptions = namespace(ids=[]) %}
+        {% if field.id in read_only_field_ids %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-readonly-help'] %}
+        {% elif field.source_system and not field.server_managed %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-system-help'] %}
+        {% elif field.file_upload %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-upload-help', field.id ~ '-upload-metadata-help'] %}{% if field.file_or_record %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-record-help'] %}{% endif %}{% endif %}
+        {% if field.id == 'D04-004' and is_subtable %}{% set field_descriptions.ids = field_descriptions.ids + ['D04-004-help'] %}{% endif %}
+        {% if field.repeatable %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-repeatable-help'] %}{% endif %}
+        {% if (field.id == 'D08-001' or field.id in relation_options_by_field) and field.id not in read_only_field_ids and not field.source_system and not field.file_upload %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-relation-help'] %}{% endif %}
+        {% if is_gps %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-gps-help', field.id ~ '-gps-status'] %}{% endif %}
+        {% if field.multi_select and field.options %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-options-help'] %}{% endif %}
+        {% if field.multi_select_text and field.options %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-detail-help'] %}{% endif %}
+        {% if 'kg' in field.control|lower or field.id in ['D07-007', 'D08-008', 'D08-009', 'D09-004'] %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-unit-help'] %}{% endif %}
+        {% if field.validation %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-validation-help'] %}{% endif %}
+        {% if field.help %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-help-text'] %}{% endif %}
+        {% if field.application_help %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-application-help'] %}{% endif %}
+        {% if field.application_references %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-application-references'] %}{% endif %}
+        {% if field.required_when_label %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-required-help'] %}{% endif %}
+        {% if field.extension_note %}{% set field_descriptions.ids = field_descriptions.ids + [field.id ~ '-extension-help'] %}{% endif %}
+        {% set field_width = field.repeatable or field.id in ['D14-002', 'D14-003', 'D14-004', 'D14-005', 'D14-007', 'P15-008', 'P15-009', 'Q01-002', 'Q01-003'] or field.file_upload or (field.control and ('múltiple' in field.control|lower or 'estructurado' in field.control|lower or 'texto largo' in field.control|lower)) %}
+        {% if is_subtable or is_gps or field.repeatable %}<div class="dynamic-field wide-field" id="{{ field.id }}-group" tabindex="-1" role="group" aria-labelledby="{{ field.id }}-label" {% if field.required_when %}data-required-when-field="{{ field.required_when.field_id }}" data-required-when-values="{{ field.required_when.equals_any|default([])|join('|') }}" data-required-when-not-values="{{ field.required_when.not_equals_any|default([])|join('|') }}"{% endif %} {{ describe(field_descriptions.ids) }}>{% else %}<div class="dynamic-field {% if field_width %}wide-field{% endif %}" {% if field.required_when %}data-required-when-field="{{ field.required_when.field_id }}" data-required-when-values="{{ field.required_when.equals_any|default([])|join('|') }}" data-required-when-not-values="{{ field.required_when.not_equals_any|default([])|join('|') }}"{% endif %}>{% endif %}
+          {% if is_subtable or is_gps or field.repeatable %}<span class="field-label" id="{{ field.id }}-label">{{ field.label }}{% else %}<label class="field-label" for="{{ field.id }}">{{ field.label }}{% endif %}{% if (field.required or field.required_when) and not field.server_managed %}<span class="required-mark" aria-hidden="true">*</span>{% if is_subtable or is_gps or field.repeatable or field.required_when or field.file_or_record %}<span class="sr-only">{% if field.file_or_record %} Se requiere un archivo o una referencia al enviar a revisión.{% elif field.required %} Obligatorio.{% else %} Puede ser obligatorio según la respuesta.{% endif %}</span>{% endif %}{% endif %}{% if is_subtable or is_gps or field.repeatable %}</span>{% else %}</label>{% endif %}
+          {% if field.id in read_only_field_ids %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ value }}" readonly aria-readonly="true" placeholder="Referencia administrada por RED" {{ describe(field_descriptions.ids) }}>
+            <small id="{{ field.id }}-readonly-help">Solo consulta. No inventes ni modifiques esta referencia desde el perfil de campo.</small>
+          {% elif field.source_system and not field.server_managed %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ value }}" readonly aria-readonly="true" placeholder="Pendiente de automatizar en RED" {{ describe(field_descriptions.ids) }}>
+            <small id="{{ field.id }}-system-help">La fuente marca este campo como automático o de sistema. RED todavía no lo calcula aquí; déjalo pendiente y no ingreses un valor estimado.</small>
+          {% elif field.control|lower == 'email' %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="email" autocomplete="email" maxlength="320" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif field.control|lower == 'email/teléfono' %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" autocomplete="off" inputmode="text" placeholder="Correo o teléfono" maxlength="320" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif field.id == 'D01-009' %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif field.id == 'D06-004' %}
+            {% set period_parts = d06_period_parts(value) %}
+            <div class="measurement-pair">
+              <input id="{{ field.id }}" name="D06-004__value" type="number" step="any" min="0" inputmode="decimal" value="{{ period_parts.amount }}" {% if field.required %}required{% endif %} aria-label="Cantidad del periodo desde la última recolección">
+              <select id="{{ field.id }}-unit" name="D06-004__unit" {% if field.required %}required{% endif %} aria-label="Unidad del periodo desde la última recolección">
+                <option value="">Unidad</option>
+                <option value="horas" {% if period_parts.unit == 'horas' %}selected{% endif %}>Horas</option>
+                <option value="días" {% if period_parts.unit == 'días' %}selected{% endif %}>Días</option>
+              </select>
+            </div>
+            {% if period_parts.legacy %}<small id="{{ field.id }}-legacy-help" class="help-text">Valor anterior conservado para revisión: {{ period_parts.legacy }}. Confirma el número y la unidad antes de enviarlo a revisión.</small>{% elif value and not period_parts.unit %}<small id="{{ field.id }}-legacy-help" class="help-text">El valor anterior no especifica si son horas o días. Selecciona la unidad confirmada antes de enviarlo a revisión.</small>{% endif %}
+            {% if record and value %}<label class="checkbox-label" for="{{ field.id }}-clear"><input id="{{ field.id }}-clear" type="checkbox" name="D06-004__clear" value="1"> Quitar la medida anterior al guardar borrador</label>{% endif %}
+          {% elif field.id in ['D13-004', 'D13-005'] %}
+            {% set measurement_parts = d13_measurement_parts(value) %}
+            <div class="measurement-pair">
+              <input id="{{ field.id }}" name="{{ field.id }}__value" type="number" step="any" min="0" inputmode="decimal" value="{{ measurement_parts.amount }}" {% if field.required %}required{% endif %} aria-label="Valor numérico de {{ field.label|lower }}">
+              <input id="{{ field.id }}-unit" name="{{ field.id }}__unit" type="text" maxlength="50" value="{{ measurement_parts.unit }}" placeholder="Unidad de la placa" {% if field.required %}required{% endif %} aria-label="Unidad técnica de {{ field.label|lower }}">
+            </div>
+            {% if measurement_parts.legacy %}<small id="{{ field.id }}-legacy-help" class="help-text">Valor anterior conservado para revisión: {{ measurement_parts.legacy }}. Confirma el número y la unidad técnica antes de enviarlo a revisión.</small>{% elif value and not measurement_parts.unit %}<small id="{{ field.id }}-legacy-help" class="help-text">El valor anterior no especifica unidad. Confirma la unidad técnica indicada por el instrumento.</small>{% endif %}
+            {% if record and value %}<label class="checkbox-label" for="{{ field.id }}-clear"><input id="{{ field.id }}-clear" type="checkbox" name="{{ field.id }}__clear" value="1"> Quitar el dato anterior al guardar borrador</label>{% endif %}
+          {% elif field.file_upload %}
+            <input id="{{ field.id }}" name="evidence__{{ field.id }}" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.docx,.xlsx,.csv,.txt" multiple {% if field.file_upload and evidence_by_field.get(field.id) %}data-existing-evidence="true"{% endif %} {% if field.required and not field.file_or_record and (not record or not evidence_by_field.get(field.id)) %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+            <small id="{{ field.id }}-upload-help">Archivo privado asociado a este campo y visible a personas autorizadas del proyecto según su rol. Puedes elegir fotos desde la cámara o el dispositivo; cada archivo hasta {{ max_upload_mb }} MB y hasta 12 por guardado. Captura solo lo necesario: evita rostros, placas, números de apartamento, firmas y documentos. Si no puedes excluirlos, no cargues la imagen hasta contar con el procedimiento aprobado.</small>
+            <small id="{{ field.id }}-upload-metadata-help">Las fotos pueden incluir metadatos de fecha, dispositivo o ubicación (EXIF). RED conserva el archivo original y no elimina esos metadatos. Revísalos antes de subirlo y no cargues si su tratamiento no está autorizado.</small>
+            {% if evidence_by_field.get(field.id) %}<ul class="attached-field-files">{% for item in evidence_by_field.get(field.id) %}<li><a href="/evidence/{{ item.id }}">{{ item.original_name }}</a><small>{{ (item.size_bytes / 1024)|round|int }} KB · ya guardado</small></li>{% endfor %}</ul>{% endif %}
+            {% if field.file_or_record %}<label for="{{ field.id }}-record">Referencia o registro estructurado</label><textarea id="{{ field.id }}-record" name="{{ field.id }}" rows="3" maxlength="4000" aria-describedby="{{ field.id }}-record-help">{{ value }}</textarea><small id="{{ field.id }}-record-help">Registra un dato o referencia verificable que permita localizar o revisar el soporte. Al enviar a revisión, se requiere un archivo o completar este campo. No copies datos personales, códigos de acceso ni enlaces públicos.</small>{% endif %}
+          {% elif field.id == 'D04-004' and is_subtable %}
+            <div class="repeatable-table" data-repeatable-table="D04-004" data-row-noun="recipiente" data-row-noun-plural="recipientes" data-max-rows="50" aria-describedby="D04-004-help">
+              {% if subtable_legacy %}<p class="legacy-subtable-note" role="status">Este registro venía en texto libre. Se conservó en “Tipo observado” para que puedas reorganizarlo; verifica el tipo y registra la cantidad observada.</p>{% endif %}
+              <div class="repeatable-rows" data-rows>
+                {% if subtable_rows %}{% for row in subtable_rows %}
+                <fieldset class="repeatable-row">
+                  <legend class="sr-only">Recipiente {{ loop.index }}</legend>
+                  <label><span>Tipo observado</span><input name="D04-004__type" data-row-field="type" data-row-label="Tipo observado del recipiente" type="text" value="{{ row.container_type }}" maxlength="{% if row.container_type|length > 120 %}4000{% else %}120{% endif %}" autocomplete="off" aria-label="Tipo observado del recipiente {{ loop.index }}"></label>
+                  <label><span>Cantidad</span><input name="D04-004__quantity" data-row-field="quantity" data-row-label="Cantidad de recipientes de la fila" type="number" inputmode="numeric" min="1" step="1" value="{{ row.quantity }}" aria-label="Cantidad de recipientes de la fila {{ loop.index }}"></label>
+                  <label><span>Capacidad, si se conoce</span><input name="D04-004__capacity" data-row-field="capacity" data-row-label="Capacidad observada en la fila" type="text" value="{{ row.capacity }}" maxlength="60" autocomplete="off" aria-label="Capacidad observada en la fila {{ loop.index }}"></label>
+                  <button class="button compact secondary repeatable-remove" type="button" data-remove-row hidden aria-label="Quitar recipiente {{ loop.index }}">Quitar</button>
+                </fieldset>
+                {% endfor %}{% else %}
+                <fieldset class="repeatable-row">
+                  <legend class="sr-only">Recipiente 1</legend>
+                  <label><span>Tipo observado</span><input name="D04-004__type" data-row-field="type" data-row-label="Tipo observado del recipiente" type="text" maxlength="120" autocomplete="off" aria-label="Tipo observado del recipiente 1"></label>
+                  <label><span>Cantidad</span><input name="D04-004__quantity" data-row-field="quantity" data-row-label="Cantidad de recipientes de la fila" type="number" inputmode="numeric" min="1" step="1" aria-label="Cantidad de recipientes de la fila 1"></label>
+                  <label><span>Capacidad, si se conoce</span><input name="D04-004__capacity" data-row-field="capacity" data-row-label="Capacidad observada en la fila" type="text" maxlength="60" autocomplete="off" aria-label="Capacidad observada en la fila 1"></label>
+                  <button class="button compact secondary repeatable-remove" type="button" data-remove-row hidden aria-label="Quitar recipiente 1">Quitar</button>
+                </fieldset>
+                {% endif %}
+              </div>
+              <button class="button secondary repeatable-add" type="button" data-add-row hidden>Agregar recipiente</button>
+              <p class="sr-only" data-row-announcement aria-live="polite"></p>
+              <template data-row-template><fieldset class="repeatable-row">
+                <legend class="sr-only">Recipiente</legend>
+                <label><span>Tipo observado</span><input name="D04-004__type" data-row-field="type" data-row-label="Tipo observado del recipiente" type="text" maxlength="120" autocomplete="off"></label>
+                <label><span>Cantidad</span><input name="D04-004__quantity" data-row-field="quantity" data-row-label="Cantidad de recipientes de la fila" type="number" inputmode="numeric" min="1" step="1"></label>
+                <label><span>Capacidad, si se conoce</span><input name="D04-004__capacity" data-row-field="capacity" data-row-label="Capacidad observada en la fila" type="text" maxlength="60" autocomplete="off"></label>
+                <button class="button compact secondary repeatable-remove" type="button" data-remove-row data-remove-label="Quitar recipiente">Quitar</button>
+              </fieldset></template>
+            </div>
+            <small id="D04-004-help">Registra una fila por tipo de recipiente observado. Usa cantidades enteras; la capacidad es opcional. No clasifiques por color o material si no lo observaste.</small>
+          {% elif field.repeatable %}
+            <div class="repeatable-table" data-repeatable-table="{{ field.id }}" data-row-noun="{{ field.repeatable.row_noun }}" data-row-noun-plural="{{ field.repeatable.row_noun_plural }}" data-max-rows="50" aria-describedby="{{ field.id }}-repeatable-help">
+              <div class="repeatable-rows" data-rows>
+                {% set rows = repeatable_rows_by_field.get(field.id, []) %}
+                {% if rows %}{% for row in rows %}
+                  {% if row.legacy_text %}
+                    <fieldset class="repeatable-row legacy-repeatable-row"><legend class="sr-only">Texto anterior sin desglose</legend><label class="wide-field"><span>Dato anterior en texto libre · revisar</span><textarea name="{{ field.id }}__legacy" rows="3" maxlength="4000">{{ row.legacy_text }}</textarea></label><button class="button compact secondary repeatable-remove" type="button" data-remove-row hidden aria-label="Quitar texto anterior">Quitar</button></fieldset>
+                  {% else %}
+                    {% set row_number = loop.index %}<fieldset class="repeatable-row"><legend class="sr-only">{{ field.repeatable.row_noun|capitalize }} {{ row_number }}</legend>
+                      {% for column in field.repeatable.columns %}<label><span>{{ column.label }}</span>{% if column.options %}<select name="{{ field.id }}__{{ column.id }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}" aria-label="{{ column.label }} · {{ field.repeatable.row_noun }} {{ row_number }}"><option value="">Selecciona una opción</option>{% for option in column.options %}<option value="{{ option }}" {% if row.get(column.id, '') == option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>{% else %}<input name="{{ field.id }}__{{ column.id }}" type="{{ column.type }}" value="{{ row.get(column.id, '') }}" maxlength="{{ column.max_length }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}" aria-label="{{ column.label }} · {{ field.repeatable.row_noun }} {{ row_number }}">{% endif %}</label>{% endfor %}
+                      <button class="button compact secondary repeatable-remove" type="button" data-remove-row data-remove-label="Quitar {{ field.repeatable.row_noun }}" hidden aria-label="Quitar {{ field.repeatable.row_noun }} {{ row_number }}">Quitar</button>
+                    </fieldset>
+                  {% endif %}
+                {% endfor %}{% else %}
+                  <fieldset class="repeatable-row"><legend class="sr-only">{{ field.repeatable.row_noun|capitalize }} 1</legend>
+                    {% for column in field.repeatable.columns %}<label><span>{{ column.label }}</span>{% if column.options %}<select name="{{ field.id }}__{{ column.id }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}" aria-label="{{ column.label }} · {{ field.repeatable.row_noun }} 1"><option value="">Selecciona una opción</option>{% for option in column.options %}<option value="{{ option }}">{{ option }}</option>{% endfor %}</select>{% else %}<input name="{{ field.id }}__{{ column.id }}" type="{{ column.type }}" maxlength="{{ column.max_length }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}" aria-label="{{ column.label }} · {{ field.repeatable.row_noun }} 1">{% endif %}</label>{% endfor %}
+                    <button class="button compact secondary repeatable-remove" type="button" data-remove-row data-remove-label="Quitar {{ field.repeatable.row_noun }}" hidden aria-label="Quitar {{ field.repeatable.row_noun }} 1">Quitar</button>
+                  </fieldset>
+                {% endif %}
+              </div>
+              <button class="button secondary repeatable-add" type="button" data-add-row hidden>Agregar {{ field.repeatable.row_noun }}</button>
+              <p class="sr-only" id="{{ field.id }}-row-announcement" data-row-announcement aria-live="polite"></p>
+              <template data-row-template><fieldset class="repeatable-row"><legend class="sr-only">{{ field.repeatable.row_noun|capitalize }}</legend>
+                {% for column in field.repeatable.columns %}<label><span>{{ column.label }}</span>{% if column.options %}<select name="{{ field.id }}__{{ column.id }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}"><option value="">Selecciona una opción</option>{% for option in column.options %}<option value="{{ option }}">{{ option }}</option>{% endfor %}</select>{% else %}<input name="{{ field.id }}__{{ column.id }}" type="{{ column.type }}" maxlength="{{ column.max_length }}" data-row-field="{{ column.id }}" data-row-label="{{ column.label }} · {{ field.repeatable.row_noun }}">{% endif %}</label>{% endfor %}
+                <button class="button compact secondary repeatable-remove" type="button" data-remove-row data-remove-label="Quitar {{ field.repeatable.row_noun }}">Quitar</button>
+              </fieldset></template>
+            </div>
+            <small id="{{ field.id }}-repeatable-help">{{ field.help or 'Agrega una fila por cada elemento confirmado. Completa los datos disponibles y deja vacíos los que no conozcas.' }} Los textos anteriores se conservan para revisión. Hasta 50 filas.</small>
+          {% elif field.id == 'D08-001' %}
+            <select id="{{ field.id }}" name="{{ field.id }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}><option value="">Selecciona un pesaje D-07</option>{% for option in relation_options %}<option value="{{ option.id }}" data-initial-weight="{{ option.initial_weight }}" data-peer-total="{{ option.peer_total }}" data-peer-incomplete="{{ option.peer_incomplete }}" {% if value == option.id %}selected{% endif %}>{{ option.label }}</option>{% endfor %}</select>
+            <small id="{{ field.id }}-relation-help">Solo aparecen pesajes del mismo expediente que tienen peso neto válido. Registra una fracción por fila y vincula todas al lote fuente.</small>
+          {% elif field.id in relation_options_by_field %}
+            {% set selected_values = value.split('\n') if value else [] %}
+            <select id="{{ field.id }}" name="{{ field.id }}" {% if field.multi_select %}multiple size="{{ [relation_options_by_field[field.id]|length, 5]|min }}"{% endif %} {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+              {% if not field.multi_select %}<option value="">{% if field.id in ['D01-017', 'D01-018', 'D03-004', 'D06-008', 'P01-005', 'P01-006'] %}Selecciona una persona de este expediente{% else %}Selecciona un registro del expediente{% endif %}</option>{% endif %}
+              {% for option in relation_options_by_field[field.id] %}<option value="{{ option.id }}" {% if option.id in selected_values %}selected{% endif %}>{{ option.label }}</option>{% endfor %}
+            </select>
+            {% if relation_options_by_field[field.id] %}<small id="{{ field.id }}-relation-help">{% if field.id in ['D01-017', 'D01-018'] %}Selecciona la persona activa con el perfil RED requerido y membresía en esta copropiedad. RED valida el acceso al guardar.{% elif field.id == 'D03-004' %}Selecciona los brigadistas activos de este expediente. RED verifica sus membresías al guardar.{% elif field.id in ['D06-008', 'P01-005', 'P01-006'] %}Selecciona un miembro activo de este expediente con el rol permitido. RED verifica su acceso al guardar.{% elif field.id == 'P09-009' %}Selecciona una incidencia D-12 o novedad P-14 del mismo expediente. Describe el bloqueo en P09-008.{% elif field.id == 'D04-020' %}Selecciona la visita D-03 a la que corresponde este punto; RED valida que pertenezca al mismo expediente.{% else %}Vínculos disponibles dentro de este expediente y del tipo permitido. RED vuelve a validar el vínculo al guardar.{% endif %}</small>{% else %}<small id="{{ field.id }}-relation-help">{% if field.id in ['D01-017', 'D01-018', 'D03-004', 'D06-008', 'P01-005', 'P01-006'] %}No hay personas activas con el rol requerido en este expediente. Administración RED debe invitar o habilitar a la persona antes de enviar este formulario.{% elif field.id == 'P09-009' %}Todavía no hay incidencias D-12 o novedades P-14 para vincular en este expediente.{% elif field.id == 'D04-020' %}Todavía no hay visitas D-03 en este expediente. Guarda la visita y vuelve para asociar el punto de inspección.{% else %}Aún no hay elementos para vincular. Guarda el registro fuente correspondiente y vuelve aquí.{% endif %}</small>{% endif %}
+          {% elif field.id == 'P15-007' %}
+            <textarea id="{{ field.id }}" name="{{ field.id }}" rows="4" maxlength="4000" placeholder="IND-01: 42.5&#10;IND-02: 0" {{ describe(field_descriptions.ids) }}>{{ value }}</textarea>
+          {% elif field.server_managed %}
+            {% if field.id in ['D08-010', 'D14-002', 'D14-003', 'D14-004', 'D14-005', 'D14-007', 'P15-008', 'P15-009', 'Q01-002', 'Q01-003'] %}
+              <textarea id="{{ field.id }}" name="{{ field.id }}" rows="{% if field.id == 'Q01-003' or field.id == 'D14-002' %}6{% else %}3{% endif %}" data-derived-field="{{ field.id }}" readonly aria-readonly="true" {{ describe(field_descriptions.ids) }}>{{ value }}</textarea>
+            {% else %}
+              <input id="{{ field.id }}" name="{{ field.id }}" type="{% if field.id in ['D07-007', 'D08-008', 'D09-004'] %}number{% else %}text{% endif %}" {% if field.calculated %}data-derived-field="{{ field.id }}"{% if field.id in ['D07-007', 'D08-008', 'D09-004'] %} step="any"{% endif %}{% else %}placeholder="RED la asigna al guardar"{% endif %} value="{{ value }}" readonly aria-readonly="true" {{ describe(field_descriptions.ids) }}>
+            {% endif %}
+            {% if form_spec.code == 'P-14' and field.id in ['P14-001', 'P14-002'] %}<small><a href="/projects/{{ project.id }}/operational-references">Consultar documentos operativos del expediente</a></small>{% endif %}
+          {% elif is_gps %}
+            <div class="gps-capture-control">
+              <input id="{{ field.id }}" name="{{ field.id }}" type="hidden" value="{{ value }}" data-gps-value>
+              <p class="gps-current" data-gps-summary>{% if value %}Ubicación previa conservada; verifica la fuente antes de volver a enviar.{% else %}Sin ubicación capturada.{% endif %}</p>
+              <button class="button secondary gps-capture-button" type="button" data-gps-capture="{{ field.id }}">Capturar ubicación ahora</button>
+              <small id="{{ field.id }}-gps-help">Opcional. Solo se solicita la ubicación cuando pulsas el botón y aceptas el permiso del dispositivo. RED no hace seguimiento continuo y una captura no prueba por sí sola que la visita ocurrió allí. Si guardas la coordenada, quedará asociada a este registro, estará disponible para personas autorizadas según su rol y se incluirá en exportaciones y respaldos RED; las copias de Drive no se comparten automáticamente. Úsala solo si es necesaria y está permitida para la visita. La precisión y la hora provienen del dispositivo y no sustituyen la nota de fuente/método.</small>
+              <p id="{{ field.id }}-gps-status" class="gps-capture-status" data-gps-status role="status" aria-live="polite"></p>
+            </div>
+          {% elif field.multi_select and field.options %}
+            {% set selected_values = multi_select_selected_by_field.get(field.id, []) %}
+            <select id="{{ field.id }}" name="{{ field.id }}" multiple size="{{ [field.options|length, 5]|min }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+              {% for option in field.options %}<option value="{{ option }}" {% if option in selected_values %}selected{% endif %}>{{ option }}</option>{% endfor %}
+            </select>
+            <small id="{{ field.id }}-options-help">Selecciona las opciones que correspondan. Valores conservados por RED: {{ field.options|join(', ') }}.</small>
+            {% if field.multi_select_text %}<label for="{{ field.id }}-detail">Detalle adicional o descripción de «Otros»</label><textarea id="{{ field.id }}-detail" name="{{ field.id }}__detail" rows="2" maxlength="2000" {{ describe([field.id ~ '-detail-help']) }}>{{ multi_select_detail_by_field.get(field.id, '') }}</textarea><small id="{{ field.id }}-detail-help">Opcional. Describe hechos concretos vinculados con las opciones. No agregues conclusiones que la fuente no respalde.</small>{% endif %}
+          {% elif field.control|lower in ['lista', 'estado'] and field.options %}
+            <select id="{{ field.id }}" name="{{ field.id }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+              <option value="">Selecciona</option>
+              {% for option in field.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ option }}</option>{% endfor %}
+            </select>
+          {% elif 'sí/no' in field.control|lower or 'si/no' in field.control|lower or 'checkbox' in field.control|lower %}
+            {% set choices = field.options if field.options else ['Sí', 'No'] %}
+            <select id="{{ field.id }}" name="{{ field.id }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}><option value="">Selecciona</option>{% for option in choices %}<option value="{{ option }}" {% if value|lower == option|lower %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+          {% elif field.options %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" list="{{ field.id }}-options" value="{{ value }}" maxlength="4000" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+            <datalist id="{{ field.id }}-options">{% for option in field.options %}<option value="{{ option }}">{% endfor %}</datalist>
+          {% elif 'número' in field.control|lower or 'decimal' in field.control|lower or 'peso' in field.control|lower or 'cantidad' in field.control|lower %}
+            {% set numeric_min = 1 if field.id == 'P10-009' or field.id in integer_numeric_field_ids and field.id in positive_numeric_field_ids else 0 if field.id in nonnegative_numeric_field_ids or field.id in positive_numeric_field_ids else none %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="number" step="{% if field.id in integer_numeric_field_ids %}1{% else %}any{% endif %}" {% if numeric_min is not none %}min="{{ numeric_min }}"{% endif %} {% if field.id in positive_numeric_field_ids %}data-must-be-positive="true"{% endif %} value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif field.control|lower == 'duración' %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="number" step="any" min="0" inputmode="decimal" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif 'fecha/hora' in field.control|lower %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="datetime-local" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif field.id == 'P15-002' %}
+            {% set period_parts = p15_period_parts(value) %}
+            <div id="P15-002-group" class="date-range-pair" tabindex="-1">
+              <input id="P15-002-start" name="P15-002__start" type="date" value="{{ period_parts.start }}" {% if field.required %}required{% endif %} aria-label="Fecha inicial del periodo">
+              <input id="P15-002-end" name="P15-002__end" type="date" value="{{ period_parts.end }}" {% if field.required %}required{% endif %} aria-label="Fecha final del periodo">
+            </div>
+            {% if period_parts.legacy %}<small id="P15-002-legacy-help" class="help-text">Valor anterior conservado para revisión: {{ period_parts.legacy }}. Confirma las dos fechas antes de enviarlo a revisión.</small>{% endif %}
+            {% if record and value %}<label class="checkbox-label" for="P15-002-clear"><input id="P15-002-clear" type="checkbox" name="P15-002__clear" value="1"> Quitar el periodo anterior al guardar borrador</label>{% endif %}
+          {% elif 'fecha inicio/fin' in field.control|lower %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ value }}" maxlength="100" placeholder="AAAA-MM-DD / AAAA-MM-DD" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif 'fecha' in field.control|lower %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="date" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif 'hora' in field.control|lower and 'franja' not in field.control|lower %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="time" value="{{ value }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% elif 'Sí/No' in field.validation or 'Sí / No' in field.validation %}
+            <select id="{{ field.id }}" name="{{ field.id }}" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}><option value="">Selecciona</option><option value="Sí" {% if value == 'Sí' %}selected{% endif %}>Sí</option><option value="No" {% if value == 'No' %}selected{% endif %}>No</option></select>
+          {% elif 'texto' in field.control|lower or 'descripción' in field.control|lower or 'multi-selección' in field.control|lower or 'lista+' in field.control|lower %}
+            <textarea id="{{ field.id }}" name="{{ field.id }}" rows="{% if 'múltiple' in field.control|lower or 'estructurado' in field.control|lower %}3{% else %}2{% endif %}" maxlength="4000" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>{{ value }}</textarea>
+          {% else %}
+            <input id="{{ field.id }}" name="{{ field.id }}" type="text" value="{{ value }}" maxlength="4000" {% if field.required %}required{% endif %} {{ describe(field_descriptions.ids) }}>
+          {% endif %}
+          {% if 'kg' in field.control|lower %}<small id="{{ field.id }}-unit-help">Unidad de captura: kg</small>{% elif field.id == 'D07-007' or field.id == 'D08-008' %}<small id="{{ field.id }}-unit-help">Unidad del resultado: kg</small>{% elif field.id == 'D08-009' %}<small id="{{ field.id }}-unit-help">El resultado informa kg de diferencia absoluta y porcentaje respecto al peso inicial.</small>{% elif field.id == 'D09-004' %}<small id="{{ field.id }}-unit-help">Unidad del resultado: %</small>{% endif %}
+          {% if field.validation %}<small id="{{ field.id }}-validation-help">{{ field.validation }}</small>{% endif %}
+          {% if field.help %}<small id="{{ field.id }}-help-text" class="help-text">{{ field.help }}</small>{% endif %}
+          {% if field.application_help %}<small id="{{ field.id }}-application-help" class="help-text">{{ field.application_help }}{% if relation_options_by_field.get('P15-006') and field.id == 'P15-007' %} Códigos disponibles: {% for option in relation_options_by_field.get('P15-006', []) %}{{ option.label.split(' · ')[0] }}{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</small>{% endif %}
+          {% if field.application_references %}<div id="{{ field.id }}-application-references" class="help-text"><span>Fuentes oficiales:</span><ul>{% for reference in field.application_references %}<li><a href="{{ reference.url }}" target="_blank" rel="noopener noreferrer">{{ reference.label }} (abre en una nueva pestaña)</a></li>{% endfor %}</ul></div>{% endif %}
+          {% if field.required_when_label %}<small id="{{ field.id }}-required-help" class="help-text">{{ field.required_when_label }}</small>{% endif %}
+          {% if field.extension_note %}<small id="{{ field.id }}-extension-help" class="data-state">{{ field.extension_note }}</small>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </fieldset>
+  {% if record and not view_only %}<fieldset class="form-section general-evidence-upload">
+    <legend>Soporte general de esta versión</legend>
+    <label for="evidence-general">Adjuntar archivos relacionados con el registro</label>
+    <input id="evidence-general" name="evidence__general" type="file" accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,.docx,.xlsx,.csv,.txt" multiple aria-describedby="evidence-general-help">
+    <small id="evidence-general-help">Se añadirán a este registro como evidencia general al guardar la nueva versión. No reemplazan ni eliminan archivos anteriores. Si el archivo responde a un campo específico, selecciónalo en ese campo. Máximo 12 archivos por guardado, hasta {{ max_upload_mb }} MB cada uno. En fotos, evita rostros, placas, números de apartamento, firmas y documentos; RED conserva el original y sus metadatos EXIF de fecha, dispositivo o ubicación. No las cargues si su tratamiento no está autorizado.</small>
+  </fieldset>{% endif %}
+  {% if not view_only %}<div class="form-actions form-actions-sticky">
+    <a class="button secondary" href="{% if record %}/records/{{ record.id }}{% else %}/projects/{{ project.id }}{% endif %}">Cancelar</a>
+    <button class="button secondary" type="submit" name="action" value="draft" formnovalidate>Guardar borrador</button>
+    <button class="button primary" type="submit" name="action" value="submit">Enviar a revisión</button>
+  </div>{% else %}<div class="form-actions"><a class="button secondary" href="/projects/{{ project.id }}">Volver al expediente</a></div>{% endif %}
+</form>
+{% if not view_only %}
+<script src="/static/form-calculations.js?v=20261008-d08" defer></script>
+<script src="/static/form-subtables.js?v=20261013-d02-pending1" defer></script>
+<script src="/static/gps-capture.js?v=20261008-gps1" defer></script>
+<script src="/static/network-status.js?v=20261012-healthcheck-offline-probe1" defer></script>
+<script src="/static/record-submit.js?v=20261012-adaptive-submit-timeout1" defer></script>
+<script src="/static/unsaved-changes.js?v=20261012-pending-submit-guard1" defer></script>
+<script src="/static/conditional-required.js?v=20261008-p10conditional1" defer></script>
+{% endif %}
+<p class="source-note">Campos del diccionario RED Bello v7-2. Las reglas del formulario no reemplazan revisión profesional ni soportes de la copropiedad.</p>
+{% endblock %}

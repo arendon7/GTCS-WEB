@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ type_label }} · PMIRS Studio{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow"><a href="/projects/{{ project.id }}/pmirs">PMIRS Studio</a> / {{ project.name }}</p><h1>{% if item %}Editar {{ item.code }}{% else %}{{ new_prefix }} {{ type_label|lower }}{% endif %}</h1><p class="lede">Los borradores se pueden completar después. Enviar a revisión exige Línea Base aceptada.</p></div>
+  <div class="header-actions"><a class="button secondary" href="/projects/{{ project.id }}/pmirs">Volver a PMIRS Studio</a></div>
+</header>
+{% if error %}<div class="notice error" role="alert">{{ error }}</div>{% endif %}
+{% if project.baseline_status != 'validada' %}<div class="notice warning">Línea Base pendiente. Puedes guardar este objeto como borrador; enviar a revisión queda bloqueado.</div>{% endif %}
+<form method="post" action="{% if item %}/pmirs/items/{{ item.id }}/edit{% else %}/projects/{{ project.id }}/pmirs/items/new{% endif %}" class="panel record-form pmirs-item-form">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <input type="hidden" name="item_type" value="{{ item_type }}">
+  <fieldset class="form-section"><legend>Identificación</legend><div class="field-grid">
+    <label class="dynamic-field"><span class="field-label">Nombre / título <b>*</b></span><input name="title" minlength="3" maxlength="240" value="{{ form_title }}" required><small>El código estable se asigna automáticamente al guardar.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">{% if item_type == 'hallazgo' %}Descripción técnica{% elif item_type == 'accion' %}Acción y criterio de terminación{% else %}Descripción{% endif %} <b>*</b></span><textarea name="description" rows="3" maxlength="8000" required>{{ form_description }}</textarea><small>Especifica límites, contexto o cómo se reconocerá el resultado.</small></label>
+  </div></fieldset>
+
+  {% if item_type == 'hallazgo' %}
+  <fieldset class="form-section"><legend>Fuente, soporte y prioridad</legend><div class="field-grid">
+    <label class="dynamic-field"><span class="field-label">Tema <b>*</b></span><select name="topic" required><option value="">Seleccionar</option>{% for topic in topics %}<option value="{{ topic }}" {% if values.topic == topic %}selected{% endif %}>{{ topic }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Nivel de soporte técnico <b>*</b></span><select name="support_level" required><option value="">Seleccionar</option>{% for level in ['A','B','C','D','Mixto'] %}<option value="{{ level }}" {% if values.support_level == level %}selected{% endif %}>{{ level }}</option>{% endfor %}</select><small>Clasificación GREENATICS; no representa una categoría legal.</small></label>
+    <label class="dynamic-field"><span class="field-label">Prioridad interna <b>*</b></span><select name="priority" required><option value="">Seleccionar</option>{% for code,label in priorities.items() %}<option value="{{ code }}" {% if values.priority == code %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Estado del hallazgo <b>*</b></span><select name="lifecycle_status" required>{% for code,label in [('abierto','Abierto'),('tratado','Tratado'),('descartado','Descartado'),('monitoreo','Monitoreo')] %}<option value="{{ code }}" {% if values.lifecycle_status == code or (not values.lifecycle_status and code == 'abierto') %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Justificación de prioridad <b>*</b></span><textarea name="priority_reason" rows="2" minlength="8" maxlength="4000" required>{{ values.priority_reason or '' }}</textarea><small>Explica impacto, urgencia o secuencia; es un criterio de gestión, no sanción.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Limitación o advertencia de la interpretación</span><textarea name="limitations" rows="2" maxlength="4000">{{ values.limitations or '' }}</textarea><small>Por ejemplo, muestra limitada o dato declarado. Si el soporte lo requiere, deja la limitación explícita.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Si se descarta, motivo</span><textarea name="discard_reason" rows="2" maxlength="2000">{{ values.discard_reason or '' }}</textarea></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Programa sugerido</span><select name="recommended_program_id"><option value="">Sin sugerencia por ahora</option>{% for option in items if option.item_type == 'programa' %}<option value="{{ option.id }}" {% if values.recommended_program_id == option.id %}selected{% endif %}>{{ option.code }} · {{ option.title }}</option>{% endfor %}</select><small>La sugerencia requiere confirmación de GREENATICS.</small></label>
+  </div></fieldset>
+  <fieldset class="form-section"><legend>Registros fuente</legend><p class="quiet">Vincula los formularios de este expediente que sustentan la interpretación. Para enviar a revisión, cada uno debe estar revisado como válido.</p><div class="pmirs-choice-list">
+    {% for record in records %}<label class="pmirs-choice"><input type="checkbox" name="source_record_ids" value="{{ record.id }}" {% if record.id in (values.source_record_ids or []) %}checked{% endif %}><span><strong>{{ record.form_code }} · {{ record.title }}</strong><small>{{ project_record_status_labels.get(record.id, record.status) }}</small></span><a href="/records/{{ record.id }}" onclick="event.stopPropagation()">Abrir</a></label>{% else %}<p class="quiet">No hay registros de diagnóstico. Registra D-01 y los formularios de campo primero.</p>{% endfor %}
+  </div></fieldset>
+  <fieldset class="form-section"><legend>Evidencia de contexto</legend><div class="pmirs-choice-list">
+    {% for file in evidence %}<label class="pmirs-choice"><input type="checkbox" name="evidence_ids" value="{{ file.id }}" {% if file.id in (values.evidence_ids or []) %}checked{% endif %}><span><strong>{{ file.original_name }}</strong><small>{{ file.created_at.strftime('%Y-%m-%d') }}</small></span></label>{% else %}<p class="quiet">Los archivos se pueden adjuntar después de guardar el hallazgo.</p>{% endfor %}
+  </div></fieldset>
+
+  {% elif item_type == 'programa' %}
+  <fieldset class="form-section"><legend>Aplicabilidad y diseño</legend><div class="field-grid">
+    <label class="dynamic-field"><span class="field-label">¿Aplica a esta copropiedad? <b>*</b></span><select name="applies" required><option value="">Seleccionar</option><option value="si" {% if values.applies == 'si' %}selected{% endif %}>Sí</option><option value="no" {% if values.applies == 'no' %}selected{% endif %}>No</option></select></label>
+    <label class="dynamic-field"><span class="field-label">Estado de formulación <b>*</b></span><select name="program_status" required>{% for code,label in [('borrador','Borrador'),('en_revision','En revisión'),('aprobado_interno','Aprobado internamente'),('implementacion','En implementación'),('activo','Activo'),('no_aplica','No aplica')] %}<option value="{{ code }}" {% if values.program_status == code or (not values.program_status and code == 'borrador') %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Justificación de aplicabilidad <b>*</b></span><textarea name="applicability_reason" rows="2" minlength="8" maxlength="4000" required>{{ values.applicability_reason or '' }}</textarea><small>Relaciónala con el diagnóstico y los hallazgos disponibles.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Objetivo específico</span><textarea name="objective" rows="2" maxlength="4000">{{ values.objective or '' }}</textarea></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Alcance: corrientes, personas y espacios</span><textarea name="scope" rows="2" maxlength="4000">{{ values.scope or '' }}</textarea></label>
+    <label class="dynamic-field"><span class="field-label">Responsable principal por rol</span><input name="owner_role" maxlength="240" value="{{ values.owner_role or '' }}" placeholder="Ej. administración PH"></label>
+  </div></fieldset>
+  <fieldset class="form-section"><legend>Hallazgos relacionados</legend><div class="pmirs-choice-list">
+    {% for option in items if option.item_type == 'hallazgo' %}<label class="pmirs-choice"><input type="checkbox" name="finding_ids" value="{{ option.id }}" {% if option.id in (values.finding_ids or []) %}checked{% endif %}><span><strong>{{ option.code }} · {{ option.title }}</strong><small>{{ item_review_labels.get(option.review_status, option.review_status) }}</small></span></label>{% else %}<p class="quiet">Crea hallazgos después de revisar los datos de diagnóstico.</p>{% endfor %}
+  </div></fieldset>
+
+  {% elif item_type == 'accion' %}
+  <fieldset class="form-section"><legend>Asignación y programación</legend><div class="field-grid">
+    <label class="dynamic-field"><span class="field-label">Programa <b>*</b></span><select name="program_id" required><option value="">Seleccionar</option>{% for option in items if option.item_type == 'programa' %}<option value="{{ option.id }}" {% if values.program_id == option.id %}selected{% endif %}>{{ option.code }} · {{ option.title }}{% if option.review_status != 'VALIDATED' or option.data.applies != 'si' %} · Pendiente de revisión{% endif %}</option>{% endfor %}</select><small>Para enviar a revisión debe aplicar y estar validado.</small></label>
+    <label class="dynamic-field"><span class="field-label">Indicador de seguimiento <b>*</b></span><select name="indicator_id" required><option value="">Seleccionar</option>{% for option in items if option.item_type == 'indicador' %}<option value="{{ option.id }}" {% if values.indicator_id == option.id %}selected{% endif %}>{{ option.code }} · {{ option.title }}{% if option.review_status != 'VALIDATED' %} · Pendiente de revisión{% endif %}</option>{% endfor %}</select><small>Si falta el indicador, créalo primero.</small></label>
+    <label class="dynamic-field"><span class="field-label">Responsable <b>*</b></span><input name="owner" minlength="2" maxlength="240" value="{{ values.owner or '' }}" required placeholder="Rol o persona designada"></label>
+    <label class="dynamic-field"><span class="field-label">Apoyo</span><input name="support" maxlength="240" value="{{ values.support or '' }}"></label>
+    <label class="dynamic-field"><span class="field-label">Prioridad <b>*</b></span><select name="priority" required><option value="">Seleccionar</option>{% for code,label in priorities.items() %}<option value="{{ code }}" {% if values.priority == code %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Fecha de inicio</span><input name="start_date" type="date" value="{{ values.start_date or '' }}"></label>
+    <label class="dynamic-field"><span class="field-label">Fecha objetivo <b>*</b></span><input name="due_date" type="date" value="{{ values.due_date or '' }}" required></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Criterio de terminación <b>*</b></span><textarea name="completion_criteria" rows="2" minlength="8" maxlength="4000" required>{{ values.completion_criteria or '' }}</textarea><small>Define qué evidencia mostrará que la acción está ejecutada.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Recursos requeridos</span><textarea name="resources" rows="2" maxlength="4000">{{ values.resources or '' }}</textarea><small>Registra materiales, tiempo o terceros; no implica que estén aprobados.</small></label>
+    <label class="dynamic-field"><span class="field-label">Tipo de evidencia esperada <b>*</b></span><select name="expected_evidence" required><option value="">Seleccionar</option>{% for code,label in [('foto','Foto'),('acta','Acta'),('documento','Documento'),('registro','Registro'),('medicion','Medición'),('otro','Otro')] %}<option value="{{ code }}" {% if values.expected_evidence == code %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Detalle de evidencia</span><input name="expected_evidence_detail" maxlength="1000" value="{{ values.expected_evidence_detail or '' }}"></label>
+  </div></fieldset>
+  <fieldset class="form-section"><legend>Operarios asignados en RED</legend>
+    <p class="quiet">Selecciona solo operarios activos del perfil de campo vinculados a este expediente. La asignación aparecerá en su inicio y habilitará el seguimiento y la evidencia de esta acción.</p>
+    {% if stale_field_assignees %}<div class="notice warning" role="status">Una asignación anterior ya no corresponde a un operario activo de este expediente. Elige de nuevo a las personas responsables antes de guardar.</div>{% endif %}
+    <div class="pmirs-choice-list pmirs-assignee-list">
+      {% for member in field_assignees %}<label class="pmirs-choice"><input type="checkbox" name="assignee_user_ids" value="{{ member.id }}" {% if member.id in (values.assignee_user_ids or []) %}checked{% endif %}><span><strong>{{ member.name }}</strong><small>{{ member.email }} · Perfil de campo</small></span></label>{% else %}<p class="quiet">No hay operarios activos asignados a este conjunto. Primero crea o invita un usuario con perfil de campo desde Administración RED.</p>{% endfor %}
+    </div>
+  </fieldset>
+  <fieldset class="form-section"><legend>Hallazgos que origina o atiende</legend><div class="pmirs-choice-list">
+    {% for option in items if option.item_type == 'hallazgo' %}<label class="pmirs-choice"><input type="checkbox" name="finding_ids" value="{{ option.id }}" {% if option.id in (values.finding_ids or []) %}checked{% endif %}><span><strong>{{ option.code }} · {{ option.title }}</strong><small>{{ item_review_labels.get(option.review_status, option.review_status) }}</small></span></label>{% else %}<p class="quiet">Sin hallazgos todavía.</p>{% endfor %}
+  </div></fieldset>
+
+  {% elif item_type == 'indicador' %}
+  <fieldset class="form-section"><legend>Definición y método</legend><div class="field-grid">
+    <label class="dynamic-field wide-field"><span class="field-label">Qué mide y qué no mide <b>*</b></span><textarea name="definition" rows="3" minlength="2" maxlength="4000" required>{{ values.definition or '' }}</textarea></label>
+    <label class="dynamic-field"><span class="field-label">Fórmula interpretable <b>*</b></span><textarea name="formula" rows="2" minlength="2" maxlength="2000" required>{{ values.formula or '' }}</textarea><small>Identifica variables y relación; no calculamos fórmulas automáticamente.</small></label>
+    <label class="dynamic-field"><span class="field-label">Unidad <b>*</b></span><input name="unit" minlength="2" maxlength="100" value="{{ values.unit or '' }}" placeholder="kg, %, número, días…" required></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Fuente de datos <b>*</b></span><textarea name="source_description" rows="2" minlength="2" maxlength="2000" required>{{ values.source_description or '' }}</textarea></label>
+    <label class="dynamic-field"><span class="field-label">Frecuencia <b>*</b></span><select name="frequency" required><option value="">Seleccionar</option>{% for value in ['Evento','Semanal','Mensual','Trimestral','Semestral','Anual','Otra'] %}<option value="{{ value }}" {% if values.frequency == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Responsable de reporte <b>*</b></span><input name="report_owner" minlength="2" maxlength="240" value="{{ values.report_owner or '' }}" required></label>
+    <label class="dynamic-field"><span class="field-label">Dato disponible actualmente <b>*</b></span><select name="data_available" required><option value="">Seleccionar</option>{% for code,label in [('si','Sí'),('no','No'),('parcial','Parcial')] %}<option value="{{ code }}" {% if values.data_available == code %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="dynamic-field"><span class="field-label">Meta (opcional)</span><input name="target" maxlength="240" value="{{ values.target or '' }}" placeholder="No fijar sin fundamento"></label>
+    <label class="dynamic-field"><span class="field-label">Línea Base del indicador (opcional)</span><input name="baseline_value" maxlength="240" value="{{ values.baseline_value or '' }}"></label>
+    <label class="dynamic-field"><span class="field-label">Fecha de Línea Base</span><input name="baseline_date" type="date" value="{{ values.baseline_date or '' }}"></label>
+    <label class="dynamic-field"><span class="field-label">Soporte de la Línea Base</span><input name="baseline_support" maxlength="1000" value="{{ values.baseline_support or '' }}"></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Método o actividad para capturar dato faltante</span><textarea name="capture_method" rows="2" maxlength="3000">{{ values.capture_method or '' }}</textarea><small>Requerido si el dato no está disponible o solo está disponible parcialmente.</small></label>
+    <label class="dynamic-field wide-field"><span class="field-label">Acción de captura relacionada (opcional)</span><select name="capture_action_id"><option value="">Sin acción relacionada todavía</option>{% for option in items if option.item_type == 'accion' %}<option value="{{ option.id }}" {% if values.capture_action_id == option.id %}selected{% endif %}>{{ option.code }} · {{ option.title }}</option>{% endfor %}</select></label>
+  </div></fieldset>
+  {% endif %}
+
+  <div class="form-actions form-actions-sticky"><a class="button secondary" href="/projects/{{ project.id }}/pmirs">Cancelar</a><button class="button secondary" type="submit" name="action" value="draft" formnovalidate>Guardar borrador</button><button class="button primary" type="submit" name="action" value="submit" {% if project.baseline_status != 'validada' %}disabled{% endif %}>Enviar a revisión</button></div>
+</form>
+{% endblock %}

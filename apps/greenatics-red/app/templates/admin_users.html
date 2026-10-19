@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<header class="page-header"><div><p class="eyebrow">Administración de RED</p><h1>Usuarios y accesos</h1><p class="lede">Invita al equipo con acceso limitado al proyecto que le corresponde.</p></div></header>
+<p><a class="text-link" href="/admin/privacy">Seguimiento administrativo de solicitudes de privacidad</a></p>
+{% if not red_operational_writes_enabled() %}<p class="notice info" id="invite-write-help" role="status">En modo consulta puedes revisar perfiles y accesos; las invitaciones y los cambios de membresía se habilitan cuando se apruebe el gate operativo.</p>{% endif %}
+{% if error %}<div class="notice info" role="status">{{ error }}{% if invite_link %}<div class="invite-link"><label for="invite-link">Enlace de invitación · vence en 7 días</label><div class="invite-link-actions"><input id="invite-link" readonly value="{{ invite_link }}"><button class="button compact secondary" type="button" data-copy-link-target="invite-link" data-copy-status-target="invite-link-copy-status">Copiar enlace</button></div><span id="invite-link-copy-status" class="quiet" role="status" aria-live="polite"></span></div>{% endif %}{% if reset_link %}<div class="invite-link"><label for="reset-link">Enlace de recuperación · vence en 1 hora</label><div class="invite-link-actions"><input id="reset-link" readonly value="{{ reset_link }}"><button class="button compact secondary" type="button" data-copy-link-target="reset-link" data-copy-status-target="reset-link-copy-status">Copiar enlace</button></div><span id="reset-link-copy-status" class="quiet" role="status" aria-live="polite"></span></div>{% endif %}</div>{% endif %}
+{% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+<section class="content-grid admin-grid">
+  <section class="panel">
+    <div class="section-head"><div><p class="eyebrow">Nuevo acceso</p><h2>Crear invitación</h2><p class="quiet">Se genera un enlace de un solo uso; el correo no se envía automáticamente.</p></div></div>
+    <p class="quiet">Si la cuenta ya existe, podrá agregar el nuevo conjunto confirmando su contraseña actual. Si ya tiene una membresía en el proyecto elegido, cambia el rol o reactiva el acceso desde «Editar acceso».</p>
+    <details class="role-guidance" id="project-role-guide">
+      <summary>Qué permite cada perfil</summary>
+      <p class="quiet">Estos roles se limitan al proyecto elegido. Para administrar cuentas y todos los expedientes, usa la sección separada de administración RED solo cuando sea necesario.</p>
+      <dl>{% for role in project_roles %}<div><dt>{{ role.label }}</dt><dd>{{ role.description }}</dd></div>{% endfor %}</dl>
+      <small class="quiet">El trabajo de campo requiere autorización vigente de visita. La administración global puede ver y administrar los cuatro expedientes; asígnala solo a quien necesite ese alcance.</small>
+    </details>
+    <form method="post" action="/admin/invitations" class="form-stack">
+      <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="invite-write-help"{% endif %}>
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>Nombre completo<input name="full_name" maxlength="200" required></label>
+        <label>Correo electrónico<input type="email" name="email" maxlength="320" required></label>
+        <label>Proyecto<select name="project_id" required><option value="">Selecciona un proyecto</option>{% for project in projects %}<option value="{{ project.id }}">{{ project.name }}</option>{% endfor %}</select></label>
+        <label>Rol de proyecto<select name="role">{% for role in project_roles %}<option value="{{ role.value }}"{% if role.value == 'consultor' %} selected{% endif %}>{{ role.label }}</option>{% endfor %}</select></label>
+        <button class="button primary" type="submit">Generar invitación</button>
+      </fieldset>
+    </form>
+    <details class="global-admin-invite">
+      <summary>Invitar a administración RED · acceso global</summary>
+      <div class="notice warning"><strong>Acceso ampliado</strong><p>Este perfil administra cuentas y puede acceder a los cuatro expedientes. Úsalo solo si la persona necesita esas funciones; para cualquier trabajo en una unidad, crea una invitación de proyecto con el rol correspondiente.</p></div>
+      <form method="post" action="/admin/invitations" class="form-stack">
+        <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="invite-write-help"{% endif %}>
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="platform_admin_invite" value="on">
+          <label>Nombre completo<input name="full_name" maxlength="200" required></label>
+          <label>Correo electrónico<input type="email" name="email" maxlength="320" required></label>
+          <label class="checkbox-row"><input type="checkbox" name="platform_admin_confirmation" value="confirmed" required><span>Confirmo que esta persona necesita acceso global de administración RED.</span></label>
+          <button class="button secondary" type="submit">Generar invitación de administración</button>
+        </fieldset>
+      </form>
+    </details>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><p class="eyebrow">Equipo RED</p><h2>Cuentas</h2><p class="quiet" id="account-status-help">Desactivar cierra sesiones, invalida invitaciones y recuperaciones pendientes y revoca las membresías activas. Reactivar la cuenta no devuelve accesos: administración debe habilitar de nuevo cada proyecto necesario. Los enlaces anteriores no se reactivan.</p></div><span class="count-badge">{{ users|length }}</span></div>
+    <div class="user-list">{% for account in users %}
+      <div class="user-row"><span class="avatar">{{ account.full_name[:1]|upper }}</span><span class="grow"><strong>{{ account.full_name }}</strong><small>{{ account.email }}</small></span><span class="status-pill {% if account.active %}status-ok{% else %}status-attention{% endif %}">{% if account.is_platform_admin %}Admin RED · {% endif %}{% if account.active %}Activo{% else %}Inactivo{% endif %}</span>
+        <details class="member-admin"><summary>Administrar</summary><div class="member-admin-actions">
+          {% if account.active %}<form method="post" action="/admin/users/{{ account.id }}/password-reset"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="button compact secondary" type="submit">Crear enlace de recuperación</button></form>{% endif %}
+          {% if account.id != user.id %}<form method="post" action="/admin/users/{{ account.id }}/status"{% if account.active %} onsubmit="return confirm('¿Desactivar esta cuenta? Se cerrarán sus sesiones, se revocarán todos sus accesos a conjuntos y se invalidarán sus enlaces pendientes. Para restablecer el acceso, primero habrá que reactivar la cuenta y luego cada membresía necesaria.')"{% endif %}><input type="hidden" name="csrf" value="{{ csrf }}"><button class="button compact {% if account.active %}secondary{% else %}primary{% endif %}" name="action" value="{% if account.active %}deactivate{% else %}activate{% endif %}" type="submit" {% if not red_operational_writes_enabled() %}disabled aria-describedby="invite-write-help"{% endif %}>{% if account.active %}Desactivar cuenta{% else %}Activar cuenta{% endif %}</button></form>{% endif %}
+        </div></details>
+      </div>
+    {% else %}<p class="quiet">Aún no hay usuarios activados.</p>{% endfor %}</div>
+  </section>
+</section>
+<section class="panel table-panel">
+  <div class="section-head"><div><p class="eyebrow">Acceso por conjunto</p><h2>Membresías de proyecto</h2><p class="quiet">Cada invitación asigna a la persona a un proyecto y rol.</p></div></div>
+  {% if memberships %}<div class="membership-list">{% for membership in memberships %}
+    {% set member = users|selectattr('id','equalto',membership.user_id)|first %}
+    {% set project = projects|selectattr('id','equalto',membership.project_id)|first %}
+    {% if member and project %}<div class="membership-row"><span class="grow"><strong>{{ member.full_name }}</strong><small>{{ project.name }}</small></span><span class="status-pill {% if membership.active %}status-raw{% else %}status-attention{% endif %}">{{ membership.role|replace('_',' ')|title }} · {% if membership.active %}Activo{% else %}Revocado{% endif %}</span>
+      <details class="member-admin"><summary>Editar acceso</summary><div class="member-admin-actions">
+        <form method="post" action="/admin/memberships/{{ membership.id }}" class="membership-edit"{% if membership.active %} onsubmit="return confirm('¿Cambiar los permisos de esta persona para este conjunto? El nuevo rol se aplicará al guardar.')"{% endif %}>
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="change_role">
+          <label class="sr-only" for="role-{{ membership.id }}">Rol de {{ member.full_name }} en {{ project.name }}</label>
+          <select id="role-{{ membership.id }}" name="role" {% if not red_operational_writes_enabled() %}disabled aria-describedby="invite-write-help"{% endif %}>{% for role in project_roles %}<option value="{{ role.value }}"{% if membership.role == role.value %} selected{% endif %}>{{ role.label }}</option>{% endfor %}</select>
+          {% if not membership.active %}<small class="wide-field quiet">El acceso sigue revocado al guardar el rol. Usa «Reactivar acceso» por separado cuando corresponda.</small>{% endif %}
+          <button class="button compact secondary" type="submit" {% if not red_operational_writes_enabled() %}disabled aria-describedby="invite-write-help"{% endif %}>Guardar rol</button>
+        </form>
+        {% if not membership.active and not member.active %}<small class="wide-field quiet">Activa primero la cuenta de esta persona; después podrás reactivar su acceso al conjunto.</small>{% endif %}
+        <form method="post" action="/admin/memberships/{{ membership.id }}"{% if membership.active %} onsubmit="return confirm('¿Revocar el acceso de esta persona a este conjunto? Perderá acceso a sus registros y acciones. Podrás reactivarlo desde esta misma pantalla.')"{% endif %}><input type="hidden" name="csrf" value="{{ csrf }}"><button class="button compact {% if membership.active %}secondary{% else %}primary{% endif %}" name="action" value="{% if membership.active %}deactivate{% else %}activate{% endif %}" type="submit" {% if not red_operational_writes_enabled() or (not membership.active and not member.active) %}disabled aria-describedby="{% if not red_operational_writes_enabled() %}invite-write-help {% endif %}{% if not member.active %}account-status-help{% endif %}"{% endif %}>{% if membership.active %}Revocar acceso{% else %}Reactivar acceso{% endif %}</button></form>
+      </div></details>
+    </div>{% endif %}
+  {% endfor %}</div>{% else %}<p class="quiet">No se han aceptado invitaciones de proyecto.</p>{% endif %}
+</section>
+<section class="panel table-panel">
+  <div class="section-head"><div><p class="eyebrow">Invitaciones</p><h2>Pendientes de aceptar</h2></div><span class="count-badge">{{ invitations|length }}</span></div>
+  {% if invitations %}<div class="invite-list">{% for item in invitations %}<div class="membership-row"><span class="grow"><strong>{{ item.full_name }} · {{ item.email }}</strong><small>{% if item.project_id %}{% set project = projects|selectattr('id','equalto',item.project_id)|first %}{{ project.name if project else 'Proyecto' }}{% else %}GREENATICS RED{% endif %} · vence {{ item.expires_at.strftime('%Y-%m-%d') }}</small></span><span class="status-pill status-attention">Pendiente</span><div class="member-admin-actions"><form method="post" action="/admin/invitations/{{ item.id }}/revoke"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="button compact secondary" type="submit" {% if not red_operational_writes_enabled() %}disabled aria-describedby="invite-write-help"{% endif %}>Revocar invitación</button></form></div></div>{% endfor %}</div>{% else %}<p class="quiet">No hay invitaciones pendientes.</p>{% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/copy-link.js?v=20261009-1" defer></script>{% endblock %}

@@ -1,0 +1,68 @@
+.brand { gap: 10px; }
+.brand-symbol {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  padding: 3px;
+  border-radius: 9px;
+  background: #fff;
+  object-fit: contain;
+}
+.login-brand-symbol {
+  display: block;
+  width: 102px;
+  height: auto;
+  margin: 0 0 20px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #fff;
+}
+.readiness-details,
+.process-details,
+.project-admin-details { margin: 0 auto 16px; max-width: 1440px; }
+.readiness-details > summary,
+.process-details > summary,
+.project-admin-details > summary {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.readiness-details > summary::-webkit-details-marker,
+.process-details > summary::-webkit-details-marker,
+.project-admin-details > summary::-webkit-details-marker { display: none; }
+.readiness-details > summary::after,
+.process-details > summary::after,
+.project-admin-details > summary::after {
+  content: "+";
+  flex: 0 0 auto;
+  color: var(--green);
+  font-size: 20px;
+  font-weight: 500;
+}
+.readiness-details[open] > summary::after,
+.process-details[open] > summary::after,
+.project-admin-details[open] > summary::after { content: "−"; }
+.readiness-details > .section-head { margin-top: 12px; }
+.readiness-details > ul { margin-bottom: 8px; color: #4b584e; font-size: 12px; }
+.readiness-details .storage-project-list { padding: 0; list-style: none; }
+.process-details[open] .process-strip { margin-top: 8px; }
+.project-admin-details > section.panel { margin: 0 0 12px; box-shadow: none; }
+.project-admin-details > section.panel:last-of-type { margin-bottom: 0; }
+.project-admin-details .project-identity-panel > .section-head .quiet { max-width: 700px; }
+.form-catalog > .section-head { margin-bottom: 8px; }
+.form-catalog > details > summary { min-height: 46px; }
+@media (max-width: 650px) {
+  .brand-symbol { width: 34px; height: 34px; flex-basis: 34px; }
+  .login-brand-symbol { width: 84px; margin-bottom: 12px; }
+  .readiness-details > summary,
+  .process-details > summary,
+  .project-admin-details > summary { align-items: flex-start; padding-block: 9px; }
+  .project-admin-details > summary .quiet { display: none; }
+}

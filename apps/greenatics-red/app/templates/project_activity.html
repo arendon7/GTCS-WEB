@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Trazabilidad · {{ project.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow"><a href="/projects/{{ project.id }}">{{ project.name }}</a> / Seguimiento</p><h1>Trazabilidad del expediente</h1><p class="lede">Actividad registrada por las personas con acceso a esta copropiedad.</p></div>
+  <div class="header-actions"><a class="button secondary" href="/projects/{{ project.id }}">Volver al expediente</a></div>
+</header>
+<section class="panel table-panel" aria-labelledby="activity-heading">
+  <div class="section-head"><div><p class="eyebrow">Historial de actividad</p><h2 id="activity-heading">Cambios y revisiones</h2><p class="quiet">Se muestran acciones, cambios de rol y responsables. No se presentan respuestas de formularios, motivos, correos, nombres de archivos ni hashes.</p></div><span class="count-badge">{{ total_events }} actividades · página {{ page }} de {{ page_count }}</span></div>
+  <form method="get" action="/projects/{{ project.id }}/activity" class="activity-filter" role="search">
+    <label for="activity-category">Filtrar actividad<select id="activity-category" name="category">{% for key, spec in activity_categories.items() %}<option value="{{ key }}"{% if key == selected_category %} selected{% endif %}>{{ spec.label }}</option>{% endfor %}</select></label>
+    <button class="button secondary" type="submit">Aplicar filtro</button>
+  </form>
+  {% if activity_rows %}
+  <div class="record-list" aria-label="Actividad reciente del expediente">
+    {% for row in activity_rows %}
+    <article class="record-row" data-activity-id="{{ row.id }}">
+      <span class="status-pill status-blue">{{ row.entity_label }}</span>
+      <span class="grow"><strong>{{ row.action_label }}</strong>{% if row.detail_label %}<small>{{ row.detail_label }}</small>{% endif %}<small>{{ row.actor_name }} · {{ row.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</small></span>
+    </article>
+    {% endfor %}
+  </div>
+  <nav class="header-actions" aria-label="Páginas del historial">
+    {% if previous_page %}<a class="button secondary" rel="prev" href="/projects/{{ project.id }}/activity?category={{ selected_category }}&amp;page={{ previous_page }}">Actividades más recientes</a>{% endif %}
+    {% if next_page %}<a class="button secondary" rel="next" href="/projects/{{ project.id }}/activity?category={{ selected_category }}&amp;page={{ next_page }}">Actividades anteriores</a>{% endif %}
+  </nav>
+  {% else %}
+  <div class="empty-state"><h3>{% if selected_category == 'all' %}Aún no hay actividad{% else %}No hay actividades de este tipo{% endif %}</h3><p>{% if selected_category == 'all' %}Las capturas, revisiones y cambios de acceso quedarán registrados aquí cuando ocurran.{% else %}Prueba otra categoría o vuelve a mostrar todas las actividades.{% endif %}</p></div>
+  {% endif %}
+</section>
+{% endblock %}

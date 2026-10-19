@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <div><p class="eyebrow"><a href="/">Proyectos</a> / Expediente</p><h1>{{ project.name }}</h1><p class="lede">{% if project.identity_status == 'confirmada' %}{{ project.address }} · {% endif %}{{ project.municipality }}, {{ project.department }} · <span class="status-pill status-raw">En preparación</span></p></div>
+  <div class="header-actions"><a class="button secondary" href="{{ operational_references_url }}">Guías y documentos de campo</a><a class="button secondary" href="/projects/{{ project.id }}/activity">Trazabilidad</a>{% if can_export_records %}<a class="button secondary" href="/projects/{{ project.id }}/records/export.csv">Exportar CSV</a><a class="button secondary" href="/projects/{{ project.id }}/records/export.xlsx">Exportar Excel</a>{% endif %}<a class="button secondary" href="/">Volver a proyectos</a></div>
+</header>
+{% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+<section class="fact-strip">
+  <div><small>Estado</small><strong>Preparación del PMIRS</strong></div>
+  <div><small>Identidad de la unidad</small><strong>{% if project.identity_status == 'confirmada' %}Confirmada con fuente{% else %}Pendiente de confirmación{% endif %}</strong></div>
+  <div><small>Ubicación</small><strong>{% if project.identity_status == 'confirmada' %}{{ project.address }} · {% else %}Por verificar · {% endif %}{{ project.municipality }}, {{ project.department }}</strong></div>
+  <div><small>Registros capturados</small><strong>{{ records|length }} recientes</strong></div>
+</section>
+{% if role != 'campo' %}<details class="panel project-admin-details"><summary>Datos y requisitos de la unidad <span class="quiet">Identificación · visita · Línea Base</span></summary>
+<section class="panel project-identity-panel" id="project-identity" aria-labelledby="project-identity-heading">
+  <div class="section-head"><div><p class="eyebrow">Datos propios de esta copropiedad</p><h2 id="project-identity-heading">Identificación y dirección</h2><p class="quiet">Cada unidad conserva sus datos y su fuente de confirmación por separado. El nombre recibido se mantiene como borrador hasta cotejarlo con la administración o un soporte institucional.</p></div><span class="status-pill {% if project.identity_status == 'confirmada' %}status-ok{% else %}status-attention{% endif %}">{% if project.identity_status == 'confirmada' %}Confirmada{% else %}Pendiente{% endif %}</span></div>
+  {% if project.identity_status == 'confirmada' %}
+    <dl class="visit-authorization-references"><div><dt>Dirección registrada</dt><dd>{{ project.address }}</dd></div><div><dt>Fuente / folio</dt><dd>{{ project.identity_reference }}</dd></div>{% if project.identity_confirmed_at %}<div><dt>Confirmada en RED</dt><dd>{{ project.identity_confirmed_at.strftime('%Y-%m-%d %H:%M UTC') }}</dd></div>{% endif %}<div><dt>Perfil que confirmó</dt><dd>{{ project_identity_role_label }}</dd></div>{% if can_manage_project_identity %}<div><dt>Registrada por</dt><dd>{{ project_identity_reviewer }}</dd></div>{% endif %}</dl>
+    <p class="quiet small">La constancia indica que una persona administradora cotejó los datos con la fuente registrada; no certifica titularidad ni reemplaza la validación contractual o jurídica.</p>
+  {% else %}
+    <p class="notice warning" role="status"><strong>La identidad territorial no está confirmada.</strong> No uses el nombre, la dirección o el municipio de este borrador como dato oficial en entregables.</p>
+    {% if can_manage_project_identity and project.address %}<p class="quiet small">Dirección en borrador: {{ project.address }}</p>{% endif %}
+  {% endif %}
+  {% if can_manage_project_identity %}
+    <details {% if project.identity_status != 'confirmada' %}open{% endif %}><summary>Administrar identificación de esta unidad</summary>
+      <form method="post" action="/projects/{{ project.id }}/identity" class="form-grid project-identity-form">
+        <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="project-identity-write-help"{% endif %}>
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Nombre confirmado o propuesto<input name="name" value="{{ project.name }}" required minlength="2" maxlength="240" autocomplete="organization"></label>
+          <label>Dirección de la copropiedad<input name="address" value="{{ project.address }}" maxlength="500" autocomplete="street-address"></label>
+          <div class="form-grid two-columns"><label>Municipio<input name="municipality" value="{{ project.municipality }}" required minlength="2" maxlength="120"></label><label>Departamento<input name="department" value="{{ project.department }}" required minlength="2" maxlength="120"></label></div>
+          <label>Folio o identificador de la fuente (solo letras, números y guiones)<input name="identity_reference" value="{{ project.identity_reference if project.identity_status == 'confirmada' else '' }}" maxlength="{{ project_identity_reference_limit }}" pattern="[A-Za-z0-9-]+" autocomplete="off" aria-describedby="project-identity-reference-help"><small id="project-identity-reference-help">No pegues nombres, correos, documentos personales ni enlaces compartibles. Requerido al confirmar.</small></label>
+          <label class="wide-field checkbox-label"><input type="checkbox" name="confirmation_checked" value="yes"><span>{% if role == 'administracion_ph' %}Desde mi perfil de Administración PH de esta unidad, confirmo que cotejé nombre, dirección, municipio y departamento con la información de la copropiedad y la fuente indicada.{% else %}Confirmo que cotejé nombre, dirección, municipio y departamento con la administración de esta unidad o la fuente institucional identificada.{% endif %} Esto registra la cuenta y el perfil que hicieron el cotejo; no reemplaza una validación jurídica.</span></label>
+          <div class="form-actions wide-field"><button class="button secondary" type="submit" name="action" value="save_pending">Guardar como pendiente</button><button class="button primary" type="submit" name="action" value="confirm">Confirmar identidad</button>{% if project.identity_status == 'confirmada' %}<button class="button secondary" type="submit" name="action" value="reset">Restablecer a pendiente</button>{% endif %}</div>
+        </fieldset>
+      </form>
+      {% if not red_operational_writes_enabled() %}<p class="quiet small" id="project-identity-write-help">La edición se habilita cuando el gate global de escritura esté aprobado.</p>{% endif %}
+    </details>
+  {% endif %}
+</section>
+</details>{% endif %}
+<section class="panel role-route startup-route" aria-labelledby="startup-route-heading">
+  <div class="section-head"><div><p class="eyebrow">Alistamiento de esta copropiedad</p><h2 id="startup-route-heading">Antes de iniciar el trabajo</h2><p class="quiet">{% if project.origin == 'synthetic_demo' %}Este expediente es un sandbox aislado con contenido ficticio. Sus registros, soportes, autorización y estado de Línea Base solo sirven para practicar; no representan una copropiedad ni permisos reales. Los cuatro expedientes residenciales siguen vacíos y separados.{% else %}Este expediente parte sin fuentes ni caracterización. Completa los pasos de forma independiente para cada unidad; la app muestra estados registrados, no confirma permisos externos.{% endif %}</p></div></div>
+  {% if visit_authorization_status == 'vencida' %}<p class="notice warning" role="status"><strong>Autorización vencida.</strong> La captura de campo sigue bloqueada hasta que la administración revise un soporte vigente.</p>{% endif %}
+  <p class="quiet small">Línea Base: {% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO. Esta aceptación es sintética y existe solo para practicar el flujo. Referencia: {{ project.baseline_reference }}.{% else %}Aceptada{% endif %}{% else %}No aceptada{% endif %}</p>
+  {% if role != 'campo' %}<details class="startup-meeting-guide"><summary>Preparar la primera reunión con la administración</summary><p class="quiet small">Usa esta conversación para solicitar fuentes y acordar el alcance. RED no crea actas ni confirma acuerdos por mostrar esta guía: registra únicamente lo que luego quede verificado en el expediente.</p><ol>
+    <li><strong>Confirmar identificación y contacto institucional.</strong> Coteja el nombre oficial, ubicación y persona responsable con la administración. <a href="#project-identity">Revisar identificación de la unidad</a>.</li>
+    <li><strong>Solicitar los antecedentes disponibles.</strong> Pregunta por reglamento y procedimientos de residuos, contratos o acuerdos con prestadores y recicladores, pesajes o aforos, rutas, planos y caracterizaciones. Si no existen, registra “no disponible”; no completes vacíos con supuestos.</li>
+    <li><strong>Acordar el alcance de la visita.</strong> Define áreas permitidas, acompañamiento, horarios, manejo de datos, método técnico y controles de SST con responsables de la copropiedad. <a href="#visit-authorization">Revisar requisitos de autorización</a>.</li>
+    <li><strong>Continuar con soportes y formularios.</strong> Registra fuentes verificables en el expediente y completa D-01/D-02 según corresponda. No hagas mediciones ni capturas reales hasta que la autorización externa esté revisada y vigente.</li>
+  </ol></details>{% endif %}
+  {% if role == 'campo' %}<p class="quiet small">Los permisos reales los define el perfil RED asignado a cada persona; el catálogo indica el responsable del formato fuente.</p>{% endif %}
+  <div class="role-route-steps">
+    {% for step in startup_checklist %}<div class="role-route-step startup-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span><span class="status-pill {{ step.status_class }}">{{ step.status }}</span>{% if step.href and red_operational_writes_enabled() %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% elif step.href %}<a class="button compact secondary" href="{{ step.href }}">Ver {{ step.title.split(' · ')[0] }}</a>{% endif %}</div>{% endfor %}
+  </div>
+</section>
+{% if role != 'campo' %}<details class="panel project-admin-details"><summary>Autorización de visita y Línea Base <span class="quiet">Requisitos para iniciar</span></summary>
+<section class="panel visit-authorization-panel" id="visit-authorization" aria-labelledby="visit-authorization-heading">
+  <div class="section-head"><div><h2 id="visit-authorization-heading">Autorización de visita</h2><p class="quiet">La autorización se revisa por copropiedad. RED conserva identificadores de soportes y quién hizo la revisión; no almacena aquí contratos, datos de residentes ni documentos de identidad.</p></div><span class="status-pill {% if visit_authorization_is_active %}status-ok{% else %}status-attention{% endif %}">{% if visit_authorization_is_active %}Vigente hasta {{ visit_authorization.valid_until.isoformat() }}{% elif visit_authorization_status == 'vencida' %}Vencida{% elif visit_authorization_status == 'revocada' %}Revocada{% else %}Pendiente{% endif %}</span></div>
+  {% if visit_authorization %}<p class="quiet">Estado administrativo registrado: {{ visit_authorization_status }}. La vigencia depende de que los soportes externos sigan aplicando y la autorización no haya sido revocada.</p>{% else %}<p class="notice warning" role="status"><strong>Campo no habilitado.</strong> Completa la revisión externa antes de iniciar visitas, mediciones o capturas reales.</p>{% endif %}
+  {% if can_manage_visit_authorization %}
+    {% if visit_authorization %}<dl class="visit-authorization-references"><div><dt>Acceso de la copropiedad</dt><dd>{{ visit_authorization.site_access_reference }}</dd></div><div><dt>Privacidad</dt><dd>{{ visit_authorization.privacy_reference }}</dd></div><div><dt>Método técnico</dt><dd>{{ visit_authorization.method_reference }}</dd></div><div><dt>SST</dt><dd>{{ visit_authorization.sst_reference }}</dd></div><div><dt>Revisión por</dt><dd>{{ visit_authorization_reviewer }}</dd></div><div><dt>Registrada</dt><dd>{{ visit_authorization.approved_at.strftime('%Y-%m-%d %H:%M UTC') }}</dd></div>{% if visit_authorization.revoked_at %}<div><dt>Revocada</dt><dd>{{ visit_authorization.revoked_at.strftime('%Y-%m-%d %H:%M UTC') }} · {{ visit_authorization_revocation_reasons.get(visit_authorization.revocation_reason, 'Causa registrada') }}</dd></div>{% endif %}</dl>{% endif %}
+    {% if visit_authorization_is_active %}
+      <details class="authorization-review"><summary>Revocar autorización vigente</summary><form method="post" action="/projects/{{ project.id }}/visit-authorization" class="form-grid">
+        <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="visit-authorization-write-help"{% endif %}><input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="revoke"><label class="wide-field">Motivo de la revocación<select name="revocation_reason" required><option value="">Selecciona una causa</option>{% for code, label in visit_authorization_revocation_reasons.items() %}<option value="{{ code }}">{{ label }}</option>{% endfor %}</select></label><button class="button secondary" type="submit">Revocar y bloquear captura de campo</button></fieldset>
+      </form></details>
+    {% else %}
+      <details class="authorization-review" open><summary>Registrar una autorización revisada</summary><p class="quiet small">Usa folios o identificadores con letras y números, no enlaces compartibles ni contenido de los soportes. La fecha límite hace que el bloqueo se reactive automáticamente al vencer.</p><form method="post" action="/projects/{{ project.id }}/visit-authorization" class="form-grid">
+        <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="visit-authorization-write-help"{% endif %}>
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="action" value="approve">
+          <label>Referencia de acceso y alcance<input name="site_access_reference" maxlength="{{ visit_authorization_reference_limit }}" minlength="2" pattern="[A-Za-z0-9-]+" autocomplete="off" required></label>
+          <label>Referencia de privacidad aprobada<input name="privacy_reference" maxlength="{{ visit_authorization_reference_limit }}" minlength="2" pattern="[A-Za-z0-9-]+" autocomplete="off" required></label>
+          <label>Referencia de método técnico<input name="method_reference" maxlength="{{ visit_authorization_reference_limit }}" minlength="2" pattern="[A-Za-z0-9-]+" autocomplete="off" required></label>
+          <label>Referencia de revisión SST<input name="sst_reference" maxlength="{{ visit_authorization_reference_limit }}" minlength="2" pattern="[A-Za-z0-9-]+" autocomplete="off" required></label>
+          <label>Vigente hasta<input name="valid_until" type="date" min="{{ current_date }}" required></label>
+          <label class="wide-field checkbox-label"><input type="checkbox" name="reviewed_external_supports" required><span>Confirmo que revisé fuera de RED los soportes aplicables de acceso, privacidad, método técnico y SST para este conjunto. Esta acción registra la revisión administrativa y no sustituye las aprobaciones externas.</span></label>
+          <button class="button primary" type="submit">Registrar y habilitar captura de campo</button>
+        </fieldset>
+      </form></details>
+    {% endif %}
+    {% if not red_operational_writes_enabled() %}<p class="quiet small" id="visit-authorization-write-help">La escritura administrativa sigue cerrada por el gate global de RED.</p>{% endif %}
+  {% else %}<p class="quiet small">Solo administración GREENATICS RED puede consultar las referencias y registrar o revocar este control.</p>{% endif %}
+</section>
+<section class="panel baseline-panel" id="baseline-panel" aria-labelledby="baseline-heading">
+  <div class="section-head"><div><p class="eyebrow">Gate de calidad</p><h2 id="baseline-heading">Línea Base</h2><p class="quiet">Los formularios PMIRS se conservan como borrador hasta que la Línea Base tenga registros validados con al menos una respuesta y una nota de fuente.</p></div><span class="status-pill {% if project.baseline_status == 'validada' %}status-ok{% else %}status-attention{% endif %}">{% if project.baseline_status == 'validada' %}{% if project.origin == 'synthetic_demo' %}Aceptada · DEMO{% else %}Aceptada{% endif %}{% else %}No aceptada{% endif %}</span></div>
+  {% if project.baseline_status == 'validada' %}
+    {% if project.origin == 'synthetic_demo' %}<p class="notice info" role="status">Esta aceptación es sintética y existe solo para practicar el flujo; no representa una Línea Base de una copropiedad real.</p>{% endif %}
+    <div class="baseline-proof"><div><small>Referencia revisada</small><strong>{{ project.baseline_reference }}</strong></div><div><small>Fundamento</small><strong>{{ project.baseline_note }}</strong></div>{% if project.baseline_reviewed_at %}<div><small>Fecha</small><strong>{{ project.baseline_reviewed_at.strftime('%Y-%m-%d %H:%M UTC') }}</strong></div>{% endif %}</div>
+  {% else %}
+    <p class="quiet">Para aceptarla deben existir registros revisados como válidos en: {{ baseline_missing|join(', ') }}.</p>
+  {% endif %}
+  {% if can_review_baseline %}
+    <details class="baseline-review"><summary>Registrar o restablecer revisión de Línea Base</summary>
+      <form method="post" action="/projects/{{ project.id }}/baseline" class="form-grid baseline-form">
+        <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="baseline-write-help"{% endif %}>
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Decisión<select name="decision"><option value="validada">Aceptar Línea Base</option><option value="no_iniciada">Restablecer a no iniciada</option></select></label>
+          <label>Enlace o identificador de la base revisada<input name="reference" maxlength="1000" placeholder="URL del Drive o ID del documento"></label>
+          <label class="wide-field">Fundamento técnico de revisión<textarea name="reason" rows="2" minlength="8" maxlength="2000" required placeholder="Indica qué fuentes y periodo soportan la decisión."></textarea></label>
+          <button class="button primary" type="submit" {% if baseline_missing %}disabled{% endif %}>Guardar decisión</button>
+        </fieldset>
+      </form>
+      {% if not red_operational_writes_enabled() %}<p class="quiet small" id="baseline-write-help">La revisión de Línea Base se habilita cuando el gate operativo esté aprobado.</p>{% elif baseline_missing %}<p class="quiet small">El botón se habilita cuando estén revisados los registros indicados. No se aceptan líneas base vacías.</p>{% endif %}
+    </details>
+  {% endif %}
+</section>
+</details>{% endif %}
+{% if role == 'campo' %}<div class="notice warning field-connectivity-note" role="note" aria-label="Captura requiere conexión"><strong>RED no guarda formularios en el dispositivo.</strong><p>Trabaja con conexión al servidor y confirma el estado del formulario antes de salir. Si se pierde la conexión o no llega respuesta, conserva abierta la misma pantalla. Revisa el expediente antes de iniciar otro registro; si el primero no aparece, reintenta desde la pantalla original para que la clave del envío evite duplicados. No uses datos reales fuera del entorno autorizado ni papel sin el procedimiento de contingencia aprobado.</p></div><section class="panel role-route" aria-labelledby="assigned-actions-heading">
+  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="assigned-actions-heading">Mis acciones asignadas</h2><p class="quiet">Solo aparecen acciones PMIRS validadas que consultoría asignó a tu usuario en este expediente.</p></div></div>
+  {% if assigned_actions %}<div class="role-route-steps">
+    {% for action in assigned_actions %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ action.code }} · {{ action.title }}</strong><small>Prioridad {{ action.data.priority or 'pendiente' }} · Fecha objetivo {{ action.data.due_date or 'sin fecha' }} · {{ action.data.progress_pct or 0 }}% · {{ action_states.get(action.data.execution_status, 'Pendiente') }}</small></span><a class="button secondary" href="/projects/{{ project.id }}/pmirs#action-{{ action.id }}">Abrir acción</a></div>{% endfor %}
+  </div>{% else %}<div class="empty-state"><h3>No tienes acciones PMIRS asignadas</h3><p>Consulta con tu responsable del proyecto. Las acciones aparecerán aquí cuando estén revisadas como válidas y asignadas a tu usuario.</p></div>{% endif %}
+</section>{% endif %}
+<section class="panel role-route" aria-labelledby="role-route-heading">
+  <div class="section-head"><div><p class="eyebrow">Ruta de trabajo · {{ role|replace('_',' ')|title }}</p><h2 id="role-route-heading">{{ work_route.title }}</h2><p class="quiet">{{ work_route.description }}</p></div></div>
+  <div class="role-route-steps">
+    {% for step in work_route.steps %}<div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ step.title }}</strong><small>{{ step.detail }}</small></span>{% if step.href %}<a class="button compact secondary" href="{{ step.href }}">{{ step.cta }}</a>{% endif %}</div>{% endfor %}
+  </div>
+</section>
+{% if can_export_records %}<p class="source-note">Las hojas de cálculo incluyen los datos del formulario; los archivos adjuntos se consultan desde el expediente.</p>{% endif %}
+<section class="panel pmirs-launch" aria-labelledby="pmirs-launch-heading">
+  <div><h2 id="pmirs-launch-heading">PMIRS Studio</h2><p class="quiet">Construye el plan con hallazgos, programas, acciones asignadas, indicadores y versiones auditables.</p><small>{{ pmirs_item_count }} objetos · {{ pmirs_version_count }} versiones · la información es independiente de las otras copropiedades</small></div>
+  <a class="button primary" href="/projects/{{ project.id }}/pmirs">Abrir PMIRS Studio</a>
+</section>
+<section class="panel form-catalog" aria-labelledby="forms-heading">
+  <div class="section-head"><div><p class="eyebrow">Formatos maestros v7-2</p><h2 id="forms-heading">Formularios del expediente</h2><p class="quiet">Los formularios conservan los campos, reglas y trazabilidad del paquete RED Bello.</p></div></div>
+  <details>
+    <summary><span>Diagnóstico y trabajo de campo</span><span class="quiet">D-01 a D-14 · Q-01</span></summary>
+    <div class="form-list">
+      {% for form in forms if form.code.startswith('D-') or form.code == 'Q-01' %}
+        <div class="form-row"><span class="form-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small>{% if role == 'campo' and form.actor %}<small>Actor del formato fuente: {{ form.actor }}</small>{% endif %}</span>
+          {% if form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+  <details>
+    <summary><span>Diseño e implementación del PMIRS</span><span class="quiet">P-01 a P-15</span></summary>
+    <div class="form-list">
+      {% for form in forms if form.code.startswith('P-') %}
+        <div class="form-row"><span class="form-code pmirs-code">{{ form.code }}</span><span class="grow"><strong>{{ form.title.split('—')[-1].strip() }}</strong><small>{{ form.fields|length }} campos</small>{% if role == 'campo' and form.actor %}<small>Actor del formato fuente: {{ form.actor }}</small>{% endif %}</span>
+          {% if form.code == 'P-12' %}<a class="button compact secondary" href="/projects/{{ project.id }}/pmirs#versions-heading">Ver control documental</a>{% elif form.code in writable_form_codes %}{% if not red_operational_writes_enabled() %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Ver formulario</a>{% else %}<a class="button compact secondary" href="/projects/{{ project.id }}/records/new?form_code={{ form.code }}">Abrir formulario</a>{% endif %}{% else %}<span class="quiet">No disponible en tu perfil</span>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+<section class="panel table-panel" aria-labelledby="records-heading">
+  <div class="section-head"><div><p class="eyebrow">Historial</p><h2 id="records-heading">Registros recientes</h2></div><span class="count-badge">{{ records|length }} mostrados</span></div>
+  {% if records %}<div class="record-list">
+    {% for row in records %}
+      <a class="record-row" href="/records/{{ row.record.id }}"><span class="form-code">{{ row.record.form_code }}</span><span class="grow"><strong>{{ row.record.title }}</strong><small>{% if row.record.record_date %}{{ row.record.record_date }} · {% endif %}Versión {{ row.record.version }}</small></span><span class="status-pill {% if row.record.status == 'VALIDATED' %}status-ok{% elif row.record.status == 'CORRECTION_REQUESTED' %}status-attention{% else %}status-raw{% endif %}">{{ row.status_label }}</span><span class="row-arrow" aria-hidden="true">↗</span></a>
+    {% endfor %}
+  </div>{% else %}<div class="empty-state">
+    {% if red_operational_writes_enabled() %}
+      <h3>Aún no hay registros</h3>
+      <p>Para iniciar la captura, registra primero la ficha maestra D-01 y luego la información previa de administración D-02.</p>
+    {% else %}
+      <h3>Expediente en preparación</h3>
+      <p>Este expediente todavía no tiene registros. Puedes revisar los formularios; la captura se habilita cuando se apruebe el gate operativo.</p>
+    {% endif %}
+  </div>{% endif %}
+</section>
+<p class="source-note">Cada copropiedad conserva su expediente por separado.</p>
+{% endblock %}

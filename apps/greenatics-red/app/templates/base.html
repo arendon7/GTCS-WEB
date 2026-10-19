@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}GREENATICS RED{% endblock %} · GREENATICS</title>
+  <link rel="stylesheet" href="/static/red.css?v=20261013-pmirs-mobile-upload2">
+  <link rel="stylesheet" href="/static/brand-ui.css?v=20261015-1">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación principal">
+      <a class="brand" href="/" aria-label="GREENATICS RED, inicio">
+        <img class="brand-symbol" src="/static/greenatics-symbol.svg" alt="" width="38" height="38">
+        <span class="brand-copy"><strong>GREENATICS</strong><span>RED · PMIRS</span></span>
+      </a>
+      <nav class="main-nav">
+        <a href="/">Proyectos</a>
+        <a href="/guide">Guía de campo</a>
+        {% if user and user.is_platform_admin %}
+          <a href="/admin/users">Usuarios</a>
+          <a href="/admin/privacy">Privacidad</a>
+          <a href="/drive" aria-label="Drive y respaldos"><span class="nav-full">Drive y respaldos</span><span class="nav-compact">Drive</span></a>
+        {% endif %}
+      </nav>
+      {% if user %}
+        <div class="sidebar-user"><span class="status-dot"></span><strong>{{ user.full_name }}</strong><small>{{ user.email }}</small></div>
+        <form action="/logout" method="post" class="logout-form">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="nav-button" type="submit">Cerrar todas las sesiones</button>
+        </form>
+      {% endif %}
+      <p class="sidebar-foot">Plataforma de trabajo RED</p>
+    </aside>
+    <main class="main-area" id="main-content" tabindex="-1">
+      {% if request.url.hostname in ['127.0.0.1', 'localhost', '::1'] and red_operational_writes_enabled() %}
+        <div class="notice warning local-practice-warning" role="status" aria-live="polite">
+          <strong>Sandbox local de capacitación:</strong> usa únicamente información sintética. No ingreses datos de clientes ni de personas reales.
+        </div>
+      {% endif %}
+      {% if not red_operational_writes_enabled() %}
+        <div class="notice warning operational-read-only" role="status" aria-live="polite">
+          <strong>Modo consulta:</strong> {{ red_operational_write_message() }} Formularios, cambios, cargas y creación de respaldos no se guardan; puedes descargar copias existentes para recuperación.
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

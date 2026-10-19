@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Nuevo proyecto{% endblock %}
+{% block content %}
+<header class="page-header"><div><p class="eyebrow"><a href="/">Proyectos</a> / Administración</p><h1>Agregar proyecto</h1><p class="lede">Crea un expediente independiente para una copropiedad o cliente.</p></div></header>
+{% if error %}<div class="notice error" role="alert">{{ error }}</div>{% endif %}
+{% if not red_operational_writes_enabled() %}<p class="notice info" id="project-write-help" role="status">La creación de expedientes está deshabilitada en modo consulta.</p>{% endif %}
+<section class="panel narrow-panel">
+  <form method="post" action="/projects/new" class="form-stack">
+    <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled aria-describedby="project-write-help"{% endif %}>
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label>Nombre del proyecto<input name="name" required maxlength="240" placeholder="Nombre de la copropiedad"></label>
+      <div class="form-grid two-columns">
+        <label>Municipio<input name="municipality" required placeholder="Municipio"></label>
+        <label>Departamento<input name="department" required placeholder="Departamento"></label>
+      </div>
+      <div class="form-actions"><a class="button secondary" href="/">Cancelar</a><button class="button primary" type="submit">Crear expediente</button></div>
+    </fieldset>
+  </form>
+</section>
+{% endblock %}

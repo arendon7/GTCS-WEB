@@ -13,37 +13,42 @@ test.describe("GREENATICS Red application shell", () => {
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { name: "Resumen de proyecto" })).toBeVisible();
     await expect(page.getByText("RED-024 · Támesis")).toBeVisible();
+    const navigation = page.getByRole("navigation", { name: "Módulos de la aplicación" });
 
     for (const module of ["Territorio", "Generadores", "Rutas", "FIELD", "QA/QC", "Hallazgos", "PMIRS STUDIO", "PMIRS VIVO", "Indicadores", "Evidencias", "Coordinación"]) {
-      await expect(page.getByRole("button", { name: new RegExp(module) })).toBeVisible();
+      await expect(navigation.getByRole("button", { name: new RegExp(module) })).toBeVisible();
     }
 
-    await page.getByRole("button", { name: /Territorio/ }).click();
+    await navigation.getByRole("button", { name: /Territorio/ }).click();
     await expect(page.getByRole("heading", { name: /Una línea base que explica/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Infraestructura" })).toBeVisible();
-    await page.getByRole("button", { name: /Rutas/ }).click();
-    await expect(page.getByRole("heading", { name: "Plaza y restaurantes" })).toBeVisible();
-    await page.getByRole("button", { name: /FIELD/ }).click();
+    await navigation.getByRole("button", { name: /Rutas/ }).click();
+    await expect(page.getByRole("heading", { name: "Plaza y restaurantes", level: 2 })).toBeVisible();
+    await navigation.getByRole("button", { name: /FIELD/ }).click();
     await expect(page.getByRole("heading", { name: "Medición" })).toBeVisible();
-    await page.getByRole("button", { name: /Generadores/ }).click();
+    await navigation.getByRole("button", { name: /Generadores/ }).click();
     await expect(page.getByRole("heading", { name: "Generadores y unidades de gestión" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Restaurante" })).toBeVisible();
-    await page.getByRole("button", { name: /PMIRS STUDIO/ }).click();
+    await navigation.getByRole("button", { name: /PMIRS STUDIO/ }).click();
     await expect(page.getByRole("heading", { name: /Convertir hallazgos/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Reducir impropios en la fuente" })).toBeVisible();
-    await page.getByRole("button", { name: /Hallazgos/ }).click();
+    await expect(page.getByRole("heading", { name: "Acciones por coordinar" })).toBeVisible();
+    await expect(page.getByText("Trabajo listo para coordinar", { exact: true })).toHaveCount(0);
+    await navigation.getByRole("button", { name: /Hallazgos/ }).click();
     await expect(page.getByRole("heading", { name: /Un hallazgo no es una opinión/ })).toBeVisible();
-    await page.getByRole("button", { name: /PMIRS VIVO/ }).click();
+    await navigation.getByRole("button", { name: /PMIRS VIVO/ }).click();
     await expect(page.getByRole("heading", { name: /El plan deja de ser documento/ })).toBeVisible();
     await page.getByRole("button", { name: "+ Registrar avance" }).click();
     await expect(page.getByText(/A-014: avance local registrado en 68 %/)).toBeVisible();
-    await page.getByRole("button", { name: /QA\/QC/ }).click();
+    await navigation.getByRole("button", { name: /QA\/QC/ }).click();
     await page.getByRole("button", { name: "Aprobar", exact: true }).click();
     await expect(page.getByText(/QA-108: aprobada en esta sesión/)).toBeVisible();
-    await page.getByRole("button", { name: /Evidencias/ }).click();
+    await navigation.getByRole("button", { name: /Evidencias/ }).click();
     await expect(page.getByRole("heading", { name: /La evidencia no es un archivo/ })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Fotografía de punto de almacenamiento" })).toBeVisible();
-    await page.getByRole("button", { name: /Coordinación/ }).click();
+    await expect(page.getByRole("heading", { name: "Fotografía de punto de almacenamiento", level: 2 })).toBeVisible();
+    await expect(page.getByText("Trazabilidad del expediente", { exact: true })).toBeVisible();
+    await expect(page.getByText("Expediente listo", { exact: true })).toHaveCount(0);
+    await navigation.getByRole("button", { name: /Coordinación/ }).click();
     await expect(page.getByRole("heading", { name: "Confirmar horario de visita" })).toBeVisible();
 
     expect(pageErrors).toEqual([]);

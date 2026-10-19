@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Privacidad{% endblock %}
+{% block content %}
+<header class="page-header"><div><p class="eyebrow">Administración de RED · acceso restringido</p><h1>Seguimiento de solicitudes de privacidad</h1><p class="lede">Registro mínimo para organizar casos y su estado. Solo administración GREENATICS RED puede consultar esta pantalla.</p></div></header>
+{% if notice %}<div class="notice" role="status">{{ notice }}</div>{% endif %}
+{% if error %}<div class="notice warning" role="alert">{{ error }}</div>{% endif %}
+<section class="panel">
+  <div class="notice warning"><strong>Registro mínimo, no canal de atención.</strong>
+    <ul><li>No guardes nombres, documentos de identidad, correos, teléfonos, solicitudes, pruebas, fotos ni copias de respuestas. Usa una referencia opaca a un expediente externo autorizado.</li>
+    <li>La verificación de identidad, clasificación jurídica, contacto y respuesta se gestionan por un canal que GREENATICS apruebe fuera de RED.</li>
+    <li>Las fechas objetivo son manuales y requieren referencia de la regla o decisión revisada por una persona. RED no clasifica jurídicamente, calcula términos legales, elimina solicitudes ni define conservación.</li>
+    <li>La aprobación del aviso, responsables, canal, política de retención y eliminación sigue pendiente. No uses el módulo con casos de personas reales hasta esa aprobación.</li></ul>
+  </div>
+  <div class="section-head"><div><p class="eyebrow">Nuevo registro</p><h2>Registrar recepción</h2><p class="quiet">Guarda únicamente metadatos operativos y una referencia externa que no identifique a la persona.</p></div></div>
+  <form method="post" action="/admin/privacy" class="form-stack">
+    <fieldset class="write-gate-fields"{% if not red_operational_writes_enabled() %} disabled{% endif %}>
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label>Tipo reportado<select name="case_type" required>{% for key, label in case_types.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></label>
+      <label>Alcance<select name="project_scope" required>{% for key, label in project_scopes.items() %}<option value="{{ key }}">{{ label }}</option>{% endfor %}</select></label>
+      <label>Copropiedad, si aplica<select name="project_id"><option value="">Sin asignar a una unidad</option>{% for project in projects %}<option value="{{ project.id }}">{{ project.name }}</option>{% endfor %}</select><small>Selecciona una unidad solo cuando el alcance sea «Una copropiedad»; en los otros casos déjalo sin asignar.</small></label>
+      <label>Fecha de recepción<input type="date" name="received_on" required></label>
+      <label>Referencia externa opaca, opcional<input name="external_reference" maxlength="160" autocomplete="off" aria-describedby="privacy-ref-help"><small id="privacy-ref-help">Usa un código con letras y números, como RAD-2026-014. No ingreses nombres, correos, teléfonos, documentos ni texto libre.</small></label>
+      <label>Responsable del seguimiento<select name="owner_user_id"><option value="">Yo</option>{% for admin in admins %}<option value="{{ admin.id }}">{{ admin.full_name }}</option>{% endfor %}</select></label>
+      <button class="button primary" type="submit">Registrar solicitud</button>
+    </fieldset>
+  </form>
+</section>
+<section class="panel table-panel">
+  <div class="section-head"><div><p class="eyebrow">Casos recientes</p><h2>Seguimiento</h2><p class="quiet">{{ cases|length }} de {{ total_cases }} registros · página {{ page }} de {{ page_count }}. No hay eliminación desde esta pantalla.</p></div><span class="count-badge">{{ total_cases }} solicitudes</span></div>
+  {% if cases %}<div class="pmirs-object-list">
+  {% for case in cases %}<article class="pmirs-object">
+    <div class="pmirs-object-head"><span class="form-code pmirs-code">PRV-{{ case.id[:8]|upper }}</span><div class="grow"><strong>{{ case_types.get(case.case_type, 'Solicitud') }} · {{ case_states.get(case.status, case.status) }}</strong><small>Recibida {{ case.received_on }} · {{ project_by_id[case.project_id].name if case.project_id in project_by_id else project_scopes.get(case.project_scope, 'Alcance general') }}</small></div></div>
+    <div class="pmirs-object-meta"><span>Clasificación: {{ classifications.get(case.classification, case.classification) }}</span><span>Verificación: {{ identity_states.get(case.identity_status, case.identity_status) }}</span><span>Responsable: {{ admin_by_id[case.owner_user_id].full_name if case.owner_user_id in admin_by_id else 'Cuenta inactiva o retirada' }}</span>{% if case.external_reference %}<span>Ref. externa: {{ case.external_reference }}</span>{% endif %}{% if case.target_response_on %}<span>Fecha objetivo manual: {{ case.target_response_on }} · {{ case.target_rule_reference }}</span>{% endif %}{% if case.response_on %}<span>Respuesta externa: {{ case.response_on }} · {{ case.response_reference }}</span>{% endif %}</div>
+    <details class="member-admin"><summary>Historial de cambios ({{ case_history_by_id.get(case.id, [])|length }})</summary><ul class="check-list">{% for event in case_history_by_id.get(case.id, []) %}<li><strong>{{ event.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</strong> · {{ history_actor_names.get(event.actor_id, 'Cuenta histórica') }} · {% if event.action == 'privacy_case_created' %}Registro creado{% else %}Seguimiento actualizado{% if event.detail.get('from_status') != event.detail.get('to_status') %}: {{ case_states.get(event.detail.get('from_status'), 'Estado previo') }} → {{ case_states.get(event.detail.get('to_status'), 'Estado actual') }}{% endif %}{% if event.detail.get('from_classification') != event.detail.get('to_classification') %} · Clasificación humana modificada{% endif %}{% if event.detail.get('from_identity_status') != event.detail.get('to_identity_status') %} · Verificación modificada{% endif %}{% endif %}{% if event.detail.get('owner_changed') %} · Responsable reasignado{% endif %}{% if event.detail.get('target_date_changed') or event.detail.get('target_reference_changed') %} · Fecha/regla objetivo modificada{% endif %}{% if event.detail.get('response_date_changed') or event.detail.get('response_reference_changed') %} · Referencia/fecha de respuesta modificada{% endif %}</li>{% else %}<li>Sin eventos en la bitácora.</li>{% endfor %}</ul><p class="quiet small">El historial registra quién hizo el cambio y qué tipo de dato cambió, no los valores de las referencias externas. Se muestra del cambio más reciente al más antiguo.</p></details>
+    <details class="member-admin"><summary>Actualizar seguimiento</summary><form method="post" action="/admin/privacy/{{ case.id }}" class="form-stack"><fieldset{% if not red_operational_writes_enabled() %} disabled{% endif %}><input type="hidden" name="csrf" value="{{ csrf }}">
+      <label>Clasificación humana<select name="classification" required>{% for key, label in classifications.items() %}<option value="{{ key }}"{% if case.classification == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+      <label>Verificación, según registro externo<select name="identity_status" required>{% for key, label in identity_states.items() %}<option value="{{ key }}"{% if case.identity_status == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+      <label>Estado<select name="status" required>{% for key, label in case_states.items() %}<option value="{{ key }}"{% if case.status == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+      <label>Responsable<select name="owner_user_id" required>{% for admin in admins %}<option value="{{ admin.id }}"{% if case.owner_user_id == admin.id %} selected{% endif %}>{{ admin.full_name }}</option>{% endfor %}</select></label>
+      <label>Fecha objetivo manual, si aplica<input type="date" name="target_response_on" value="{{ case.target_response_on }}"><small>Solo después de clasificación humana. No es calculada por RED.</small></label>
+      <label>Referencia de regla o decisión aprobada<input name="target_rule_reference" maxlength="240" value="{{ case.target_rule_reference }}" autocomplete="off"></label>
+      <label>Fecha de respuesta enviada<input type="date" name="response_on" value="{{ case.response_on }}"></label>
+      <label>Referencia externa de respuesta<input name="response_reference" maxlength="160" value="{{ case.response_reference }}" autocomplete="off"><small>No copies el texto de la respuesta ni adjuntes documentos.</small></label>
+      <button class="button compact secondary" type="submit">Guardar seguimiento</button>
+    </fieldset></form></details>
+  </article>{% endfor %}</div>{% else %}<div class="empty-state"><h3>No hay solicitudes registradas</h3><p>Los registros aparecerán aquí cuando la instancia permita escrituras.</p></div>{% endif %}
+  {% if page_count > 1 %}<nav class="header-actions" aria-label="Páginas de solicitudes de privacidad">
+    {% if previous_page %}<a class="button secondary" rel="prev" href="/admin/privacy?page={{ previous_page }}">Solicitudes más recientes</a>{% endif %}
+    <span aria-current="page">Página {{ page }} de {{ page_count }}</span>
+    {% if next_page %}<a class="button secondary" rel="next" href="/admin/privacy?page={{ next_page }}">Solicitudes anteriores</a>{% endif %}
+  </nav>{% endif %}
+</section>
+{% endblock %}
