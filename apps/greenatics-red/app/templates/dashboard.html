@@ -38,6 +38,16 @@
   <p class="quiet small storage-capacity-help">Estos topes RED no confirman la capacidad contratada del proveedor. Límite configurado por RED_MAX_EVIDENCE_TOTAL_MB.</p>
 </details>
 {% endif %}
+{% if field_assignments %}
+<section class="panel role-route" aria-labelledby="my-field-assignments-heading">
+  <div class="section-head"><div><p class="eyebrow">Trabajo de campo</p><h2 id="my-field-assignments-heading">Mis acciones asignadas</h2><p class="quiet">Acciones PMIRS validadas y asignadas a tu cuenta en expedientes a los que tienes acceso.</p></div><span class="count-badge">{{ field_assignment_total }} tareas</span></div>
+  <div class="role-route-steps">
+    {% for entry in field_assignments %}{% set action = entry.action %}
+    <div class="role-route-step"><span class="route-step-index">{{ loop.index }}</span><span class="grow"><strong>{{ entry.project.name }} · {{ action.code }} · {{ action.title }}</strong><small>Prioridad {{ action.data.priority or 'pendiente' }} · Fecha objetivo {{ action.data.due_date or 'sin fecha' }} · {{ action.data.progress_pct or 0 }}% · {{ action.data.execution_status|replace('_', ' ')|title }}</small></span><a class="button secondary" href="/projects/{{ entry.project.id }}/pmirs#action-{{ action.id }}">Abrir acción</a></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 <section class="panel table-panel" aria-labelledby="projects-heading">
   <div class="section-head"><div><h2 id="projects-heading">Copropiedades</h2><p class="quiet">Cada copropiedad tiene un expediente separado para alistar su PMIRS.</p></div><span class="count-badge">{{ projects|length }} expedientes</span></div>
   {% if projects %}
