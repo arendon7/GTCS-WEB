@@ -10,7 +10,7 @@ GREENATICS RED es una aplicación independiente para preparar y hacer seguimient
 - Los controles de acceso público y escritura operativa permanecen cerrados por defecto. No activar las compuertas de privacidad, piloto o acceso público sin sus aprobaciones archivadas.
 - El sitio institucional todavía no está publicado en `www.greenatics.com.co`.
 
-El avance por gates y las dependencias vigentes están en [`progress.json`](progress.json). La ejecución y el handoff vigentes se registran en [RED_ESTADO_ACTUAL_Y_SIGUIENTE_PAQUETE.md](../../docs/knowledge/RED_ESTADO_ACTUAL_Y_SIGUIENTE_PAQUETE.md).
+El estado de revisión de la candidata y su evidencia están en el [PR de GREENATICS RED](https://github.com/arendon7/GTCS-WEB/pull/342). El PR no está integrado ni desplegado.
 
 ## Qué incluye el candidato
 
@@ -20,9 +20,11 @@ Las invitaciones se generan en la aplicación y el administrador comparte el enl
 
 ## Recorrer la DEMO local
 
-Requiere Python 3.12, Node.js y las dependencias locales del proyecto. Desde esta carpeta inicia un sandbox de capacitación con una base y archivos temporales:
+Requiere Python 3.12. Desde esta carpeta, prepara el entorno e inicia un sandbox de capacitación con una base y archivos temporales:
 
 ```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
 .venv/bin/python scripts/run_synthetic_field_demo.py --full-training-scenario --with-progress-history
 ```
 
@@ -32,19 +34,13 @@ La DEMO es local, efímera y aislada. Conserva datos mientras ese proceso está 
 
 ## Verificar el candidato local
 
-Desde la raíz del repositorio:
+Desde la raíz del repositorio, con Python 3.12, sus dependencias instaladas y Node.js:
 
 ```sh
 apps/greenatics-red/scripts/verify_local_candidate.sh
 ```
 
-El script valida la regresión Python y JavaScript, compilación, sintaxis de arranque y catálogo de formularios. Para consultar porcentajes y bloqueos registrados:
-
-```sh
-python3 apps/greenatics-red/scripts/report_progress.py
-```
-
-Una verificación local no acredita servicios alojados, persistencia en PostgreSQL, almacenamiento remoto, Drive ni UAT.
+El script valida la regresión Python y JavaScript, compilación, sintaxis de arranque y catálogo de formularios. Esta verificación local no acredita servicios alojados, persistencia en PostgreSQL, almacenamiento remoto, Drive ni UAT.
 
 ## Arquitectura y preparación de QA
 
@@ -68,4 +64,4 @@ El primer comando crea únicamente los cuatro expedientes vacíos indicados por 
 
 Conectar runtime, PostgreSQL dedicado y almacenamiento privado; crear cuentas con roles por expediente; comprobar persistencia tras reinicio, exportación, respaldo y restauración aislada; configurar HTTPS y OAuth de Drive con alcance mínimo; y completar las aprobaciones de privacidad, método técnico, SST y piloto. Después, hacer UAT con operarios y revisores en teléfonos reales y cerrar hallazgos. Hasta entonces, usar únicamente la DEMO local con datos sintéticos.
 
-La guía de roles, capacitación y kit de campo está en [RED_OPERACION_CAPACITACION_Y_KIT_CAMPO_BELLO_2026-10-07.md](../../docs/knowledge/RED_OPERACION_CAPACITACION_Y_KIT_CAMPO_BELLO_2026-10-07.md).
+La guía rápida de perfiles y trabajo de campo está en [GUIA_RAPIDA_DE_CAMPO_RED.md](GUIA_RAPIDA_DE_CAMPO_RED.md).
