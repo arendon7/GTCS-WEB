@@ -88,6 +88,23 @@ export function TodayDashboard({ initialNowIso }: { initialNowIso: string }) {
       </section>
     </div>
 
+    <section className="panel plant-panel data-quality-panel" id="calidad-datos" aria-labelledby="calidad-datos-title">
+      <div className="section-head">
+        <div><p className="eyebrow">Calidad del dato</p><h2 id="calidad-datos-title">Cobertura e incertidumbre</h2></div>
+        <span className="quiet">{analytics.dataQualityAlerts.length} {analytics.dataQualityAlerts.length === 1 ? "alerta" : "alertas"} de hoy</span>
+      </div>
+      {analytics.dataQualityAlerts.length ? <div className="data-quality-list">
+        {analytics.dataQualityAlerts.map((alert) => <article className={`data-quality-card data-quality-${alert.severity}`} key={alert.id}>
+          <div className="data-quality-card-head">
+            <span className={`status-pill ${alert.severity === "warning" ? "status-medium" : "status-running"}`}>{alert.severity === "warning" ? "Requiere revisión" : "Dato histórico"}</span>
+            <strong className="data-quality-count">{alert.count} {alert.count === 1 ? "recepción" : "recepciones"}</strong>
+          </div>
+          <h3>{alert.title}</h3>
+          <p>{alert.detail}</p>
+        </article>)}
+      </div> : <p className="data-quality-empty">Sin alertas de calidad calculadas para hoy. Las incidencias de datos se muestran aquí, separadas de las excepciones operativas.</p>}
+    </section>
+
     <section className="panel plant-panel" id="estado-plantas">
       <div className="section-head"><div><p className="eyebrow">Plantas</p><h2>Estado operativo</h2></div><div className="flex items-center gap-3"><Link className="text-xs font-semibold text-[var(--green)]" href="/dashboard">Abrir dashboard</Link><span className="quiet">{sourceControl.label}</span><button className="text-xs font-semibold text-[var(--green)] underline underline-offset-4" type="button" onClick={handleSourceAction}>{sourceControl.actionLabel}</button></div></div>
       <div className="plant-table"><div className="plant-row plant-head"><span>Planta</span><span>Recibido</span><span>Rechazo</span><span>Plan</span><span>Atención</span></div>{analytics.plantComparison.map((plant)=><div className="plant-row" key={plant.plantId}><strong>{plant.plant}</strong><span>{(plant.receivedKg/1000).toFixed(2)} t</span><span>{plant.rejectionPct.toFixed(1)} %</span><span>{plant.compliancePct.toFixed(0)} %</span><strong className={plant.attention ? "text-[var(--red)]" : "text-[var(--green)]"}>{plant.attention}</strong></div>)}</div>
