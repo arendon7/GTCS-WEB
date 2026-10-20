@@ -54,6 +54,54 @@ const screenshotRoutes = new Set([
   "contacto",
 ]);
 
+test("home header switches to compact navigation before horizontal overflow", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The width transition is exercised in the desktop project.");
+
+  await page.goto("/", { waitUntil: "networkidle" });
+  const desktopNav = page.locator(".site-header .desktop-nav");
+  const mobileToggle = page.locator(".site-header .mobile-toggle-btn");
+
+  for (const { width, compact } of [
+    { width: 1401, compact: true },
+    { width: 1440, compact: true },
+    { width: 1600, compact: true },
+    { width: 1601, compact: true },
+    { width: 1840, compact: true },
+    { width: 1841, compact: false },
+  ]) {
+    await page.setViewportSize({ width, height: 900 });
+    if (compact) {
+      await expect(desktopNav).toBeHidden();
+      await expect(mobileToggle).toBeVisible();
+    } else {
+      await expect(desktopNav).toBeVisible();
+      await expect(mobileToggle).toBeHidden();
+    }
+
+    const geometry = await page.evaluate(() => {
+      const offenders = Array.from(document.querySelectorAll("body *"))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: typeof element.className === "string" ? element.className : "",
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+          };
+        })
+        .filter((element) => element.right > window.innerWidth + 2 && element.left < window.innerWidth)
+        .sort((a, b) => b.right - a.right)
+        .slice(0, 6);
+      return { viewport: window.innerWidth, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth, offenders };
+    });
+    expect(
+      Math.max(geometry.scrollWidth, geometry.bodyScrollWidth),
+      `home must not overflow horizontally at ${width}px; offenders: ${JSON.stringify(geometry.offenders)}`,
+    ).toBeLessThanOrEqual(width + 2);
+  }
+});
+
+
 for (const [slug, route] of routes) {
   test(`${slug} renders without visual/runtime regressions`, async ({ page }, testInfo) => {
     const consoleErrors: string[] = [];
@@ -100,8 +148,26 @@ for (const [slug, route] of routes) {
     });
     expect(logoGreenPixelRatio, `${route} Greenatics logo must contain visible brand-green pixels`).toBeGreaterThan(0.03);
 
-    const geometry = await page.evaluate(() => ({ viewport: window.innerWidth, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth }));
-    expect(Math.max(geometry.scrollWidth, geometry.bodyScrollWidth), `${route} must not overflow horizontally at ${geometry.viewport}px`).toBeLessThanOrEqual(geometry.viewport + 2);
+    const geometry = await page.evaluate(() => {
+      const offenders = Array.from(document.querySelectorAll("body *"))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: typeof element.className === "string" ? element.className : "",
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+          };
+        })
+        .filter((element) => element.right > window.innerWidth + 2 && element.left < window.innerWidth)
+        .sort((a, b) => b.right - a.right)
+        .slice(0, 6);
+      return { viewport: window.innerWidth, scrollWidth: document.documentElement.scrollWidth, bodyScrollWidth: document.body.scrollWidth, offenders };
+    });
+    expect(
+      Math.max(geometry.scrollWidth, geometry.bodyScrollWidth),
+      `${route} must not overflow horizontally at ${geometry.viewport}px; offenders: ${JSON.stringify(geometry.offenders)}`,
+    ).toBeLessThanOrEqual(geometry.viewport + 2);
 
     expect(pageErrors, `${route} page errors`).toEqual([]);
     expect(consoleErrors, `${route} console errors`).toEqual([]);
@@ -113,3 +179,5 @@ for (const [slug, route] of routes) {
     }
   });
 }
+
+
