@@ -65,7 +65,9 @@ test("home header switches to compact navigation before horizontal overflow", as
     { width: 1401, compact: true },
     { width: 1440, compact: true },
     { width: 1600, compact: true },
-    { width: 1601, compact: false },
+    { width: 1601, compact: true },
+    { width: 1840, compact: true },
+    { width: 1841, compact: false },
   ]) {
     await page.setViewportSize({ width, height: 900 });
     if (compact) {
