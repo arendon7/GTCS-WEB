@@ -54,6 +54,30 @@ const screenshotRoutes = new Set([
   "contacto",
 ]);
 
+test("la guía principal de Casa & Jardín no se precarga como ruta Next", async ({ page, request }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "La descarga se comprueba una vez en desktop.");
+
+  const invalidPdfPrefetches: string[] = [];
+  page.on("request", (requestEvent) => {
+    if (requestEvent.url().includes("/downloads/guia-casa-jardin.pdf/__next._tree.txt")) {
+      invalidPdfPrefetches.push(requestEvent.url());
+    }
+  });
+
+  await page.goto("/casa-jardin/", { waitUntil: "networkidle" });
+
+  const download = page.locator(".homegarden-v4-hero a[download]");
+  await expect(download).toHaveCount(1);
+  await expect(download).toHaveAttribute("href", "/downloads/guia-casa-jardin.pdf");
+  expect(await download.getAttribute("download")).not.toBeNull();
+
+  const pdfUrl = new URL("/downloads/guia-casa-jardin.pdf", page.url()).toString();
+  const pdf = await request.get(pdfUrl);
+  expect(pdf.status()).toBe(200);
+  expect(pdf.headers()["content-type"]).toContain("application/pdf");
+  expect(invalidPdfPrefetches).toEqual([]);
+});
+
 for (const [slug, route] of routes) {
   test(`${slug} renders without visual/runtime regressions`, async ({ page }, testInfo) => {
     const consoleErrors: string[] = [];
