@@ -23,7 +23,7 @@ main [id] {
 }
 
 /* Keep the full navigation only while it fits beside the header actions. */
-@media (min-width: 1401px) and (max-width: 1600px) {
+@media (min-width: 1401px) and (max-width: 1840px) {
   .site-header .desktop-nav { display: none; }
   .site-header .mobile-toggle-btn { display: block; }
 }
