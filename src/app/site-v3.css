@@ -1,5 +1,6 @@
 /* Final marketing-site safeguards. Keep workstation styles isolated to /app. */
 .site-header .header-inner {
+  width: min(1800px, calc(100% - 96px));
   flex-wrap: nowrap;
 }
 
