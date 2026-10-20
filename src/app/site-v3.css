@@ -146,7 +146,7 @@ main [id] {
 
 .home-tools-bridge__content small {
   overflow: hidden;
-  color: #66766d;
+  color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.4;
   text-overflow: ellipsis;
