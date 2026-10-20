@@ -2142,7 +2142,7 @@
 }
 
 .home-territory__case-label {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.7rem;
   font-weight: 850;
   text-transform: uppercase;
@@ -2249,7 +2249,7 @@
 }
 
 .home-territory__text-link {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.8rem;
   font-weight: 850;
 }
@@ -3045,3 +3045,4 @@
   background: rgba(0, 107, 69, 0.13);
   color: var(--green-950);
 }
+
