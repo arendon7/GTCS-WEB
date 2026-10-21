@@ -1154,3 +1154,7 @@
 .wg-bio-method__evidence .eyebrow {
   color: #d8ffbe;
 }
+
+.wg-v4-tools__grid > div > .eyebrow--light {
+  color: #d8ffbe;
+}
