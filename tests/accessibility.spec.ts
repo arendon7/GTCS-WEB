@@ -67,4 +67,3 @@ for (const [slug, route] of routes) {
     expect(blocking, `${route} accessibility blockers`).toEqual([]);
   });
 }
-

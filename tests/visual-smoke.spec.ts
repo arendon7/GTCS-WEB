@@ -203,5 +203,3 @@ for (const [slug, route] of routes) {
     }
   });
 }
-
-
