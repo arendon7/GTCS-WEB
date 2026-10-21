@@ -6,3 +6,29 @@
 .service-detail-context{padding:92px 0;background:#eef4ed;border-bottom:1px solid #dce7dd}.service-detail-context__heading{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:end}.service-detail-context__heading h2{max-width:680px}.service-detail-context__heading>p{max-width:620px;margin:0;color:var(--muted);font-size:1.08rem;line-height:1.68}.service-detail-context__grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:46px}.service-detail-context__grid article{padding:27px 28px;border:1px solid #cfddd1;border-radius:16px;background:#fff}.service-detail-context__grid span{display:block;color:var(--green-700);font-size:.7rem;font-weight:850;text-transform:uppercase;letter-spacing:.09em}.service-detail-context__grid p{margin:12px 0 0;color:#3f5148;font-size:1rem;line-height:1.62}.service-detail-practice{padding:94px 0;background:#fff}.service-detail-practice__grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:72px;align-items:start}.service-detail-practice h2{max-width:520px}.service-detail-practice>div>div>p{max-width:550px;margin:20px 0 0;color:var(--muted);line-height:1.68}.service-detail-facts{display:grid;gap:0;margin:36px 0 0;border-top:1px solid var(--line)}.service-detail-facts div{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}.service-detail-facts dt{color:var(--green-700);font-size:.7rem;font-weight:850;text-transform:uppercase;letter-spacing:.08em}.service-detail-facts dd{margin:0;color:#43544b;font-size:.92rem;line-height:1.45}.service-detail-activities{display:grid;gap:0;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}.service-detail-activities li{display:grid;grid-template-columns:50px 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--line)}.service-detail-activities span{color:var(--green-700);font-size:.72rem;font-weight:850}.service-detail-activities strong{font-family:var(--font-rounded);font-size:1.03rem;line-height:1.45}
 @media(max-width:1000px){.service-detail-context__heading,.service-detail-context__grid,.service-detail-practice__grid{grid-template-columns:1fr}}
 @media(max-width:700px){.service-detail-context,.service-detail-practice{padding:70px 0}.service-detail-context__grid{margin-top:32px}.service-detail-facts div{grid-template-columns:1fr;gap:5px}}
+
+
+/* Service detail contrast: keep accents and headings readable on their actual surfaces. */
+.service-detail-context__grid span,
+.service-detail-facts dt,
+.service-detail-activities span {
+  color: var(--green-800);
+}
+
+.service-detail-process .section-heading > .eyebrow--light,
+.service-detail-inputs .eyebrow--light {
+  color: #d8ffbe;
+}
+
+.service-detail-process .section-heading h2,
+.service-detail-inputs h2 {
+  color: #fff;
+}
+
+.service-detail-inputs-grid > ul > li {
+  color: #e2ece6;
+}
+
+.service-detail-hero h1 {
+  color: #fff;
+}
