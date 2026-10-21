@@ -1119,3 +1119,38 @@
   .wg-biol-index { align-items: flex-start; flex-direction: column; border-radius: 18px; }
   .wg-biol-index a { width: 100%; padding-top: 7px; border-top: 1px solid #dfe8dc; }
 }
+
+/* Keep V4 Wondergreen labels readable on both light cards and forest panels. */
+.wg-v4-levels__grid article:not(:nth-child(2)) > span {
+  color: var(--green-800);
+}
+
+.wg-v4-levels__grid article:nth-child(2) h3,
+.wg-v4-decision li strong {
+  color: #fff;
+}
+
+.wg-v4-levels__grid article:nth-child(2) ul li {
+  color: #e2ece6;
+}
+
+.wg-v4-decision__intro > .eyebrow--light {
+  color: #d8ffbe;
+}
+
+.wg-science-layer--nutrients {
+  color: #8a3f0b;
+}
+
+.wg-family-map__top small,
+.wg-bio-lines__top small,
+.wg-bio-lines__truth > span,
+.wg-bio-method__links > span,
+.wg-docs__body small,
+.wg-docs__body a + a {
+  color: #536158;
+}
+
+.wg-bio-method__evidence .eyebrow {
+  color: #d8ffbe;
+}
