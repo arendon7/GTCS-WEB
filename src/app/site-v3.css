@@ -1,5 +1,6 @@
 /* Final marketing-site safeguards. Keep workstation styles isolated to /app. */
 .site-header .header-inner {
+  width: min(1800px, calc(100% - 96px));
   flex-wrap: nowrap;
 }
 
@@ -20,6 +21,12 @@ main [id] {
 .site-header .header-actions {
   flex-wrap: nowrap;
   gap: 8px;
+}
+
+/* Keep the full navigation only while it fits beside the header actions. */
+@media (min-width: 1401px) and (max-width: 1840px) {
+  .site-header .desktop-nav { display: none; }
+  .site-header .mobile-toggle-btn { display: block; }
 }
 
 .site-header .brand-link {
@@ -120,7 +127,7 @@ main [id] {
 }
 
 .home-tools-bridge__number {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.7rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -139,7 +146,7 @@ main [id] {
 
 .home-tools-bridge__content small {
   overflow: hidden;
-  color: #66766d;
+  color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.4;
   text-overflow: ellipsis;
@@ -148,7 +155,7 @@ main [id] {
 
 .home-tools-bridge__action,
 .home-tools-bridge__all {
-  color: var(--green-700);
+  color: var(--green-800);
   font-size: 0.78rem;
   font-weight: 850;
 }

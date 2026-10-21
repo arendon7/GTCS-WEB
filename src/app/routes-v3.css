@@ -1575,6 +1575,10 @@
   margin-top: 34px;
 }
 
+.gt-service-hero .eyebrow--light {
+  color: #d8ffbe;
+}
+
 .gt-route-hero__figure,
 .gt-service-hero__figure {
   position: relative;
@@ -2926,8 +2930,12 @@
   background: #0b3b2d;
 }
 
+.gt-portfolio-universes__grid article:first-child h3 {
+  color: #fff;
+}
+
 .gt-portfolio-universes__grid article > span {
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.72rem;
   font-weight: 850;
   letter-spacing: 0.12em;
@@ -3061,7 +3069,7 @@
 }
 
 .gt-service-nav a span {
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.62rem;
 }
 
@@ -3081,13 +3089,13 @@
 
 .gt-starting-grid article > span {
   float: right;
-  color: #a6b5aa;
+  color: var(--green-900);
   font-size: 0.67rem;
   font-weight: 850;
 }
 
 .gt-starting-grid small {
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.67rem;
   font-weight: 850;
   letter-spacing: 0.1em;
@@ -3126,6 +3134,15 @@
 
 .gt-engagement-model__grid > div {
   padding-right: clamp(20px, 4vw, 60px);
+}
+
+.gt-engagement-model__grid > div p {
+  color: #c5d4cc;
+}
+
+.gt-engagement-model .eyebrow--light,
+.gt-service-scope .eyebrow--light {
+  color: #d8ffbe;
 }
 
 .gt-engagement-model article {
@@ -3201,6 +3218,10 @@
   font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.12em;
+}
+
+.gt-service-chain figcaption > span {
+  color: var(--green-900);
 }
 
 .gt-service-chain figcaption strong,
@@ -3304,7 +3325,7 @@
 }
 
 .gt-service-category__head > span {
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.78rem;
   font-weight: 850;
 }
@@ -3312,7 +3333,7 @@
 .gt-service-category__head small {
   display: block;
   margin-bottom: 9px;
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.11em;
@@ -3392,13 +3413,13 @@
   display: flex;
   justify-content: space-between;
   gap: 18px;
-  color: var(--green-700);
+  color: var(--green-900);
   font-size: 0.67rem;
   font-weight: 800;
 }
 
 .gt-service-card__meta em {
-  color: var(--muted-light);
+  color: var(--muted);
   font-style: normal;
 }
 

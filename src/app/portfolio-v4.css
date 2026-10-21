@@ -839,7 +839,7 @@
 .homegarden-subpage-hero .back-link { display: flex; width: max-content; min-height: 42px; align-items: center; margin-bottom: 28px; color: #d8ed9c; font-size: .78rem; font-weight: 850; }
 .homegarden-subpage-hero__visual { position: relative; min-height: 520px; margin: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.18); border-radius: 28px 28px 28px 7px; background: #f6f1e5; box-shadow: 0 28px 65px rgba(0,0,0,.25); }
 .homegarden-subpage-hero__visual img { object-fit: contain; }
-.homegarden-subpage-hero__visual--kits img { object-fit: cover; }
+.homegarden-subpage-hero__visual--kits img { object-fit: contain; }
 .homegarden-subpage-hero__visual figcaption { position: absolute; right: 16px; bottom: 16px; left: 16px; padding: 12px 14px; border: 1px solid rgba(255,255,255,.18); border-radius: 10px 10px 10px 3px; color: #eff7e8; background: rgba(5,31,23,.88); font-size: .67rem; font-weight: 850; letter-spacing: .07em; }
 .homegarden-public-section { padding-block: clamp(76px, 9vw, 126px); }
 .homegarden-public-section--soft { background: #edf2e9; }
@@ -868,7 +868,7 @@
 .homegarden-public-callout--compact p { margin-top: 7px; font-size: .86rem; }
 .homegarden-kit-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .homegarden-kit-card { overflow: hidden; border: 1px solid #ccd9cb; border-radius: 24px 24px 24px 7px; background: #fff; box-shadow: 0 14px 34px rgba(17,62,45,.06); }
-.homegarden-kit-card__media { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: radial-gradient(circle at 50% 10%, #fbfaf5 0, #e8eee4 78%); }
+.homegarden-kit-card__media { display: block; position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: radial-gradient(circle at 50% 10%, #fbfaf5 0, #e8eee4 78%); }
 .homegarden-kit-card__media img { padding: 12px; object-fit: contain; }
 .homegarden-kit-card__media > div { display: flex; height: 100%; flex-direction: column; justify-content: flex-end; padding: 24px; color: #fff; background: linear-gradient(145deg, #2d604a, #0b3326); }
 .homegarden-kit-card__media > div span { color: #d8ed9c; font-size: .7rem; font-weight: 850; }
@@ -1118,4 +1118,43 @@
 @media (max-width: 560px) {
   .wg-biol-index { align-items: flex-start; flex-direction: column; border-radius: 18px; }
   .wg-biol-index a { width: 100%; padding-top: 7px; border-top: 1px solid #dfe8dc; }
+}
+
+/* Keep V4 Wondergreen labels readable on both light cards and forest panels. */
+.wg-v4-levels__grid article:not(:nth-child(2)) > span {
+  color: var(--green-800);
+}
+
+.wg-v4-levels__grid article:nth-child(2) h3,
+.wg-v4-decision li strong {
+  color: #fff;
+}
+
+.wg-v4-levels__grid article:nth-child(2) ul li {
+  color: #e2ece6;
+}
+
+.wg-v4-decision__intro > .eyebrow--light {
+  color: #d8ffbe;
+}
+
+.wg-science-layer--nutrients {
+  color: #8a3f0b;
+}
+
+.wg-family-map__top small,
+.wg-bio-lines__top small,
+.wg-bio-lines__truth > span,
+.wg-bio-method__links > span,
+.wg-docs__body small,
+.wg-docs__body a + a {
+  color: #536158;
+}
+
+.wg-bio-method__evidence .eyebrow {
+  color: #d8ffbe;
+}
+
+.wg-v4-tools__grid > div > .eyebrow--light {
+  color: #d8ffbe;
 }

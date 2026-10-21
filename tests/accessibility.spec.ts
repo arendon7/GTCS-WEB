@@ -19,6 +19,34 @@ const routes = [
   ["contacto", "/contacto/"],
 ] as const;
 
+test("home accent links retain contrast during hover and focus", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+
+  const regions = [
+    { scope: ".home-tools-bridge", link: ".home-tools-bridge__list > a" },
+    { scope: ".home-portfolio-bridge", link: ".home-portfolio-bridge__card--soil" },
+    { scope: ".home-territory", link: ".home-territory__text-link" },
+  ];
+
+  for (const { scope, link } of regions) {
+    const target = page.locator(link).first();
+    for (const state of ["hover", "focus"]) {
+      if (state === "hover") {
+        await target.hover();
+      } else {
+        await page.mouse.move(0, 0);
+        await target.focus();
+        await expect(target).toBeFocused();
+      }
+      const results = await new AxeBuilder({ page })
+        .include(scope)
+        .withRules(["color-contrast"])
+        .analyze();
+      expect(results.violations, `${scope} contrast in ${state} state`).toEqual([]);
+    }
+  }
+});
+
 for (const [slug, route] of routes) {
   test(`${slug} has no critical or serious automated accessibility violations`, async ({ page }) => {
     await page.goto(route, { waitUntil: "networkidle" });
