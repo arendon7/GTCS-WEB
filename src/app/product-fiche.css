@@ -270,6 +270,15 @@
   min-width: 0;
 }
 
+/* Keep the long 2GROW opening paragraph aligned to its editorial measure. */
+@media (min-width: 761px) {
+  #contenido .product-detail--family-2grow .product-info > .lead {
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+  }
+}
+
 #contenido .product-detail--2grow-liquid .product-family-eyebrow {
   display: inline-block;
   margin-top: 8px;
