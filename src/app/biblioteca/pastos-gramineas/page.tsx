@@ -1,66 +1,70 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArticleJsonLd } from "@/components/article-json-ld";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { site } from "@/data/site";
+import "./pasture-guide.css";
 
 export const metadata: Metadata = {
-  title: "Nutrición regenerativa para pastos y gramíneas",
-  description: "Mini catálogo técnico Wondergreen para sistemas ganaderos, lecheros y forrajeros: biomasa, rebrote, suelo y acompañamiento técnico.",
+  title: "Nutrición y manejo de pastos y praderas",
+  description: "Relaciona suelo, rebrote, corte o pastoreo y referencias Wondergreen para preparar un programa agronómico por lote.",
   alternates: { canonical: "/biblioteca/pastos-gramineas/" },
 };
-
-const system = [
-  ["2GROW", "Nutrición vegetativa", "Línea protagonista para crecimiento, rebrote y recuperación del sistema forrajero."],
-  ["Compost", "Base de suelo", "Acompaña acondicionamiento, materia orgánica y recuperación de la condición del suelo."],
-  ["Bioinsumos", "Biología del sistema", "Complemento para programas integrales de suelo y manejo biológico, sujeto a producto y objetivo validados."],
-  ["Acompañamiento", "Decisión por lote", "Lectura agronómica, seguimiento y ajuste para no convertir una guía en una receta rígida."],
-] as const;
-
-const fieldQuestions = [
-  "¿El problema es bajo rebrote, poca biomasa, pérdida de cobertura o deterioro del suelo?",
-  "¿Qué ocurrió después del último corte o pastoreo?",
-  "¿Hay sequía, exceso de humedad, compactación o limitación de raíces?",
-  "¿Qué fertilización se aplicó recientemente y cómo respondió el potrero?",
-  "¿La necesidad es recuperación puntual o sostenimiento del sistema?",
-] as const;
 
 export default function PasturesKnowledgePage() {
   const url = `${site.url}/biblioteca/pastos-gramineas/`;
   return (
-    <>
-      <ArticleJsonLd
-        headline="Nutrición regenerativa para pastos y gramíneas"
-        description="Programa técnico-comercial para sistemas forrajeros con foco en biomasa, rebrote, suelo y eficiencia."
-        url={url}
-        about={["Pastos", "Gramíneas", "Ganadería", "Nutrición vegetal", "2GROW"]}
-      />
-      <BreadcrumbJsonLd items={[
-        { name: "Greenatics", url: `${site.url}/` },
-        { name: "Biblioteca", url: `${site.url}/biblioteca/` },
-        { name: "Pastos y gramíneas", url },
-      ]} />
-
-      <section className="knowledge-hero knowledge-hero--pasture">
-        <div className="container knowledge-hero-grid">
-          <div><Link className="back-link" href="/biblioteca/">← Biblioteca</Link><span className="eyebrow">Mini catálogo técnico</span><h1>Más biomasa, mejor rebrote y una lectura más completa del suelo.</h1><p className="lead">Para sistemas ganaderos, lecheros, gramíneas forrajeras y cultivos de corte. El foco no es “echar fertilizante”: es entender qué limita la respuesta del potrero y construir un programa coherente con el lote.</p></div>
-          <aside className="knowledge-warning"><span>Foco de esta guía</span><strong>Crecimiento y recuperación, no reproducción.</strong><p>2GROW es la línea principal. 2BLOOM y 2FRUIT no se incorporan como eje de este programa porque floración y llenado no son el objetivo agronómico dominante del sistema forrajero.</p></aside>
+    <div className="pasture-guide">
+      <ArticleJsonLd headline="Nutrición y manejo de pastos y praderas" description="Orientación para preparar una revisión de suelo, manejo y nutrición del sistema forrajero." url={url} about={["Pastos", "Gramíneas", "Ganadería", "Nutrición vegetal", "2GROW"]} />
+      <BreadcrumbJsonLd items={[{ name: "Greenatics", url: `${site.url}/` }, { name: "Biblioteca", url: `${site.url}/biblioteca/` }, { name: "Pastos y gramíneas", url }]} />
+      <section className="pasture-guide__opening">
+        <div className="container pasture-guide__hero">
+          <div>
+            <Link className="back-link" href="/biblioteca/">Volver a Biblioteca</Link>
+            <span className="eyebrow">Wondergreen · sistemas forrajeros</span>
+            <h1>El programa del potrero empieza por entender su respuesta.</h1>
+            <p className="lead">Antes de elegir un fertilizante, relaciona suelo, especie forrajera, humedad y manejo del corte o pastoreo. Esa lectura permite preparar un programa para establecer, recuperar o mantener la pradera, según las condiciones de cada lote.</p>
+            <Link className="button button--dark" href="/wondergreen/cultivos/pastos-gramineas/">Explorar la ruta para pastos y praderas</Link>
+          </div>
+          <figure className="pasture-guide__cover">
+            <Image src="/guides/guia-pastos-cover.webp" alt="Portada de la Guía Wondergreen para pastos y praderas" width={662} height={936} sizes="(max-width: 760px) 240px, 290px" />
+            <figcaption>Nutrición, rebrote y manejo del potrero: una lectura conjunta para preparar la revisión técnica.</figcaption>
+          </figure>
         </div>
       </section>
-
-      <section className="knowledge-section">
-        <div className="container"><div className="section-heading"><span className="eyebrow">Capítulo 1 · entender</span><h2>¿Qué necesita un sistema forrajero productivo?</h2><p>Además de nutrientes, necesita suelo funcional, respuesta al rebrote, humedad suficiente, raíces activas y un manejo que no destruya el stand.</p></div><div className="field-question-list">{fieldQuestions.map((question, index) => <div key={question}><span>{String(index + 1).padStart(2,"0")}</span><strong>{question}</strong></div>)}</div></div>
+      <section className="pasture-guide__section">
+        <div className="container pasture-guide__reading">
+          <div><span className="eyebrow">Leer el lote</span><h2>¿Falta nutrición o hay otra limitación?</h2></div>
+          <div>
+            <p>Un bajo rebrote, poca biomasa o pérdida de cobertura no explican por sí solos qué necesita el potrero. Revisa qué ocurrió después del último corte o pastoreo y si hay sequía, exceso de humedad, compactación o limitaciones de raíces.</p>
+            <p>Relaciona esas observaciones con la fertilización reciente y su respuesta. Define también si buscas una recuperación puntual o sostener el sistema: el objetivo cambia la información que debemos revisar antes de intervenir.</p>
+            <Link className="text-link" href="/biblioteca/guia-deficiencias/#pastos">Revisar señales de campo en pastos</Link>
+          </div>
+        </div>
       </section>
-
-      <section className="knowledge-section knowledge-section--soft">
-        <div className="container"><div className="section-heading"><span className="eyebrow">Capítulo 2 · programa</span><h2>Nutrición + suelo + seguimiento.</h2></div><div className="knowledge-card-grid knowledge-card-grid--four">{system.map(([title, role, copy]) => <article key={title}><span className="knowledge-card-kicker">{role}</span><h3>{title}</h3><p>{copy}</p></article>)}</div><div className="knowledge-actions"><Link className="button button--primary" href="/wondergreen/cultivos/pastos-gramineas/">Ver programa por etapa</Link><Link className="button button--ghost" href="/biblioteca/guia-deficiencias/#pastos">Diagnóstico de deficiencias</Link></div></div>
+      <section className="pasture-guide__section pasture-guide__section--soft">
+        <div className="container pasture-guide__program">
+          <div>
+            <span className="eyebrow">Productos dentro del programa</span>
+            <h2>La referencia se elige después de la lectura agronómica.</h2>
+            <p>2GROW es la línea que se consulta para nutrición vegetativa en esta ruta. Floración y llenado no son el eje del sistema forrajero, por lo que 2BLOOM y 2FRUIT no se incorporan como base automática.</p>
+            <Link className="text-link" href="/wondergreen/productos/2grow/">Conocer la referencia 2GROW</Link>
+          </div>
+          <div>
+            <h3>Suelo, nutrición y seguimiento conectados</h3>
+            <p>El compost se considera dentro del acondicionamiento y manejo de materia orgánica. Los bioinsumos y productos líquidos se revisan como complementos cuando el objetivo, el producto y sus condiciones de uso están validados, no como sustitutos universales de la nutrición.</p>
+            <p>El acompañamiento técnico relaciona análisis de suelo, condición del lote, respuesta al corte o pastoreo y seguimiento. Especie, ambiente y nivel productivo impiden extrapolar una dosis entre potreros.</p>
+            <Link className="text-link" href="/servicios/programas-wondergreen/">Ver el acompañamiento agronómico Wondergreen</Link>
+          </div>
+        </div>
       </section>
-
-      <section className="knowledge-section">
-        <div className="container split-knowledge"><div><span className="eyebrow">Capítulo 3 · acompañar</span><h2>Monitoreo preciso → decisión informada → ajuste por lote.</h2></div><div><p>La recomendación se ajusta con análisis de suelo y condición del lote, objetivo productivo, respuesta al corte o pastoreo, humedad, compactación y seguimiento. Los productos líquidos se tratan como complemento cuando corresponda, no como única base automática del programa.</p><div className="technical-lock"><strong>Sin receta rígida</strong><p>Esta página no publica una dosis cerrada porque especie forrajera, ambiente, manejo y nivel productivo cambian la necesidad.</p></div></div></div>
+      <section className="pasture-guide__closing">
+        <div className="container pasture-guide__closing-inner">
+          <div><h2>Conversemos sobre tu pradera, no sobre una receta genérica.</h2><p>Comparte el análisis disponible, especie, manejo reciente, humedad y patrón de respuesta del potrero. Con ese contexto podemos preparar la revisión del programa.</p></div>
+          <Link className="button button--light" href="/contacto/?interes=programas-wondergreen&perfil=agro&diagnostico=Pastos%20y%20praderas">Solicitar acompañamiento para mi pradera</Link>
+        </div>
       </section>
-
-      <section className="knowledge-source-band"><div className="container knowledge-source-grid"><div><span className="eyebrow eyebrow--light">Greenatics + Wondergreen</span><h2>Una pradera rala no se diagnostica solo mirando una hoja.</h2></div><div><p>Confirma suelo, humedad, manejo, fertilización reciente y patrón del potrero antes de corregir. Luego construimos el programa.</p><Link href="/contacto/">Solicitar acompañamiento técnico →</Link></div></div></section>
-    </>
+    </div>
   );
 }

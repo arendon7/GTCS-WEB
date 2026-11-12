@@ -1,0 +1,51 @@
+.page { background: #f6f7f2; color: #12382b; }
+.header { padding: clamp(34px, 6vw, 70px) 0 42px; background: #f3f4e8; }
+.eyebrow { margin: 32px 0 10px; color: #567261; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.header h1 { max-width: 18ch; margin: 0; font-size: clamp(2.1rem, 5vw, 4rem); line-height: 1.04; letter-spacing: -.035em; }
+.intro { max-width: 68ch; margin: 20px 0 0; color: #425b4c; font-size: 1.08rem; line-height: 1.65; }
+.notice { display: grid; gap: 6px; max-width: 900px; margin-top: 26px; padding: 18px 0 18px 20px; border-left: 4px solid #bd6e35; color: #3c5145; }
+.notice strong { color: #183e30; }
+.notice span { line-height: 1.55; }
+.reviewFocus { max-width: 900px; margin-top: 30px; }
+.reviewFocus h2 { margin: 0 0 10px; color: #183e30; font-size: 1.05rem; }
+.reviewFocus ul { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; padding-left: 1.2rem; color: #425b4c; line-height: 1.55; }
+.contents { display: flex; flex-wrap: wrap; gap: 8px 20px; max-width: 1000px; margin-top: 28px; }
+.contents a { display: inline-flex; gap: 8px; padding: 8px 0; color: #28543f; font-size: .9rem; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.contents a span { color: #52685b; }
+.gallery { padding: clamp(34px, 5vw, 60px) 0; }
+.gallery > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 54px); row-gap: clamp(32px, 5vw, 64px); align-items: start; }
+.galleryHeading { grid-column: 1 / -1; }
+.galleryHeading h2 { margin: 0; color: #183e30; font-size: clamp(1.7rem, 3vw, 2.35rem); line-height: 1.12; }
+.galleryHeading p { max-width: 65ch; margin: 10px 0 0; color: #53695b; line-height: 1.6; }
+.pageFigure { margin: 0; scroll-margin-top: 32px; }
+.imageLink { display: block; background: #ebe9dd; }
+.imageLink img { display: block; width: 100%; height: auto; }
+.pageFigure figcaption { display: grid; gap: 4px; padding-top: 12px; }
+.pageFigure figcaption span { color: #667b6e; font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; }
+.pageFigure figcaption strong { color: #1c4333; font-size: 1rem; font-weight: 650; }
+.previousVersion { padding: 20px 0 50px; border-top: 1px solid #d9dfd4; }
+.previousVersion summary { width: min(100% - 40px, 1160px); margin: 0 auto; color: #28543f; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-underline-offset: 4px; }
+.previousVersion[open] summary { margin-bottom: 20px; }
+.previousVersion > div > p { max-width: 70ch; color: #566d5d; line-height: 1.55; }
+.previousGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 54px); row-gap: clamp(32px, 5vw, 64px); align-items: start; }
+.guidePlan { padding: clamp(38px, 6vw, 72px) 0; background: #eef1e7; }
+.guidePlan .galleryHeading { margin-bottom: 28px; }
+.planGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: #d3ddcf; border: 1px solid #d3ddcf; }
+.planGrid article { min-height: 190px; padding: clamp(18px, 3vw, 30px); background: #f7f8f2; }
+.planGrid article > span { color: #6e7f70; font-size: .76rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.planGrid h3 { margin: 13px 0 8px; color: #183e30; font-size: 1.22rem; line-height: 1.2; }
+.planGrid p { max-width: 54ch; margin: 0; color: #53695b; line-height: 1.6; }
+.footer { padding: 28px 0 50px; border-top: 1px solid #d9dfd4; }
+.footer > div { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px; }
+.footer p { max-width: 75ch; margin: 0; color: #566d5d; font-size: .92rem; line-height: 1.55; }
+@media (max-width: 760px) {
+  .gallery > div { grid-template-columns: 1fr; }
+  .reviewFocus ul { display: grid; gap: 6px; }
+  .contents { gap: 5px 14px; }
+  .contents a { font-size: .84rem; }
+  .previousGrid { grid-template-columns: 1fr; }
+  .planGrid { grid-template-columns: 1fr; }
+  .planGrid article { min-height: 0; }
+  .previousVersion summary { width: min(100% - 40px, 1160px); font-size: 1rem; }
+  .footer > div { align-items: flex-start; }
+}

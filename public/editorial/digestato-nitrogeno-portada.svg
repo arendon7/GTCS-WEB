@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" role="img" aria-labelledby="title desc">
+  <title id="title">Dos métricas, dos preguntas agronómicas</title>
+  <desc id="desc">Composición editorial sobre la absorción de nitrógeno por el cultivo y la volatilización de amoníaco durante la aplicación de digestato.</desc>
+  <rect width="800" height="560" rx="28" fill="#eaf0e7"/>
+  <path d="M0 422 C165 340 251 512 414 430 S648 345 800 406 V560 H0Z" fill="#d7e7d6"/>
+  <path d="M0 468 C148 390 267 540 420 463 S641 390 800 445 V560 H0Z" fill="#c3d9c6"/>
+  <circle cx="584" cy="244" r="133" fill="#fffefa" stroke="#c9d8c8" stroke-width="3"/>
+  <path d="M582 315 C575 260 580 212 609 160" fill="none" stroke="#087754" stroke-width="12" stroke-linecap="round"/>
+  <path d="M594 222 C542 219 521 192 526 163 C560 165 590 184 594 222Z" fill="#7dac71"/>
+  <path d="M590 251 C642 244 666 215 659 185 C626 189 597 212 590 251Z" fill="#4b9d72"/>
+  <circle cx="572" cy="325" r="10" fill="#c8e867"/>
+  <text x="58" y="93" fill="#637348" font-family="Arial, sans-serif" font-size="19" font-weight="700" letter-spacing="3">LECTURA AGRONÓMICA</text>
+  <text x="58" y="188" fill="#082c22" font-family="Arial, sans-serif" font-size="76" font-weight="700" letter-spacing="-4">NUE</text>
+  <text x="60" y="226" fill="#40584a" font-family="Arial, sans-serif" font-size="25">N absorbido por el cultivo</text>
+  <text x="60" y="313" fill="#087754" font-family="Arial, sans-serif" font-size="49" font-weight="700">≠</text>
+  <text x="60" y="385" fill="#082c22" font-family="Arial, sans-serif" font-size="68" font-weight="700" letter-spacing="-2">NH₃</text>
+  <text x="60" y="423" fill="#40584a" font-family="Arial, sans-serif" font-size="25">pérdida al aplicar</text>
+  <text x="566" y="454" text-anchor="middle" fill="#07563e" font-family="Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="2">SUELO · CULTIVO</text>
+</svg>

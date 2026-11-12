@@ -1,25 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 interface CheckItem {
   id: string;
   title: string;
-  norma: string;
+  support: string;
   desc: string;
 }
 
 const checkItems: CheckItem[] = [
-  { id: "c1", title: "Sistema de pesaje con control metrológico documentado", norma: "Validar marco aplicable", desc: "Registro de peso bruto, tara y neto por viaje, con identificación del equipo y soportes de verificación o calibración." },
-  { id: "c2", title: "Control y bitácora de la fase termófila", norma: "Criterio según proceso y marco aplicable", desc: "Registros de tiempo y temperatura para sustentar el control del proceso y la verificación de calidad." },
-  { id: "c3", title: "Balance de materia por lote o periodo", norma: "Criterio de trazabilidad", desc: "Conciliación documentada entre entradas, inventarios, rechazos, pérdidas de proceso y productos obtenidos." },
-  { id: "c4", title: "Manejo documentado de aguas y lixiviados", norma: "Validar permiso y diseño", desc: "Infraestructura, operación, contingencias y registros coherentes con las condiciones reales de la planta." },
-  { id: "c5", title: "Plan de muestreo y caracterización", norma: "Según producto y destino", desc: "Parámetros, frecuencia, laboratorio y criterios de aceptación definidos según el material y su uso previsto." },
-  { id: "c6", title: "Preparación y revisión de información reportable", norma: "Según prestador y actividad", desc: "Responsables, fuentes, cortes, soportes y control de calidad antes de cualquier cargue oficial." },
+  { id: "c1", title: "Pesajes por viaje", support: "Equipo y soportes metrológicos", desc: "Pesos bruto, tara y neto, con identificación del equipo y constancias disponibles de verificación o calibración." },
+  { id: "c2", title: "Seguimiento del proceso", support: "Registros de tiempo y temperatura", desc: "Bitácoras que ayuden a revisar la operación y el control de calidad según el proceso aplicado." },
+  { id: "c3", title: "Balance de materiales", support: "Entradas, salidas y periodo", desc: "Conciliación de entradas, inventarios, rechazos, pérdidas de proceso y productos obtenidos." },
+  { id: "c4", title: "Aguas y lixiviados", support: "Infraestructura y operación", desc: "Diseño, manejo, contingencias y registros contrastados con las condiciones reales de la planta." },
+  { id: "c5", title: "Muestreo y caracterización", support: "Parámetros y destino previsto", desc: "Plan, frecuencia, laboratorio y criterios definidos de acuerdo con el material y su uso previsto." },
+  { id: "c6", title: "Información para el reporte", support: "Fuentes, responsables y soportes", desc: "Cortes, responsables, trazabilidad y controles de calidad antes de cualquier presentación oficial." },
 ];
 
 export default function AuditoriaSuiPage() {
+  const router = useRouter();
   const [checked, setChecked] = useState<string[]>(["c1", "c2"]);
 
   const toggleCheck = (id: string) => {
@@ -30,148 +32,96 @@ export default function AuditoriaSuiPage() {
     }
   };
 
-  const score = Math.round((checked.length / checkItems.length) * 100);
-
   const waAuditMsg = encodeURIComponent(
-    `Hola Greenatics. Completé una revisión preliminar de preparación documental para una planta municipal. Marqué ${checked.length} de ${checkItems.length} capacidades como disponibles y quiero validar el alcance, el marco aplicable y los soportes antes de definir brechas o acciones.`
+    `Hola Greenatics. Estoy organizando los soportes para revisar información reportable de un prestador. He marcado ${checked.length} de ${checkItems.length} elementos como disponibles y quiero validar el alcance, el periodo y los criterios que aplican a mi caso.`
   );
   const selectedCapabilities = checkItems
     .filter((item) => checked.includes(item.id))
     .map((item) => item.title)
     .join(" · ");
-  const contactHref = `/contacto/?interes=solucion&perfil=municipio&diagnostico=${encodeURIComponent("Auditoría SUI y preparación de soportes")}&prioridad=${encodeURIComponent(`${checked.length}/${checkItems.length} capacidades marcadas · ${score}% · ${selectedCapabilities || "Sin capacidades marcadas"}`)}`;
+  const assessmentDetails = `Elementos que indicaste como disponibles: ${checked.length} de ${checkItems.length}\nSelección: ${selectedCapabilities || "Ninguno"}\nEsta lista organiza una conversación inicial; no mide preparación, no equivale a auditoría ni valida un reporte. La presentación oficial corresponde al prestador y a su responsable designado.`;
+  const contactHref = buildToolContactHref("preparacion-sui", "esp", "Auditoría SUI y preparación de soportes");
+
+  const continueToContact = () => {
+    storeToolContactDraft(assessmentDetails);
+    router.push(contactHref);
+  };
 
   return (
-    <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
-      <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
-          <span className="eyebrow">Preparación documental y operativa</span>
-          <h1 style={{ fontSize: "2.4rem", color: "var(--green-950)", margin: "8px 0 12px" }}>
-            Revisión preliminar para reportabilidad y control
-          </h1>
-          <p style={{ color: "var(--muted)", fontSize: "1.02rem", lineHeight: 1.6 }}>
-            Identifica qué capacidades y soportes están disponibles antes de una revisión formal. El resultado no certifica cumplimiento ni sustituye la validación jurídica, tarifaria, ambiental o técnica del caso.
-          </p>
-        </div>
+    <section className="sui-checkup">
+      <div className="container sui-checkup__shell">
+        <header className="sui-checkup__intro">
+          <div>
+            <h1>Ordena los soportes antes de preparar el reporte SUI</h1>
+            <p>
+              Reúne fuentes, responsables y registros que pueden ayudar a revisar la información del prestador. Esta guía organiza una conversación inicial; no es una auditoría ni valida cumplimiento o reportes.
+            </p>
+          </div>
+          <aside className="sui-checkup__boundary" aria-label="Alcance de esta guía">
+            <strong>La presentación oficial sigue a cargo del prestador.</strong>
+            <span>Los soportes y criterios aplicables se confirman según servicio, actividad, periodo y caso.</span>
+          </aside>
+        </header>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px", alignItems: "flex-start" }}>
-          <div style={{ background: "#ffffff", padding: "32px", borderRadius: "24px", border: "1.5px solid var(--line)", boxShadow: "0 12px 36px rgba(0, 107, 69, 0.05)" }}>
-            <h3 style={{ fontSize: "1.25rem", color: "var(--green-950)", margin: "0 0 16px" }}>
-              Capacidades para revisar
-            </h3>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div className="sui-checkup__workspace">
+          <fieldset className="sui-checkup__list">
+            <legend>¿Qué soportes tienes disponibles?</legend>
+            <p className="sui-checkup__hint">Marca solo los elementos que puedes consultar hoy. Puedes dejar otros sin marcar.</p>
+            <div className="sui-checkup__items">
               {checkItems.map((item) => {
                 const isDone = checked.includes(item.id);
                 return (
-                  <label
-                    key={item.id}
-                    onClick={() => toggleCheck(item.id)}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "12px",
-                      padding: "14px 16px",
-                      borderRadius: "14px",
-                      border: isDone ? "1.5px solid var(--green-800)" : "1px solid var(--line)",
-                      background: isDone ? "#f0f8ec" : "#fafcf9",
-                      cursor: "pointer",
-                      transition: "background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease"
-                    }}
-                  >
+                  <label className={`sui-checkup__item${isDone ? " is-selected" : ""}`} key={item.id}>
                     <input
                       type="checkbox"
+                      name="sui-supports"
+                      value={item.id}
                       checked={isDone}
-                      onChange={() => {}}
-                      style={{ accentColor: "var(--green-800)", width: "18px", height: "18px", marginTop: "2px" }}
+                      onChange={() => toggleCheck(item.id)}
+                      aria-describedby={`${item.id}-description`}
                     />
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2px" }}>
-                        <strong style={{ fontSize: "0.92rem", color: "var(--green-950)" }}>{item.title}</strong>
-                        <span style={{ fontSize: "0.7rem", color: "var(--green-800)", background: "#eaf5e6", padding: "2px 6px", borderRadius: "4px", fontWeight: 700 }}>
-                          {item.norma}
-                        </span>
-                      </div>
-                      <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.45 }}>
-                        {item.desc}
-                      </p>
-                    </div>
+                    <span className="sui-checkup__item-copy">
+                      <strong>{item.title}</strong>
+                      <span className="sui-checkup__support">{item.support}</span>
+                      <span id={`${item.id}-description`} className="sui-checkup__description">{item.desc}</span>
+                    </span>
                   </label>
                 );
               })}
             </div>
-          </div>
+          </fieldset>
 
-          <div style={{ background: "#0a2920", color: "#ffffff", padding: "36px", borderRadius: "24px", border: "1.5px solid rgba(255, 255, 255, 0.15)", boxShadow: "0 20px 50px rgba(0, 0, 0, 0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#98cf4f", fontWeight: 800 }}>
-                Avance de la lista preliminar
-              </span>
-              <span style={{ background: "rgba(152, 207, 79, 0.2)", color: "#98cf4f", padding: "4px 12px", borderRadius: "999px", fontSize: "0.85rem", fontWeight: 800 }}>
-                {score}%
-              </span>
-            </div>
-
-            <h3 style={{ fontSize: "1.6rem", color: "#ffffff", margin: "0 0 12px" }}>
-              {checked.length} de {checkItems.length} capacidades marcadas
-            </h3>
-
-            <p style={{ fontSize: "0.9rem", color: "#cbdcd3", lineHeight: 1.6, margin: "0 0 20px" }}>
-              Este porcentaje solo resume tus respuestas. Para convertirlo en un diagnóstico se deben verificar evidencias, responsables, periodicidad, calidad del dato y normas aplicables al prestador, la actividad y el territorio.
+          <aside className="sui-checkup__next">
+            <p className="sui-checkup__next-label">Tu punto de partida</p>
+            <p className="sui-checkup__selection" role="status" aria-live="polite" aria-atomic="true">
+              <strong>{checked.length} de {checkItems.length}</strong>
+              <span>{checked.length === 1 ? "elemento marcado" : "elementos marcados"}</span>
             </p>
-
-            <div style={{ background: "rgba(255, 255, 255, 0.08)", padding: "18px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.15)", marginBottom: "24px" }}>
-              <strong style={{ fontSize: "0.84rem", color: "#98cf4f", display: "block", marginBottom: "6px" }}>
-                ¿Cómo ayuda GREENATICS OPS?
-              </strong>
-              <p style={{ margin: 0, fontSize: "0.82rem", color: "#cbdcd3", lineHeight: 1.5 }}>
-                Integra captura de pesajes, bitácoras y seguimiento por lote para reducir reprocesos y preparar información que debe revisarse antes del reporte SUI.
-              </p>
+            <p className="sui-checkup__next-copy">
+              Esta selección no es un puntaje de preparación. En una revisión profesional se contrastan los soportes, la calidad del dato y los criterios aplicables al prestador.
+            </p>
+            <div className="sui-checkup__ops-note">
+              <strong>Información operativa mejor organizada</strong>
+              <p>GREENATICS OPS puede apoyar la captura y trazabilidad de datos por lote para su revisión antes de preparar información reportable.</p>
             </div>
-
-            <Link
-              href={contactHref}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                padding: "16px 24px",
-                background: "#98cf4f",
-                color: "#073319",
-                borderRadius: "14px",
-                fontSize: "1rem",
-                fontWeight: 800,
-                textDecoration: "none",
-                marginBottom: "10px"
-              }}
+            <button
+              type="button"
+              className="sui-checkup__contact"
+              onClick={continueToContact}
             >
-              Llevar revisión a Contacto →
-            </Link>
+              Conversar sobre estos soportes <span aria-hidden="true">→</span>
+            </button>
             <a
+              className="sui-checkup__whatsapp"
               href={`https://wa.me/573003078822?text=${waAuditMsg}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                width: "100%",
-                padding: "16px 24px",
-                background: "#25D366",
-                color: "#073319",
-                borderRadius: "14px",
-                fontSize: "1rem",
-                fontWeight: 800,
-                textDecoration: "none"
-              }}
             >
-              <span>Validar por WhatsApp directo</span>
+              Consultar por WhatsApp <span aria-hidden="true">↗</span>
             </a>
-          </div>
+          </aside>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

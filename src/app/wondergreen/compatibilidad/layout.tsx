@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Compatibilidad de mezclas en tanque",
   description:
-    "Matriz preliminar para revisar compatibilidad física y biológica antes de combinar Wondergreen, bioinsumos y otros productos agrícolas.",
+    "Prepara una consulta técnica de mezcla: productos, formulaciones, vía de aplicación, cultivo y soportes para revisar con Greenatics.",
   alternates: { canonical: "/wondergreen/compatibilidad/" },
 };
 

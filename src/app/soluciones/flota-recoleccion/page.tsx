@@ -2,10 +2,15 @@ import { SolutionAssessment } from "@/components/solution-assessment";
 
 export default function FlotaRecoleccionPage() {
   return <SolutionAssessment
-    eyebrow="Microrrutas y recolección diferenciada"
     title="Diseñar la ruta antes de escoger el vehículo."
-    lead="Motocargueros, vehículos livianos, camiones y puntos de transferencia cumplen funciones distintas. La decisión depende de accesibilidad, densidad, frecuencia, carga útil, calidad del material y conexión con la planta."
-    principle="El vehículo no crea por sí solo una microrruta eficiente. La eficiencia aparece cuando generadores, horarios, contenedores, personal, descarga y trazabilidad están coordinados."
+    contactProfile="territorio"
+    lead="La microrruta conecta generadores, frecuencia, carga, descarga y tratamiento. Cuando el territorio lo requiere, puede incorporar la configuración de motocarguero sobre base Ceronte desarrollada por Greenatics con Auteco Mobility."
+    principle="Greenatics diseñó el contenedor verde para esta configuración y las necesidades del sector aseo. La oferta es integrar el diseño a una ruta selectiva y su recepción, no vender el vehículo por separado. El diseño descrito no acredita fabricación, entrega, operación ni homologación. La eficiencia debe medirse en terreno."
+    visual={{
+      src: "/projects/routes/motocarguero-verde-operacion-real.webp",
+      alt: "Motocarguero con contenedor verde dentro de una ruta urbana de recolección selectiva.",
+      caption: "Una microrruta se diseña según generadores, calles, frecuencias, carga y puntos de descarga.",
+    }}
     fields={[
       { id: "territory", label: "Zona de operación", help: "Describe barrio, vereda, centro urbano o circuito.", placeholder: "Municipio y sectores" },
       { id: "generators", label: "Generadores atendidos", help: "Cantidad, tipo y concentración espacial.", placeholder: "Hogares, comercio, plazas, instituciones" },

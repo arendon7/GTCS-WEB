@@ -2,9 +2,10 @@ export const site = {
   name: "Greenatics",
   url: "https://greenatics.com.co",
   description:
-    "Greenatics transforma residuos orgánicos en recursos mediante gestión, plantas de aprovechamiento, biotecnología, fertilizantes Wondergreen y trazabilidad digital.",
+    "Greenatics conecta biomasa, operación, productos agrícolas, territorio y datos para transformar corrientes orgánicas en valor que puede sostenerse.",
   bookingUrl:
     "https://outlook.office.com/bookwithme/user/661b1e2305fb4f36ac3022c32feba931@greenatics.com.co/meetingtype/e8FmGdFQVkiR3lb6KlHLUA2?anonymous&ep=owaSlotsCopyLink",
+  croperStoreUrl: "https://croper.com/provider/1231-greenatics",
   address: "Cra 43b # 14–51 · Oficina 204, Centro Empresarial Alcalá, Medellín, Colombia",
 };
 
@@ -16,44 +17,52 @@ export interface NavItem {
 
 export const primaryNav: NavItem[] = [
   {
-    href: "/soluciones/",
-    label: "Qué hacemos",
+    href: "/servicios/",
+    label: "Servicios",
     subitems: [
-      { href: "/soluciones/", label: "Sistema Greenatics", description: "Del diagnóstico a la operación y la valorización" },
-      { href: "/servicios/", label: "Servicios", description: "Estructuración, implementación, acompañamiento y medición" },
-      { href: "/sana/", label: "SANA", description: "Ecosistema para estructurar inversión y proyectos productivos" },
-      { href: "/tecnologia/", label: "Plantas y tecnología", description: "Infraestructura modular, bioprocesos y trazabilidad" },
-      { href: "/diagnostico/", label: "Encontrar mi solución", description: "Orientador según necesidad, escala y territorio" },
+      { href: "/municipios/", label: "Municipios y ESP", description: "PGIRS, rutas, plantas y capacidad territorial" },
+      { href: "/empresas/", label: "Organizaciones y grandes generadores", description: "PMIRS y corrientes orgánicas para grandes generadores" },
+      { href: "/agroindustria/", label: "Agroindustria", description: "Subproductos, energía, biofábrica y producto" },
+      { href: "/diagnostico/", label: "Encontrar mi solución", description: "Orientador según necesidad y escala" },
     ],
   },
-  { href: "/municipios/", label: "Municipios y ESP" },
-  { href: "/empresas/", label: "Empresas" },
-  { href: "/agroindustria/", label: "Agroindustria" },
-  { href: "/portafolio/", label: "Portafolio" },
-  { href: "/herramientas/", label: "Herramientas" },
   {
     href: "/wondergreen/",
-    label: "Wondergreen",
+    label: "Productos",
     subitems: [
-      { href: "/wondergreen/", label: "Sistema de nutrición", description: "Bioinsumos, fertilizantes organominerales y acompañamiento" },
+      { href: "/biblioteca/catalogo-wondergreen/", label: "Catálogo", description: "Fórmulas, presentaciones y fichas de producto" },
       { href: "/wondergreen/cultivos/", label: "Cultivos", description: "Protocolos y planes por etapa fisiológica" },
-      { href: "/wondergreen/calculadora/", label: "Herramientas agronómicas", description: "Contexto del lote, suelo, aplicación y seguimiento" },
-      { href: "/wondergreen/cotizador/", label: "Cotizar Wondergreen", description: "Orientación comercial para productores y distribuidores" },
       { href: "/casa-jardin/", label: "Casa y jardín", description: "Soluciones para huertas, jardines y uso doméstico" },
+    ],
+  },
+  {
+    href: "/herramientas/",
+    label: "Herramientas",
+    subitems: [
+      { href: "/app/", label: "GREENATICS OPS", description: "Muestra de operación con datos ficticios: lotes, procesos y bitácoras" },
+      { href: "/red/", label: "GREENATICS Red", description: "Muestra para territorios, organizaciones, PMIRS y seguimiento" },
+      { href: "/huella/", label: "Back 2 Green", description: "Inventario GEI autogestionado con acompañamiento" },
+      { href: "/herramientas/estimador-organicos/", label: "Estimador de orgánicos", description: "Proyección de flujo y desvío; no calcula emisiones" },
+      { href: "/agroway/", label: "AGROWAY", description: "Modelo histórico de trazabilidad agrícola" },
+      { href: "/sana/", label: "SANA", description: "Estructuración de proyectos agrícolas" },
     ],
   },
   { href: "/proyectos/", label: "Casos" },
   {
-    href: "/biblioteca/",
+    href: "/recursos/",
     label: "Conocimiento",
     subitems: [
-      { href: "/biblioteca/", label: "Biblioteca técnica", description: "Manuales, guías de cultivo y documentos de consulta" },
-      { href: "/herramientas/", label: "Herramientas digitales", description: "OPS, GREENATICS Red, Calcula tu Huella, AGROWAY y SANA" },
-      { href: "/agroway/", label: "AGROWAY", description: "Aplicación de trazabilidad agrícola y datos de campo" },
-      { href: "/biblioteca/glosario/", label: "Glosario", description: "Conceptos de economía circular, bioprocesos y suelos" },
-      { href: "/impacto/", label: "Impacto y evidencia", description: "Indicadores validados y metodología de medición" },
-      { href: "/app/", label: "GREENATICS OPS", description: "Trazabilidad para báscula, lotes, operación y reportes" },
+      { href: "/biblioteca/", label: "Biblioteca técnica", description: "Programas por cultivo, fichas y documentos descargables" },
+      { href: "/biblioteca/ideas/", label: "Ideas y análisis", description: "Lecturas técnicas para evaluar biomasa y proyectos" },
+      { href: "/casa-jardin/guias/", label: "Guías Casa & Jardín", description: "Orientación para plantas, trasplantes y huertas" },
+      { href: "/impacto/", label: "Impacto y evidencia", description: "Resultados publicados y metodología de medición" },
     ],
   },
-  { href: "/nosotros/", label: "Nosotros" },
+  {
+    href: "/nosotros/",
+    label: "Greenatics",
+    subitems: [
+      { href: "/portafolio/", label: "Portafolio", description: "Servicios, productos, herramientas y líneas de trabajo" },
+    ],
+  },
 ];

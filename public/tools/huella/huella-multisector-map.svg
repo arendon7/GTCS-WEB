@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 650" fill="none">
+  <defs>
+    <linearGradient id="paper" x1="108" y1="43" x2="783" y2="606" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9F8F0"/>
+      <stop offset="1" stop-color="#E8EFE2"/>
+    </linearGradient>
+    <linearGradient id="route" x1="163" y1="333" x2="714" y2="291" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#77A77B"/>
+      <stop offset=".53" stop-color="#D0A343"/>
+      <stop offset="1" stop-color="#3E7C5A"/>
+    </linearGradient>
+    <filter id="shadow" x="260" y="174" width="374" height="312" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="12"/>
+      <feGaussianBlur stdDeviation="12"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix values="0 0 0 0 0.09 0 0 0 0 0.2 0 0 0 0 0.13 0 0 0 0.13 0"/>
+      <feBlend in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+  <rect width="880" height="650" rx="28" fill="url(#paper)"/>
+  <path d="M0 465c118-44 196-35 287-5 112 37 186 30 275-9 111-48 205-42 318 8v191H0V465Z" fill="#E0EBDD"/>
+  <path d="M0 524c127-32 219-18 331 9 120 29 220 20 330-13 83-25 151-28 219-8v138H0V524Z" fill="#D4E2D2"/>
+  <path d="M54 534c175-29 276-5 389 9 135 17 249-45 384-12" stroke="#B3CBB4" stroke-width="2" stroke-linecap="round"/>
+  <path d="M142 285c76-44 130-47 201-20 55 21 91-42 167-33 66 8 94 55 157 34 46-15 86-13 133 5" stroke="url(#route)" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 11"/>
+  <path d="M178 287c-3 41-1 58 22 78m428-97c-2 42-14 61-43 82M365 264c0-35 15-55 42-68" stroke="#A7C3A7" stroke-width="2" stroke-dasharray="3 8"/>
+
+  <!-- Commerce and offices -->
+  <g stroke="#356B50" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M71 320h151v122H71z" fill="#FFFDF7"/>
+    <path d="m71 320 48-30h59l43 30" fill="#D9E7D7"/>
+    <path d="M91 346h36v40H91zm61 0h48v40h-48z" fill="#EAF1E7"/>
+    <path d="M102 442v-35h91v35m-47-35v35"/>
+    <path d="M102 308v-35h15v35m57 0v-53h17v53" fill="#F1E5C7"/>
+  </g>
+  <g fill="#8AAA8B"><circle cx="88" cy="438" r="4"/><circle cx="207" cy="438" r="4"/></g>
+
+  <!-- Manufacturing -->
+  <g stroke="#356B50" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M669 319h139v123H669z" fill="#FFFDF7"/>
+    <path d="M669 351h53v-37l36 23v-33l50 34v104H669z" fill="#E8EFE3"/>
+    <path d="M742 304v-51h17v58m30-19v-60h17v81" fill="#F1E5C7"/>
+    <path d="M688 369h25v23h-25zm42 0h25v23h-25zm42 0h20v23h-20zM688 409h25v33h-25zm42 0h25v33h-25z" fill="#F8FAF5"/>
+  </g>
+  <path d="M765 244c-12-10 7-14 0-25m24 27c-10-11 8-17 0-29" stroke="#9CB69A" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Agriculture -->
+  <g stroke="#477A55" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M82 492c45-29 87-34 135-22m-118 43c34-19 67-22 102-15m-79 35c25-13 49-15 74-10"/>
+    <path d="M109 492c6-15 14-23 25-28m-25 28c-1-18-6-28-17-35m70 8c7-14 16-21 27-24m-27 24c-1-17-7-27-18-34"/>
+  </g>
+
+  <!-- Logistics -->
+  <g stroke="#356B50" stroke-linejoin="round" stroke-width="2.5">
+    <path d="M682 489h116v45H682z" fill="#FFFDF7"/>
+    <path d="M798 505h33l21 25v4h-54z" fill="#F7FBF5"/>
+    <path d="M808 510v17h32l-14-17z" fill="#E3EDE1"/>
+    <circle cx="710" cy="540" r="10" fill="#FFFDF7"/><circle cx="811" cy="540" r="10" fill="#FFFDF7"/>
+  </g>
+
+  <!-- Shared inventory ledger -->
+  <g filter="url(#shadow)">
+    <rect x="284" y="198" width="328" height="250" rx="17" fill="#FFFEFA"/>
+    <path d="M301 198h294a17 17 0 0 1 17 17v33H284v-33a17 17 0 0 1 17-17Z" fill="#173F31"/>
+    <circle cx="305" cy="224" r="4" fill="#E3B85E"/><circle cx="320" cy="224" r="4" fill="#97C58E"/><circle cx="335" cy="224" r="4" fill="#D7E4D7"/>
+    <path d="M309 276h136" stroke="#173F31" stroke-width="5" stroke-linecap="round"/>
+    <path d="M309 292h96" stroke="#87998C" stroke-width="3" stroke-linecap="round"/>
+    <rect x="309" y="318" width="278" height="47" rx="8" fill="#F1F6EF"/>
+    <circle cx="330" cy="341" r="8" fill="#3E805B"/><path d="m326 341 3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M348 337h100m-100 9h72" stroke="#6B8171" stroke-width="3" stroke-linecap="round"/>
+    <rect x="309" y="378" width="130" height="47" rx="8" fill="#F7F3E8"/>
+    <circle cx="330" cy="401" r="8" fill="#D2A342"/><path d="M348 397h75m-75 9h51" stroke="#8A7B5B" stroke-width="3" stroke-linecap="round"/>
+    <rect x="450" y="378" width="137" height="47" rx="8" fill="#F1F6EF"/>
+    <circle cx="471" cy="401" r="8" fill="#72A77A"/><path d="M489 397h78m-78 9h49" stroke="#6B8171" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g fill="#D2A342" stroke="#FFFDF7" stroke-width="4"><circle cx="143" cy="286" r="9"/><circle cx="408" cy="197" r="9"/><circle cx="673" cy="286" r="9"/></g>
+  <g fill="#356B50" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing=".5">
+    <text x="73" y="470">COMERCIO Y SERVICIOS</text>
+    <text x="670" y="470">INDUSTRIA</text>
+    <text x="90" y="578">AGRO</text>
+    <text x="682" y="578">TRANSPORTE</text>
+  </g>
+</svg>

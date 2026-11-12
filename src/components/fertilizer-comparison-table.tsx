@@ -49,11 +49,11 @@ export function FertilizerComparisonTable() {
       </div>
 
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.86rem", textAlign: "left" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem", textAlign: "left" }}>
           <thead>
             <tr style={{ background: "#fafcf9", borderBottom: "2px solid var(--line)" }}>
               <th style={{ padding: "14px 16px", color: "var(--green-950)" }}>Parámetro Fisiológico</th>
-              <th style={{ padding: "14px 16px", color: "var(--green-800)", background: "#eef7eb", fontWeight: 800 }}>🌿 Wondergreen Nutrients</th>
+              <th style={{ padding: "14px 16px", color: "var(--green-800)", background: "#eef7eb", fontWeight: 600 }}>🌿 Wondergreen Nutrients</th>
               <th style={{ padding: "14px 16px", color: "#a84b00" }}>🧪 Químico Convencional</th>
               <th style={{ padding: "14px 16px", color: "var(--muted)" }}>🍂 Compost Crudo Artesanal</th>
             </tr>
@@ -61,7 +61,7 @@ export function FertilizerComparisonTable() {
           <tbody>
             {comparisonRows.map((row, idx) => (
               <tr key={row.parameter} style={{ borderBottom: "1px solid var(--line)", background: idx % 2 === 0 ? "#ffffff" : "#fafcf9" }}>
-                <td style={{ padding: "14px 16px", fontWeight: 700, color: "var(--green-950)" }}>{row.parameter}</td>
+                <td style={{ padding: "14px 16px", fontWeight: 600, color: "var(--green-950)" }}>{row.parameter}</td>
                 <td style={{ padding: "14px 16px", color: "var(--green-950)", background: "#f4fbf1", fontWeight: 600 }}>{row.wondergreen}</td>
                 <td style={{ padding: "14px 16px", color: "#8a3e00" }}>{row.chemical}</td>
                 <td style={{ padding: "14px 16px", color: "var(--muted)" }}>{row.rawCompost}</td>

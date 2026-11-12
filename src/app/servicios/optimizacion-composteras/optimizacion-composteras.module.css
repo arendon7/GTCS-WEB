@@ -1,0 +1,58 @@
+.page { color: var(--green-950, #092d23); background: #f4f1e8; }
+.hero { padding: clamp(3.5rem, 7vw, 6.5rem) 0 clamp(4rem, 7vw, 6rem); }
+.heroGrid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(390px, 1.08fr); align-items: center; gap: clamp(2.5rem, 6vw, 6rem); }
+.heroCopy { max-width: 42rem; }
+.backLink { display: inline-block; margin-bottom: clamp(2rem, 4vw, 3.5rem); color: #17634a; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: .24em; }
+.hero h1 { max-width: 15ch; margin: 0; font-size: clamp(2.8rem, 5.3vw, 5rem); letter-spacing: -.055em; line-height: .98; text-wrap: balance; }
+.lead { max-width: 38rem; margin: 1.6rem 0 0; color: #435c52; font-size: clamp(1.08rem, 1.5vw, 1.24rem); line-height: 1.7; text-wrap: pretty; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; margin-top: 2rem; }
+.secondaryAction { display: inline-flex; align-items: center; min-height: 48px; padding: .65rem .4rem; color: #174b38; font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: .25em; }
+.backLink:focus-visible, .secondaryAction:focus-visible, .alternatives a:focus-visible { outline: 3px solid #80a94f; outline-offset: 4px; }
+.heroFigure { margin: 0; }
+.heroFigure img { display: block; width: 100%; height: auto; aspect-ratio: 1.35; border-radius: 1.4rem 1.4rem 5rem 1.4rem; object-fit: cover; box-shadow: 0 24px 55px rgba(11, 50, 38, .15); }
+.heroFigure figcaption { max-width: 40rem; margin: .85rem .25rem 0; color: #52665d; font-size: .9rem; line-height: 1.55; }
+.reading { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
+.readingGrid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(3rem, 8vw, 8rem); align-items: start; }
+.reading h2 { max-width: 16ch; margin: 0; font-size: clamp(2.3rem, 4.1vw, 4rem); letter-spacing: -.045em; line-height: 1.02; text-wrap: balance; }
+.readingGrid > div { max-width: 68ch; }
+.readingGrid p { margin: 0; color: #52645b; font-size: 1.04rem; line-height: 1.75; }
+.readingGrid p + p { margin-top: 1.2rem; }
+.boundaries { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #e8eddf; }
+.boundariesInner { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(3rem, 7vw, 7rem); align-items: start; }
+.boundariesLead h2 { max-width: 17ch; margin: 0; font-size: clamp(2.1rem, 3.6vw, 3.5rem); letter-spacing: -.045em; line-height: 1.04; text-wrap: balance; }
+.boundariesLead p { max-width: 43ch; margin: 1.3rem 0 0; color: #52645b; line-height: 1.7; }
+.alternatives { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.6rem, 3vw, 3rem); }
+.alternatives article { padding-top: 1.1rem; border-top: 1px solid rgba(19, 64, 46, .28); }
+.alternatives h3 { max-width: 23ch; margin: 0; font-size: 1.35rem; line-height: 1.15; }
+.alternatives p { margin: .85rem 0 1rem; color: #52645b; line-height: 1.6; }
+.alternatives a { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; color: #17634a; font-weight: 800; text-decoration-thickness: 1px; text-underline-offset: .24em; }
+.closing { padding: clamp(4.5rem, 7vw, 6.5rem) 0; color: #f8f6ed; background: #0b3428; }
+.closingInner { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(2.5rem, 7vw, 7rem); align-items: center; }
+.closing h2 { max-width: 18ch; margin: 0; color: #f8f6ed; font-size: clamp(2.3rem, 4vw, 4rem); letter-spacing: -.045em; line-height: 1.02; text-wrap: balance; }
+.closing p { max-width: 62ch; margin: 1.25rem 0 0; color: #d0ded4; line-height: 1.7; }
+.closingInner > a { justify-content: space-between; gap: 1rem; max-width: 100%; min-width: 0; white-space: normal; }
+
+@media (max-width: 1100px) {
+  .heroGrid { grid-template-columns: minmax(0, 1fr) minmax(330px, .98fr); gap: clamp(1.5rem, 4vw, 2.5rem); }
+  .hero h1 { max-width: 17ch; font-size: clamp(2.5rem, 4.45vw, 3.6rem); }
+}
+
+@media (max-width: 900px) {
+  .heroGrid { grid-template-columns: minmax(0, 1fr) minmax(280px, .9fr); gap: 2.25rem; }
+  .readingGrid, .boundariesInner { grid-template-columns: 1fr; gap: 2.4rem; }
+}
+@media (max-width: 680px) {
+  .hero { padding-top: 2rem; }
+  .heroGrid { grid-template-columns: 1fr; }
+  .closingInner { grid-template-columns: minmax(0, 1fr); }
+  .heroGrid { gap: 1.5rem; }
+  .backLink { margin-bottom: 2rem; }
+  .hero h1 { max-width: 13ch; font-size: clamp(2.55rem, 11vw, 3.8rem); }
+  .heroFigure img { aspect-ratio: 1.12; border-bottom-right-radius: 3rem; }
+  .alternatives { grid-template-columns: 1fr; gap: 1.8rem; }
+  .closingInner { gap: 2rem; }
+  .closingInner > a { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secondaryAction { transition: none; }
+}

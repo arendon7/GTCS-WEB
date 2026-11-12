@@ -1,7 +1,12 @@
 const allowLocalRuntimeLinks = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_ALLOW_LOCAL_RUNTIME_LINKS === "true";
 
-const isPrivateOrLocalHost = (hostname: string) => {
-  const normalized = hostname.toLowerCase();
+const isLoopbackHost = (hostname: string) => {
+  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  return normalized === "localhost" || normalized === "127.0.0.1" || normalized === "::1";
+};
+
+export const isPrivateOrLocalHost = (hostname: string) => {
+  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, "");
   if (normalized === "localhost" || normalized.endsWith(".local") || normalized === "::1") return true;
 
   const ipv4 = normalized.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
@@ -25,10 +30,15 @@ const isPrivateOrLocalHost = (hostname: string) => {
 
 const cleanRuntimeUrl = (value: string | undefined) => {
   const url = value?.trim().replace(/\/$/, "") || "";
-  if (!url || allowLocalRuntimeLinks) return url;
+  if (!url) return "";
 
   try {
     const parsed = new URL(url);
+    if (isPrivateOrLocalHost(parsed.hostname)) {
+      // A local preview can reach loopback runtimes, but must not inherit stale LAN addresses.
+      return allowLocalRuntimeLinks && isLoopbackHost(parsed.hostname) ? url : "";
+    }
+    if (allowLocalRuntimeLinks) return url;
     // Public builds may only link to externally reachable HTTPS runtimes.
     return parsed.protocol === "https:" && !isPrivateOrLocalHost(parsed.hostname) ? url : "";
   } catch {
@@ -36,15 +46,28 @@ const cleanRuntimeUrl = (value: string | undefined) => {
   }
 };
 
+const cleanRuntimeOrigin = (value: string | undefined) => {
+  if (!value?.trim()) return "";
+  try {
+    const parsed = new URL(value.trim());
+    if (parsed.username || parsed.password || parsed.search || parsed.hash || parsed.pathname !== "/") return "";
+    return cleanRuntimeUrl(parsed.origin);
+  } catch {
+    return "";
+  }
+};
+
 const configuredOpsRuntime = cleanRuntimeUrl(process.env.NEXT_PUBLIC_OPS_APP_URL);
+const opsApp = configuredOpsRuntime ? `${configuredOpsRuntime}/app` : "";
+const opsUserAdmin = configuredOpsRuntime ? `${configuredOpsRuntime}/admin/users` : "";
 
 export const runtimeLinks = {
   huella: cleanRuntimeUrl(process.env.NEXT_PUBLIC_HUELLA_APP_URL),
-  // Local development can override this with a LAN runtime; public builds always keep OPS reachable.
-  ops: configuredOpsRuntime || "https://greenatics-ops.vercel.app",
-  opsApp: `${configuredOpsRuntime || "https://greenatics-ops.vercel.app"}/app`,
-  opsUserAdmin: `${configuredOpsRuntime || "https://greenatics-ops.vercel.app"}/admin/users`,
-  red: cleanRuntimeUrl(process.env.NEXT_PUBLIC_RED_APP_URL),
+  // A public build exposes configured HTTPS runtimes; reachability is checked by the separate QA preflight.
+  ops: configuredOpsRuntime,
+  opsApp,
+  opsUserAdmin,
+  red: cleanRuntimeOrigin(process.env.NEXT_PUBLIC_RED_APP_URL),
 };
 
 export const runtimeLink = (configuredUrl: string, fallback: string) => configuredUrl || fallback;

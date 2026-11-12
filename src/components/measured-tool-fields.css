@@ -1,0 +1,9 @@
+.wg-measured > p { font-size: .9rem; color: #4d6358; }
+.wg-measured__actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 24px; }
+.wg-measured__actions button { min-height: 44px; padding: 10px 14px; border: 1px solid #bfcebf; border-radius: 9px; background: #f2f6ed; color: #174b38; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.wg-measured .wg-measured__example { padding: 12px; border-radius: 8px; color: #654514; background: #fff5df; }
+.wg-measured__field { margin-bottom: 20px; }
+.wg-measured__field label { display: block; margin-bottom: 8px; font-size: .93rem; font-weight: 700; color: #173d31; }
+.wg-measured__field input { width: 100%; min-width: 0; min-height: 48px; border: 1px solid #afc2b4; border-radius: 8px; padding: 10px 12px; background: #fbfcf8; color: #173d31; font: inherit; }
+.wg-measured__field input[aria-invalid="true"] { border-color: #a23b27; }
+.wg-measured__field .wg-measured__error { margin: 8px 0 0; font-size: .85rem; line-height: 1.5; color: #9a3321; }

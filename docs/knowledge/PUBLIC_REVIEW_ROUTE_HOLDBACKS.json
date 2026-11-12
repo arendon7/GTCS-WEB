@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "holdbacks": [
+    {
+      "route": "/casa-jardin/guias/plantas-verdes-review/",
+      "assets": [
+        "/guides/plantas-verdes-review/pagina-01.webp",
+        "/guides/plantas-verdes-review/pagina-02.webp",
+        "/guides/plantas-verdes-review/pagina-03.webp",
+        "/guides/plantas-verdes-review/pagina-04.webp",
+        "/guides/plantas-verdes-review/pagina-05.webp",
+        "/guides/plantas-verdes-review/pagina-06.webp",
+        "/guides/plantas-verdes-review/pagina-07.webp",
+        "/guides/plantas-verdes-review/pagina-08.webp",
+        "/guides/plantas-verdes-review/pagina-09.webp",
+        "/guides/plantas-verdes-review/pagina-10.webp",
+        "/guides/plantas-verdes-review/v2-pagina-01.webp",
+        "/guides/plantas-verdes-review/v2-pagina-02.webp",
+        "/guides/plantas-verdes-review/v2-pagina-05.webp",
+        "/guides/plantas-verdes-review/v2-pagina-06.webp",
+        "/guides/plantas-verdes-review/v2-pagina-07.webp",
+        "/guides/plantas-verdes-review/v2-pagina-09.webp"
+      ],
+      "reason": "El material sirve para una revisión editorial interna y no es una guía aprobada para visitantes. Mantenerlo disponible en preview local; excluir la ruta y sus páginas del export público hasta aprobación técnica/editorial.",
+      "source": "src/app/casa-jardin/guias/plantas-verdes-review/page.tsx y validación pendiente en el handoff web 2026-10-31."
+    }
+  ]
+}

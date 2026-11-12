@@ -2,10 +2,15 @@ import { SolutionAssessment } from "@/components/solution-assessment";
 
 export default function ViabilidadMunicipalPage() {
   return <SolutionAssessment
-    eyebrow="Prefactibilidad territorial"
     title="Antes del CAPEX, hay que entender el sistema."
+    contactProfile="municipio"
     lead="Una solución municipal se vuelve viable cuando generación, separación, logística, tratamiento, institucionalidad, destinos y financiación caben en una misma ruta de implementación."
     principle="La pregunta no es cuánto podría ahorrar un municipio con un porcentaje fijo. Es qué configuración puede operar, financiar, medir y sostener."
+    visual={{
+      src: "/services/pgirs-pmirs-planning-editorial-v1.jpg",
+      alt: "Un equipo revisa un mapa territorial y las condiciones de gestión de residuos.",
+      caption: "La prefactibilidad conecta generación, rutas, infraestructura y capacidad institucional antes de comprometer inversión.",
+    }}
     fields={[
       { id: "territory", label: "Municipio y departamento", help: "Territorio donde se evaluaría la solución.", placeholder: "Ej. Támesis, Antioquia" },
       { id: "population", label: "Población y cobertura atendida", help: "Distingue cabecera, centros poblados y ruralidad.", placeholder: "Población, usuarios o suscriptores" },

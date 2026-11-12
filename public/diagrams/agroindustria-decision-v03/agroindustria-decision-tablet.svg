@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1040" viewBox="0 0 768 1040" role="img" aria-labelledby="title desc">
+<title id="title">De una corriente a una decisión</title>
+<desc id="desc">Versión intermedia del diagrama conceptual: delimitar una corriente, definir muestreo, organizar seis dimensiones y comparar alternativas antes de decidir bajo criterios definidos.</desc>
+<defs>
+ <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbfcf9"/><stop offset="1" stop-color="#edf3eb"/></linearGradient>
+ <linearGradient id="fiber" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#386d4b"/><stop offset=".55" stop-color="#98cf4f"/><stop offset="1" stop-color="#cbdcae"/></linearGradient>
+ <linearGradient id="sample" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dfe9d3"/><stop offset="1" stop-color="#aac77e"/></linearGradient>
+ <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M1 1l6 3-6 3" fill="none" stroke="#698a4a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+ <style>text{font-family:"Avenir Next",Avenir,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.eyebrow{font-size:12px;font-weight:800;letter-spacing:1.8px;fill:#547452}.title{font-size:31px;font-weight:750;letter-spacing:-.9px;fill:#0a3327}.deck{font-size:15px;font-weight:550;fill:#4e6358}.step{font-size:12px;font-weight:800;letter-spacing:1px;fill:#0a3327}.num{font-size:10px;font-weight:800;fill:#fff}.body{font-size:15px;font-weight:650;fill:#173b2d}.small{font-size:13px;font-weight:550;fill:#53685b}.variable{font-size:14px;font-weight:700;fill:#173b2d}.outcome{font-size:16px;font-weight:800;fill:#0a3327}.micro{font-size:10px;font-weight:800;letter-spacing:1.35px;fill:#5a7555}.rule{stroke:#cad8c6;stroke-width:1.2;fill:none}.flow{stroke:#739754;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}</style>
+</defs>
+<rect width="768" height="1040" rx="22" fill="url(#paper)"/><path d="M0 0h768v7H0z" fill="#98cf4f"/>
+<text x="38" y="46" class="eyebrow">AGROINDUSTRIA · MÉTODO DE EVALUACIÓN</text><text x="38" y="92" class="title">De una corriente a una decisión</text><text x="38" y="120" class="deck">Un sitio y un periodo ordenan qué conocer, comparar y decidir.</text><text x="730" y="46" text-anchor="end" class="micro">ESQUEMA CONCEPTUAL</text>
+<path d="M46 157H724" class="rule"/>
+<circle cx="52" cy="157" r="12" fill="#0a3327"/><text x="52" y="161" class="num" text-anchor="middle">01</text><text x="73" y="161" class="step">DELIMITAR</text>
+<circle cx="225" cy="157" r="12" fill="#0a3327"/><text x="225" y="161" class="num" text-anchor="middle">02</text><text x="246" y="161" class="step">CARACTERIZAR</text>
+<circle cx="417" cy="157" r="12" fill="#0a3327"/><text x="417" y="161" class="num" text-anchor="middle">03</text><text x="438" y="161" class="step">COMPARAR</text>
+<circle cx="606" cy="157" r="12" fill="#0a3327"/><text x="606" y="161" class="num" text-anchor="middle">04</text><text x="627" y="161" class="step">DECIDIR</text>
+
+<!-- Current material is conceptual; organic fibers and suspended droplets keep it broad. -->
+<path d="M48 283c50-42 101-32 156-4s74 29 113-4" stroke="url(#fiber)" stroke-width="22" opacity=".18" fill="none" stroke-linecap="round"/><path d="M48 283c50-27 101-20 156 1s74 29 113 2" stroke="#4d7951" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M53 296c51-22 99-15 151 5s75 27 111 5" stroke="#a2c56f" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 272l12-5m27 25 14-6m35-11 14 6m35 8 14 8m31-2 15 4" stroke="#315f40" stroke-width="2" stroke-linecap="round"/><ellipse cx="117" cy="312" rx="6" ry="2.5" fill="#98cf4f"/><ellipse cx="198" cy="265" rx="7" ry="2.5" fill="#98cf4f" transform="rotate(12 198 265)"/><circle cx="275" cy="307" r="3" fill="#789653"/><circle cx="292" cy="295" r="2.5" fill="#98cf4f"/>
+<text x="48" y="354" class="body">Una corriente · un sitio · un periodo</text><text x="48" y="378" class="small">Proceso · temporada · manejo.</text>
+<path d="M48 408H348" class="rule" marker-end="url(#arrow)"/>
+<path d="M235 242h86l-9 82q-2 13-14 13h-41q-12 0-14-13z" fill="#f7faf3" stroke="#718f5b" stroke-width="1.8"/><path d="M240 285c15-7 22-3 33-8s20-1 32-4l-4 48q-1 11-11 11h-39q-10 0-11-11z" fill="url(#sample)"/><path d="M240 285c15-7 22-3 33-8s20-1 32-4" fill="none" stroke="#66834e" stroke-width="1.7"/><path d="M249 299l8-6m11 17 11-8m10-5 7-6" stroke="#55724a" stroke-width="1.6" stroke-linecap="round"/>
+<text x="214" y="438" class="body">Muestreo definido</text><text x="214" y="461" class="small">para la decisión.</text><path d="M348 482H397" class="flow" marker-end="url(#arrow)"/>
+
+<!-- Comparison matrix: equal cells, no quantitative encoding. -->
+<path d="M378 204V470" stroke="#cad8c6" stroke-width="1.2"/><text x="407" y="216" class="micro">SEIS DIMENSIONES DE LECTURA</text>
+<path d="M407 239H724M407 294H724M407 349H724M407 404H724M560 239V404" class="rule"/>
+<g transform="translate(417 267)"><circle cx="6" cy="0" r="5" fill="#98cf4f"/><path d="M6-8V8M-2 0h16" stroke="#426b46" stroke-width="1.2"/><text x="22" y="5" class="variable">Cantidad</text></g>
+<g transform="translate(571 267)"><path d="M0 5l6-9 6 9z" fill="#dce9c9" stroke="#66834e"/><text x="19" y="5" class="variable">Calidad</text></g>
+<g transform="translate(417 322)"><path d="M0 0h14M3-6v12m7-12v12" stroke="#66834e" stroke-width="1.2"/><circle cx="3" cy="0" r="2.5" fill="#98cf4f"/><text x="22" y="5" class="variable">Variación</text></g>
+<g transform="translate(571 322)"><path d="M0-5h13M0 0h9M0 5h13" stroke="#66834e" stroke-width="1.2"/><text x="19" y="5" class="variable">Logística</text></g>
+<g transform="translate(417 377)"><path d="M0 6c1-10 12-13 14-2M2 7h12" stroke="#66834e" stroke-width="1.2" fill="none"/><text x="22" y="5" class="variable">Manejo actual</text></g>
+<g transform="translate(571 377)"><path d="M0 0h13m-5-5 5 5-5 5" stroke="#66834e" stroke-width="1.2" fill="none"/><text x="19" y="5" class="variable">Salida posible</text></g>
+<text x="407" y="442" class="small">¿Qué dato completar?</text><text x="407" y="463" class="small">¿Qué alternativa comparar?</text>
+
+<path d="M46 514H724" class="rule"/><text x="48" y="552" class="eyebrow">04 · DECIDIR BAJO CRITERIOS DEFINIDOS</text><text x="48" y="581" class="small">Tres salidas posibles, con el mismo peso visual:</text>
+<path d="M90 624v136M90 643h46M90 692h46M90 741h46" class="flow"/><circle cx="90" cy="692" r="6" fill="#98cf4f" stroke="#426b46" stroke-width="1.2"/>
+<path d="M128 643h12M128 692h12M128 741h12" class="flow" marker-end="url(#arrow)"/>
+<circle cx="158" cy="643" r="14" fill="#e4edda" stroke="#77965b"/><circle cx="158" cy="643" r="4" fill="#98cf4f"/><text x="183" y="649" class="outcome">Avanzar</text>
+<circle cx="158" cy="692" r="14" fill="#e4edda" stroke="#77965b"/><circle cx="158" cy="692" r="4" fill="#98cf4f"/><text x="183" y="698" class="outcome">Ajustar</text>
+<circle cx="158" cy="741" r="14" fill="#e4edda" stroke="#77965b"/><circle cx="158" cy="741" r="4" fill="#98cf4f"/><text x="183" y="747" class="outcome">Detener</text>
+<path d="M355 623V779" stroke="#cad8c6" stroke-width="1.2"/><text x="395" y="660" class="title" font-size="25">Antes de comprometer</text><text x="395" y="691" class="title" font-size="25">inversión.</text><text x="395" y="733" class="small">La información se compara con</text><text x="395" y="755" class="small">criterios definidos para el proyecto.</text>
+<path d="M46 831H724" class="rule"/><text x="48" y="881" class="eyebrow">CARACTERIZAR <tspan fill="#98cf4f">→</tspan> COMPARAR <tspan fill="#98cf4f">→</tspan> DECIDIR</text><text x="48" y="919" class="body">La evaluación ordena información para decidir en contexto.</text><text x="724" y="992" text-anchor="end" class="micro">GREENATICS · AGROINDUSTRIA</text>
+</svg>

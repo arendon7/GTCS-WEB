@@ -113,11 +113,11 @@ export function CropDeficiencyViewer() {
             {current.solution}
           </p>
           <a
-            href="/wondergreen/cotizador/"
+            href="/contacto/?interes=wondergreen&perfil=agro&diagnostico=Alerta%20nutricional"
             className="button button--primary"
             style={{ fontSize: "0.84rem", textAlign: "center" }}
           >
-            Cotizar Tratamiento para Cultivo →
+            Consultar manejo para el cultivo →
           </a>
         </div>
       </div>

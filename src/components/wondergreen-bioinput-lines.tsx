@@ -1,57 +1,73 @@
-import Image from "next/image";
 import Link from "next/link";
 import { products } from "@/data/products";
+import { getProductMedia } from "@/data/product-media";
 
 const bioinputProducts = products.filter((product) => product.category === "bioinsumos" && product.slug !== "bioinsumos");
-
-function imagePosition(slug: string) {
-  return slug === "bioinsumo-bacillus-subtilis" || slug === "bioinsumo-metarhizium" ? "wg-bio-lines__media--bottom" : "wg-bio-lines__media--top";
-}
-
-function imageLabel(slug: string) {
-  return slug === "bioinsumo-trichoderma" || slug === "bioinsumo-bacillus-subtilis"
-    ? "Referencia combinada · Trichoderma + Bacillus"
-    : slug === "bioinsumo-beauveria" || slug === "bioinsumo-metarhizium"
-      ? "Referencia combinada · Beauveria + Metarhizium"
-      : "Referencia individual · 1 L";
-}
+const bioinputGroups = [
+  { name: "Microbiológicos", slugs: ["bioinsumo-trichoderma", "bioinsumo-bacillus-subtilis", "bioinsumo-beauveria", "bioinsumo-metarhizium"] },
+  { name: "Botánicos", slugs: ["bioinsumo-ajo-aji", "bioinsumo-neem"] },
+] as const;
+const bioinputSummaries: Record<string, string> = {
+  "bioinsumo-trichoderma": "Especie, ficha, etiqueta y alcance autorizado por confirmar.",
+  "bioinsumo-bacillus-subtilis": "Referencia microbiológica. Confirma su alcance en la ficha, etiqueta y registro vigentes.",
+  "bioinsumo-beauveria": "Referencia microbiológica. Confirma su alcance en la ficha, etiqueta y registro vigentes.",
+  "bioinsumo-metarhizium": "Referencia microbiológica. Confirma su alcance en la ficha, etiqueta y registro vigentes.",
+  "bioinsumo-ajo-aji": "Referencia botánica. Confirma su alcance en la ficha, etiqueta y registro vigentes.",
+  "bioinsumo-neem": "Referencia botánica. Confirma su alcance en la ficha, etiqueta y registro vigentes.",
+};
 
 export function WondergreenBioinputLines() {
   return (
     <section className="wg-bio-lines" id="bioinsumos" aria-labelledby="wg-bio-lines-title">
       <div className="wg-bio-lines__heading">
         <div>
-          <span className="eyebrow">Bioinsumos · referencias actuales</span>
-          <h3 id="wg-bio-lines-title">Biología que fortalece programas de manejo integrado.</h3>
+          <h3 id="wg-bio-lines-title">Seis referencias botánicas y microbiológicas.</h3>
+          <p>Los grupos ayudan a reconocer cada referencia; su alcance y uso autorizado se confirman en la ficha, etiqueta y registro vigentes.</p>
         </div>
-        <p>Las referencias microbiológicas y botánicas se integran a programas definidos por cultivo, objetivo, momento y calidad de aplicación. La ficha técnica de cada presentación entrega concentración, dosis, frecuencia, compatibilidad y condición de uso.</p>
+        <figure className="wg-bio-lines__media wg-bio-lines__media--family">
+          <img src="/products/wondergreen-line-bioinsumos-v2.jpg" alt="Persona revisa las raíces de una plántula en un vivero." width={1448} height={1086} loading="lazy" decoding="async" />
+          <figcaption>Revisa la documentación vigente antes de definir el uso de una referencia.</figcaption>
+        </figure>
       </div>
 
-      <div className="wg-bio-lines__grid">
-        {bioinputProducts.map((product) => (
-          <article key={product.slug}>
-            {product.image ? (
-              <Link className={`wg-bio-lines__media ${imagePosition(product.slug)}`} href={`/wondergreen/productos/${product.slug}/`} aria-label={`Abrir ficha de ${product.name}`}>
-                <Image src={product.image} alt={`Etiqueta de referencia de ${product.name} en presentación de 1 L`} fill sizes="(max-width: 760px) 100vw, 19vw" />
-                <span>{imageLabel(product.slug)}</span>
-              </Link>
-            ) : null}
-            <div className="wg-bio-lines__top"><span>{product.family}</span><small>Portafolio técnico</small></div>
-            <h4>{product.name.replace("Wondergreen ", "")}</h4>
-            <p>{product.technicalRole}</p>
-            <div className="wg-bio-lines__tags">
-              {product.idealFor.slice(0, 3).map((item) => <span key={item}>{item}</span>)}
+      <p className="wg-bio-lines__presentation-note">Las imágenes muestran contextos de cultivo, no empaques. El alcance y el uso autorizado se confirman en la ficha, etiqueta y registro vigentes de cada referencia.</p>
+      <div className="wg-bio-lines__groups">
+        {bioinputGroups.map((group) => (
+          <section className="wg-bio-lines__group" key={group.name} aria-labelledby={`wg-bio-group-${group.name.toLowerCase()}`}>
+            <header className="wg-bio-lines__group-heading">
+              <h4 id={`wg-bio-group-${group.name.toLowerCase()}`}>{group.name}</h4>
+              <span>{group.slugs.length} referencias</span>
+            </header>
+            <div className="wg-bio-lines__items">
+              {group.slugs.map((slug) => {
+                const product = bioinputProducts.find((candidate) => candidate.slug === slug);
+                if (!product) return null;
+                const media = getProductMedia(product.slug);
+                const visual = media.editorial;
+
+                return (
+                  <article className="wg-bio-lines__item" key={product.slug}>
+                    {visual ? (
+                      <figure className="wg-bio-lines__product-visual">
+                        <img src={visual.src} alt={visual.alt} width={1448} height={1086} loading="lazy" decoding="async" />
+                      </figure>
+                    ) : null}
+                    <div className="wg-bio-lines__item-copy">
+                      <h5>{product.name.replace("Wondergreen ", "")}</h5>
+                      <p>{bioinputSummaries[product.slug] ?? product.technicalRole}</p>
+                      <Link className="wg-bio-lines__link" href={`/wondergreen/productos/${product.slug}/`}>Ver ficha técnica →</Link>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
-            <div className="wg-bio-lines__truth"><strong>Aplicación técnica</strong><span>Protocolo, concentración, dosis y frecuencia definidos para el cultivo y la presentación.</span></div>
-            <Link className="wg-bio-lines__link" href={`/wondergreen/productos/${product.slug}/`}>Abrir ficha técnica →</Link>
-          </article>
+          </section>
         ))}
       </div>
 
       <div className="wg-bio-lines__footer">
-        <strong>Una herramienta biológica necesita contexto.</strong>
-        <span>Diagnóstico, monitoreo, oportunidad, calidad del agua, compatibilidad y seguimiento forman parte de la decisión.</span>
-        <Link href="/wondergreen/fitosanidad/">Ver la ruta de manejo integrado →</Link>
+        <span>La elección depende del objetivo, el monitoreo, la compatibilidad y la ficha vigente de cada referencia.</span>
+        <Link href="/wondergreen/fitosanidad/">Revisar la ruta de manejo integrado →</Link>
       </div>
     </section>
   );

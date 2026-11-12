@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export default function EncalamientoPage() {
   const [ph, setPh] = useState(4.8);
@@ -10,7 +11,8 @@ export default function EncalamientoPage() {
   const [texture, setTexture] = useState("Franca");
   const [crop, setCrop] = useState("Café");
   const message = encodeURIComponent(`Hola Greenatics. Quiero evaluar una posible intervención de acidez para ${crop}. Datos preliminares: pH ${ph}, saturación de aluminio ${al}% y textura ${texture}. Necesito validar el requerimiento con el análisis completo y la calidad de la enmienda disponible.`);
-  const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Evaluación de encalamiento")}&prioridad=${encodeURIComponent(`${crop} · pH ${ph} · saturación de aluminio ${al}% · textura ${texture}`)}`;
+  const assessmentDetails = `Cultivo: ${crop}\npH ingresado: ${ph}\nSaturación de aluminio: ${al}%\nTextura elegida: ${texture}\nEstos datos son preliminares. La necesidad y cantidad de enmienda requieren análisis completo, método de laboratorio, densidad/aparente cuando corresponda y calidad comprobada del material.`;
+  const contactHref = buildToolContactHref("wondergreen", "agro", "Evaluación de encalamiento");
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
@@ -23,7 +25,7 @@ export default function EncalamientoPage() {
             El pH por sí solo no determina cuánto material aplicar. Esta ruta reúne el contexto mínimo para calcular una necesidad real y comparar enmiendas por su capacidad neutralizante, composición y comportamiento en el suelo.
           </p>
         </header>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 28, alignItems: "start" }}>
           <section style={{ background: "#fff", border: "1px solid var(--line)", borderRadius: 24, padding: "clamp(24px, 4vw, 34px)" }}>
             <h2 style={{ fontSize: "1.25rem", marginTop: 0 }}>Contexto preliminar</h2>
             <label style={{ display: "block", fontWeight: 750, fontSize: ".86rem", marginBottom: 18 }}>Cultivo
@@ -44,7 +46,7 @@ export default function EncalamientoPage() {
               {["Arenosa", "Franca", "Arcillosa"].map((item) => <button type="button" key={item} onClick={() => setTexture(item)} style={{ padding: 10, borderRadius: 9, border: texture === item ? "2px solid var(--green-700)" : "1px solid var(--line)", background: texture === item ? "#eaf5e6" : "#fff", fontWeight: 700 }}>{item}</button>)}
             </div>
           </section>
-          <section style={{ background: "#0a2920", color: "#fff", borderRadius: 24, padding: "clamp(26px, 4vw, 38px)" }}>
+          <section className="wg-tool-result" style={{ background: "#0a2920", color: "#fff", borderRadius: 24, padding: "clamp(26px, 4vw, 38px)" }}>
             <span style={{ color: "#98cf4f", fontWeight: 800, fontSize: ".75rem", textTransform: "uppercase", letterSpacing: ".1em" }}>Antes de calcular</span>
             <h2 style={{ color: "#fff", fontSize: "1.7rem", margin: "7px 0 18px" }}>Seis datos cambian la decisión</h2>
             <ul style={{ paddingLeft: 20, color: "#d4e3dc", lineHeight: 1.65, fontSize: ".9rem" }}>
@@ -59,7 +61,7 @@ export default function EncalamientoPage() {
               <strong>No se publica una cantidad por hectárea</strong>
               <p style={{ margin: "6px 0 0", color: "var(--muted)", fontSize: ".84rem", lineHeight: 1.5 }}>La necesidad se calcula con datos del suelo y luego se ajusta a la calidad comprobada de la enmienda, no al nombre comercial.</p>
             </div>
-            <Link className="button button--primary" href={contactHref} style={{ width: "100%", justifyContent: "center" }}>Llevar caso a Contacto →</Link>
+            <Link className="button button--primary" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)} style={{ width: "100%", justifyContent: "center" }}>Llevar caso a Contacto →</Link>
             <a className="button button--outline-light" href={`https://wa.me/573003078822?text=${message}`} target="_blank" rel="noopener noreferrer" style={{ width: "100%", justifyContent: "center", marginTop: "10px" }}>Validar por WhatsApp directo</a>
           </section>
         </div>

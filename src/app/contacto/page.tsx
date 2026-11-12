@@ -3,166 +3,109 @@ import Link from "next/link";
 import { InteractiveContactForm } from "@/components/interactive-contact-form";
 
 export const metadata: Metadata = {
-  title: "Contacto y agendamiento técnico",
-  description: "Cuéntanos qué quieres resolver. Agenda directamente una sesión técnica o envía tu caso al equipo de ingenieros de Greenatics en Colombia.",
+  title: "Contacto Greenatics",
+  description: "Cuéntanos qué necesitas sobre productos, servicios o herramientas Greenatics. Revisa el resumen y elige si lo envías por WhatsApp o correo.",
   alternates: { canonical: "/contacto/" },
 };
 
 const faqs = [
   {
-    q: "¿Cómo se contrata una planta modular con una alcaldía o ESP?",
-    a: "Estructuramos proyectos bajo la modalidad de convenios interadministrativos, licitaciones públicas de aseo o alianzas público-privadas con viabilidad MGA y cumplimiento de la Res. 0754 (PGIRS) y la CRA 720."
+    q: "¿Qué información conviene traer a la primera conversación?",
+    a: "Una descripción del flujo o cultivo, ubicación, escala aproximada, etapa del proyecto, restricciones conocidas y la decisión que debe tomarse. Si ya existen pesajes, análisis, rutas, planos o registros, podemos usarlos para ordenar el siguiente paso."
   },
   {
-    q: "¿Cómo se aplica la deducción tributaria del 25% (Art. 255 E.T.)?",
-    a: "Elaboramos el Documento Técnico Ambiental (DTA) y radicamos el trámite ante la ANLA (Ventanilla VITAL) para obtener la certificación que descuenta directamente el 25% de la inversión en la declaración de renta y excluye el 19% de IVA."
+    q: "¿Cómo se define una propuesta o un suministro?",
+    a: "Primero se aclaran alcance, producto o servicio, escala, evidencia disponible y condiciones de operación. La presentación, disponibilidad, precio, dosis, etiqueta vigente y entrega se confirman en la conversación técnica y comercial correspondiente."
   },
   {
-    q: "¿Cuáles son los tiempos de entrega de fertilizantes Wondergreen?",
-    a: "Despachamos desde bultos individuales de 40 kg hasta viajes completos de 10 y 30 toneladas a nivel nacional en menos de 72 a 96 horas hábiles según el departamento."
-  },
-  {
-    q: "¿Podemos agendar una visita técnica a la Planta de Yarumal?",
-    a: "Sí, coordinamos visitas técnicas guiadas para alcaldes, directores de servicios públicos, concejales, gremios agrícolas y comités de sostenibilidad ambiental."
+    q: "¿Podemos coordinar una visita técnica?",
+    a: "Podemos revisar la pertinencia de una visita a Yarumal u otro punto de operación. La fecha, el alcance, las personas participantes y las condiciones de acceso se acuerdan antes de confirmarla."
   }
 ];
 
 export default function ContactoPage() {
   return (
-    <div style={{ background: "#f8faf6", color: "var(--green-950)", overflowX: "hidden" }}>
-      
-      {/* 1. HERO SECTION EXPANSIVO (1440px+) */}
-      <section className="aurora-hero" style={{ padding: "90px 0 70px" }}>
+    <div className="contact-page">
+      <section className="aurora-hero contact-hero">
         <div className="container">
-          <div style={{ maxWidth: "880px", margin: "0 auto 40px", textAlign: "center" }}>
-            <div className="eyebrow-badge" style={{ marginBottom: "20px" }}>
-              <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#98cf4f", display: "inline-block", boxShadow: "0 0 10px #98cf4f" }} />
-              <span>Canal Directo de Ingeniería · Greenatics Colombia</span>
+          <div className="contact-hero__copy">
+            <div className="eyebrow-badge contact-hero__eyebrow">
+              <span aria-hidden="true" />
+              <span>Productos, servicios y herramientas Greenatics</span>
             </div>
 
-            <h1 style={{ color: "#ffffff", marginBottom: "20px" }}>
-              Estructuremos tu proyecto de <em style={{ fontStyle: "normal", color: "var(--lime-400)" }}>aprovechamiento o nutrición vegetal</em>
+            <h1>
+              Cuéntanos qué <em>quieres resolver</em>
             </h1>
 
-            <p className="lead" style={{ color: "#cbdcd3", marginBottom: "36px" }}>
-              Comparte el contexto, la evidencia disponible y la decisión que necesitas tomar. El equipo revisará si el siguiente paso es una orientación, un diagnóstico, una visita o una propuesta de alcance.
+            <p className="lead">
+              Atendemos consultas sobre gestión y valorización de residuos, productos agrícolas, casa y jardín y soluciones digitales. Comparte el contexto y la decisión pendiente para orientar contigo el siguiente paso.
             </p>
-          </div>
-
-          {/* Floating Metrics Bar (1440px Wide) */}
-          <div className="contact-metrics" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", background: "rgba(10, 41, 32, 0.8)", border: "1.5px solid rgba(255, 255, 255, 0.15)", borderRadius: "var(--radius-lg)", padding: "24px 32px", backdropFilter: "blur(20px)", color: "#ffffff" }}>
-            <div>
-              <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>Respuesta técnica</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Revisión inicial de tu contexto</span>
-            </div>
-            <div>
-              <strong style={{ fontSize: "1.65rem", color: "#ffffff", display: "block" }}>Alcance claro</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Base técnica para decidir</span>
-            </div>
-            <div>
-              <strong style={{ fontSize: "1.65rem", color: "var(--lime-400)", display: "block" }}>Visitas a Planta</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>Agendamiento en Yarumal</span>
-            </div>
-            <div>
-              <strong style={{ fontSize: "1.65rem", color: "#ffffff", display: "block" }}>Canal Directo</strong>
-              <span style={{ fontSize: "0.78rem", color: "#a8c7b8" }}>WhatsApp con Ingenieros</span>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. FORM & DIRECTORY GRID (1440px+ WIDE) */}
-      <section style={{ padding: "100px 0", background: "#ffffff", borderBottom: "1px solid var(--line)" }}>
-        <div className="container">
-          <div className="contact-layout" style={{ display: "grid", gridTemplateColumns: "1.25fr 0.85fr", gap: "clamp(36px, 4vw, 64px)", alignItems: "flex-start" }}>
-            
-            {/* Left: Interactive Smart Contact Form */}
+      <section className="contact-workbench">
+        <div className="container contact-workbench__grid">
             <InteractiveContactForm />
 
-            {/* Right: Direct Headquarters & Technical Lines */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-              
-              {/* Corporate Card */}
-              <div style={{ background: "linear-gradient(145deg, #07261d 0%, #03150f 100%)", color: "#ffffff", padding: "36px", borderRadius: "var(--radius-lg)", border: "1.5px solid rgba(255, 255, 255, 0.15)", boxShadow: "var(--shadow-card-dark)" }}>
-                <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--lime-400)", fontWeight: 800 }}>
-                  Sedes de Operación en Colombia
-                </span>
-                <h3 style={{ fontSize: "1.45rem", color: "#ffffff", margin: "6px 0 16px" }}>
-                  Ingeniería en Territorio
-                </h3>
-                
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
+            <aside className="contact-side-rail" aria-label="Canales de atención y recursos">
+              <section className="contact-channels">
+                <span className="contact-eyebrow">Canales de atención</span>
+                <h2>Hablemos con el equipo adecuado.</h2>
+                <div className="contact-channels__locations">
                   <div>
-                    <strong style={{ color: "var(--lime-400)", fontSize: "0.9rem", display: "block" }}>🏢 Sede Administrativa & I+D:</strong>
-                    <p style={{ margin: 0, fontSize: "0.86rem", color: "#cbdcd3", lineHeight: 1.5 }}>
-                      Medellín, Antioquia · Alianza Científica con la Universidad de Antioquia (GIEM).
+                    <strong>Medellín · Coordinación</strong>
+                    <p>
+                      Punto de coordinación institucional, técnica y comercial.
                     </p>
                   </div>
                   <div>
-                    <strong style={{ color: "var(--lime-400)", fontSize: "0.9rem", display: "block" }}>🏭 Planta Piloto de Bioprocesos:</strong>
-                    <p style={{ margin: 0, fontSize: "0.86rem", color: "#cbdcd3", lineHeight: 1.5 }}>
-                      Municipio de Yarumal, Antioquia · Recepción de biomasa y biofábrica Wondergreen.
+                    <strong>Yarumal · Operación de referencia</strong>
+                    <p>
+                      Experiencia territorial para conversar sobre plantas, biomasa, productos y operación.
                     </p>
                   </div>
                 </div>
 
-                <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.15)", paddingTop: "18px" }}>
-                  <small style={{ color: "#a8c7b8", fontSize: "0.74rem", display: "block", marginBottom: "4px" }}>Línea Directa / WhatsApp:</small>
-                  <a href="tel:+573003078822" style={{ fontSize: "1.25rem", color: "#ffffff", display: "block", textDecoration: "none" }}>+57 300 307 8822</a>
-                  <small style={{ color: "#a8c7b8", fontSize: "0.74rem", display: "block", marginTop: "8px" }}>Correo Oficial:</small>
-                  <a href="mailto:contacto@greenatics.co" style={{ fontSize: "0.92rem", color: "#cbdcd3", textDecoration: "none" }}>contacto@greenatics.co</a>
+                <div className="contact-channels__direct">
+                  <div><span>WhatsApp</span><a href="https://wa.me/573003078822" target="_blank" rel="noopener noreferrer">+57 300 307 8822 <span aria-hidden="true">↗</span></a></div>
+                  <div><span>Dirección técnica</span><a href="mailto:direcciontecnica@greenatics.com.co">direcciontecnica@greenatics.com.co</a></div>
+                  <div><span>Canal general</span><a href="mailto:contacto@greenatics.com.co">contacto@greenatics.com.co</a></div>
                 </div>
-              </div>
+              </section>
 
-              {/* Quick Tools Box */}
-              <div style={{ background: "#fafcf9", padding: "28px", borderRadius: "var(--radius-md)", border: "1.5px solid var(--line)" }}>
-                <span className="eyebrow">Autoservicio Digital</span>
-                <h4 style={{ margin: "4px 0 16px", color: "var(--green-950)", fontSize: "1.1rem" }}>¿Prefieres simular antes de hablar?</h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <Link href="/wondergreen/calculadora/" style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", background: "#ffffff", borderRadius: "12px", border: "1px solid var(--line)", textDecoration: "none", fontSize: "0.86rem", color: "var(--green-950)", fontWeight: 700 }}>
-                    <span>Orientación agronómica Wondergreen</span>
-                    <span>→</span>
+              <section className="contact-resources" aria-labelledby="contact-resources-title">
+                <span className="contact-eyebrow">Si quieres explorar por tu cuenta</span>
+                <h2 id="contact-resources-title">Entra directamente a una herramienta.</h2>
+                <nav aria-label="Herramientas digitales">
+                  <Link href="/wondergreen/calculadora/">
+                    <span><strong>Orientación agronómica</strong><small>Prepara una recomendación para tu lote.</small></span><span aria-hidden="true">→</span>
                   </Link>
-                  <Link href="/soluciones/beneficio-tributario/" style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", background: "#ffffff", borderRadius: "12px", border: "1px solid var(--line)", textDecoration: "none", fontSize: "0.86rem", color: "var(--green-950)", fontWeight: 700 }}>
-                    <span>Simulador de descuento en renta del 25%</span>
-                    <span>→</span>
+                  <Link href="/herramientas/">
+                    <span><strong>Otras herramientas Greenatics</strong><small>Conoce las muestras y sus accesos.</small></span><span aria-hidden="true">→</span>
                   </Link>
-                  <Link href="/huella/" style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", background: "#ffffff", borderRadius: "12px", border: "1px solid var(--line)", textDecoration: "none", fontSize: "0.86rem", color: "var(--green-950)", fontWeight: 700 }}>
-                    <span>Calculadora de huella y metano ESG</span>
-                    <span>→</span>
+                  <Link href="/huella/">
+                    <span><strong>Back 2 Green</strong><small>Conoce el servicio, los planes y la demo pública.</small></span><span aria-hidden="true">→</span>
                   </Link>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
+                </nav>
+              </section>
+            </aside>
         </div>
       </section>
 
-      {/* 3. FAQ SECTION */}
-      <section style={{ padding: "100px 0", background: "#f8faf6", borderBottom: "1px solid var(--line)" }}>
+      <section className="contact-faq-section">
         <div className="container">
-          <div style={{ textAlign: "center", maxWidth: "840px", margin: "0 auto 50px" }}>
-            <span className="eyebrow">Resolución de Dudas</span>
-            <h2 style={{ fontSize: "clamp(2.2rem, 3.8vw, 3.2rem)", color: "var(--green-950)", margin: "8px 0 16px" }}>
-              Preguntas Frecuentes de Contratación & Suministro
-            </h2>
-            <p className="lead" style={{ color: "var(--muted)" }}>
-              Transparencia contractual y respuestas claras para comités de compras y juntas directivas.
-            </p>
+          <div className="contact-faq-section__heading">
+            <span className="contact-eyebrow">Información para preparar el alcance</span>
+            <h2>Algunas respuestas antes de conversar.</h2>
           </div>
-
-          <div className="contact-faq-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px" }}>
-            {faqs.map((faq, idx) => (
-              <div key={idx} style={{ background: "#ffffff", padding: "28px", borderRadius: "20px", border: "1.5px solid var(--line)", boxShadow: "var(--shadow-sm)" }}>
-                <h3 style={{ fontSize: "1.1rem", color: "var(--green-950)", margin: "0 0 10px", lineHeight: 1.3 }}>
-                  {faq.q}
-                </h3>
-                <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--muted)", lineHeight: 1.6 }}>
-                  {faq.a}
-                </p>
-              </div>
+          <div className="contact-faq-list">
+            {faqs.map((faq) => (
+              <details key={faq.q}>
+                <summary>{faq.q}<span aria-hidden="true">+</span></summary>
+                <p>{faq.a}</p>
+              </details>
             ))}
           </div>
         </div>

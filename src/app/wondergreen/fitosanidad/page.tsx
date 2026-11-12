@@ -51,7 +51,7 @@ export default function FitosanidadPage() {
               <span style={{ color: "var(--green-700)", fontWeight: 800, fontSize: ".74rem", textTransform: "uppercase", letterSpacing: ".08em" }}>{route.focus}</span>
               <h2 style={{ fontSize: "1.35rem", margin: "8px 0 10px" }}>{route.crop}</h2>
               <p style={{ color: "var(--muted)", lineHeight: 1.58, fontSize: ".88rem", minHeight: 84 }}>{route.observe}</p>
-              <Link href={`/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent(`Situación fitosanitaria en ${route.crop}`)}&prioridad=${encodeURIComponent(route.observe)}`} style={{ display: "inline-flex", color: "var(--green-800)", fontWeight: 800, textDecoration: "none", borderBottom: "1px solid currentColor" }}>Llevar consulta a Contacto →</Link>
+              <Link href={`/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent(`Situación fitosanitaria en ${route.crop}`)}&prioridad=${encodeURIComponent(route.observe)}`} style={{ display: "inline-flex", color: "var(--green-800)", fontWeight: 800, textDecoration: "none", borderBottom: "1px solid currentColor" }}>Consultar manejo fitosanitario →</Link>
             </article>
           ))}
         </div>

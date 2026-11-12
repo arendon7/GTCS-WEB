@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "release_attestations": [
+    {
+      "date": "2026-10-12",
+      "scope": "Public GREENATICS website",
+      "basis": "The user explicitly stated that the ten listed photographs are theirs, that they hold the necessary rights, and authorized their publication on the public website.",
+      "assets": [
+        "/projects/plant/plant-evidence-02.webp",
+        "/projects/plant/plant-evidence-04.webp",
+        "/projects/plant/plant-evidence-05.webp",
+        "/projects/plant/plant-evidence-06.webp",
+        "/projects/plant/plant-evidence-10.webp",
+        "/projects/tamesis/planta-aerea.jpg",
+        "/projects/tamesis/reactor-uasb.jpeg",
+        "/projects/tamesis/recepcion-organicos.jpg",
+        "/projects/tamesis/ruta-selectiva.jpeg",
+        "/projects/tamesis/paisaje-tamesis.jpg"
+      ],
+      "editorial_limits": "Keep project, historical/contextual and performance limits accurate. Any third-party mark visible in a photograph remains attributed only to its depicted subject; do not imply affiliation or endorsement."
+    }
+  ],
+  "holdbacks": [
+    { "asset": "/services/municipal-collection-archive-ai-edited.jpg", "reason": "Derived from a user-provided archival photograph; external reproduction permission is not verified. Retained internally only.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" },
+    { "asset": "/projects/plant/plant-evidence-01.webp", "reason": "Yarumal archive photo; external reproduction permission is not verified.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" },
+    { "asset": "/projects/plant/plant-evidence-03.webp", "reason": "Yarumal archive photo; external reproduction permission is not verified.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" },
+    { "asset": "/projects/plant/plant-evidence-07.webp", "reason": "Yarumal archive photo; external reproduction permission is not verified.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" },
+    { "asset": "/projects/plant/plant-evidence-08.webp", "reason": "Yarumal archive photo; external reproduction permission is unresolved.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" },
+    { "asset": "/projects/plant/plant-evidence-09.webp", "reason": "Yarumal archive photo; location, authorship, date, and external reproduction permission are unresolved.", "source": "docs/knowledge/VISUAL_ASSET_SOURCES.md" }
+  ]
+}

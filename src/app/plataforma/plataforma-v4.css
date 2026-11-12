@@ -13,6 +13,8 @@
   align-items: end;
 }
 
+.platform-v4-hero__content { max-width: 980px; }
+
 .platform-v4-hero h1 {
   max-width: 760px;
   margin-top: 14px;
@@ -130,11 +132,15 @@
   margin-top: 42px;
 }
 
+.platform-v4-apps__grid--routes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .platform-v4-card {
   display: flex;
-  min-height: 330px;
+  min-height: 0;
   flex-direction: column;
-  padding: clamp(24px, 4vw, 42px);
+  padding: clamp(22px, 2.6vw, 30px);
   border-radius: 24px 24px 24px 6px;
   background: #fff;
   border-top: 4px solid var(--card-accent);
@@ -166,7 +172,7 @@
 }
 
 .platform-v4-card h3 {
-  margin-top: 46px;
+  margin-top: 28px;
   color: var(--green-900);
   font-size: clamp(1.5rem, 3vw, 2.35rem);
 }
@@ -179,7 +185,7 @@
 
 .platform-v4-card__scope {
   margin-top: auto;
-  padding-top: 24px;
+  padding-top: 16px;
   color: #3b644f;
   font-size: 0.69rem;
   font-weight: 850;
@@ -313,7 +319,7 @@
 .platform-admin__stats article { padding: 20px; border: 1px solid #dce5dc; border-radius: 14px; background: #fff; }
 .platform-admin__stats span, .platform-admin__stats small { display: block; color: #718076; font-size: .72rem; }
 .platform-admin__stats strong { display: block; margin-block: 12px 3px; color: var(--green-900); font-size: 2rem; }
-.platform-admin__workspace { margin-top: 34px; padding: clamp(22px, 3vw, 34px); border: 1px solid #dce5dc; border-radius: 18px; background: #fff; }
+.platform-admin__workspace { contain: paint; margin-top: 34px; padding: clamp(22px, 3vw, 34px); border: 1px solid #dce5dc; border-radius: 18px; background: #fff; }
 .platform-admin__table-head { display: flex; justify-content: space-between; gap: 18px; align-items: end; }
 .platform-admin__table-head h3, .platform-admin__lower-grid h3 { margin-top: 9px; color: var(--green-900); }
 .platform-admin__table-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: end; align-items: center; }
@@ -331,7 +337,9 @@
 .platform-admin__invite-fields input, .platform-admin__invite-fields select { width: 100%; padding: 11px 12px; border: 1px solid #cbdaca; border-radius: 8px; color: var(--green-900); background: #fff; font: inherit; font-size: .75rem; font-weight: 500; }
 .platform-admin__invite-fields input:focus, .platform-admin__invite-fields select:focus { outline: 2px solid #a5cf71; outline-offset: 1px; }
 .platform-admin__invite-note { color: #66806e; font-size: .68rem; }
+.platform-admin__table-hint { display: none; margin: 12px 0 -8px; color: #53675a; font-size: .78rem; font-weight: 500; line-height: 1.45; }
 .platform-admin__table-wrap { overflow-x: auto; margin-top: 24px; }
+.platform-admin__table-wrap:focus-visible { outline: 3px solid #8bbf5a; outline-offset: 3px; }
 .platform-admin__table-wrap table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: .78rem; }
 .platform-admin__table-wrap th { padding: 0 12px 12px; color: #77867b; font-size: .64rem; letter-spacing: .07em; text-align: left; text-transform: uppercase; }
 .platform-admin__table-wrap td { padding: 15px 12px; border-top: 1px solid #e5ebe5; color: #4e6055; vertical-align: middle; }
@@ -358,11 +366,15 @@
 .platform-admin__platform-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .platform-admin__platform-options button { display: grid; grid-template-columns: 26px 1fr; gap: 2px 9px; padding: 13px; border: 1px solid rgba(222, 242, 222, .2); border-radius: 11px; color: #e6f2e6; background: rgba(0, 28, 19, .22); text-align: left; cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
 .platform-admin__platform-options button:hover { border-color: #c6e78b; transform: translateY(-2px); }
+.platform-admin__platform-options button:disabled { cursor: not-allowed; opacity: .72; }
+.platform-admin__platform-options button:disabled:hover { border-color: rgba(222, 242, 222, .2); transform: none; }
 .platform-admin__platform-options button.is-active { border-color: #afd76d; background: rgba(175, 215, 109, .15); }
+.platform-admin__platform-options button.is-unavailable { border-style: dashed; }
 .platform-admin__platform-options button > span { grid-row: span 2; display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(222, 242, 222, .38); border-radius: 50%; color: #c6e78b; font-weight: 900; }
 .platform-admin__platform-options button.is-active > span { color: #123e2d; background: #c6e78b; }
 .platform-admin__platform-options strong { align-self: end; font-size: .78rem; }
 .platform-admin__platform-options small { color: #aac5af; font-size: .65rem; line-height: 1.35; }
+.platform-admin__platform-options small.platform-admin__platform-status { color: #d5e9a5; font-weight: 750; }
 .platform-admin__lower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
 .platform-admin__lower-grid > article { padding: 28px; border-radius: 18px; background: #fff; }
 .platform-admin__role { display: grid; gap: 4px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #e5ebe5; }
@@ -374,10 +386,27 @@
 .platform-admin__audit button { margin-top: 22px; border: 0; color: #c6e78b; background: transparent; font: inherit; font-weight: 800; cursor: pointer; }
 .platform-admin__notice { margin-top: 18px; padding: 13px 16px; border-left: 3px solid #8db957; color: #506458; background: #e8f0e7; font-size: .78rem; }
 .platform-admin__notice button { margin-left: 4px; padding: 0; border: 0; color: #267348; background: transparent; font: inherit; font-size: inherit; font-weight: 850; text-decoration: underline; cursor: pointer; }
+
+/* Keep status labels and sequence markers legible in the light and dark bands. */
+.platform-v4-card--ops { --card-accent: #2f704e; }
+.platform-v4-card--carbon { --card-accent: #55711f; }
+.platform-v4-card--red { --card-accent: #965b16; }
+.platform-v4-card--agro { --card-accent: #795027; }
+.platform-v4-access-map__grid article > span { color: #356f49; }
+.platform-v4-access-map__grid small { color: #4f6655; }
+.platform-v4-heading--light h2,
+.platform-v4-foundation h3 { color: #fff; }
+.platform-v4-roadmap li > span { color: #3d783e; }
+.platform-admin__stats span,
+.platform-admin__stats small,
+.platform-admin__table-wrap th,
+.platform-admin__person small,
+.platform-admin__role span { color: #53675a; }
 @media (max-width: 800px) {
   .platform-admin__hero-grid, .platform-admin__lower-grid { grid-template-columns: 1fr; }
   .platform-admin__access-panel { grid-template-columns: 1fr; }
   .platform-admin__toolbar, .platform-admin__table-head { align-items: start; flex-direction: column; }
+  .platform-admin__table-hint { display: block; }
   .platform-admin__table-actions { justify-content: start; }
   .platform-admin__invite-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .platform-admin__toolbar label { width: 100%; }

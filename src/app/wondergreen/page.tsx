@@ -3,52 +3,63 @@ import Image from "next/image";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { CropLibraryGrid } from "@/components/crop-library-grid";
-import { WondergreenPackshots } from "@/components/wondergreen-packshots";
-import { WondergreenScienceOverview } from "@/components/wondergreen-science-overview";
+import { WondergreenSolidLines } from "@/components/wondergreen-packshots";
 import { WondergreenLiquidLines } from "@/components/wondergreen-liquid-lines";
 import { WondergreenBioinputLines } from "@/components/wondergreen-bioinput-lines";
-import { WondergreenBioinputMethod } from "@/components/wondergreen-bioinput-method";
 import { WondergreenTechnicalLibrary } from "@/components/wondergreen-technical-library";
-import { WondergreenFamilyMap } from "@/components/wondergreen-family-map";
+import { getProductMedia } from "@/data/product-media";
+import { site } from "@/data/site";
+
+const compostEditorialImage = getProductMedia("compost").editorial;
+
+const heroProductReferences = [
+  {
+    name: "Compost",
+    category: "Materia orgánica",
+    image: "/products/wondergreen-line-compost.jpg",
+    alt: "Compost aplicado al suelo junto a un cultivo.",
+    type: "editorial",
+  },
+  {
+    name: "Sólidos · 2GROW",
+    category: "Organomineral ocluido",
+    image: "/products/wondergreen-line-2grow.jpg",
+    alt: "Plántula en suelo con gránulos, una escena asociada al crecimiento del cultivo.",
+    type: "editorial",
+  },
+  {
+    name: "Fertilizantes líquidos",
+    category: "Fertilizante líquido",
+    image: "/products/wondergreen-line-liquidos.jpg",
+    alt: "Vaso con líquido oscuro junto a una planta joven en suelo agrícola.",
+    type: "editorial",
+  },
+  {
+    name: "Bioinsumos",
+    category: "Botánicos y microbiológicos",
+    image: "/products/wondergreen-line-bioinsumos-v2.jpg",
+    alt: "Persona observa las raíces de una plántula de café en un vivero.",
+    type: "editorial",
+  },
+] as const;
 
 export const metadata: Metadata = {
   title: "Wondergreen | Nutrición organomineral y acompañamiento agronómico",
-  description: "Productos Wondergreen, diagnóstico, recomendación, planes de aplicación y acompañamiento para productores, asociaciones, distribuidores y empresas agrícolas.",
+  description: "Compost, fertilizantes organominerales sólidos y líquidos y bioinsumos Wondergreen, con orientación agronómica para cada cultivo y etapa.",
   alternates: { canonical: "/wondergreen/" },
   openGraph: {
     title: "Wondergreen | Nutrición organomineral y acompañamiento agronómico",
-    description: "Productos Wondergreen, diagnóstico, recomendación, planes de aplicación y acompañamiento para productores, asociaciones, distribuidores y empresas agrícolas.",
+    description: "Compost, fertilizantes organominerales sólidos y líquidos y bioinsumos Wondergreen, con orientación agronómica para cada cultivo y etapa.",
     url: "/wondergreen/",
-    images: ["/products/wondergreen-system-stages.webp"],
+    images: ["/products/wondergreen-soil-roots-editorial-og.jpg"],
   },
 };
 
-const serviceLevels = [
-  { number: "01", name: "Suministro orientado", ideal: "Cuando ya conoces el cultivo, la etapa y la necesidad.", includes: ["Selección de referencia y presentación", "Ficha y orientación de uso", "Cotización y logística de entrega"], cta: "Cotizar productos", href: "/wondergreen/cotizador/" },
-  { number: "02", name: "Acompañamiento programado", ideal: "Cuando necesitas convertir el producto en un plan aplicable.", includes: ["Lectura de suelo, cultivo y manejo", "Plan por etapa y calendario", "Revisión de aplicación y respuesta"], cta: "Solicitar acompañamiento", href: "/servicios/programas-wondergreen/" },
-  { number: "03", name: "Programa técnico", ideal: "Para fincas, asociaciones y empresas que quieren medir y mejorar.", includes: ["Diagnóstico y objetivos por lote", "Protocolo, visitas e indicadores", "Seguimiento, ajustes y continuidad"], cta: "Estructurar un programa", href: "/contacto/?servicio=programas-wondergreen" },
-] as const;
-
-const decisionSteps = [
-  ["01", "Suelo", "Textura, pH, materia orgánica, humedad, drenaje y análisis disponibles."],
-  ["02", "Cultivo", "Especie, edad, densidad, variedad, sistema productivo y condición del lote."],
-  ["03", "Momento", "Preparación, crecimiento, equilibrio, floración, llenado o recuperación."],
-  ["04", "Objetivo", "Establecimiento, productividad, calidad, sanidad radicular o recuperación del suelo."],
-  ["05", "Seguimiento", "Aplicación, respuesta observable, indicadores y decisión de ajuste o continuidad."],
-] as const;
-
 const tools = [
-  ["Interpretar mi suelo", "Organiza variables del análisis y detecta qué información falta antes de recomendar.", "/wondergreen/analisis-suelo/"],
-  ["Preparar un estimado", "Organiza área, etapa y referencias para solicitar una recomendación y una cotización verificadas.", "/wondergreen/calculadora/"],
-  ["Revisar compatibilidad", "Consulta precauciones antes de combinar productos en tanque o programa.", "/wondergreen/compatibilidad/"],
-  ["Reconocer una alerta", "Orienta la observación de síntomas sin sustituir un diagnóstico agronómico en campo.", "/wondergreen/quiz-deficiencias/"],
-] as const;
-
-const entryPoints = [
-  ["Ya conozco el producto", "Abre una referencia, revisa su presentación y prepara una cotización.", "Ver el portafolio", "/wondergreen/#productos"],
-  ["Necesito entender el lote", "Organiza suelo, cultivo, etapa y objetivo antes de hablar de fórmula.", "Iniciar diagnóstico", "/wondergreen/analisis-suelo/"],
-  ["Voy a mezclar o aplicar", "Revisa compatibilidad física y biológica antes de preparar el tanque.", "Revisar compatibilidad", "/wondergreen/compatibilidad/"],
-  ["Quiero estudiar primero", "Consulta catálogo, guías por cultivo y la ciencia que explica el sistema.", "Abrir biblioteca", "/wondergreen/#documentos"],
+  ["Análisis de suelo", "Ordena variables y vacíos de información.", "/wondergreen/analisis-suelo/"],
+  ["Preparador de recomendación", "Organiza área, etapa y referencia a revisar.", "/wondergreen/calculadora/"],
+  ["Compatibilidad", "Consulta precauciones de mezcla y aplicación.", "/wondergreen/compatibilidad/"],
+  ["Alertas del cultivo", "Organiza la observación de síntomas.", "/wondergreen/quiz-deficiencias/"],
 ] as const;
 
 export default function WondergreenPage() {
@@ -58,34 +69,68 @@ export default function WondergreenPage() {
       <section className="wg-v4-hero">
         <div className="container wg-v4-hero__grid">
           <div className="wg-v4-hero__copy">
-            <span className="eyebrow eyebrow--light">Wondergreen Nutrients · del producto al criterio agronómico</span>
-            <h1>Nutrición organomineral que empieza por entender el suelo y continúa después de la compra.</h1>
-            <p className="lead">Wondergreen organiza compost, fertilizantes organominerales sólidos y líquidos, y bioinsumos por objetivo y etapa. La matriz orgánica, la fórmula y la vía de aplicación cumplen funciones distintas: se leen juntas con el suelo, el cultivo y el momento productivo. La selección se convierte en programa cuando incorpora diagnóstico, etiqueta vigente, aplicación, observación y ajuste.</p>
-            <div className="button-row"><Link className="button button--light" href="/wondergreen/cotizador/">Cotizar Wondergreen</Link><Link className="button button--outline-light" href="/servicios/programas-wondergreen/">Conocer el acompañamiento</Link></div>
-            <ul className="wg-v4-hero__proof"><li><strong>6 módulos</strong><span>Suelo, crecimiento, balance, floración, fruto y manejo biológico.</span></li><li><strong>12 cultivos</strong><span>Rutas técnicas organizadas por momento fisiológico.</span></li><li><strong>3 niveles</strong><span>Suministro, acompañamiento o programa técnico.</span></li></ul>
+            <Image className="wg-v4-brand-lockup" src="/brand/wondergreen-nutrients-transparent.png" alt="Wondergreen Nutrients" width={746} height={392} priority />
+            <h1>Wondergreen: nutrición para el suelo y el cultivo.</h1>
+            <p className="lead editorial-justify">Compost, fertilizantes organominerales sólidos y líquidos, y bioinsumos Wondergreen acompañan el manejo del suelo y el cultivo. Explora las familias y sus fichas; la elección depende de cada cultivo, etapa y condición del lote.</p>
+            <div className="button-row"><Link className="button button--light" href="#productos">Explorar las familias</Link><a className="button button--outline-light" href={site.croperStoreUrl} target="_blank" rel="noopener noreferrer">Comprar en Croper <span aria-hidden="true">↗</span><span className="sr-only"> (se abre en una pestaña nueva)</span></a></div>
           </div>
-          <figure className="wg-v4-hero__visual"><Image src="/products/wondergreen-system-stages.webp" alt="Sistema Wondergreen organizado por etapas del cultivo" fill priority sizes="(max-width: 900px) 100vw, 46vw" /><figcaption><strong>Un sistema, no una fórmula aislada.</strong><span>Cada producto cumple un papel dentro del ciclo productivo.</span></figcaption></figure>
+          <div className="wg-v4-hero__visual wg-v4-family-gallery" role="group" aria-label="Wondergreen: cuatro familias de producto">
+            {heroProductReferences.map((product) => (
+              <figure className={`wg-v4-family-gallery__item wg-v4-family-gallery__item--${product.type}`} key={product.name}>
+                <div className="wg-v4-family-gallery__media"><Image src={product.image} alt={product.alt} fill priority sizes="(max-width: 760px) 44vw, 19vw" /></div>
+                <figcaption><strong>{product.name}</strong><span>{product.category}</span></figcaption>
+              </figure>
+            ))}
+            <p className="wg-v4-family-gallery__note">Imágenes de contexto para las familias; consulta fichas y catálogo para confirmar referencias, etiquetas y presentaciones.</p>
+          </div>
         </div>
       </section>
 
-      <section className="wg-v4-entry" id="rutas" aria-labelledby="wg-v4-entry-title"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Elige tu punto de entrada</span><h2 id="wg-v4-entry-title">No tienes que empezar por el producto correcto. Empieza por la pregunta correcta.</h2></div><p>Wondergreen puede acompañar una compra puntual, una lectura técnica o un programa completo. Estas cuatro rutas te llevan al siguiente paso sin perder el contexto.</p></div><div className="wg-v4-entry__grid">{entryPoints.map(([title, copy, action, href], index) => <Link className="wg-v4-entry__card" href={href} key={title}><span>0{index + 1}</span><div><h3>{title}</h3><p>{copy}</p></div><strong>{action} <span aria-hidden="true">→</span></strong></Link>)}</div></div></section>
+      <section className="wg-v4-products" id="productos">
+        <div className="container">
+          <div className="wg-v4-heading"><div><h2>Cuatro familias. Una decisión informada para cada cultivo.</h2></div><p>Conoce la función de cada referencia, compara las opciones y abre su ficha técnica. La dosis y la forma de uso se leen en contexto con la etiqueta y las condiciones del lote.</p></div>
+          <nav className="wg-v4-product-jump" id="familias" aria-label="Explorar productos Wondergreen"><span>Ir a</span><Link href="/wondergreen/productos/compost/">Compost</Link><a href="#solidos">Fertilizantes sólidos</a><a href="#liquidos">Fertilizantes líquidos</a><a href="#bioinsumos">Bioinsumos</a><a href="#documentos">Fichas y catálogo</a></nav>
+          <article className="wg-compost-entry" id="compost" aria-labelledby="wg-compost-title">
+            {compostEditorialImage ? <figure className="wg-compost-entry__media"><img src={compostEditorialImage.src} alt={compostEditorialImage.alt} width={1280} height={1280} loading="lazy" decoding="async" /><figcaption>Materia orgánica para acondicionar el suelo y el sustrato.</figcaption></figure> : null}
+            <div><h3 id="wg-compost-title">Compost Wondergreen</h3><p>Materia orgánica para preparar y enriquecer el suelo o el sustrato antes de acompañar las siguientes etapas del cultivo.</p></div>
+            <Link href="/wondergreen/productos/compost/">Conocer Compost y sus presentaciones <span aria-hidden="true">→</span></Link>
+          </article>
+          <WondergreenSolidLines />
+          <WondergreenLiquidLines />
+          <WondergreenBioinputLines />
+          <WondergreenTechnicalLibrary />
+        </div>
+      </section>
 
-      <section className="wg-v4-levels"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Cómo quieres trabajar</span><h2>El producto es una puerta de entrada. El nivel de acompañamiento depende de tu decisión.</h2></div><p>No todas las compras necesitan una visita técnica, pero una recomendación responsable sí debe reconocer qué información existe, qué puede inferirse y qué requiere validación en campo.</p></div><div className="wg-v4-levels__grid">{serviceLevels.map((level) => <article key={level.number}><span>{level.number}</span><h3>{level.name}</h3><p>{level.ideal}</p><ul>{level.includes.map((item) => <li key={item}>{item}</li>)}</ul><Link href={level.href}>{level.cta} →</Link></article>)}</div></div></section>
+      <section className="wg-v4-guidance" aria-labelledby="wg-v4-guidance-title">
+        <div className="container wg-v4-guidance__grid">
+          <figure className="wg-v4-guidance__visual">
+            <Image
+              src="/products/wondergreen-soil-roots-editorial.webp"
+              alt="Raíces y suelo que muestran la relación entre nutrición y cultivo."
+              fill
+              sizes="(max-width: 900px) 100vw, 42vw"
+            />
+            <figcaption>La nutrición se decide en contexto.</figcaption>
+          </figure>
+          <div className="wg-v4-guidance__copy">
+            <h2 id="wg-v4-guidance-title">La fórmula es el inicio. El cultivo define la decisión.</h2>
+            <p className="editorial-justify">Dos cultivos pueden requerir rutas distintas, incluso cuando se busca un mismo objetivo. Por eso, una recomendación considera especie y etapa, condiciones del suelo y del agua, manejo actual y propósito del productor. Las referencias Wondergreen se revisan dentro de ese contexto; la dosis y la forma de uso deben corresponder a la etiqueta vigente y a la orientación técnica aplicable.</p>
+            <p className="wg-v4-guidance__prompt">Para orientarte, cuéntanos qué cultivas, en qué etapa está el lote y qué resultado buscas. Si tienes análisis de suelo o agua, o información sobre el manejo actual, compártelos: ayudan a revisar qué familia de productos podría tener sentido y qué información conviene completar.</p>
+            <Link className="wg-v4-guidance__link" href="/servicios/programas-wondergreen/">
+              Conocer el acompañamiento agronómico <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="wg-v4-decision"><div className="container"><div className="wg-v4-decision__intro"><span className="eyebrow eyebrow--light">Método Wondergreen</span><h2>Cinco lecturas antes de convertir una fórmula en recomendación.</h2><p>La dosis no se decide únicamente por hectáreas. Se construye leyendo suelo, cultivo, etapa, objetivo y capacidad de seguimiento.</p></div><ol>{decisionSteps.map(([number, title, copy]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}</ol></div></section>
+      <section className="wg-v4-tools"><div className="container wg-v4-tools__grid"><div><h2>Herramientas para preparar la decisión.</h2><p>Organiza datos del lote, revisa compatibilidad y reconoce qué preguntas llevar a una conversación técnica.</p><div className="button-row"><Link className="button button--light" href="/herramientas/">Ver las herramientas digitales</Link></div></div><div className="wg-v4-tools__list">{tools.map(([title, copy, href]) => <Link href={href} key={title}><div><strong>{title}</strong><p>{copy}</p></div><em aria-hidden="true">→</em></Link>)}</div></div></section>
 
-      <WondergreenScienceOverview />
-      <div className="container"><WondergreenFamilyMap /></div>
+      <section className="wg-v4-crops" id="cultivos"><div className="container"><div className="wg-v4-heading"><div><h2>Empieza por el cultivo y su etapa.</h2></div><p>Una muestra de las rutas técnicas que ayudan a ordenar la observación antes de elegir una referencia. La biblioteca reúne los doce cultivos.</p></div><CropLibraryGrid featuredOnly /><div className="wg-v4-crops__all"><Link className="button button--dark" href="/wondergreen/cultivos/">Explorar las 12 rutas por cultivo <span aria-hidden="true">→</span></Link></div></div></section>
 
-      <section className="wg-v4-products" id="productos"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Portafolio Wondergreen</span><h2>Una función clara para cada momento del sistema productivo.</h2></div><p>Explora referencias con precios públicos de referencia, opciones bajo cotización y programas técnicos por cultivo. Cada suministro integra su ficha, condición de uso y recomendación de aplicación.</p></div><nav className="wg-v4-product-jump" aria-label="Saltar a una familia Wondergreen"><span>Explorar por familia</span><a href="#familias">Cómo elegir</a><a href="#solidos">Sólidos</a><a href="#liquidos">Líquidos</a><a href="#bioinsumos">Bioinsumos</a><a href="#documentos">Documentos</a></nav><WondergreenPackshots /><WondergreenLiquidLines /><WondergreenBioinputMethod /><WondergreenBioinputLines /><WondergreenTechnicalLibrary /></div></section>
+      <section className="wg-v4-bridge"><div className="container wg-v4-bridge__grid"><figure><Image src="/guides/home-garden-casa-jardin-cover.webp" alt="Guía Wondergreen Casa y Jardín" fill sizes="(max-width: 800px) 100vw, 38vw" /></figure><div><h2>Wondergreen también llega a casa, jardín y huerta.</h2><p>Casa & Jardín traduce el cuidado del suelo y la nutrición de las plantas a decisiones cotidianas, con productos, kits y guías para distintos espacios.</p><div className="button-row"><Link className="button button--dark" href="/casa-jardin/">Explorar Casa & Jardín</Link><Link className="button button--ghost" href="/casa-jardin/kits/">Conocer los kits de cultivo</Link></div></div></div></section>
 
-      <section className="wg-v4-tools"><div className="container wg-v4-tools__grid"><div><span className="eyebrow eyebrow--light">Herramientas para preparar la conversación</span><h2>Llega a la recomendación con mejores preguntas y mejores datos.</h2><p>Las herramientas producen orientaciones y escenarios. El programa técnico integra además contexto de campo, criterio agronómico y seguimiento.</p><div className="button-row"><Link className="button button--light" href="/herramientas/">Ver ecosistema digital</Link><Link className="button button--outline-light" href="/biblioteca/catalogo-wondergreen/">Abrir biblioteca técnica</Link></div></div><div className="wg-v4-tools__list">{tools.map(([title, copy, href], index) => <Link href={href} key={title}><span>0{index + 1}</span><div><strong>{title}</strong><p>{copy}</p></div><em>→</em></Link>)}</div></div></section>
-
-      <section className="wg-v4-crops"><div className="container"><div className="wg-v4-heading"><div><span className="eyebrow">Biblioteca por cultivo</span><h2>Rutas de lectura para entender el momento antes de hablar de producto.</h2></div><p>Doce recorridos organizan establecimiento, crecimiento, floración, producción, alertas y seguimiento. Son marcos de conversación y no recetas cerradas por hectárea.</p></div><CropLibraryGrid /></div></section>
-
-      <section className="wg-v4-bridge"><div className="container wg-v4-bridge__grid"><figure><Image src="/guides/home-garden-casa-jardin-cover.webp" alt="Guía Wondergreen Casa y Jardín" fill sizes="(max-width: 800px) 100vw, 38vw" /></figure><div><span className="eyebrow">También para espacios cotidianos</span><h2>La lógica del suelo vivo llega a macetas, jardines y huertas urbanas.</h2><p>Casa & Jardín traduce el sistema Wondergreen a decisiones sencillas por tipo de planta, etapa, estado y tamaño de maceta.</p><div className="button-row"><Link className="button button--dark" href="/casa-jardin/">Explorar Casa & Jardín</Link><Link className="button button--ghost" href="/biblioteca/huertas/">Abrir guía de huertas</Link></div></div></div></section>
-
-      <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Empezar con contexto</span><h2>Cuéntanos qué produces, dónde, en qué etapa estás y qué necesitas mejorar.</h2></div><Link className="button button--dark" href="/contacto/?servicio=programas-wondergreen">Hablar con el equipo Wondergreen</Link></div></section>
+      <section className="closing-cta"><div className="container closing-inner"><div><h2>Una recomendación útil empieza por entender el lote.</h2><p>Comparte el cultivo, la etapa, el área y lo que buscas lograr. Si tienes un análisis de suelo, también nos ayuda a orientar la conversación.</p></div><Link className="button button--dark" href="/contacto/?interes=wondergreen&perfil=agro">Solicitar orientación para mi lote</Link></div></section>
     </>
   );
 }

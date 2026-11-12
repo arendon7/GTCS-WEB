@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mapa conceptual de capacidades Greenatics</title>
+  <desc id="desc">Esquema de diagnóstico, diseño, implementación, acompañamiento y valorización; cada proyecto puede iniciar en una etapa distinta.</desc>
+  <rect width="1440" height="900" fill="#eef3ec"/>
+  <rect x="42" y="42" width="1356" height="816" rx="28" fill="#fff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="92" y="116" fill="#16764f" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.8">SERVICIOS GREENATICS · MAPA CONCEPTUAL</text>
+  <text x="92" y="190" fill="#10392c" font-family="Arial,sans-serif" font-size="43" font-weight="700">Capacidades para cada punto de partida</text>
+  <text x="92" y="236" fill="#5f7268" font-family="Arial,sans-serif" font-size="21">Territorio, generador, biomasa, infraestructura y equipo definen el alcance.</text>
+  <g>
+    <rect x="92" y="316" width="224" height="282" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="350" y="316" width="224" height="282" rx="18" fill="#e8f1e5" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="608" y="316" width="224" height="282" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="866" y="316" width="224" height="282" rx="18" fill="#e8f1e5" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="1124" y="316" width="224" height="282" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <text x="118" y="368" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.4">ENTENDER</text>
+    <text x="118" y="420" fill="#10392c" font-size="25" font-weight="700">Diagnóstico</text>
+    <text x="118" y="468" fill="#5f7268" font-size="17">Corrientes, actores,</text><text x="118" y="495" fill="#5f7268" font-size="17">datos y brechas</text>
+    <text x="376" y="368" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.4">PROYECTAR</text>
+    <text x="376" y="420" fill="#10392c" font-size="25" font-weight="700">Diseño</text>
+    <text x="376" y="468" fill="#5f7268" font-size="17">Alternativas, rutas,</text><text x="376" y="495" fill="#5f7268" font-size="17">plantas y recursos</text>
+    <text x="634" y="368" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.4">PONER EN MARCHA</text>
+    <text x="634" y="420" fill="#10392c" font-size="25" font-weight="700">Implementar</text>
+    <text x="634" y="468" fill="#5f7268" font-size="17">Infraestructura,</text><text x="634" y="495" fill="#5f7268" font-size="17">protocolos y pruebas</text>
+    <text x="892" y="368" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.4">DAR CONTINUIDAD</text>
+    <text x="892" y="420" fill="#10392c" font-size="25" font-weight="700">Acompañar</text>
+    <text x="892" y="468" fill="#5f7268" font-size="17">Operación, equipo,</text><text x="892" y="495" fill="#5f7268" font-size="17">mantenimiento y datos</text>
+    <text x="1150" y="368" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.4">CONECTAR SALIDAS</text>
+    <text x="1150" y="420" fill="#10392c" font-size="25" font-weight="700">Valorizar</text>
+    <text x="1150" y="468" fill="#5f7268" font-size="17">Productos, energía</text><text x="1150" y="495" fill="#5f7268" font-size="17">y uso del suelo</text>
+  </g>
+  <g stroke="#77a965" stroke-width="3" fill="none"><path d="M316 454h34M574 454h34M832 454h34M1090 454h34"/><path d="M342 446l8 8-8 8M600 446l8 8-8 8M858 446l8 8-8 8M1116 446l8 8-8 8"/></g>
+  <rect x="92" y="654" width="1256" height="126" rx="18" fill="#0d3529"/>
+  <text x="132" y="704" fill="#b6e978" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.4">EL ALCANCE SE AJUSTA A CADA PROYECTO</text>
+  <text x="132" y="748" fill="#fff" font-family="Arial,sans-serif" font-size="22">No todas las iniciativas requieren todas las etapas ni siguen el mismo orden.</text>
+  <text x="92" y="824" fill="#66796e" font-family="Arial,sans-serif" font-size="16">Servicios para municipios, ESP, empresas, grandes generadores, agroindustria y productores.</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="title desc">
+  <title id="title">Esquema conceptual de criterios para diseñar plantas modulares</title>
+  <desc id="desc">La ingeniería relaciona la corriente, la ruta de proceso, las condiciones del predio y la capacidad por etapas. No representa una planta específica.</desc>
+  <rect width="720" height="460" fill="#eef3ec"/>
+  <rect x="18" y="18" width="684" height="424" rx="26" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="50" y="72" fill="#16764f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">INGENIERÍA DE PLANTAS · ESQUEMA CONCEPTUAL</text>
+  <text x="50" y="124" fill="#10392c" font-family="Arial,sans-serif" font-size="29" font-weight="700">Diseñar desde las condiciones del proyecto</text>
+  <text x="50" y="158" fill="#5f7268" font-family="Arial,sans-serif" font-size="16">Corriente, proceso, predio y capacidad orientan la solución.</text>
+
+  <g fill="none" stroke="#7dad64" stroke-width="3">
+    <path d="M184 274h27M347 274h27M510 274h27"/>
+    <path d="m203 268 8 6-8 6m136-12 8 6-8 6m136-12 8 6-8 6"/>
+  </g>
+  <g>
+    <rect x="48" y="208" width="136" height="202" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="211" y="208" width="136" height="202" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="374" y="208" width="136" height="202" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="537" y="208" width="136" height="202" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <circle cx="74" cy="254" r="18" fill="#0d3529"/><text x="74" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">01</text>
+    <text x="66" y="307" fill="#10392c" font-size="19" font-weight="700">Corriente</text>
+    <text x="66" y="341" fill="#5f7268" font-size="14">Tipo, composición</text><text x="66" y="361" fill="#5f7268" font-size="14">y continuidad</text>
+
+    <circle cx="237" cy="254" r="18" fill="#0d3529"/><text x="237" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">02</text>
+    <text x="229" y="307" fill="#10392c" font-size="19" font-weight="700">Proceso</text>
+    <text x="229" y="341" fill="#5f7268" font-size="14">Ruta de proceso</text><text x="229" y="361" fill="#5f7268" font-size="14">balance de masa</text>
+
+    <circle cx="400" cy="254" r="18" fill="#0d3529"/><text x="400" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">03</text>
+    <text x="392" y="307" fill="#10392c" font-size="19" font-weight="700">Predio</text>
+    <text x="392" y="341" fill="#5f7268" font-size="14">Espacio y</text><text x="392" y="361" fill="#5f7268" font-size="14">servicios en sitio</text>
+
+    <circle cx="563" cy="254" r="18" fill="#0d3529"/><text x="563" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">04</text>
+    <text x="555" y="307" fill="#10392c" font-size="19" font-weight="700">Capacidad</text>
+    <text x="555" y="341" fill="#5f7268" font-size="14">Operación</text><text x="555" y="361" fill="#5f7268" font-size="14">por etapas</text>
+  </g>
+</svg>

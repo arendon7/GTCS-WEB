@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export default function BalanceCnPage() {
   const [wetKg, setWetKg] = useState(600);
@@ -12,8 +13,9 @@ export default function BalanceCnPage() {
   const total = wetKg + structureKg;
   const wetShare = Math.round((wetKg / total) * 100);
   const structureShare = 100 - wetShare;
-  const message = encodeURIComponent(`Hola Greenatics. Quiero preparar un lote de bioproceso con ${wetKg} kg de ${wetMaterial} y ${structureKg} kg de ${structureMaterial}; masa inicial ${total} kg. Necesito validar caracterización, humedad, densidad, porosidad y seguimiento antes de definir ajustes.`);
-  const contactHref = `/contacto/?interes=agroindustria&perfil=empresa&diagnostico=${encodeURIComponent("Preparación de lote y balance C/N")}&prioridad=${encodeURIComponent(`${wetKg} kg de ${wetMaterial} · ${structureKg} kg de ${structureMaterial} · lote inicial ${total} kg · ${wetShare}% húmedo / ${structureShare}% estructurante`)}`;
+  const assessmentDetails = `Material húmedo: ${wetMaterial} · ${wetKg} kg\nMaterial estructurante: ${structureMaterial} · ${structureKg} kg\nMasa inicial: ${total} kg\nParticipación húmeda: ${wetShare}%\nParticipación estructurante: ${structureShare}%`;
+  const message = encodeURIComponent(`Hola Greenatics. Quiero preparar un lote de bioproceso.\n\n${assessmentDetails}\n\nNecesito validar caracterización, humedad, densidad, porosidad y seguimiento antes de definir ajustes.`);
+  const contactHref = buildToolContactHref("agroindustria", "empresa", "Preparación de lote y balance C/N");
 
   return (
     <div style={{ background: "#f7faf5", padding: "60px 0 80px", color: "var(--green-950)" }}>
@@ -26,7 +28,7 @@ export default function BalanceCnPage() {
             Organiza masas y materiales para planear recepción, mezcla y seguimiento. Una relación C/N fiable requiere composición en base seca o una caracterización consistente; no puede inferirse solo llamando “verde” o “café” a un residuo.
           </p>
         </header>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 28, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 28, alignItems: "start" }}>
           <section style={{ background: "#fff", border: "1px solid var(--line)", borderRadius: 24, padding: "clamp(24px, 4vw, 34px)" }}>
             <h2 style={{ fontSize: "1.25rem", marginTop: 0 }}>Escenario de mezcla</h2>
             <label style={{ display: "block", fontWeight: 750, fontSize: ".86rem", marginBottom: 18 }}>Material húmedo principal
@@ -48,7 +50,7 @@ export default function BalanceCnPage() {
               <input type="range" min="25" max="3000" step="25" value={structureKg} onChange={(e) => setStructureKg(Number(e.target.value))} style={{ width: "100%", accentColor: "var(--green-700)" }} />
             </label>
           </section>
-          <section style={{ background: "#0a2920", color: "#fff", borderRadius: 24, padding: "clamp(26px, 4vw, 38px)" }}>
+          <section className="wg-tool-result" style={{ background: "#0a2920", color: "#fff", borderRadius: 24, padding: "clamp(26px, 4vw, 38px)" }}>
             <span style={{ color: "#98cf4f", fontWeight: 800, fontSize: ".75rem", textTransform: "uppercase", letterSpacing: ".1em" }}>Ficha operativa</span>
             <h2 style={{ color: "#fff", fontSize: "1.7rem", margin: "7px 0 18px" }}>Lote inicial de {total.toLocaleString("es-CO")} kg</h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10, marginBottom: 18 }}>
@@ -66,7 +68,7 @@ export default function BalanceCnPage() {
               <strong>Sin promesa térmica automática</strong>
               <p style={{ margin: "6px 0 0", color: "var(--muted)", fontSize: ".82rem", lineHeight: 1.5 }}>La temperatura y el control de olores son resultados de la mezcla, la geometría, el clima y la operación. Deben verificarse con bitácora.</p>
             </div>
-            <Link className="button button--primary" href={contactHref} style={{ width: "100%", justifyContent: "center" }}>Llevar lote a Contacto →</Link>
+            <Link className="button button--primary" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)} style={{ width: "100%", justifyContent: "center" }}>Llevar lote a Contacto →</Link>
             <a className="button button--outline-light" href={`https://wa.me/573003078822?text=${message}`} target="_blank" rel="noopener noreferrer" style={{ width: "100%", justifyContent: "center", marginTop: "10px" }}>Validar por WhatsApp directo</a>
           </section>
         </div>

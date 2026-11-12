@@ -19,7 +19,8 @@ export interface Crop {
   context: string;
   density: number;
   coverImage: string;
-  pdfFile: string;
+  pdfFile?: string;
+  technicalManualFile?: string;
   stages: CropStage[];
   alerts: string[];
   followUp: string[];
@@ -114,6 +115,7 @@ export const crops: Crop[] = [
     density: 0,
     coverImage: "/guides/guia-cafe-cover.webp",
     pdfFile: "/downloads/guia-wondergreen-cafe.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_CAFE_PROFUNDO_20P.pdf",
     stages: standardStages("Acompañar el desarrollo y llenado del grano con indicadores definidos para el lote y su objetivo de calidad."),
     alerts: ["Diferenciar síntomas en hojas nuevas y viejas.", "Relacionar carga productiva, agua y estado radicular.", "No atribuir un cambio de color a un solo nutriente."],
     followUp: ["Registrar floración y evolución de la carga.", "Comparar respuesta por lote o sector.", "Revisar análisis y manejo antes del siguiente ajuste."],
@@ -130,6 +132,7 @@ export const crops: Crop[] = [
     density: 0,
     coverImage: "/guides/guia-aguacate-cover.webp",
     pdfFile: "/downloads/guia-wondergreen-aguacate.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_AGUACATE_PROFUNDO_20P.pdf",
     stages: standardStages("Acompañar el desarrollo del fruto y observar carga, agua, materia seca y criterios comerciales definidos por el productor."),
     alerts: ["Revisar raíces antes de interpretar síntomas aéreos.", "Distinguir estrés hídrico, salino y sanitario.", "Registrar distribución de floración y caída de frutos."],
     followUp: ["Observar raíces activas en sectores comparables.", "Registrar carga y desarrollo del fruto.", "Cruzar respuesta con riego y clima."],
@@ -146,6 +149,7 @@ export const crops: Crop[] = [
     density: 0,
     coverImage: "/guides/guia-cacao-cover.webp",
     pdfFile: "/downloads/guia-wondergreen-cacao.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_CACAO_PROFUNDO_20P.pdf",
     stages: standardStages("Acompañar el desarrollo de mazorca y grano con seguimiento de carga, sanidad y variables de calidad."),
     alerts: ["Separar caída fisiológica de problemas nutricionales.", "Registrar humedad y presión sanitaria.", "Comparar árboles con carga y sombra semejantes."],
     followUp: ["Registrar floración y supervivencia de mazorquillas.", "Monitorear sanidad de mazorcas.", "Evaluar respuesta junto con poda y sombra."],
@@ -162,6 +166,7 @@ export const crops: Crop[] = [
     density: 0,
     coverImage: "/guides/guia-citricos-cover.webp",
     pdfFile: "/downloads/guia-wondergreen-citricos.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_LIMON_TAHITI_PROFUNDO_20P.pdf",
     stages: standardStages("Acompañar crecimiento y llenado del fruto según carga, riego, calidad objetivo y estado general del árbol."),
     alerts: ["Distinguir síntomas foliares por edad del tejido.", "Revisar calidad de agua y drenaje.", "Relacionar brotación con cosechas anteriores."],
     followUp: ["Registrar floración, cuajado y cosecha.", "Comparar sectores de riego.", "Revisar análisis foliar cuando sea pertinente."],
@@ -178,6 +183,7 @@ export const crops: Crop[] = [
     density: 0,
     coverImage: "/guides/guia-pastos-cover.webp",
     pdfFile: "/downloads/guia-wondergreen-pastos-y-praderas.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_PASTOS_PRADERAS_PROFUNDO_20P.pdf",
     stages: establishmentStages,
     alerts: ["Revisar compactación y cobertura antes de atribuir bajo rebrote a nutrición.", "Relacionar respuesta con lluvia o riego.", "Registrar altura y momento de uso."],
     followUp: ["Comparar recuperación entre potreros.", "Registrar cobertura y relación hoja-tallo.", "Ajustar con análisis y objetivo de carga."],
@@ -193,7 +199,8 @@ export const crops: Crop[] = [
     context: "La continuidad del sistema depende tanto de la planta madre como del relevo, el drenaje, el retorno de biomasa y la sanidad del lote.",
     density: 0,
     coverImage: "/guides/guia-platano-banano-cover.webp",
-    pdfFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_BANANO_PLATANO_PROFUNDO_20P.pdf",
+    pdfFile: "/downloads/01_GUIA_WONDERGREEN_PLATANO_BANANO_V2.pdf",
+    technicalManualFile: "/downloads/MANUAL_TECNICO_WONDERGREEN_BANANO_PLATANO_PROFUNDO_20P.pdf",
     stages: standardStages("Acompañar el desarrollo del racimo y la continuidad del sistema madre-hijo con indicadores del lote."),
     alerts: ["Revisar drenaje y raíces.", "Relacionar vigor del hijo con manejo de población.", "No confundir daño sanitario con deficiencia."],
     followUp: ["Registrar emisión foliar y desarrollo del racimo.", "Observar continuidad del relevo.", "Comparar respuesta por sector."],
@@ -209,7 +216,6 @@ export const crops: Crop[] = [
     context: "Los síntomas pueden cambiar rápidamente y deben leerse junto con riego, ambiente, carga, análisis y aplicaciones previas.",
     density: 0,
     coverImage: "/guides/guia-tomate-chonto-cover.webp",
-    pdfFile: "/downloads/01_GUIA_WONDERGREEN_TOMATE_CHONTO_V1.pdf",
     stages: standardStages("Acompañar cosecha continua y desarrollo del fruto con seguimiento de agua, carga, firmeza y condición sanitaria."),
     alerts: ["Revisar uniformidad del riego.", "Distinguir síntomas radiculares, fisiológicos y sanitarios.", "Relacionar respuesta con ambiente protegido o campo abierto."],
     followUp: ["Registrar racimos, carga y descarte.", "Monitorear humedad y conductividad cuando aplique.", "Ajustar con observación y análisis."],
@@ -300,4 +306,39 @@ export const crops: Crop[] = [
 
 export function getCrop(slug: string): Crop | undefined {
   return crops.find((crop) => crop.slug === slug);
+}
+
+const productCropRoutes: Record<string, string> = {
+  "aguacate": "aguacate",
+  "aguacate hass": "aguacate",
+  "cacao": "cacao",
+  "café": "cafe",
+  "cítricos": "limon-tahiti",
+  "granadilla": "granadilla",
+  "gulupa": "gulupa",
+  "lechuga": "lechuga",
+  "limón tahití": "limon-tahiti",
+  "lulo": "lulo",
+  "pastos": "pastos-gramineas",
+  "plátano": "platano-banano",
+  "tomate": "tomate-chonto",
+  "tomate chonto": "tomate-chonto",
+  "uchuva": "uchuva",
+};
+
+const stageProductRoutes: Array<[string, string]> = [
+  ["Wondergreen Compost", "compost"],
+  ["Wondergreen 2GROW", "2grow"],
+  ["Wondergreen 2BALANCE", "2balance"],
+  ["Wondergreen 2BLOOM", "2bloom"],
+  ["Wondergreen 2FRUIT", "2fruit"],
+];
+
+export function getCropForProductLabel(label: string): Crop | undefined {
+  const slug = productCropRoutes[label.trim().toLocaleLowerCase("es")];
+  return slug ? getCrop(slug) : undefined;
+}
+
+export function getProductSlugForCropStageLine(line: string): string | undefined {
+  return stageProductRoutes.find(([label]) => line.startsWith(label))?.[1];
 }

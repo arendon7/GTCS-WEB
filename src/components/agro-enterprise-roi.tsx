@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export function AgroEnterpriseRoi() {
   const [hectares, setHectares] = useState<number>(25);
@@ -14,7 +15,8 @@ export function AgroEnterpriseRoi() {
   const annualSavings = totalCurrentCost * chemicalSavingsPercent;
   const compostProducedFromWaste = Math.round(biomassTonsYear * 0.42 * 25); // Bultos de 40kg
   const wasteValueRecovery = compostProducedFromWaste * 135000; // Valor comercial bultos
-  const contactHref = `/contacto/?interes=agroindustria&perfil=empresa&diagnostico=${encodeURIComponent("Escenario de valorización agroindustrial")}&prioridad=${encodeURIComponent(`${hectares} ha · ${biomassTonsYear} ton/año de biomasa · costo base ${currentChemicalCostPerHa.toLocaleString("es-CO")} COP/ha/año`)}`;
+  const assessmentDetails = `Área productiva: ${hectares} ha\nCosto base de fertilización ingresado: ${currentChemicalCostPerHa.toLocaleString("es-CO")} COP/ha/año\nBiomasa propia estimada: ${biomassTonsYear} t/año\nEscenario ilustrativo de ahorro: ${(annualSavings / 1_000_000).toFixed(1)} millones COP/año\nBiomasa valorizada proyectada: ${compostProducedFromWaste} bultos\nValor teórico calculado en la herramienta: ${(wasteValueRecovery / 1_000_000).toFixed(1)} millones COP/año\nRevisar análisis agronómico, formulación, dosis, precios, disponibilidad, costos y respuesta antes de tomar una decisión.`;
+  const contactHref = buildToolContactHref("agroindustria", "agroindustria", "Escenario de valorización agroindustrial");
 
   return (
     <div style={{ background: "#ffffff", border: "1.5px solid var(--line)", borderRadius: "24px", padding: "36px", boxShadow: "0 16px 44px rgba(0, 107, 69, 0.07)" }}>
@@ -98,18 +100,18 @@ export function AgroEnterpriseRoi() {
                 </strong>
               </div>
               <Link
-                href="/wondergreen/cotizador/"
+                href="/wondergreen/#productos"
                 className="button button--primary"
                 style={{ fontSize: "0.86rem" }}
               >
-                Explorar productos y cotizador →
+                Explorar referencias Wondergreen →
               </Link>
             </div>
             <p style={{ gridColumn: "1 / -1", color: "var(--muted)", fontSize: "0.76rem", lineHeight: 1.5, margin: "14px 0 0" }}>
-              Escenario de demostración: valida análisis de suelo, producto, dosis, costos, disponibilidad y respuesta agronómica antes de usarlo para una decisión financiera.
+              Escenario de referencia: valida análisis de suelo, producto, dosis, costos, disponibilidad y respuesta agronómica antes de usarlo para una decisión financiera.
             </p>
-            <Link className="button button--dark" href={contactHref} style={{ gridColumn: "1 / -1", justifySelf: "start", marginTop: "2px" }}>
-              Llevar escenario a Contacto →
+            <Link className="button button--dark" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)} style={{ gridColumn: "1 / -1", justifySelf: "start", marginTop: "2px" }}>
+              Revisar escenario de valorización →
             </Link>
           </div>
         </div>

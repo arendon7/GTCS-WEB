@@ -1,0 +1,1545 @@
+/* Extend the approved rounded identity face to section headings across the public site. */
+#contenido h1,
+#contenido h2 {
+  font-family: var(--font-brand-heading);
+  font-weight: 600;
+  letter-spacing: -.022em;
+  text-wrap: balance;
+}
+
+#contenido h3 {
+  font-family: var(--font-brand-round);
+  font-weight: 600;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+}
+
+/* Casa & Jardín product cards: let product names carry the emphasis. */
+.homegarden-public-subpage--product-index .homegarden-product-card__label,
+.homegarden-v4-product-card__label {
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1.45;
+}
+
+.homegarden-public-subpage--product-index .homegarden-product-card__media figcaption span {
+  font-size: .76rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  line-height: 1.4;
+}
+
+.homegarden-public-subpage--product-index .homegarden-product-card__number {
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+}
+
+.homegarden-public-subpage--product-index .homegarden-product-card a,
+.homegarden-v4-product-card__cta {
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+/* Keep the homepage's editorial titles legible beside their supporting copy. */
+#contenido .home-system-map__heading h2,
+#contenido .home-wondergreen-bridge__copy h2,
+#contenido .home-territory__heading h2,
+#contenido .home-tools-bridge__heading h2,
+#contenido .home-conversion-block__heading h2 {
+  font-size: clamp(1.95rem, 3.15vw, 3rem);
+  line-height: 1.08;
+}
+
+@media (max-width: 680px) {
+  #contenido .home-system-hero h1 {
+    max-width: 20ch;
+    font-size: clamp(2.18rem, 9vw, 2.7rem);
+    line-height: 1.05;
+  }
+
+  #contenido .agroindustry-v4-hero .gt-segment-hero__copy h1 {
+    max-width: 18ch;
+    font-size: clamp(2.2rem, 8.6vw, 2.6rem);
+    line-height: 1.05;
+  }
+
+  #contenido .home-system-map__heading h2,
+  #contenido .home-wondergreen-bridge__copy h2,
+  #contenido .home-territory__heading h2,
+  #contenido .home-tools-bridge__heading h2,
+  #contenido .home-conversion-block__heading h2 {
+    font-size: clamp(1.8rem, 8vw, 2.45rem);
+    line-height: 1.1;
+  }
+}
+
+@media (min-width: 681px) {
+  #contenido .agroindustry-v4-hero .gt-segment-hero__copy h1 {
+    max-width: 18ch;
+    font-size: clamp(2.35rem, 3.2vw, 3.15rem);
+    line-height: 1.04;
+    letter-spacing: -.025em;
+  }
+}
+
+/* Portada: use the width in editorial columns before shrinking type. Long-form
+   copy is justified only where the line measure is broad enough to stay calm. */
+#contenido .home-system-hero h1 {
+  max-width: 100%;
+}
+
+#contenido .home-system-map__heading h2 {
+  max-width: 100%;
+}
+
+#contenido .home-system-map__promise {
+  max-width: none;
+  margin-left: 0;
+}
+
+#contenido .home-system-map__promise p {
+  max-width: none;
+}
+
+#contenido .home-wondergreen-bridge__heading {
+  grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+  gap: clamp(28px, 3vw, 48px);
+}
+
+#contenido .home-wondergreen-bridge__copy h2 {
+  max-width: 22ch;
+}
+
+#contenido .home-wondergreen-bridge__intro p {
+  max-width: none;
+}
+
+@media (min-width: 1450px) {
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-system-map__promise p,
+  #contenido .home-wondergreen-bridge__intro p:first-child {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
+}
+
+@media (max-width: 1180px) {
+  #contenido .home-wondergreen-bridge__heading {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, .88fr);
+  }
+}
+
+@media (max-width: 980px) {
+  #contenido .home-wondergreen-bridge__heading {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  #contenido .home-system-hero h1 {
+    max-width: 20ch;
+  }
+
+  #contenido .home-system-map__heading h2 {
+    max-width: 22ch;
+  }
+
+  #contenido .home-wondergreen-bridge__heading {
+    gap: 22px;
+  }
+
+  #contenido .home-wondergreen-bridge__copy h2 {
+    max-width: 20ch;
+  }
+}
+
+@media (max-width: 360px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Compact table text should read as interface content, not tiny tracked labels. */
+#contenido .deficiency-table th {
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .005em;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+/* Homepage: let the headline and the promise use their full editorial columns.
+   Keep long-form justification only where the measure can support it. */
+#contenido .home-system-hero h1 {
+  width: 100%;
+  max-width: 100%;
+  text-wrap: balance;
+}
+
+#contenido .home-system-map__heading {
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+  align-items: end;
+  gap: clamp(28px, 4vw, 60px);
+}
+
+#contenido .home-system-map__heading h2 {
+  max-width: none;
+  text-wrap: balance;
+}
+
+#contenido .home-system-map__promise {
+  align-self: end;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: clamp(18px, 2vw, 28px);
+}
+
+#contenido .home-system-map__promise p {
+  max-width: none;
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(14px, 2vw, 24px);
+  }
+
+  #contenido .home-claims-rail__metrics--tamesis article > strong {
+    font-size: clamp(1.05rem, 2vw, 1.55rem);
+  }
+}
+
+@media (max-width: 760px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  #contenido .home-system-map__promise {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-system-map__promise p {
+    text-align: left;
+  }
+}
+
+@media (max-width: 760px) {
+  #contenido .home-system-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+#contenido .deficiency-table td strong {
+  font-weight: 600;
+}
+
+#contenido .knowledge-inline-link {
+  font-size: .92rem;
+  font-weight: 600;
+}
+
+#contenido .deficiency-table-hint {
+  display: none;
+}
+
+#contenido .red-app__table {
+  font-size: .76rem;
+}
+
+#contenido .red-app__table th {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  text-transform: none;
+}
+
+#contenido .red-app__table td strong {
+  font-weight: 600;
+}
+
+#contenido .red-app__table small {
+  font-size: .7rem;
+  line-height: 1.35;
+}
+
+#contenido .platform-admin__table-wrap table {
+  font-size: .82rem;
+}
+
+#contenido .platform-admin__table-wrap th {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .015em;
+}
+
+#contenido .ops-station__table th,
+#contenido .ops-station__table td {
+  font-size: .72rem;
+}
+
+#contenido .ops-station__table th {
+  font-weight: 600;
+  letter-spacing: .015em;
+  text-transform: none;
+}
+
+#contenido .ops-station__table td:first-child {
+  font-weight: 600;
+}
+
+#contenido .ops-station__status {
+  font-size: .64rem;
+  font-weight: 600;
+}
+
+#contenido .red-app__status {
+  font-size: .68rem;
+  font-weight: 600;
+}
+
+#contenido .red-app__generators-panel .red-app__panel-head span,
+#contenido .red-app__generators-panel .red-app__search-label {
+  font-weight: 650;
+  letter-spacing: .035em;
+}
+
+/* Agroindustry image and card labels were set in 9–11 px at weight 850.
+   Keep their color and placement, but use the same calm 12 px label scale. */
+#contenido .agroindustry-v4-biogas__photo figcaption span,
+#contenido .agroindustry-v4-outcomes article > span,
+#contenido .agroindustry-v4-models article > span {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido .agroindustry-v4-evaluation__stage-index {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Product metadata and compact science diagrams used small uppercase text
+   with weights from 750 to 850; keep the hierarchy while improving legibility. */
+#contenido .product-facts dt,
+#contenido .price-panel--technical > div:first-child small,
+#contenido .wg-bio-lines__product-visual figcaption,
+#contenido .wg-catalog-science__copy > span,
+#contenido .homegarden-product-family-map--products .homegarden-product-family-map__base span,
+#contenido .homegarden-product-family-map--products .homegarden-product-family-map__stages > span {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido .product-facts dd,
+#contenido .homegarden-product-family-map--products .homegarden-product-family-map__stages li {
+  font-weight: 600;
+}
+
+#contenido .wg-catalog-science__liquid small,
+#contenido .wg-catalog-science__liquid--process small {
+  font-size: .75rem;
+  line-height: 1.4;
+}
+
+/* Compact tables: keep column labels and inline emphasis readable without
+   forcing a tiny uppercase, extra-bold visual language across the site. */
+#contenido table {
+  font-size: .8rem;
+}
+
+#contenido table th {
+  font-size: .78rem;
+  letter-spacing: .01em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido table small {
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+#contenido table small strong,
+#contenido table small b {
+  font-weight: 500;
+}
+
+/* Crop-guide micro-labels were set in 9–11 px at weights 800–850. A calmer
+   12 px medium label preserves scan order while keeping the content crisp. */
+#contenido .crop-guide-hero__context > span,
+#contenido .crop-guide-hero__cover figcaption > span,
+#contenido .crop-guide-nav a,
+#contenido .crop-stage-route__number small,
+#contenido .crop-stage-route__lines > span,
+#contenido .crop-stage-route__validation > span,
+#contenido .crop-decision-bridge__steps article > span,
+#contenido .crop-preparer__area span,
+#contenido .crop-preparer__stages legend,
+#contenido .crop-preparer__stages button span,
+#contenido .crop-preparer__result > span,
+#contenido .crop-field-reading__hypotheses article > span,
+#contenido .crop-field-reading__hypotheses small,
+#contenido .crop-field-reading__alerts > span,
+#contenido .crop-field-reading__alerts li span,
+#contenido .crop-followup__grid header > span,
+#contenido .crop-followup__grid small,
+#contenido .crop-followup__grid li span {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido .crop-guide-hero__context > span,
+#contenido .crop-guide-hero__cover figcaption > span,
+#contenido .crop-guide-nav a,
+#contenido .crop-stage-route__number small,
+#contenido .crop-stage-route__lines > span,
+#contenido .crop-stage-route__validation > span,
+#contenido .crop-preparer__area span,
+#contenido .crop-preparer__stages legend,
+#contenido .crop-preparer__result > span,
+#contenido .crop-field-reading__hypotheses article > span,
+#contenido .crop-field-reading__hypotheses small,
+#contenido .crop-field-reading__alerts > span,
+#contenido .crop-followup__grid header > span,
+#contenido .crop-followup__grid small {
+  letter-spacing: .035em;
+}
+
+/* Small navigation and product actions in crop guides inherited extra-bold
+   weights. Keep them distinct from body copy without making them shout. */
+#contenido .crop-guide-back,
+#contenido .crop-guide-hero__cover figcaption strong,
+#contenido .crop-stage-route__lines strong,
+#contenido .crop-stage-route__lines a,
+#contenido .crop-preparer__stages button strong,
+#contenido .crop-guide-document__links .button--document-secondary,
+#contenido .crop-guide-document__links > a:last-child,
+#contenido .crop-guide-review a,
+#contenido .crop-related-guides > .container > header > a,
+#contenido .crop-guide-cta__inner > div:last-child > a:last-child {
+  font-weight: 600;
+}
+
+#contenido .crop-stage-route__lines strong,
+#contenido .crop-stage-route__lines a,
+#contenido .crop-preparer__stages button strong,
+#contenido .crop-guide-document__links .button--document-secondary {
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+/* Crop library cards used 9–10 px bold labels for status, observation and
+   stages. Bring these repeated roles into the same compact reading scale. */
+#contenido .crop-catalog-method article > span,
+#contenido .crop-explorer__status span,
+#contenido .crop-explorer-card__cover > span,
+#contenido .crop-explorer-card__identity span,
+#contenido .crop-explorer-card__observation span,
+#contenido .crop-explorer-card__stages small,
+#contenido .crop-explorer__empty > span,
+#contenido .crop-field-panel > header > span,
+#contenido .crop-field-panel small,
+#contenido .crop-field-panel li span,
+#contenido .crop-decision-route__steps span {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido .crop-explorer-card__stages > span {
+  font-size: .72rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+#contenido .crop-explorer-card__actions a,
+#contenido .crop-explorer-card__manual {
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#contenido .catalog-status {
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+#contenido .portfolio-demo__status {
+  font-size: .66rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+#contenido .portfolio-demo__metrics span,
+#contenido .portfolio-demo__panel > span,
+#contenido .portfolio-demo__panel-head span,
+#contenido .portfolio-demo__section-intro > div > span {
+  font-size: .68rem;
+  font-weight: 650;
+  letter-spacing: .045em;
+}
+
+#contenido .portfolio-demo__panel p,
+#contenido .portfolio-demo__state-list > div,
+#contenido .portfolio-demo__metrics small,
+#contenido .portfolio-demo__panel-head > small,
+#contenido .portfolio-demo__footnote,
+#contenido .portfolio-demo__selection {
+  font-size: .74rem;
+}
+
+#contenido .portfolio-demo__timeline time {
+  font-size: .68rem;
+}
+
+@media (max-width: 700px) {
+  #contenido .deficiency-table-hint {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  #contenido .ops-station__table-hint {
+    display: block;
+    margin: 8px 0;
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 820px) {
+  #contenido .deficiency-table-hint {
+    display: block;
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+/* Small public-site text should stay crisp; the global antialiasing override
+   made medium and semibold weights look soft at compact sizes on macOS. */
+#contenido {
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Keep small section labels legible without the heavy, widely tracked look. */
+#contenido .eyebrow {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .075em;
+  line-height: 1.45;
+}
+
+/* The guide's editorial table gets readable labels and restrained emphasis. */
+#contenido .deficiency-table th {
+  font-family: var(--font-body);
+  font-size: .84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+#contenido .deficiency-table td strong {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* Service navigation and category labels were too heavy for their compact size. */
+#contenido .gt-service-nav a {
+  font-weight: 600;
+}
+
+#contenido .gt-service-category__head > div > small {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .075em;
+  line-height: 1.45;
+}
+
+/* Product pages used very heavy weights on compact route and card labels. */
+#contenido .product-route-nav__catalog {
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#contenido .product-detail-index > span {
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+/* Casa & Jardín back links were too heavy at utility-label size. */
+#contenido .homegarden-subpage-hero .back-link {
+  font-weight: 650;
+}
+
+/* Crop chips form a dense mobile cluster; keep their target size, soften the text. */
+#contenido .product-crop-pills .product-crop-pill,
+#contenido .product-crop-pills .product-crop-pill span {
+  font-weight: 650;
+}
+
+#contenido .product-stage > span,
+#contenido .product-stage > em {
+  font-size: .78rem;
+  font-weight: 650;
+  letter-spacing: .045em;
+  line-height: 1.4;
+}
+
+#contenido .product-detail-index a {
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+#contenido .product-headline {
+  font-weight: 650;
+}
+
+#contenido .product-related-card__media span {
+  font-weight: 600;
+}
+
+#contenido .product-related-card__body > span {
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+#contenido .product-related-card__body em {
+  font-weight: 600;
+}
+
+/* Product specification strips looked like dense micro-table headers. */
+#contenido .product-facts dt {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  line-height: 1.4;
+}
+
+#contenido .product-facts dd {
+  font-size: .9rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#contenido .price-panel--technical > div:first-child small {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+
+/* Casa & Jardín detail cards used tiny, widely tracked uppercase labels. */
+#contenido .homegarden-detail-facts > article > span {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .045em;
+  line-height: 1.4;
+}
+
+#contenido .homegarden-detail-visual__compost > span,
+#contenido .homegarden-detail-visual__compost > small,
+#contenido .homegarden-huerta-path__eyebrow,
+#contenido .homegarden-detail-route li > span {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .055em;
+  line-height: 1.4;
+}
+
+#contenido .homegarden-detail-composition a {
+  font-size: .84rem;
+  font-weight: 650;
+}
+
+#contenido .homegarden-detail-science__link {
+  font-weight: 650;
+}
+
+#contenido .product-spec-list dt {
+  font-size: .88rem;
+}
+
+#contenido .product-spec-list dd {
+  font-weight: 650;
+}
+
+#contenido .knowledge-warning > span,
+#contenido .knowledge-rule-grid article > span,
+#contenido .knowledge-card-kicker,
+#contenido .library-journey article > span,
+#contenido .decision-flow article > span,
+#contenido .portfolio-system-card > span {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .055em;
+  line-height: 1.45;
+}
+
+/* Compact data labels were landing on synthetic heavy weights at small sizes.
+   Keep hierarchy, but give tables and status text a little more room and a
+   stable medium weight so the strokes stay clear on screen. */
+#contenido .red-app__table {
+  font-size: .78rem;
+}
+
+#contenido .red-app__table th {
+  font-size: .74rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+#contenido .red-app__table td strong {
+  font-weight: 500;
+}
+
+#contenido .red-app__table small {
+  font-size: .74rem;
+  color: #64776b;
+}
+
+#contenido .ops-station__table th,
+#contenido .ops-station__table td {
+  font-size: .78rem;
+}
+
+#contenido .ops-station__table th {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+#contenido .ops-station__table td:first-child {
+  font-weight: 500;
+}
+
+#contenido .ops-station__status,
+#contenido .red-app__status,
+#contenido .portfolio-demo__status {
+  font-size: .72rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+#contenido .portfolio-demo__metrics span,
+#contenido .portfolio-demo__panel > span,
+#contenido .portfolio-demo__panel-head span,
+#contenido .portfolio-demo__section-intro > div > span,
+#contenido .portfolio-demo__timeline time {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .025em;
+}
+
+/* RED's small KPI headings were using 850 weight at 10px. */
+#contenido .red-app__metrics span,
+#contenido .red-app__panel-head span,
+#contenido .red-app__field-header span,
+#contenido .red-app__pmirs-hero > div > span,
+#contenido .red-app__coord-rule > span,
+#contenido .red-app__mobile-rule > span {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .025em;
+}
+
+#contenido .red-app__metrics small {
+  font-size: .72rem;
+  color: #64776b;
+  line-height: 1.4;
+}
+
+/* Product packshot captions were too small to carry bold emphasis cleanly. */
+#contenido .product-reference-visual--card figcaption {
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+#contenido .product-reference-visual--card figcaption strong {
+  font-size: .8rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+#contenido .product-reference-visual--card figcaption span {
+  font-weight: 400;
+}
+
+/* This caution heading is a short label, so it does not need uppercase tracking. */
+#contenido .product-caution-card > strong {
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: none;
+}
+
+/* The access-directory table uses restrained headings and readable row actions. */
+#contenido .platform-admin__table-wrap th {
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .025em;
+  line-height: 1.35;
+}
+
+#contenido .platform-admin__table-wrap .user-status {
+  font-size: .72rem;
+  font-weight: 600;
+}
+
+#contenido .platform-admin__table-wrap .platform-admin__row-action {
+  font-size: .76rem;
+  font-weight: 600;
+}
+
+#contenido .platform-admin__table-wrap .platform-admin__row-action--primary {
+  font-weight: 650;
+}
+
+/* Product subheads and packshot captions are supporting text, not second
+   headlines. Keep a clear cue while avoiding the browser's 700 bold default. */
+#contenido .product-variant-note strong,
+#contenido .product-reference-visual figcaption strong {
+  font-weight: 600;
+}
+
+#contenido .product-reference-visual figcaption strong {
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* Product fiche metadata should read as supporting information, not as a
+   second headline. The category eyebrow keeps its uppercase treatment with
+   calmer tracking; fact values use a medium weight at compact sizes. */
+#contenido .product-family-eyebrow {
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.4;
+}
+
+#contenido .product-facts dd {
+  font-weight: 600;
+}
+
+/* Wondergreen science labels and comparison figures had been compressed to
+   10–11 px with extra-bold weights. Keep the evidence hierarchy, but make
+   study categories and chart values readable at normal viewing distance. */
+#contenido .wg-bio-science-hero__stamp span,
+#contenido .wg-bio-science-research__grid article > span,
+#contenido .wg-volatilization__kicker,
+#contenido .wg-claim-proposal__status {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+}
+
+#contenido .wg-bio-science-research .eyebrow,
+#contenido .wg-matrix-story .eyebrow,
+#contenido .wg-volatilization .eyebrow,
+#contenido .wg-claim-proposal .eyebrow {
+  letter-spacing: .025em;
+  line-height: 1.4;
+}
+
+#contenido .wg-matrix-story__layout figcaption,
+#contenido .wg-volatilization__paired > div,
+#contenido .wg-volatilization__method-mark,
+#contenido .wg-volatilization__scale {
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+#contenido .wg-matrix-story__photo figcaption {
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+#contenido .wg-volatilization__paired b {
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+#contenido .wg-volatilization__study > small {
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+/* Primary-study links were tiny and extra-bold; keep them distinct without
+   making the source line look heavier than the study labels around it. */
+#contenido .wg-bio-science-research__grid a,
+#contenido .wg-volatilization__study > a {
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* The Wondergreen service comparison keeps N–P–K as a compact legend, but
+   should not rely on tiny bold lettering to distinguish its three values. */
+#contenido .service-detail-page--wondergreen .eyebrow {
+  letter-spacing: .025em;
+  line-height: 1.4;
+}
+
+#contenido .service-detail-page--wondergreen .service-program-composition__legend {
+  font-size: .8rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+#contenido .service-detail-page--wondergreen .service-program-composition__labels small {
+  font-size: .75rem;
+  line-height: 1.4;
+}
+
+/* Segment proof and tool captions are supporting labels, not decoration.
+   Preserve their uppercase/overlay treatments while avoiding 9–11 px heavy
+   text that becomes difficult to read in the municipal evidence ribbon and
+   the company digital-tool visuals. */
+#contenido .gt-proof-ribbon__grid--compact .gt-proof-ribbon__intro > span,
+#contenido .gt-proof-ribbon__grid--compact > div:not(.gt-proof-ribbon__intro) small,
+#contenido .gt-audience-tools__visual figcaption {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .025em;
+  line-height: 1.4;
+}
+
+#contenido .gt-route-hero--municipal .eyebrow,
+#contenido .gt-microroute .eyebrow,
+#contenido .gt-park-story--municipal .eyebrow,
+#contenido section[aria-labelledby="municipal-next-step-title"] .eyebrow,
+#contenido .gt-company-offers__heading .eyebrow,
+#contenido .gt-route-closing--company .eyebrow {
+  letter-spacing: .025em;
+  line-height: 1.4;
+}
+
+/* Compact tables use size and color for hierarchy so small text does not look
+   clogged by synthetic/bold font weights. Keep actions and status badges intact. */
+#contenido table {
+  font-size: .85rem;
+  line-height: 1.45;
+}
+
+#contenido table th {
+  font-family: var(--font-body);
+  font-size: .84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+#contenido table td strong,
+#contenido table td b,
+#contenido table small strong,
+#contenido table small b {
+  color: var(--green-900);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+#contenido table small {
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+/* Keep operational grids compact; hierarchy comes from the first-column color,
+   row spacing, and cell content rather than heavier strokes. */
+#contenido .red-app__table,
+#contenido .ops-station__table,
+#contenido .platform-admin__table-wrap table {
+  font-size: .8125rem;
+}
+
+#contenido .red-app__table th,
+#contenido .ops-station__table th,
+#contenido .platform-admin__table-wrap th {
+  font-size: .8rem;
+}
+
+#contenido .ops-station__table td {
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+
+#contenido .ops-station__table td:first-child {
+  color: var(--green-900);
+  font-weight: 500;
+}
+
+#contenido .red-app__table td strong,
+#contenido .ops-station__table td strong {
+  color: var(--green-900);
+  font-weight: 500;
+}
+
+#contenido .red-app__table small {
+  font-size: .78rem;
+}
+
+/* The agronomy comparison has wider columns and can use the reading scale. */
+#contenido .deficiency-table th {
+  font-size: .84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+#contenido .deficiency-table td {
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+#contenido .deficiency-table td strong {
+  color: var(--green-900);
+  font-weight: 500;
+}
+
+#contenido small strong,
+#contenido small b {
+  font-weight: 500;
+}
+
+#contenido .product-variant-note strong,
+#contenido .product-reference-visual figcaption strong {
+  font-weight: 500;
+}
+
+/* Homepage columns: allocate enough width before asking body copy to justify.
+   At intermediate desktop sizes, natural left alignment avoids visibly stretched
+   spaces; wide screens can use full justification once the measures support it. */
+@media (min-width: 1181px) {
+  #contenido .home-system-hero__grid {
+    grid-template-columns: minmax(0, 1.18fr) minmax(400px, .82fr);
+  }
+
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+    gap: clamp(32px, 4.5vw, 72px);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1449px) {
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-system-map__promise p,
+  #contenido .home-wondergreen-bridge__intro p:first-child {
+    text-align: left;
+    text-justify: auto;
+  }
+}
+
+@media (min-width: 1450px) {
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-system-map__promise p,
+  #contenido .home-wondergreen-bridge__intro p:first-child {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+}
+
+/* Final homepage pass: let the actual copy columns, not a narrow character cap,
+   decide the wrap. Match evidence grids at each breakpoint. */
+#contenido .home-system-hero__grid {
+  grid-template-columns: minmax(0, 1.22fr) minmax(380px, .78fr);
+  gap: clamp(28px, 3.4vw, 54px);
+}
+
+#contenido .home-system-hero__copy,
+#contenido .home-system-map__heading,
+#contenido .home-system-map__promise {
+  min-width: 0;
+}
+
+#contenido .home-system-hero h1 {
+  width: 100%;
+  max-width: none;
+  text-wrap: balance;
+}
+
+#contenido .home-system-map__heading {
+  grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr);
+  gap: clamp(24px, 3.2vw, 48px);
+}
+
+#contenido .home-system-map__heading h2,
+#contenido .home-system-map__promise p {
+  width: 100%;
+  max-width: none;
+}
+
+#contenido .home-system-map__heading h2 {
+  font-size: clamp(2.15rem, 3.25vw, 3.25rem);
+  line-height: 1.04;
+}
+
+#contenido .home-system-hero__lead:not(.home-system-hero__lead--second) {
+  width: 100%;
+  max-width: 72ch;
+}
+
+#contenido .home-claims-rail__metrics--tamesis {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(12px, 1.8vw, 24px);
+}
+
+#contenido .home-claims-rail__metrics--tamesis article > strong {
+  font-size: clamp(1rem, 1.55vw, 1.5rem);
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+/* Keep the home page's paired editorial columns in rhythm: give the story and
+   territorial intro room before styling alignment. Headings remain left aligned. */
+#contenido .home-territory__heading {
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  gap: clamp(28px, 3.6vw, 58px);
+}
+
+#contenido .home-territory__heading h2,
+#contenido .home-tools-bridge__heading h2,
+#contenido .home-conversion-block__heading h2 {
+  width: 100%;
+  max-width: none;
+  text-wrap: balance;
+}
+
+#contenido .home-territory__heading .lead,
+#contenido .home-tools-bridge__heading p,
+#contenido .home-conversion-block__sub {
+  width: 100%;
+  max-width: none;
+}
+
+#contenido .home-conversion-block__heading {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  text-align: left;
+}
+
+/* Keep prose natural below wide desktop; avoid expanded word spacing in narrow tracks. */
+@media (max-width: 1279px) {
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-system-map__promise p,
+  #contenido .home-wondergreen-bridge__intro p:first-child,
+  #contenido .home-territory__heading .lead,
+  #contenido .home-territory__story > p,
+  #contenido .home-territory__tamesis-bridge > div:last-child > p,
+  #contenido .home-tools-bridge__heading p,
+  #contenido .home-huella-feature__copy > p,
+  #contenido .home-conversion-block__sub {
+    text-align: left;
+    text-justify: auto;
+    text-align-last: auto;
+  }
+}
+
+/* On wide desktop, use the full width of the main narrative columns. */
+@media (min-width: 1450px) {
+  #contenido .home-system-map__promise p,
+  #contenido .home-territory__story > p,
+  #contenido .home-tools-bridge__heading p,
+  #contenido .home-conversion-block__sub {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  #contenido .home-system-hero__lead:not(.home-system-hero__lead--second),
+  #contenido .home-territory__heading .lead,
+  #contenido .home-territory__tamesis-bridge > div:last-child > p,
+  #contenido .home-huella-feature__copy > p {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: auto;
+  }
+}
+
+/* Keep titles, labels and compact card copy at their natural alignment. */
+#contenido .home-system-hero__lead--second {
+  text-align: left;
+  text-justify: auto;
+  text-align-last: auto;
+}
+
+@media (max-width: 980px) {
+  /* Stack paired columns before the text and evidence become cramped. */
+  #contenido .home-system-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  #contenido .home-territory__heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+}
+
+@media (max-width: 900px) {
+  #contenido .home-claims-rail__metrics,
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  #contenido .home-system-map__promise {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+}
+
+@media (max-width: 360px) {
+  #contenido .home-claims-rail__metrics,
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Use the width of Támesis' own case panel, not the browser viewport, to
+   decide when its four comparable indicators can share one line. */
+#contenido .home-claims-rail__case--tamesis {
+  container-type: inline-size;
+}
+
+#contenido .home-claims-rail__case {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+#contenido .home-claims-rail__case > .home-claims-rail__intro,
+#contenido .home-claims-rail__case > .home-claims-rail__metrics {
+  grid-column: 1 / -1;
+}
+
+@container (min-width: 760px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(12px, 1.6cqi, 24px);
+  }
+}
+
+@container (max-width: 759px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (max-width: 280px) {
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Keep paired editorial columns proportionate on desktop. The narrow layout is
+   declared outside this breakpoint so it remains one column when the viewport
+   is smaller than either text measure. */
+@media (min-width: 1181px) {
+  #contenido .home-system-hero__grid {
+    grid-template-columns: minmax(0, 1.28fr) minmax(400px, .72fr);
+  }
+
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1.1fr) minmax(400px, .9fr);
+    align-items: center;
+    gap: clamp(24px, 3vw, 48px);
+  }
+
+  #contenido .home-system-map__heading h2 {
+    font-size: clamp(2.1rem, 3.05vw, 3.05rem);
+  }
+}
+
+#contenido .home-system-map__heading {
+  align-items: center;
+}
+
+/* Resolve the repeated homepage feedback by measuring the text blocks that
+   actually contain the copy. This avoids relying on a physical-window
+   breakpoint when browser zoom or the surrounding layout changes the measure. */
+#contenido .home-system-hero__copy,
+#contenido .home-system-map__promise {
+  container-type: inline-size;
+}
+
+#contenido .home-system-map__heading {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3.2vw, 48px);
+}
+
+@media (min-width: 981px) {
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, .78fr);
+  }
+}
+
+@media (min-width: 1181px) {
+  #contenido .home-system-map__heading {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+  }
+
+}
+
+@media (min-width: 1280px) {
+  #contenido .home-system-map__promise p {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+
+  #contenido .home-territory__case {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(28px, 4vw, 56px);
+  }
+
+  #contenido .home-territory__story > p {
+    max-width: none;
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+
+  #contenido .home-wondergreen-bridge__intro > p:first-child {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+
+  #contenido .home-conversion-block__sub {
+    text-align: justify;
+    text-justify: inter-word;
+    text-align-last: left;
+    hyphens: none;
+  }
+}
+
+/* Empresas: give explanatory copy the space its editorial grid already has. */
+#contenido .gt-company-pmirs-copy__story strong {
+  color: #315b43;
+  font-weight: 600;
+}
+
+@media (min-width: 1101px) {
+  #contenido .gt-route-hero--company-editorial .gt-company-hero-grid .gt-route-hero__copy .lead {
+    max-width: none;
+    hyphens: none;
+  }
+
+  #contenido .gt-company-audiences__heading,
+  #contenido .gt-company-offers__heading {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: clamp(28px, 5vw, 68px);
+    align-items: center;
+  }
+
+  #contenido .gt-company-audiences__heading > p,
+  #contenido .gt-company-offers__heading > p,
+  #contenido .gt-company-audience p,
+  #contenido .gt-company-evidence__story p {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: none;
+  }
+
+  #contenido .gt-company-evidence__layout {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 6vw, 84px);
+  }
+
+  #contenido .gt-company-evidence__story h2 {
+    max-width: 18ch;
+  }
+
+  #contenido .gt-company-evidence__story p {
+    max-width: none;
+  }
+
+  #contenido .gt-company-pmirs-copy__story {
+    hyphens: none;
+  }
+
+  #contenido .gt-route-section--company-offers,
+  #contenido .gt-audience-tools {
+    padding-block: clamp(42px, 4.4vw, 60px);
+  }
+}
+
+/* Empresas: avoid a narrow copy track beside a tall image on tablet. */
+@media (min-width: 761px) and (max-width: 1024px) {
+  #contenido .gt-route-hero--company-editorial .gt-company-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "copy" "primary" "visual" "secondary";
+    grid-template-rows: auto auto auto auto;
+    gap: 18px;
+    padding-block: 48px 60px;
+  }
+
+  #contenido .gt-route-hero--company-editorial .gt-company-hero-visual {
+    grid-row: auto;
+    width: min(100%, 760px);
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 1.35;
+    align-self: auto;
+    justify-self: center;
+  }
+
+  #contenido .gt-route-hero--company-editorial .gt-route-hero__copy .lead {
+    max-width: none;
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1100px) {
+  #contenido .gt-route-hero--company-editorial .gt-route-hero__copy .lead {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+  }
+}
+
+/* Empresas: when the editorial sections collapse to one wide tablet column,
+   let long explanatory copy use the available measure. Keep compact audience
+   cards and the two-column tablet layout in their natural alignment. */
+@media (min-width: 761px) and (max-width: 900px) {
+  #contenido .gt-company-audiences__heading > p,
+  #contenido .gt-company-audience p,
+  #contenido .gt-company-evidence__story p,
+  #contenido .gt-company-pmirs-copy__story,
+  #contenido .gt-company-offers__heading > p {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+  }
+
+  #contenido .gt-company-evidence__story p,
+  #contenido .gt-company-offers__heading > p,
+  #contenido .gt-company-pmirs-copy__story {
+    max-width: none;
+  }
+}
+
+#contenido .home-system-map__heading h2 {
+  font-size: clamp(2.05rem, 3.05vw, 3rem);
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+@media (min-width: 1181px) {
+  #contenido .home-system-map__heading h2 {
+    font-size: clamp(2.1rem, 3.2vw, 3.25rem);
+  }
+}
+
+/* Operation fiche: when the page stacks on tablet, let its long prose use the
+   full reading column. Keep compact labels and the mobile rhythm untouched. */
+@media (min-width: 761px) and (max-width: 1000px) {
+  #contenido .service-detail-page--operation .service-detail-context__solution {
+    width: 100%;
+    max-width: none;
+  }
+
+  #contenido .service-detail-page--operation .service-detail-hero-copy,
+  #contenido .service-detail-page--operation .service-detail-hero-copy > p.lead,
+  #contenido .service-detail-page--operation .service-detail-context__heading > p,
+  #contenido .service-detail-page--operation .service-detail-context__solution > p,
+  #contenido .service-detail-page--operation .service-operation-modes article p,
+  #contenido .service-detail-page--operation .service-operation-ops__story > p,
+  #contenido .service-detail-page--operation .service-operation-start__grid > div > p,
+  #contenido .service-detail-page--operation .service-operation-start aside > p {
+    max-width: none;
+  }
+
+  #contenido .service-detail-page--operation .service-detail-hero-copy > p.lead,
+  #contenido .service-detail-page--operation .service-detail-context__heading > p,
+  #contenido .service-detail-page--operation .service-detail-context__solution > p,
+  #contenido .service-detail-page--operation .service-operation-modes article p,
+  #contenido .service-detail-page--operation .service-operation-ops__story > p,
+  #contenido .service-detail-page--operation .service-operation-start__grid > div > p,
+  #contenido .service-detail-page--operation .service-operation-start aside > p {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+  }
+}
+
+/* Keep long operation narratives intact; the automatic Spanish dictionary
+   split ordinary words awkwardly in the live layout at desktop width. */
+#contenido .service-detail-page--operation .service-detail-hero-copy > p.lead,
+#contenido .service-detail-page--operation .service-detail-context__heading > p,
+#contenido .service-detail-page--operation .service-detail-context__solution > p,
+#contenido .service-detail-page--operation .service-operation-work__intro > p,
+#contenido .service-detail-page--operation .service-operation-work__areas p,
+#contenido .service-detail-page--operation .service-operation-ops__story > p,
+#contenido .service-detail-page--operation .service-operation-start__grid > div > p,
+#contenido .service-detail-page--operation .service-operation-start aside > p {
+  hyphens: none;
+}
+
+/* The municipal hero has enough measure for clean justification. Avoid
+   splitting Spanish words in the long lead at desktop and tablet widths. */
+@media (min-width: 761px) {
+  #contenido .gt-route-hero--municipal .gt-route-hero__copy .lead {
+    hyphens: none;
+  }
+}

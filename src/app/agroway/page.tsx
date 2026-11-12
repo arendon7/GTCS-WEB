@@ -1,142 +1,321 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ToolAccessRail } from "@/components/tool-access-rail";
+import styles from "./agroway-editorial.module.css";
 
 export const metadata: Metadata = {
-  title: "AGROWAY | Trazabilidad agrícola para el ecosistema SANA",
+  title: "AGROWAY | Plan de cultivo, inventario y seguimiento agrícola",
   description:
-    "AGROWAY registra y relaciona la realidad agrícola para alimentar el ecosistema SANA con datos de campo, ciencia Greenatics y trazabilidad Wondergreen.",
+    "Conoce los módulos de AgroWay para organizar proyectos, lotes, planes de cultivo, trabajo de campo, evidencias y cosechas.",
   alternates: { canonical: "/agroway/" },
   openGraph: {
-    title: "AGROWAY | Trazabilidad agrícola para el ecosistema SANA",
-    description: "Productor, finca, lote, diagnóstico, plan, aplicación, evidencia, seguimiento y cosecha en una historia de campo.",
+    title: "AGROWAY | Plan de cultivo y seguimiento agrícola",
+    description:
+      "Una vista por ciclo para relacionar lotes, plan de cultivo, labores, evidencias y cosecha.",
     url: "/agroway/",
-    images: ["/guides/guia-cafe-cover.webp"],
+    images: ["/brand/agroway/agroway-logo.png"],
   },
 };
 
-const goldenPath = [
-  ["01", "Productor", "Identidad, organización y responsable del ciclo productivo."],
-  ["02", "Finca", "Territorio, contexto y unidad productiva identificada."],
-  ["03", "Lote", "Geometría, cultivo y condiciones del lugar donde ocurre el trabajo."],
-  ["04", "Diagnóstico", "Observaciones y necesidades agronómicas registradas con contexto."],
-  ["05", "Plan", "Recomendaciones, protocolo y tareas antes de aplicar."],
-  ["06", "Campo", "Abastecimiento, aplicación, evidencia y seguimiento en el ciclo."],
-  ["07", "Cosecha", "Resultado productivo documentado para alimentar nuevas decisiones."],
-] as const;
-
-const experiences = [
+const modules = [
   {
-    code: "CONTROL",
-    name: "Greenatics Control",
-    title: "La vista para gobernar el portafolio.",
-    copy: "Reúne proyectos, presupuesto, riesgo, abastecimiento, ejecución, seguimiento, cosecha, impacto y alertas en una lectura operacional para equipos técnicos y de dirección.",
-    items: ["Control Tower y Digital Twin", "Data Room, riesgo y readiness", "Catálogo gobernado y demanda"],
+    number: "01",
+    state: "En la demo",
+    title: "Proyectos, fincas y ciclos",
+    copy: "Relaciona productores, fincas y ciclos de trabajo para saber a qué proyecto pertenece cada lote y cada actividad.",
+    examples: "Productores · fincas · ciclos",
   },
   {
-    code: "FIELD",
-    name: "AGROWAY Field",
-    title: "La herramienta para trabajar donde ocurre el cultivo.",
-    copy: "Permite recibir tareas, registrar aplicaciones, adjuntar evidencia y sincronizar cuando vuelve la conectividad. El trabajo offline captura hechos; las aprobaciones siguen siendo humanas y online.",
-    items: ["Operación local-first", "Evidencia con checksum y revisión", "Dosis, inventario y costos relacionados"],
+    number: "02",
+    state: "En la demo",
+    title: "Cultivos y lotes",
+    copy: "Reúne cultivo, variedad, área, etapa, diagnóstico y plan en el contexto de un lote. La ficha permite identificar lo registrado y lo pendiente de revisión.",
+    examples: "Cultivo · variedad · área · diagnóstico",
   },
   {
-    code: "SANA DATA",
-    name: "Datos para SANA",
-    title: "La realidad de campo que alimenta el ecosistema.",
-    copy: "AGROWAY entrega datos relacionados y oportunos sobre el ciclo productivo para que SANA pueda estructurar oportunidades, acompañar proyectos y tomar decisiones de inversión con mejor contexto.",
-    items: ["Datos de ciclo y trazabilidad", "Evidencia y seguimiento", "Lecturas agregadas para SANA"],
+    number: "03",
+    state: "En desarrollo",
+    title: "Plan de cultivo · MIPFRE",
+    copy: "Organiza un plan integrado de manejo por zona para fertirriego y manejo fitosanitario, enlazado con diagnóstico, fuente técnica, fecha y responsable.",
+    examples: "Borrador · revisión profesional · versión",
   },
-] as const;
+  {
+    number: "04",
+    state: "En la demo",
+    title: "Seguimiento y trabajo de campo",
+    copy: "Registra labores, monitoreos, aplicaciones y novedades con fecha, ejecutor, estado y próxima acción. Una observación conserva su contexto para revisarla.",
+    examples: "Actividad · seguimiento · próxima acción",
+  },
+  {
+    number: "05",
+    state: "En la demo",
+    title: "Evidencias y revisión",
+    copy: "Vincula soportes y observaciones con el lote o la actividad correspondiente. Los estados ayudan a distinguir lo registrado de lo revisado.",
+    examples: "Fotografías · análisis · actas · revisión",
+  },
+  {
+    number: "06",
+    state: "En la demo",
+    title: "Cosecha y trazabilidad",
+    copy: "Conecta los cortes y sus resultados con el lote y el ciclo que los originan, para consultar la historia antes de cerrar o iniciar otro ciclo.",
+    examples: "Corte · cantidad registrada · conciliación",
+  },
+  {
+    number: "07",
+    state: "Alcance por desarrollar",
+    title: "Inventario vegetal e insumos",
+    copy: "El alcance de producto contempla identificar material vegetal y relacionar insumos con los planes y las actividades. La demo actual muestra un catálogo técnico; no controla existencias productivas.",
+    examples: "Plantas · insumos · uso por ciclo",
+  },
+  {
+    number: "08",
+    state: "Integración por definir",
+    title: "Sensores y variables de campo",
+    copy: "En una etapa futura podrían incorporarse mediciones de agua, suelo y ambiente. No hay sensores conectados ni lecturas en tiempo real en la demo; cada integración requeriría fuente, unidad, fecha, calibración y revisión.",
+    examples: "Agua · suelo · ambiente · IoT",
+  },
+];
 
-const capabilities = [
-  ["01", "Productor, finca y lote", "Identidad, territorio, geometría, cultivo y condiciones del lugar donde ocurre el ciclo productivo."],
-  ["02", "Diagnóstico y plan", "Necesidades agronómicas, recomendaciones, protocolos y tareas relacionadas antes de aplicar."],
-  ["03", "Abastecimiento e inventario", "Producto, lote físico, despacho, recepción e inventario de insumos vinculados al proyecto."],
-  ["04", "Aplicación y evidencia", "Tareas, dosis estructuradas, fotografías, verificaciones y costos relacionados con cada actividad."],
-  ["05", "Seguimiento y cosecha", "Mediciones, observaciones, incidencias, decisiones técnicas y resultado productivo del ciclo."],
-  ["06", "Datos para SANA", "Información organizada para estructurar oportunidades, acompañar proyectos y evaluar decisiones de inversión."],
-] as const;
-
-const proofPoints = [
-  ["La recomendación tiene contexto", "AGROWAY distingue necesidad agronómica, recomendación técnica y producto compatible. No asume que toda necesidad se resuelve con una marca."],
-  ["El dato conserva su historia", "Una corrección agrega versión, autor, fecha y motivo. El registro original no desaparece para hacer más cómodo el reporte."],
-  ["SANA recibe datos relacionados", "La información de campo se entrega con origen, ciclo, evidencia y nivel de confianza para alimentar decisiones del ecosistema."],
-  ["El resultado no se inventa", "Una observación, una aplicación y una cosecha son hechos distintos. La plataforma conserva esa diferencia para que SANA evalúe con seriedad."],
-] as const;
-
-const readiness = [
-  ["Ciclo trazable", "Desde identidad y lote hasta proyecto, campo, cosecha, venta, liquidación y cierre, cada etapa conserva su contexto."],
-  ["Capacidades conectadas", "Control de portafolio, campo, impacto, circularidad, pasaportes y catálogo pueden crecer alrededor del ciclo productivo."],
-  ["Espacio protegido", "Identidad, roles, observabilidad, respaldos, integraciones y datos separados por organización para trabajar con confianza."],
-  ["Acompañamiento continuo", "Configuramos el proyecto, formamos al equipo y ajustamos reglas, indicadores y permisos a medida que la operación aprende."],
-] as const;
+const cycleStages = [
+  ["01", "Entender la zona", "Cultivo, variedad, etapa, condiciones y antecedentes con fuente y fecha."],
+  ["02", "Preparar el plan", "Acciones de manejo relacionadas con el diagnóstico y los datos que aún faltan."],
+  ["03", "Acompañar el trabajo", "Actividades, monitoreos, responsables, novedades y evidencias del ciclo."],
+  ["04", "Revisar el resultado", "Cosecha, conciliación e historial para dar contexto al siguiente ciclo."],
+];
 
 export default function AgrowayPage() {
   return (
     <>
-      <section className="agroway-v1-hero">
-        <div className="container agroway-v1-hero__grid">
-          <div className="agroway-v1-hero__copy">
-            <div className="agroway-v1-brandline">
-              <Image src="/brand/agroway/agroway-logo.png" alt="AGROWAY" width={230} height={141} priority />
-              <span>Una plataforma Greenatics</span>
+      <section className={styles.hero}>
+        <div className={"container " + styles.heroGrid}>
+          <div className={styles.heroCopy}>
+            <div className={styles.brandline}>
+              <span className={styles.logoPlate}>
+                <Image src="/brand/agroway/agroway-logo.png" alt="AGROWAY" width={230} height={141} priority />
+              </span>
+              <span className={styles.status}>Demo navegable · desarrollo en curso</span>
             </div>
-            <span className="eyebrow eyebrow--light">Infraestructura para proyectos productivos</span>
-            <h1>La trazabilidad agrícola que mantiene vivo el proyecto productivo.</h1>
-            <p className="lead">AGROWAY registra lo que ocurre en el campo y relaciona productor, finca, lote, cultivo, plan, aplicación, evidencia, seguimiento y cosecha. Es la aplicación de trazabilidad que alimenta a SANA con información real del ciclo.</p>
-            <div className="button-row">
-              <Link className="button button--neon" href="/agroway/app/">Entrar como usuario demo</Link>
-              <Link className="button button--outline-light" href="#recorrido">Ver el recorrido</Link>
+            <h1>El cultivo, el plan y el trabajo de campo en una misma historia.</h1>
+            <p className={styles.lead}>
+              AgroWay relaciona proyectos, fincas, lotes, planes de cultivo, actividades y cosechas
+              para que el equipo pueda entender qué se programó, qué ocurrió y qué falta revisar.
+            </p>
+            <p className={styles.heroNote}>
+              AGROWAY fue estructurado por Grupo Pineal como un servicio de software para trazabilidad agrícola.
+            </p>
+            <p className={styles.heroNote}>
+              La demo usa datos ficticios. No está conectada a fincas, sensores ni servicios de
+              persistencia compartida, y no emite recomendaciones agronómicas.
+            </p>
+            <div className={styles.actions}>
+              <Link className="button button--primary" href="#vista-aplicacion">Ver la aplicación por dentro</Link>
+              <Link className={styles.textLink} href="/agroway/app/">
+                Abrir la demo navegable <span aria-hidden="true">→</span>
+              </Link>
             </div>
-            <p className="agroway-v1-hero__note"><strong>Listo para explorar:</strong> entra a la demo y recorre el ciclo completo con datos ilustrativos. AGROWAY registra y organiza la información agrícola; cuando el proyecto trabaja con datos propios, el espacio se configura por organización, proyecto y rol. SANA utiliza esa base junto con la ciencia y las soluciones de Greenatics y Wondergreen.</p>
           </div>
-          <aside className="agroway-v1-hero__visual" aria-label="Cadena de valor AGROWAY">
-            <div className="agroway-v1-hero__visual-top"><span>AGROWAY V1</span><small>CAMPO → DATOS → SANA</small></div>
-            <div className="agroway-v1-hero__orbit"><i className="orbit-line orbit-line--one" /><i className="orbit-line orbit-line--two" /><div className="orbit-center"><strong>Trazabilidad<br />agrícola</strong><span>datos vivos del ciclo</span></div><b className="orbit-node orbit-node--capital">Productor</b><b className="orbit-node orbit-node--plan">Plan</b><b className="orbit-node orbit-node--field">Campo</b><b className="orbit-node orbit-node--result">SANA</b></div>
-            <div className="agroway-v1-hero__visual-foot"><span><i /> Captura en campo</span><span><i /> Evidencia relacionada</span><span><i /> Datos para decidir</span></div>
-          </aside>
+          <figure className={styles.heroFigure}>
+            <Image
+              src="/tools/agroway-field-editorial.jpg"
+              alt="Una persona observa un cultivo y registra información durante el recorrido por el lote."
+              width={1400}
+              height={933}
+              priority
+              sizes="(max-width: 760px) 100vw, 52vw"
+            />
+            <figcaption>El seguimiento empieza en el lote y continúa durante todo el ciclo productivo.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <ToolAccessRail
-        id="agroway"
-        name="AGROWAY"
-        status="Demo navegable disponible"
-        copy="AGROWAY es la aplicación de trazabilidad agrícola: registra productor, finca, lote, diagnóstico, plan, abastecimiento, aplicación, evidencia, seguimiento y cosecha. Puedes recorrer un entorno demo con módulos y datos ilustrativos; la operación real se habilita por proyecto, organización y rol."
-        demoHref="/agroway/app/"
-        demoLabel="Entrar como usuario demo"
-        accessHref="/contacto/?interes=agroway"
-        accessLabel="Configurar un entorno propio"
-      />
-
-      <section className="agroway-v1-intro">
-        <div className="container agroway-v1-intro__grid">
-          <div><span className="eyebrow">La idea central</span><h2>La verdad financiera y la verdad de campo no pueden vivir separadas.</h2></div>
-          <div><p>Agroway es la aplicación que toma la realidad agrícola y la vuelve trazable: quién produce, dónde, qué cultivo tiene, qué se observó, qué se recomendó, qué se aplicó, con qué evidencia y qué ocurrió después.</p><p>SANA es el ecosistema que recibe esa información para estructurar y acompañar inversión en proyectos productivos. Greenatics y Wondergreen aportan conocimiento agronómico, ciencia, fertilizantes, bioinsumos y criterio técnico para que las decisiones se conecten con el suelo, el cultivo y el territorio.</p></div>
+      <section className={styles.preview} id="vista-aplicacion" aria-labelledby="agroway-preview-title">
+        <div className="container">
+          <header className={styles.sectionHeading}>
+            <div>
+              <span className={styles.eyebrow}>Vista de la aplicación</span>
+              <h2 id="agroway-preview-title">Recorre la demo y mira cómo se conectan sus módulos.</h2>
+            </div>
+            <p>
+              Esta es la interfaz real de la demo pública. Usa su menú lateral para cambiar entre
+              resumen, proyectos, lotes, trabajo de campo, evidencias, cosechas y catálogo técnico.
+            </p>
+          </header>
+          <div className={styles.appWindow}>
+            <div className={styles.appWindowBar}>
+              <span><i /> Demo navegable</span>
+              <span>Datos ilustrativos · vista interactiva</span>
+            </div>
+            <iframe
+              className={styles.appFrame}
+              src="/agroway/app/"
+              title="Demo interactiva de la aplicación AgroWay"
+              loading="lazy"
+            />
+          </div>
+          <p className={styles.previewNote}>
+            La demo permite recorrer y seleccionar registros de ejemplo; sus acciones y estados son
+            demostrativos y no guardan información de fincas reales.
+          </p>
+          <Link className={styles.inlineLink} href="/agroway/app/">
+            Abrir la demo en pantalla completa <span aria-hidden="true">→</span>
+          </Link>
+          <span className={styles.previewLinkDivider} aria-hidden="true">·</span>
+          <Link className={styles.inlineLink} href="#modulos">
+            Ver la descripción de los módulos <span aria-hidden="true">↓</span>
+          </Link>
         </div>
       </section>
 
-      <section className="agroway-v1-path" id="recorrido" aria-labelledby="agroway-path-title">
-        <div className="container"><header className="agroway-v1-heading agroway-v1-heading--light"><div><span className="eyebrow eyebrow--light">El recorrido trazable</span><h2 id="agroway-path-title">Cada ciclo deja una historia que SANA puede entender.</h2></div><p>Agroway no reemplaza el criterio agronómico ni decide la inversión: captura, relaciona y ordena la información que permite trabajar con mejor contexto.</p></header><div className="agroway-v1-path__grid">{goldenPath.map(([number, title, copy]) => <article key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></article>)}</div><div className="agroway-v1-path__caption"><strong>La secuencia completa:</strong><span>Productor → Finca → Lote → Ciclo → Diagnóstico → Plan → Abastecimiento → Aplicación → Evidencia → Seguimiento → Cosecha → Datos para SANA</span></div></div>
+      <section className={styles.modules} id="modulos" aria-labelledby="agroway-modules-title">
+        <div className="container">
+          <header className={styles.sectionHeading}>
+            <div>
+              <span className={styles.eyebrow}>Qué hace AgroWay</span>
+              <h2 id="agroway-modules-title">Módulos para acompañar el ciclo, del lote a la cosecha.</h2>
+            </div>
+            <p>
+              La demo pública deja recorrer una parte del modelo. El inventario vegetal, la operación
+              productiva y las integraciones se muestran como alcance de evolución, no como
+              funciones ya conectadas.
+            </p>
+          </header>
+          <div className={styles.moduleGrid}>
+            {modules.map((module) => (
+              <article className={styles.moduleCard} key={module.number}>
+                <div className={styles.moduleMeta}>
+                  <span>{module.number}</span>
+                  <small>{module.state}</small>
+                </div>
+                <h3>{module.title}</h3>
+                <p>{module.copy}</p>
+                <span className={styles.moduleExamples}>{module.examples}</span>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="agroway-v1-experiences" aria-labelledby="agroway-experiences-title">
-        <div className="container"><header className="agroway-v1-heading"><div><span className="eyebrow">Una aplicación, distintos usos</span><h2 id="agroway-experiences-title">La misma trazabilidad sirve para operar, acompañar y decidir.</h2></div><p>Agroway concentra la captura y la relación de datos. Sus vistas cambian según el rol: equipo técnico, personal de campo o ecosistema SANA.</p></header><div className="agroway-v1-experiences__grid">{experiences.map((experience, index) => <article className={`agroway-v1-experience agroway-v1-experience--${index + 1}`} key={experience.code}><div className="agroway-v1-experience__visual"><span>{experience.code}</span><div className="agroway-v1-screen"><div className="screen-top"><i /><i /><i /></div><div className="screen-body"><b /><b /><b /><div className="screen-chart"><i /><i /><i /><i /><i /></div><div className="screen-rows"><span /><span /><span /></div></div></div></div><div className="agroway-v1-experience__body"><span className="eyebrow">{experience.code}</span><h3>{experience.name}</h3><strong>{experience.title}</strong><p>{experience.copy}</p><ul>{experience.items.map((item) => <li key={item}>{item}</li>)}</ul></div></article>)}</div></div>
+      <section className={styles.productVision} aria-labelledby="agroway-vision-title">
+        <div className="container">
+          <header className={styles.productVisionHeading}>
+            <div>
+              <span className={styles.eyebrow}>Una historia conectada</span>
+              <h2 id="agroway-vision-title">La verdad financiera y la verdad de campo no pueden vivir separadas.</h2>
+            </div>
+            <p>AgroWay organiza el ciclo productivo desde el productor, la finca y el lote hasta el diagnóstico, el plan, la actividad, la evidencia y la cosecha. La visión de Greenatics es que esa historia de campo también dé contexto al seguimiento técnico y a las decisiones del proyecto.</p>
+          </header>
+          <ol className={styles.productVisionFlow} aria-label="Visión de conexión entre campo y proyecto">
+            <li>
+              <span>AGROWAY FIELD</span>
+              <h3>Registrar lo que ocurre en el lote.</h3>
+              <p>Tareas, aplicaciones, seguimiento y evidencia vinculados con la zona y el ciclo productivo.</p>
+              <small>La demo actual usa datos ficticios. La captura sin conexión y su sincronización posterior son parte de la evolución prevista.</small>
+            </li>
+            <li>
+              <span>GREENATICS CONTROL</span>
+              <h3>Leer la operación del proyecto.</h3>
+              <p>Una visión de portafolio que contempla presupuesto, riesgo, abastecimiento, ejecución, cosecha, impacto y alertas.</p>
+              <small>Control Tower, Digital Twin, Data Room, demanda y catálogo: componentes de producto en definición.</small>
+            </li>
+            <li>
+              <span>SANA DATA</span>
+              <h3>Llevar contexto de campo a la decisión.</h3>
+              <p>Origen, ciclo, evidencia y seguimiento pueden apoyar la estructuración y el acompañamiento de proyectos productivos.</p>
+              <small>La conexión entre AgroWay y SANA no está activa en esta demo y requiere diseño y validación.</small>
+            </li>
+          </ol>
+          <p className={styles.productVisionNote}>Greenatics y Wondergreen suman conocimiento agronómico, ciencia aplicada, fertilizantes y bioinsumos para relacionar las decisiones con el suelo, el cultivo y el territorio.</p>
+        </div>
       </section>
 
-      <section className="agroway-v1-capabilities" aria-labelledby="agroway-capabilities-title">
-        <div className="container"><header className="agroway-v1-heading"><div><span className="eyebrow">Lo que ya está modelado</span><h2 id="agroway-capabilities-title">Más que una bitácora: una infraestructura de trabajo.</h2></div><p>El repositorio actual ya contempla los dominios que hacen que la trazabilidad sea útil para operar, financiar, revisar y aprender.</p></header><div className="agroway-v1-capabilities__grid">{capabilities.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div>
+      <section className={styles.cycle} aria-labelledby="agroway-cycle-title">
+        <div className="container">
+          <header className={styles.sectionHeading}>
+            <div>
+              <span className={styles.eyebrow}>El recorrido de un ciclo</span>
+              <h2 id="agroway-cycle-title">Cada registro conserva el contexto de la decisión.</h2>
+            </div>
+            <p>
+              El lote da continuidad entre el diagnóstico, el plan, el seguimiento y el resultado.
+              Así una actividad no queda aislada de la zona donde ocurrió.
+            </p>
+          </header>
+          <ol className={styles.cyclePath}>
+            {cycleStages.map(([number, title, copy]) => (
+              <li key={number}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </li>
+            ))}
+          </ol>
+          <div className={styles.relationship} aria-label="Relación entre módulos">
+            <span>Proyecto</span><b aria-hidden="true">→</b><span>Finca y zona</span><b aria-hidden="true">→</b>
+            <span>Ciclo y plan</span><b aria-hidden="true">→</b><span>Actividad y evidencia</span><b aria-hidden="true">→</b><span>Cosecha</span>
+          </div>
+        </div>
       </section>
 
-      <section className="agroway-v1-proof"><div className="container"><header className="agroway-v1-heading agroway-v1-heading--light"><div><span className="eyebrow eyebrow--light">Gobierno de la información</span><h2>La confianza no se diseña con una cifra grande. Se construye con distinciones pequeñas.</h2></div><p>Estas reglas hacen que un resultado pueda explicarse, revisarse y sostenerse sin convertir una hipótesis en una certeza.</p></header><div className="agroway-v1-proof__grid">{proofPoints.map(([title, copy]) => <article key={title}><span>✓</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></div></section>
+      <section className={styles.mipfre} aria-labelledby="agroway-mipfre-title">
+        <div className={"container " + styles.mipfreGrid}>
+          <div>
+            <span className={styles.eyebrowLight}>Plan de cultivo</span>
+            <h2 id="agroway-mipfre-title">MIPFRE: manejo integrado por zona, con revisión profesional.</h2>
+          </div>
+          <div className={styles.mipfreCopy}>
+            <p>
+              En AgroWay, MIPFRE nombra el plan integrado de manejo por zona para fertirriego y
+              manejo fitosanitario. El plan debe relacionar diagnóstico, cultivo, fuente técnica,
+              responsable, fecha y evidencia esperada.
+            </p>
+            <p>
+              No genera por sí solo dosis, umbrales ni compatibilidades. La formulación depende de
+              protocolos vigentes y de revisión agronómica para el cultivo y la zona.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <section className="agroway-v1-greenatics"><div className="container agroway-v1-greenatics__grid"><div><span className="eyebrow">La relación con SANA</span><h2>Agroway registra. Greenatics aporta ciencia. SANA conecta el ecosistema.</h2></div><div><p><strong>AGROWAY</strong> es la aplicación de trazabilidad agrícola: captura datos del productor, la finca, el lote, el cultivo, las labores, los insumos, la evidencia y la cosecha a medida que el proyecto avanza.</p><p><strong>Greenatics y Wondergreen</strong> aportan conocimiento agronómico, fertilizantes, bioinsumos, protocolos y acompañamiento. <strong>SANA</strong> usa esa información para estructurar y acompañar inversión en proyectos productivos con una lectura más completa del campo.</p><div className="button-row"><Link className="button button--dark" href="/sana/">Conocer SANA</Link><Link className="button button--ghost" href="/wondergreen/">Conocer Wondergreen</Link></div></div></div></section>
+      <section className={styles.statusSection} aria-labelledby="agroway-status-title">
+        <div className={"container " + styles.statusGrid}>
+          <div>
+            <span className={styles.eyebrow}>Alcance y estado</span>
+            <h2 id="agroway-status-title">Una demo para entender el producto; no para operar una finca.</h2>
+          </div>
+          <div className={styles.statusCopy}>
+            <p>
+              Los proyectos, lotes, tareas, evidencias, cosechas y estados que aparecen en pantalla
+              son ilustrativos. La persistencia compartida, los permisos por organización, el
+              inventario productivo y las integraciones de sensores todavía requieren desarrollo y
+              validación.
+            </p>
+            <p>
+              AgroWay no está conectado a sensores IoT ni a datos de campo en tiempo real. Antes de
+              conectar una fuente se deben validar unidades, fecha de lectura, calibración,
+              procedencia y responsable de revisar el dato.
+            </p>
+            <Link className={styles.inlineLink} href="/agroway/app/">
+              Recorrer módulos de ejemplo <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="agroway-v1-readiness"><div className="container agroway-v1-readiness__grid"><div><span className="eyebrow">Puesta en marcha</span><h2>De la demo a una operación acompañada.</h2><p>El ciclo productivo ya tiene una estructura clara. El siguiente paso es configurarla para tu organización, con los datos, roles, indicadores y reglas que el proyecto necesita para trabajar de forma consistente.</p><Link className="button button--primary" href="/contacto/?interes=agroway">Configurar un entorno propio</Link></div><div className="agroway-v1-readiness__list">{readiness.map(([label, copy], index) => <article key={`${label}-${index}`}><span>✓</span><div><strong>{label}</strong><p>{copy}</p></div></article>)}</div></div></section>
-
-      <section className="agroway-v1-cta"><div className="container"><span className="eyebrow eyebrow--light">Del campo a SANA</span><h2>Si el proyecto importa, su historia también.</h2><p>Hablemos del cultivo, el nivel de trazabilidad y la información que debe estar disponible para acompañar el próximo ciclo productivo.</p><Link className="button button--neon" href="/contacto/?interes=agroway">Hablar sobre AGROWAY <span aria-hidden="true">→</span></Link></div></section>
+      <section className={styles.nextStep}>
+        <div className={"container " + styles.nextStepGrid}>
+          <div>
+            <span className={styles.eyebrow}>Diseño del producto</span>
+            <h2>¿Qué información necesita tu equipo para seguir un ciclo completo?</h2>
+            <p>
+              Cuéntanos cómo organizas zonas, planes, labores e inventarios para definir un alcance
+              que se pueda revisar junto con las personas responsables del cultivo.
+            </p>
+          </div>
+          <Link className="button button--primary" href="/contacto/?interes=agroway">
+            Conversar sobre AgroWay <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
     </>
   );
 }

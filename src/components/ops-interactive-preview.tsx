@@ -25,7 +25,7 @@ export function OpsInteractivePreview() {
           <span className="ops-preview__badge">Simulador operativo</span>
           <strong>GREENATICS OPS · Escenario de registro y balance</strong>
         </div>
-        <span className="ops-preview__status">Demostración · datos simulados</span>
+        <span className="ops-preview__status">Estación pública · datos ilustrativos</span>
       </header>
 
       <div className="ops-preview__grid">
@@ -53,7 +53,7 @@ export function OpsInteractivePreview() {
           />
 
           <div className="ops-preview__lot">
-            <span>Lote de demostración</span>
+            <span>Lote ilustrativo</span>
             <strong>GTCS-2026-B{Math.floor(truckWeight / 100)}-OPS</strong>
           </div>
           <p>El ejemplo muestra cómo una captura puede alimentar balances e indicadores. No consulta una báscula ni una operación en tiempo real.</p>
@@ -73,7 +73,7 @@ export function OpsInteractivePreview() {
           <article>
             <span>Impacto climático orientativo</span>
             <strong>{estimatedClimateImpact} <small>t CO₂e</small></strong>
-            <p>Factor de demostración; requiere metodología propia.</p>
+            <p>Factor ilustrativo; requiere metodología propia.</p>
           </article>
           <article>
             <span>Trazabilidad esperada</span>

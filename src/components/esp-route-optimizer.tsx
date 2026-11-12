@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export function EspRouteOptimizer() {
   const [households, setHouseholds] = useState<number>(4500);
@@ -15,7 +16,8 @@ export function EspRouteOptimizer() {
   const weeklyCapacityPerVehicle = 18 * (collectionFreq / 2); // 18 t/semana como referencia a 2 días de operación
   const motocarguerosNeeded = Math.max(2, Math.ceil(weeklyTons / weeklyCapacityPerVehicle));
   const compactorTruckSavingsMonth = Math.round(motocarguerosNeeded * 4200000); // Ahorro en ACPM y mantenimiento
-  const contactHref = `/contacto/?interes=microrrutas&perfil=municipio&diagnostico=${encodeURIComponent("Escenario de microrruta con motocarguero")}&prioridad=${encodeURIComponent(`${households.toLocaleString("es-CO")} hogares · ${collectionFreq} días/semana · ${Math.round(monthlyTons)} t/mes estimadas · ${motocarguerosNeeded} vehículos`)}`;
+  const assessmentDetails = `Hogares atendidos considerados: ${households.toLocaleString("es-CO")}\nFrecuencia ingresada: ${collectionFreq} días por semana\nVolumen mensual estimado por el modelo: ${Math.round(monthlyTons)} t/mes\nVehículos calculados como referencia: ${motocarguerosNeeded}\nAhorro mensual modelado: ${compactorTruckSavingsMonth.toLocaleString("es-CO")} COP\nValidar con aforo, distancias, accesos, tiempos de ciclo, capacidad real del vehículo y costos locales antes de definir la microrruta.`;
+  const contactHref = buildToolContactHref("microrrutas", "territorio", "Escenario de microrruta con motocarguero");
 
   return (
     <div style={{ background: "#ffffff", border: "1.5px solid var(--line)", borderRadius: "24px", padding: "32px", boxShadow: "0 14px 40px rgba(0, 107, 69, 0.06)" }}>
@@ -87,7 +89,7 @@ export function EspRouteOptimizer() {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap", marginTop: "24px", paddingTop: "18px", borderTop: "1px solid var(--line)" }}>
-        <Link className="button button--dark" href={contactHref}>Llevar escenario a Contacto →</Link>
+        <Link className="button button--dark" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)}>Llevar escenario a Contacto →</Link>
         <span style={{ color: "var(--muted)", fontSize: "0.76rem" }}>La eficiencia se valida con una microrruta diseñada sobre datos de campo.</span>
       </div>
     </div>

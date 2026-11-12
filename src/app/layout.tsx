@@ -21,19 +21,26 @@ import "./site-v3.css";
 import "./routes-v3.css";
 import "./portfolio-v4.css";
 import "./digital-v4.css";
-import "./agroway/agroway-v1.css";
 import "./sana/sana-v1.css";
 import "./portfolio-demo.css";
 import "./portfolio-v5.css";
+import "./media-safety.css";
+import "./a11y-final.css";
+import "./committee-refresh.css";
+import "./product-fiche.css";
+import "./programas-wondergreen.css";
+import "./technology-page.css";
+import "./home-editorial-v2.css";
+import "./park-editorial.css";
+import "./typographic-refinement.css";
 import { JsonLd } from "@/components/json-ld";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { FloatingActionBar } from "@/components/floating-action-bar";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: "Greenatics | Economía circular aplicada", template: "%s | Greenatics" },
+  title: { default: "Greenatics | Biomasa, operación y valor", template: "%s | Greenatics" },
   description: site.description,
   applicationName: "Greenatics",
   category: "environment",
@@ -44,7 +51,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_CO",
     siteName: site.name,
-    title: "Greenatics | Economía circular aplicada",
+    title: "Greenatics | Biomasa, operación y valor",
     description: site.description,
     images: [
       {
@@ -57,7 +64,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Greenatics | Economía circular aplicada",
+    title: "Greenatics | Biomasa, operación y valor",
     description: site.description,
     images: ["/brand/greenatics-horizontal.webp"],
   },
@@ -103,9 +110,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLd data={[organizationSchema, websiteSchema]} />
         <a className="skip-link" href="#contenido">Saltar al contenido</a>
         <SiteHeader />
-        <main id="contenido">{children}</main>
+        <main id="contenido" tabIndex={-1}>{children}</main>
         <SiteFooter />
-        <FloatingActionBar />
       </body>
     </html>
   );

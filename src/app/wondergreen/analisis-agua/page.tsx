@@ -1,170 +1,103 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
+import { calculateSodiumAdsorptionRatio, parseWaterNumber } from "@/data/irrigation-water";
+import "./irrigation-water.css";
+
+const fields = [
+  { key: "ph", label: "pH del agua", unit: "" },
+  { key: "ec", label: "Conductividad eléctrica", unit: "dS/m a 25 °C" },
+  { key: "sodium", label: "Sodio (Na)", unit: "meq/L" },
+  { key: "calcium", label: "Calcio (Ca)", unit: "meq/L" },
+  { key: "magnesium", label: "Magnesio (Mg)", unit: "meq/L" },
+] as const;
+type FieldKey = typeof fields[number]["key"];
+type Report = Record<FieldKey, string>;
+const emptyReport: Report = { ph: "", ec: "", sodium: "", calcium: "", magnesium: "" };
+const exampleReport: Report = { ph: "7,6", ec: "1,2", sodium: "3,5", calcium: "2,5", magnesium: "1,8" };
 
 export default function AnalisisAguaPage() {
-  const [ph, setPh] = useState<number>(7.6);
-  const [ec, setEc] = useState<number>(1.2); // dS/m
-  const [na, setNa] = useState<number>(3.5); // meq/L
-  const [ca, setCa] = useState<number>(2.5); // meq/L
-  const [mg, setMg] = useState<number>(1.8); // meq/L
+  const [report, setReport] = useState<Report>(emptyReport);
+  const [isExample, setIsExample] = useState(false);
+  const values = Object.fromEntries(fields.map(({ key }) => [key, parseWaterNumber(report[key])])) as Record<FieldKey, number | null>;
+  const fieldError = (key: FieldKey): string | null => {
+    if (!report[key].trim()) return null;
+    const value = values[key];
+    if (value === null || value < 0) return "Introduce un número válido, mayor o igual a cero.";
+    if (key === "ph" && value > 14) return "Revisa el pH: el intervalo de entrada es de 0 a 14.";
+    return null;
+  };
+  const hasInvalidField = fields.some(({ key }) => fieldError(key) !== null);
+  const sar = calculateSodiumAdsorptionRatio(values.sodium, values.calcium, values.magnesium);
+  const ratioText = sar === null ? "Por calcular" : sar.toFixed(2).replace(".", ",");
+  const zeroDenominator = values.calcium === 0 && values.magnesium === 0;
+  const describe = (key: FieldKey, unit: string) => fieldError(key)
+    ? `${report[key]} (dato por revisar)`
+    : values[key] === null ? "Pendiente" : `${values[key]}${unit ? ` ${unit}` : ""}`;
+  const assessmentDetails = [
+    `Origen: ${isExample ? "Ejemplo numérico editable; no es un informe de laboratorio" : "Datos transcritos por el usuario; pendientes de revisión técnica"}`,
+    `pH del agua: ${describe("ph", "")}`,
+    `Conductividad eléctrica: ${describe("ec", "dS/m a 25 °C")}`,
+    `Sodio: ${describe("sodium", "meq/L")}`,
+    `Calcio: ${describe("calcium", "meq/L")}`,
+    `Magnesio: ${describe("magnesium", "meq/L")}`,
+    `RAS: ${sar === null ? "No calculable con los datos ingresados" : sar.toFixed(2)}`,
+    "Método: Na / raíz cuadrada de ((Ca + Mg) / 2), con los tres iones en meq/L.",
+    "Revisar CE, informe completo, suelo, cultivo y sistema de riego antes de decidir el manejo.",
+  ].join("\n");
+  const contactHref = buildToolContactHref("wondergreen", "agro", "Calidad de agua de riego");
+  const whatsappMessage = encodeURIComponent(`Hola Greenatics. Quiero revisar mi agua de riego.\n\n${assessmentDetails}`);
 
-  // Calculations
-  const sar = Number((na / Math.sqrt(((ca + mg) / 2) || 1)).toFixed(2));
-  const isHighSalinity = ec > 1.5;
-  const isHighSar = sar > 4.0;
-  const isAlkaline = ph > 7.4;
-
-  let waterQuality = "Buena";
-  if (isHighSalinity || isHighSar || isAlkaline) {
-    waterQuality = isHighSalinity && isHighSar ? "Riesgo Severo de Salinidad y Sodio" : "Precaución / Requiere Acondicionamiento";
+  function renderField(field: typeof fields[number]) {
+    const error = fieldError(field.key);
+    const id = `water-${field.key}`;
+    return (
+      <div className="wg-water__field" key={field.key}>
+        <label htmlFor={id}>{field.label}{field.unit ? ` (${field.unit})` : ""}</label>
+        <input id={id} type="text" inputMode="decimal" value={report[field.key]} autoComplete="off"
+          aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error water-units` : "water-units"}
+          onChange={(event) => setReport((current) => ({ ...current, [field.key]: event.target.value }))} />
+        {error ? <span className="wg-water__field-error" id={`${id}-error`}>{error}</span> : null}
+      </div>
+    );
   }
 
-  const waAguaMsg = encodeURIComponent(
-    `Hola Greenatics, interpreté la Calidad de Agua de Riego en su web:\n\n` +
-    `💧 *Parámetros:* pH ${ph} | CE: ${ec} dS/m | RAS (SAR): ${sar}\n` +
-    `⚠️ *Diagnóstico:* ${waterQuality}\n` +
-    `📋 *Siguiente paso:* validar el reporte completo, el cultivo y la calidad del agua antes de definir acondicionamiento o fertirriego.\n\n` +
-    `¿Me pueden brindar asesoría para el manejo de agua y fertirriego en mi cultivo?`
-  );
-  const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Calidad de agua de riego")}&prioridad=${encodeURIComponent(`pH ${ph} · CE ${ec} dS/m · RAS ${sar} · ${waterQuality}`)}`;
-
   return (
-    <div style={{ background: "#f7faf5", color: "var(--green-950)", paddingBlock: "60px 80px" }}>
+    <div className="wg-water">
       <WondergreenToolTrail name="Análisis de agua" path="/wondergreen/analisis-agua/" />
-      <div className="container" style={{ maxWidth: "1050px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 36px" }}>
-          <span className="eyebrow">Fertirriego & Calidad de Agua</span>
-          <h1 style={{ fontSize: "2.4rem", color: "var(--green-950)", margin: "8px 0 12px" }}>
-            Intérprete de Calidad de Agua de Riego & Riesgo Salino (RAS)
-          </h1>
-          <p style={{ color: "var(--muted)", fontSize: "1.02rem", lineHeight: 1.6 }}>
-            El agua alcalina o con alto contenido de sodio precipita los fertilizantes en los goteros y daña la estructura del suelo. Evalúa la salinidad y la Relación de Adsorción de Sodio (RAS).
-          </p>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.2fr", gap: "32px", alignItems: "flex-start" }}>
-          <div style={{ background: "#ffffff", padding: "32px", borderRadius: "24px", border: "1.5px solid var(--line)", boxShadow: "0 12px 36px rgba(0, 107, 69, 0.05)" }}>
-            <h3 style={{ fontSize: "1.3rem", color: "var(--green-950)", margin: "0 0 20px" }}>
-              1. Datos del Reporte de Agua
-            </h3>
-
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
-                <span>pH del Agua:</span>
-                <span style={{ color: isAlkaline ? "#c45100" : "var(--green-800)" }}>{ph} {isAlkaline ? "(Alcalina)" : "(Óptima)"}</span>
-              </label>
-              <input
-                type="range"
-                min="5.0"
-                max="8.5"
-                step="0.1"
-                value={ph}
-                onChange={(e) => setPh(Number(e.target.value))}
-                style={{ width: "100%", accentColor: "var(--green-700)", cursor: "pointer" }}
-              />
+      <div className="container">
+        <header className="wg-water__intro">
+          <span className="eyebrow">Agua de riego · Wondergreen</span>
+          <h1>Revisa el agua antes de decidir el fertirriego.</h1>
+          <p>Organiza los resultados de tu laboratorio y calcula la relación de adsorción de sodio (RAS). Con esa lectura, nuestro equipo puede ayudarte a preparar la revisión del agua, el suelo y el cultivo.</p>
+        </header>
+        <div className="wg-water__layout">
+          <section className="wg-water__form" aria-labelledby="water-report-title">
+            <h2 id="water-report-title">Los datos de tu informe</h2>
+            <p id="water-units">Transcribe sodio, calcio y magnesio en meq/L. Usa coma o punto decimal, sin separadores de miles. Confirma las unidades con el laboratorio antes de calcular.</p>
+            <div className="wg-water__example-actions">
+              <button type="button" onClick={() => { setReport(exampleReport); setIsExample(true); }}>Cargar un ejemplo</button>
+              <button type="button" onClick={() => { setReport(emptyReport); setIsExample(false); }}>Limpiar datos</button>
             </div>
-
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
-                <span>Conductividad Eléctrica (CE dS/m):</span>
-                <span style={{ color: isHighSalinity ? "#c45100" : "var(--green-800)" }}>{ec} dS/m</span>
-              </label>
-              <input
-                type="range"
-                min="0.2"
-                max="3.0"
-                step="0.1"
-                value={ec}
-                onChange={(e) => setEc(Number(e.target.value))}
-                style={{ width: "100%", accentColor: "var(--green-700)", cursor: "pointer" }}
-              />
-            </div>
-
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
-                <span>Sodio (Na+ meq/L):</span>
-                <span style={{ color: "var(--green-800)" }}>{na} meq/L</span>
-              </label>
-              <input
-                type="range"
-                min="0.5"
-                max="10.0"
-                step="0.5"
-                value={na}
-                onChange={(e) => setNa(Number(e.target.value))}
-                style={{ width: "100%", accentColor: "var(--green-700)", cursor: "pointer" }}
-              />
-            </div>
-
-            <div style={{ background: "#fafcf9", padding: "16px", borderRadius: "14px", border: "1px solid var(--line)" }}>
-              <strong style={{ fontSize: "0.86rem", color: "var(--green-950)", display: "block", marginBottom: "4px" }}>
-                Riesgo de Obturación:
-              </strong>
-              <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.5 }}>
-                Con pH &gt; 7.4, los fosfatos y el hierro se vuelven insolubles formando precipitados blancos que tapan los goteros de riego.
-              </p>
-            </div>
-          </div>
-
-          <div style={{ background: "#0a2920", color: "#ffffff", padding: "36px", borderRadius: "24px", border: "1.5px solid rgba(255, 255, 255, 0.15)", boxShadow: "0 20px 50px rgba(0, 0, 0, 0.3)" }}>
-            <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#98cf4f", fontWeight: 800 }}>
-              Diagnóstico de Fertirriego
-            </span>
-            <h3 style={{ fontSize: "1.6rem", color: "#ffffff", margin: "6px 0 16px" }}>
-              Relación de Adsorción de Sodio (RAS)
-            </h3>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
-              <div style={{ background: "rgba(255, 255, 255, 0.08)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
-                <small style={{ fontSize: "0.74rem", color: "#a8c7b8", display: "block" }}>Índice RAS (SAR)</small>
-                <strong style={{ fontSize: "1.4rem", color: isHighSar ? "#ff8787" : "#98cf4f" }}>{sar}</strong>
-                <span style={{ fontSize: "0.68rem", color: "#cbdcd3", display: "block" }}>Ideal: &lt; 3.0</span>
-              </div>
-              <div style={{ background: "rgba(255, 255, 255, 0.08)", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255, 255, 255, 0.15)" }}>
-                <small style={{ fontSize: "0.74rem", color: "#a8c7b8", display: "block" }}>Riesgo Salino</small>
-                <strong style={{ fontSize: "1.4rem", color: isHighSalinity ? "#ff8787" : "#ffffff" }}>{ec < 0.8 ? "Bajo" : ec < 1.5 ? "Medio" : "Alto"}</strong>
-              </div>
-            </div>
-
-            <div style={{ background: "#f0f8ec", color: "var(--green-950)", padding: "20px", borderRadius: "16px", marginBottom: "24px" }}>
-              <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "var(--green-800)", fontWeight: 800, display: "block" }}>
-                Protocolo de Acondicionamiento Recomendado:
-              </span>
-              <p style={{ margin: "4px 0 0", fontSize: "0.84rem", color: "var(--green-950)", fontWeight: 600, lineHeight: 1.5 }}>
-                {isAlkaline
-                  ? "Incorporar biol fermentado y ácidos húmicos Wondergreen para amortiguar el pH a 6.2 y evitar precipitados de fósforo."
-                  : "Los valores ingresados no muestran una alerta preliminar; confirma compatibilidad y calidad con la ficha vigente antes de mezclar."}
-              </p>
-            </div>
-
-            <Link className="button button--light" href={contactHref} style={{ width: "100%", justifyContent: "center", marginBottom: "10px", color: "var(--green-950)" }}>Llevar diagnóstico a Contacto →</Link>
-            <a
-              href={`https://wa.me/573003078822?text=${waAguaMsg}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                width: "100%",
-                padding: "16px 24px",
-                background: "#25D366",
-                color: "#073319",
-                borderRadius: "14px",
-                fontSize: "1rem",
-                fontWeight: 800,
-                textDecoration: "none",
-                boxShadow: "0 10px 24px rgba(37, 211, 102, 0.35)"
-              }}
-            >
-              <span>💬</span>
-              <span>Consultar Fertirriego en WhatsApp</span>
-            </a>
-          </div>
+            {isExample ? <p className="wg-water__example-note" role="status">Estás editando un ejemplo numérico. Usa «Limpiar datos» para empezar con tu propio informe.</p> : null}
+            <fieldset><legend>Contexto del agua</legend><div className="wg-water__fields">{fields.slice(0, 2).map(renderField)}</div></fieldset>
+            <fieldset><legend>Iones para el cálculo de RAS</legend><div className="wg-water__fields wg-water__fields--ions">{fields.slice(2).map(renderField)}</div></fieldset>
+          </section>
+          <section className="wg-water__result" aria-labelledby="water-result-title">
+            <h2 id="water-result-title">Relación de adsorción de sodio</h2>
+            <output className="wg-water__ratio" aria-live="polite" aria-label="RAS calculada">{ratioText}</output>
+            <div className="wg-water__formula">RAS = Na / √((Ca + Mg) / 2)</div>
+            {sar === null ? <p>{zeroDenominator ? "Calcio y magnesio no pueden sumar cero para este cálculo." : "Completa sodio, calcio y magnesio con valores válidos del informe para obtener la RAS."}</p> : <p>Este índice se calcula con los tres iones ingresados. Para interpretar su relación con la infiltración, cruza la RAS con la conductividad eléctrica y las condiciones del suelo.</p>}
+            {hasInvalidField ? <p>Revisa los campos señalados antes de compartir esta lectura.</p> : null}
+            <h3>De los números al manejo del lote</h3>
+            <p>Reúne el informe completo, fecha y punto de muestreo, cultivo, suelo y sistema de riego. La decisión de acondicionar el agua requiere esa revisión; la RAS por sí sola no define una dosis ni una mezcla de fertilizantes.</p>
+            <a className="wg-water__source" href="https://www.fao.org/4/T0234e/T0234E04.htm" target="_blank" rel="noopener noreferrer">Consultar el método y contexto en FAO<span className="sr-only"> (se abre en una pestaña nueva)</span></a>
+            <Link className="button button--light" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)}>Compartir lectura con Greenatics</Link>
+            <a className="wg-water__whatsapp" href={`https://wa.me/573003078822?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">Conversar por WhatsApp<span className="sr-only"> (se abre en una pestaña nueva)</span></a>
+          </section>
         </div>
       </div>
     </div>

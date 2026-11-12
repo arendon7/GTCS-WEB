@@ -1,0 +1,440 @@
+.park-concept {
+  color: #102c22;
+  background: #fff;
+}
+
+.park-concept h1,
+.park-concept h2,
+.park-concept h3 {
+  color: #0a2b20;
+  font-family: var(--font-display);
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.park-concept p {
+  color: #4c5e54;
+  line-height: 1.72;
+  text-align: left;
+}
+
+.park-concept-hero {
+  padding: clamp(68px, 7vw, 96px) 0 clamp(64px, 7vw, 94px);
+  background: #f4f1e8;
+}
+
+.park-concept-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  gap: clamp(38px, 6vw, 88px);
+  align-items: start;
+}
+
+.park-concept-hero__copy h1 {
+  max-width: 14ch;
+  margin: 0 0 24px;
+  font-size: clamp(2.8rem, 4.8vw, 4.8rem);
+  line-height: 0.99;
+}
+
+.park-concept-hero__copy p {
+  max-width: 61ch;
+  margin: 0 0 17px;
+  font-size: 1.03rem;
+}
+
+.park-concept-hero__copy .park-concept-hero__lead {
+  color: #183d2d;
+  font-size: clamp(1.12rem, 1.55vw, 1.35rem);
+  line-height: 1.55;
+}
+
+.park-concept-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+  margin-top: 30px;
+}
+
+.park-concept-text-link,
+.park-concept-light-link {
+  color: #075b3e;
+  font-weight: 750;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.park-concept-text-link:hover,
+.park-concept-light-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.park-concept-hero__visual {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 1.24;
+  background: #dce4d8;
+  border-radius: 44% 12px 12px 12px;
+  box-shadow: 0 24px 60px rgba(23, 47, 34, 0.13);
+}
+
+.park-concept-hero__visual img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.park-concept-hero__visual figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 38px 22px 18px;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(5, 31, 23, 0.82));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.park-concept-principle {
+  padding: clamp(76px, 9vw, 112px) 0;
+  background: #fff;
+}
+
+.park-concept-principle__grid,
+.park-concept-feasibility__grid,
+.park-concept-growth__grid,
+.park-concept-contexts__grid,
+.park-concept-value__grid,
+.park-concept-data__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(34px, 7vw, 100px);
+  align-items: start;
+}
+
+.park-concept-principle h2,
+.park-concept-feasibility h2,
+.park-concept-growth h2,
+.park-concept-contexts h2,
+.park-concept-value h2,
+.park-concept-data h2 {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(2.1rem, 3.7vw, 3.55rem);
+  line-height: 1.04;
+}
+
+.park-concept-principle__grid > div p + p {
+  margin-top: 16px;
+}
+
+.park-concept-principle__grid > div .park-concept-text-link {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.park-concept-modules {
+  padding: clamp(76px, 9vw, 112px) 0;
+  background: #edf3eb;
+}
+
+.park-concept-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.7fr);
+  gap: clamp(30px, 7vw, 100px);
+  align-items: end;
+  margin-bottom: 54px;
+}
+
+.park-concept-heading h2 {
+  max-width: 17ch;
+  margin: 0;
+  font-size: clamp(2.25rem, 4vw, 4rem);
+  line-height: 1.02;
+}
+
+.park-concept-heading p {
+  max-width: 48ch;
+  margin: 0;
+}
+
+.park-concept-module-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(26px, 4vw, 58px);
+}
+
+.park-concept-module-groups article {
+  min-width: 0;
+}
+
+.park-concept-module-groups h3,
+.park-concept-dimensions h3 {
+  margin: 0 0 13px;
+  font-size: clamp(1.32rem, 1.8vw, 1.7rem);
+  line-height: 1.15;
+}
+
+.park-concept-module-groups article > p {
+  margin: 0;
+}
+
+.park-concept-module-groups ul {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.park-concept-module-groups li {
+  color: #4c5e54;
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+
+.park-concept-module-groups li strong {
+  color: #143a2c;
+}
+
+.park-concept-feasibility {
+  padding: clamp(76px, 9vw, 112px) 0;
+  background: #f8f6ef;
+}
+
+.park-concept-feasibility__grid > div:first-child p {
+  max-width: 54ch;
+  margin-top: 22px;
+}
+
+.park-concept-dimensions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  padding-top: 7px;
+}
+
+.park-concept-dimensions article {
+  min-width: 0;
+}
+
+.park-concept-dimensions h3 {
+  font-size: 1.25rem;
+}
+
+.park-concept-dimensions p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.park-concept-growth {
+  padding: clamp(76px, 9vw, 112px) 0;
+  background: #e7efe4;
+}
+
+.park-concept-growth__grid > div:first-child p {
+  max-width: 55ch;
+  margin-top: 22px;
+}
+
+.park-concept-growth__copy p + p {
+  margin-top: 25px;
+}
+
+.park-concept-growth__copy strong {
+  color: #123b2b;
+  font-size: 1.08rem;
+}
+
+.park-concept-contexts {
+  padding: clamp(76px, 9vw, 112px) 0;
+  background: #fff;
+}
+
+.park-concept-contexts__grid > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 34px;
+}
+
+.park-concept-contexts__grid > div p {
+  margin: 0;
+}
+
+.park-concept-contexts__grid > div strong {
+  color: #0c3928;
+}
+
+.park-concept-contexts .park-concept-boundary {
+  grid-column: 2;
+  margin: -5px 0 0;
+  color: #59675e;
+  font-size: 0.91rem;
+}
+
+.park-concept-value {
+  padding: clamp(76px, 9vw, 112px) 0;
+  color: #fff;
+  background: #103b2d;
+}
+
+.park-concept-value h2 {
+  color: #fff;
+}
+
+.park-concept-value__grid > div p {
+  max-width: 62ch;
+  margin: 0 0 20px;
+  color: #e0e9e2;
+}
+
+.park-concept-light-link {
+  color: #d9f49a;
+}
+
+.park-concept-data {
+  padding: clamp(64px, 7vw, 88px) 0;
+  background: #f3f5ef;
+}
+
+.park-concept-data h2 {
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+}
+
+.park-concept-data__grid > div p {
+  max-width: 62ch;
+  margin: 0 0 17px;
+}
+
+.park-concept-cta {
+  padding: clamp(58px, 7vw, 82px) 0;
+  color: #fff;
+  background: #082c21;
+}
+
+.park-concept-cta__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px 54px;
+}
+
+.park-concept-cta h2 {
+  max-width: 19ch;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  line-height: 1.04;
+}
+
+.park-concept-cta p {
+  max-width: 60ch;
+  margin: 15px 0 0;
+  color: #dbe8e1;
+}
+
+.park-concept-cta .button {
+  flex: 0 0 auto;
+}
+
+.park-concept a:focus-visible {
+  outline: 3px solid #9acb4e;
+  outline-offset: 4px;
+}
+
+@media (max-width: 960px) {
+  .park-concept-hero__grid,
+  .park-concept-principle__grid,
+  .park-concept-feasibility__grid,
+  .park-concept-growth__grid,
+  .park-concept-contexts__grid,
+  .park-concept-value__grid,
+  .park-concept-data__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .park-concept-hero__copy h1 {
+    max-width: 15ch;
+  }
+
+  .park-concept-hero__visual {
+    aspect-ratio: 1.65;
+  }
+
+  .park-concept-module-groups {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .park-concept-dimensions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .park-concept-dimensions article:last-child {
+    grid-column: 1 / -1;
+    max-width: 42rem;
+  }
+
+  .park-concept-contexts .park-concept-boundary {
+    grid-column: 1;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .park-concept-hero__grid {
+    gap: 34px;
+  }
+
+  .park-concept-hero__copy h1 {
+    font-size: clamp(2.5rem, 10vw, 3.65rem);
+  }
+
+  .park-concept-hero__visual {
+    aspect-ratio: 1.16;
+    border-top-left-radius: 34%;
+  }
+
+  .park-concept-heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 38px;
+  }
+
+  .park-concept-module-groups,
+  .park-concept-dimensions,
+  .park-concept-contexts__grid > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .park-concept-dimensions article:last-child {
+    grid-column: auto;
+  }
+
+  .park-concept-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .park-concept-actions .button {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .park-concept-cta__inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .park-concept-cta .button {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}

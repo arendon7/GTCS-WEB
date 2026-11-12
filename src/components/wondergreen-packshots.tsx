@@ -1,126 +1,47 @@
-"use client";
-
-import React, { useState } from "react";
 import Link from "next/link";
+import { products } from "@/data/products";
+import { getCommercialPresentations } from "@/data/product-publication";
+import { canRenderPublicPackshot, getProductMedia } from "@/data/product-media";
 
-const products = [
-  {
-    id: "2grow",
-    name: "Wondergreen 2GROW",
-    formula: "15-3-3 Organomineral",
-    tag: "Arranque & Brotación",
-    image: "/products/wondergreen-2grow.webp",
-    price: "COP $147.400",
-    unit: "Bulto 40 kg",
-    status: "Precio de referencia reconciliado",
-    desc: "Referencia organomineral orientada a acompañar establecimiento, brotación y crecimiento vegetativo dentro de un programa ajustado al cultivo.",
-    pdf: "/downloads/catalogo-wondergreen.pdf"
-  },
-  {
-    id: "2balance",
-    name: "Wondergreen 2BALANCE",
-    formula: "7-7-7 Organomineral",
-    tag: "Equilibrio Continuo",
-    image: "/products/wondergreen-2balance.webp",
-    price: "COP $147.400",
-    unit: "Bulto 40 kg",
-    status: "Precio de referencia reconciliado",
-    desc: "Referencia organomineral orientada a programas de nutrición balanceada y mantenimiento.",
-    pdf: "/downloads/catalogo-wondergreen.pdf"
-  },
-  {
-    id: "2bloom",
-    name: "Wondergreen 2BLOOM",
-    formula: "3-8-3 Organomineral",
-    tag: "Floración & Cuajado",
-    image: "/products/wondergreen-2bloom.webp",
-    price: "COP $115.500",
-    unit: "Bulto 40 kg",
-    status: "Precio de referencia reconciliado",
-    desc: "Referencia organomineral orientada a acompañar la transición reproductiva y la etapa de floración.",
-    pdf: "/downloads/catalogo-wondergreen.pdf"
-  },
-  {
-    id: "2fruit",
-    name: "Wondergreen 2FRUIT",
-    formula: "3-3-8 Organomineral",
-    tag: "Llenado & Cosecha",
-    image: "/products/wondergreen-2fruit.webp",
-    price: "COP $121.900",
-    unit: "Bulto 40 kg",
-    status: "Precio de referencia reconciliado",
-    desc: "Referencia organomineral orientada a acompañar el desarrollo y llenado durante la fase productiva.",
-    pdf: "/downloads/catalogo-wondergreen.pdf"
-  },
-];
+const solidProducts = products.filter((product) => product.category === "solidos");
 
-export function WondergreenPackshots() {
-  const [selectedId, setSelectedId] = useState<string>("2grow");
-  const current = products.find(p => p.id === selectedId) || products[0];
-
+export function WondergreenSolidLines() {
   return (
-    <div className="wg-solid-showcase" id="solidos">
-      <div className="wg-solid-showcase__header">
-        <div>
-          <span className="eyebrow">Portafolio sólido Wondergreen</span>
-          <h3>Sólidos organominerales para leer el cultivo por etapa</h3>
-          <p>Selecciona una línea para revisar su papel dentro del sistema. La ruta líquida y sus cuatro fichas están disponibles en el bloque siguiente.</p>
-        </div>
-        <div className="wg-solid-showcase__tabs" role="tablist" aria-label="Referencias sólidas Wondergreen">
-          {products.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              role="tab"
-              id={`solid-tab-${p.id}`}
-              aria-selected={selectedId === p.id}
-              aria-controls={`solid-panel-${p.id}`}
-              onClick={() => setSelectedId(p.id)}
-            >
-              {p.id.toUpperCase()}
-            </button>
-          ))}
-        </div>
+    <section className="wg-solid-showcase" id="solidos" aria-labelledby="wg-solid-showcase-title">
+      <header className="wg-solid-showcase__header">
+        <h3 id="wg-solid-showcase-title">Nutrición organomineral por etapa del cultivo.</h3>
+        <p>Los cuatro fertilizantes sólidos Wondergreen son organominerales ocluidos. La matriz aporta materia orgánica y está orientada a favorecer una liberación gradual de nutrientes. La disponibilidad que alcanza el cultivo depende del suelo, el agua, el clima y el manejo; la ficha de cada línea explica su función dentro del programa por cultivo y etapa.</p>
+      </header>
+
+      <div className="wg-solid-showcase__grid" aria-label="Cuatro fertilizantes sólidos organominerales Wondergreen">
+        {solidProducts.map((product) => {
+          const skuMedia = getProductMedia(`${product.slug}-solido-40kg`);
+          const familyMedia = getProductMedia(product.slug);
+          const visual = canRenderPublicPackshot(skuMedia) && skuMedia.src && skuMedia.alt
+            ? { src: skuMedia.src, alt: skuMedia.alt }
+            : familyMedia.editorial ?? skuMedia.reference;
+          const presentation = getCommercialPresentations(product.slug)[0];
+
+          return (
+            <article className={`wg-solid-showcase__item wg-solid-showcase__item--${product.slug}`} key={product.slug}>
+              {visual ? (
+                <figure className="wg-solid-showcase__visual">
+                  <img src={visual.src} alt={visual.alt} width={1254} height={1254} loading="lazy" decoding="async" />
+                </figure>
+              ) : null}
+              <div className="wg-solid-showcase__copy">
+                <div className="wg-solid-showcase__identity">
+                  <h4>{product.family}</h4>
+                  <span>{product.stage}</span>
+                </div>
+                <p className="wg-solid-showcase__formula">{product.formula} <span>·</span> {presentation ?? product.format}</p>
+                <p className="wg-solid-showcase__focus">{product.focus}</p>
+                <Link href={`/wondergreen/productos/${product.slug}/`}>Ver ficha de {product.family} →</Link>
+              </div>
+            </article>
+          );
+        })}
       </div>
-
-      <div className="wg-solid-showcase__panel" id={`solid-panel-${current.id}`} role="tabpanel" aria-labelledby={`solid-tab-${current.id}`}>
-        <div className="wg-solid-showcase__media">
-          <img
-            src={current.image}
-            alt={current.name}
-            width={760}
-            height={1074}
-            loading="lazy"
-            decoding="async"
-          />
-          <span>{current.tag}</span>
-        </div>
-
-        <div className="wg-solid-showcase__body">
-          <span className="wg-solid-showcase__formula">{current.formula}</span>
-          <h4>{current.name}</h4>
-          <p className="wg-solid-showcase__desc">{current.desc}</p>
-
-          <div className="wg-solid-showcase__price-row">
-            <div><span className="wg-solid-showcase__price">{current.price}</span><small>/ {current.unit}</small></div>
-            <span className="wg-solid-showcase__status">{current.status}</span>
-          </div>
-          <p className="wg-solid-showcase__availability">El suministro se coordina con inventario, logística y condición de entrega definidos en la cotización.</p>
-
-          <div className="wg-solid-showcase__actions">
-            <Link className="button button--primary" href="/wondergreen/cotizador/">
-              Abrir cotizador →
-            </Link>
-            <Link className="button button--ghost" href={`/wondergreen/productos/${current.id}/`}>
-              Ver ficha completa →
-            </Link>
-            <a className="button button--outline" href={current.pdf} download>
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              Descargar Catálogo PDF
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    </section>
   );
 }

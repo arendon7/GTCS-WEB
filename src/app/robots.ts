@@ -1,6 +1,7 @@
 export const dynamic = "force-static";
 
 import { MetadataRoute } from "next";
+import { site } from "@/data/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -9,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/app/"],
     },
-    sitemap: "https://greenatics.com/sitemap.xml",
+    sitemap: `${site.url}/sitemap.xml`,
   };
 }

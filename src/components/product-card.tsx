@@ -1,14 +1,7 @@
 import Link from "next/link";
 import { ProductVisual } from "@/components/product-visual";
 import type { Product } from "@/data/products";
-
-function cop(value: number) {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
+import { getProductPublication, getPresentationSummary } from "@/data/product-publication";
 
 const FAMILY_TAGS: Record<string, { label: string; stage: string }> = {
   "2grow": { label: "2GROW", stage: "Vegetativo" },
@@ -20,7 +13,7 @@ const FAMILY_TAGS: Record<string, { label: string; stage: string }> = {
 };
 
 export function ProductCard({ product }: { product: Product }) {
-  const hasPrice = typeof product.priceCop === "number";
+  const publication = getProductPublication(product.slug);
   const familyKey = product.family.toLowerCase();
   const familyInfo = FAMILY_TAGS[familyKey] || { label: product.family, stage: product.stage };
 
@@ -28,8 +21,8 @@ export function ProductCard({ product }: { product: Product }) {
     <article className={`product-card family-${familyKey}`}>
       <div className="product-card-top">
         <span className="product-family-badge">{familyInfo.label} · {familyInfo.stage}</span>
-        <span className={`product-pill ${hasPrice ? "" : "product-pill--technical"}`}>
-          {hasPrice ? "Precio validado" : "Técnico"}
+          <span className="product-pill product-pill--technical">
+          {publication.label}
         </span>
       </div>
 
@@ -47,14 +40,14 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="product-card-meta">
           <span className="product-format-tag">{product.format}</span>
-          <span className="product-presentations">{product.presentations.join(" · ")}</span>
+          <span className="product-presentations">{getPresentationSummary(product.slug)}</span>
         </div>
       </div>
 
       <div className="product-card-footer">
         <div className="product-price-box">
-          <small>{hasPrice ? "Precio ref." : "Cotización"}</small>
-          <strong>{hasPrice ? cop(product.priceCop!) : "Consultar"}</strong>
+          <small>Estado</small>
+          <strong>{publication.label}</strong>
         </div>
         <Link 
           href={`/wondergreen/productos/${product.slug}/`} 

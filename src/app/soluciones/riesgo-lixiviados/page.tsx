@@ -2,10 +2,15 @@ import { SolutionAssessment } from "@/components/solution-assessment";
 
 export default function RiesgoLixiviadosPage() {
   return <SolutionAssessment
-    eyebrow="Prevención y manejo de aguas contaminadas"
     title="Reducir el riesgo empieza por un balance hídrico."
+    contactProfile="territorio"
     lead="La generación y composición de lixiviados dependen del material, clima, cubiertas, drenajes, edad del sistema, operación y recirculaciones. Separar orgánicos puede ayudar, pero su efecto debe medirse dentro del sistema completo."
     principle="Un porcentaje fijo de reducción no describe un relleno, una planta ni un patio de proceso. Primero se identifican fuentes, caudales, cargas, rutas hidráulicas y puntos de control."
+    visual={{
+      src: "/services/leachate-control-assessment-context-v1.jpg",
+      alt: "Un área cubierta de manejo de biomasa cuenta con canaletas y puntos de inspección para conducir el agua.",
+      caption: "Identificar lluvias, escorrentías y puntos de mezcla ayuda a priorizar controles y mediciones.",
+    }}
     fields={[
       { id: "facility", label: "Instalación evaluada", help: "Relleno, estación, planta, patio o centro de acopio.", placeholder: "Nombre, ubicación y operador" },
       { id: "water", label: "Fuentes de agua y lixiviado", help: "Lluvia, escorrentía, humedad del residuo, lavado y proceso.", placeholder: "Fuentes identificadas o pendientes" },

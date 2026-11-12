@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "holdbacks": [
+    {
+      "asset": "/downloads/01_GUIA_WONDERGREEN_TOMATE_CHONTO_V1.pdf",
+      "reason": "Las páginas 5–8 y 13 presentan una dilución general 1:10 para varias líneas líquidas Wondergreen. PRODUCT_TRUTH.md y el catálogo público vigente no respaldan esa pauta para esas líneas; la única dilución documentada allí corresponde a Biol (1 L en 100 L de agua). Puede leerse como instrucción de aplicación. El PDF tampoco está etiquetado y varias páginas usan texto pequeño con amplio espacio sin contenido.",
+      "source": "Revisión completa del texto de las 13 páginas, inspección visual de las 13 páginas, contraste con PRODUCT_TRUTH.md y WONDERGREEN_PUBLIC_CATALOG_V1.md, 2026-10-31.",
+      "observedSha256": "eed99be31967c29ee925af0e5f479df83fcc667cd282e6006030e2668e8615ef",
+      "releaseCondition": "Retirar o respaldar la dilución con etiqueta/product master vigente; revisar fórmulas y alcance de cada etapa contra las fuentes aprobadas; remaquetar con tipografía legible y estructura accesible; renderizar y revisar todas las páginas y obtener aceptación técnica/editorial del owner. La nota web por sí sola no libera el PDF."
+    },
+    {
+      "asset": "/downloads/guia-mi-huerta.pdf",
+      "reason": "El PDF original continúa retenido por claims agronómicos en pp. 2–6 y 8 y por el recorrido sin destino verificable de p. 8. Una candidata interna V2 reescribe esas páginas con lenguaje de etapa/contexto y consulta legible, pero no sustituye al archivo publicado ni cuenta con aprobación técnica/editorial o verificación del destino público; la estructura rasterizada también mantiene pendiente la accesibilidad documental. El antiguo conflicto de fórmula no se corroboró en el original con SHA observado.",
+      "source": "Revisión visual del PDF original y candidata interna V2, contrastadas con PRODUCT_TRUTH.md y CASA_JARDIN_SOURCE_CROSSWALK_V1.md, 2026-10-31; gate MI-A133 archivado como antecedente.",
+      "observedSha256": "8bd5e65c2a41c6c71d1ee540bb6efad070e621ce3da3aa82d5bb0fc03746d5a6",
+      "releaseCondition": "Revisar claims y recorrido de p. 8 con fuentes vigentes, validar el destino público y obtener aceptación técnica/documental del owner; cambiar bytes o retirar enlaces no libera el hold por sí solo.",
+      "candidateSha256": "102ef3dbb8f80cef865983758bbf897e392e0c20dc9d33b216396f9636368060"
+    },
+    {
+      "asset": "/downloads/guia-casa-jardin.pdf",
+      "reason": "La página 12 invita a escanear un QR, pero conserva el placeholder de producción 'QR REAL se inserta al final'; el recorrido prometido no está terminado. Revisar además el rótulo duplicado/ilegible de compost en la página 8.",
+      "source": "Revisión visual de las 12 páginas, gate documental MI-A136, 2026-10-13",
+      "observedSha256": "a48e549d9d7c90c13ab45852b97d932a361b781c7bc9ae2de128932ee1db82b4",
+      "releaseCondition": "Sustituir el placeholder por un destino real y verificado, revisar el arte final y obtener aceptación documental del owner; no liberar solo por cambiar bytes."
+    },
+    {
+      "asset": "/downloads/guia-trasplante.pdf",
+      "reason": "La página 4 expone la instrucción interna 'No presentar una proporción universal'; la página 8 conserva un recuadro punteado vacío junto al cierre de orientación. El arte final necesita revisión antes de distribución.",
+      "source": "Revisión visual de las 8 páginas, gate documental MI-A136, 2026-10-13",
+      "observedSha256": "c06031e8dddfec5ac0342d06ef1c168b3bb87bc3a0849db80d7dad1b8bfe1929",
+      "releaseCondition": "Reescribir la nota para el cliente, completar o retirar el recuadro de cierre con un recorrido verificable y obtener aceptación documental del owner."
+    }
+  ]
+}

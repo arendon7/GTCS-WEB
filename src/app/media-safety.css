@@ -1,0 +1,430 @@
+.wg-solid-showcase__media {
+  display: flex;
+  min-height: 360px;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: clamp(24px, 4vw, 46px);
+  color: #f7f8f1;
+  background:
+    radial-gradient(circle at 76% 23%, rgba(213, 235, 155, .2), transparent 27%),
+    linear-gradient(145deg, #24543d, #0c3025 76%);
+}
+
+.wg-solid-showcase__media > span,
+.homegarden-product-family-map > span,
+.homegarden-detail-visual > span,
+.homegarden-kit-detail-visual > span {
+  color: #d8ed9c;
+  font-size: .7rem;
+  font-weight: 850;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.wg-solid-showcase__media > strong {
+  color: inherit;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  letter-spacing: -.07em;
+  line-height: .9;
+}
+
+.wg-solid-showcase__media > small {
+  color: #c4d8cd;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.homegarden-v4-hero__art,
+.homegarden-product-family-map {
+  position: relative;
+  display: flex;
+  min-height: 490px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 54px);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 28px 28px 28px 7px;
+  color: #f7f8f1;
+  background:
+    radial-gradient(circle at 84% 15%, rgba(207, 235, 144, .18), transparent 24%),
+    linear-gradient(145deg, #23543d, #0b2f24 78%);
+}
+
+.homegarden-v4-hero__art::after,
+.homegarden-product-family-map::after {
+  position: absolute;
+  top: 12%;
+  right: -15%;
+  width: min(42vw, 360px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(216, 237, 156, .2);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px rgba(216, 237, 156, .035), 0 0 0 48px rgba(216, 237, 156, .025);
+  content: "";
+  pointer-events: none;
+}
+
+.homegarden-v4-hero__art > span,
+.homegarden-v4-hero__art > strong,
+.homegarden-v4-hero__art > div,
+.homegarden-product-family-map > span,
+.homegarden-product-family-map > strong,
+.homegarden-product-family-map > p,
+.homegarden-product-family-map > ol {
+  position: relative;
+  z-index: 1;
+}
+
+.homegarden-v4-hero__art > span,
+.homegarden-product-family-map > span {
+  font-size: .68rem;
+}
+
+.homegarden-v4-hero__art > strong,
+.homegarden-product-family-map > strong {
+  max-width: 8ch;
+  font-size: clamp(2.5rem, 5vw, 4.9rem);
+  letter-spacing: -.065em;
+  line-height: .94;
+}
+
+.homegarden-v4-hero__art > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  max-width: 430px;
+  color: #e2edcf;
+  font-size: .76rem;
+}
+
+.homegarden-v4-hero__art b { font-weight: 750; }
+.homegarden-v4-hero__art i { color: #b6d766; font-style: normal; }
+
+.homegarden-product-family-map {
+  min-height: 410px;
+  justify-content: flex-start;
+  gap: 22px;
+}
+
+.homegarden-product-family-map:not(.homegarden-product-family-map--kits)::after {
+  display: none;
+}
+
+.homegarden-product-family-map:not(.homegarden-product-family-map--kits) > strong {
+  max-width: 12ch;
+  font-size: clamp(2.2rem, 3.8vw, 3.8rem);
+}
+
+.homegarden-product-family-map ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: stages;
+}
+
+.homegarden-product-family-map li {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(216, 237, 156, .2);
+  border-radius: 12px 12px 12px 3px;
+  background: rgba(255, 255, 255, .055);
+  color: #edf5e7;
+  font-size: .8rem;
+  font-weight: 750;
+  counter-increment: stages;
+}
+
+.homegarden-product-family-map li::before {
+  color: #d8ed9c;
+  content: "0" counter(stages);
+  font-size: .63rem;
+  letter-spacing: .08em;
+}
+
+.homegarden-product-family-map--kits p {
+  max-width: 30ch;
+  margin: auto 0 0;
+  color: #d1e1d7;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.homegarden-product-family-map--products {
+  min-height: 0;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(24px, 3vw, 36px);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(207, 235, 144, .12), transparent 25%),
+    linear-gradient(145deg, #23543d, #0b2f24 78%);
+}
+
+.homegarden-product-family-map--products::after { display: none; }
+.homegarden-product-family-map--products .homegarden-product-family-map__base { display: grid; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid rgba(216,237,156,.24); }
+.homegarden-product-family-map--products .homegarden-product-family-map__base span,
+.homegarden-product-family-map--products .homegarden-product-family-map__stages > span { color: #d8ed9c; font-size: .64rem; font-weight: 850; letter-spacing: .1em; }
+.homegarden-product-family-map--products .homegarden-product-family-map__base strong { color: #fff; font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.1rem); letter-spacing: -.04em; line-height: 1; }
+.homegarden-product-family-map--products .homegarden-product-family-map__stages { display: grid; gap: 10px; }
+.homegarden-product-family-map--products .homegarden-product-family-map__stages ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.homegarden-product-family-map--products .homegarden-product-family-map__stages li { min-height: 42px; padding: 10px 12px; border: 1px solid rgba(216,237,156,.2); border-radius: 10px 10px 10px 3px; color: #edf5e7; font-size: .74rem; font-weight: 800; }
+.homegarden-product-family-map--products .homegarden-product-family-map__stages li::before { display: none; content: none; }
+.homegarden-product-family-map--products p { margin: 0; color: #c4d8cd; font-size: .76rem; line-height: 1.45; }
+
+.homegarden-detail-visual {
+  display: block !important;
+  min-height: 520px;
+  padding: 0;
+  background: #f1eee5;
+}
+
+.homegarden-detail-visual img { padding: 0 !important; object-fit: cover !important; }
+
+.homegarden-detail-visual--2grow { border-top: 4px solid #e6782c; }
+.homegarden-detail-visual--2balance { border-top: 4px solid #7452a3; }
+.homegarden-detail-visual--2bloom { border-top: 4px solid #4382ac; }
+.homegarden-detail-visual--2fruit { border-top: 4px solid #c9504d; }
+
+.homegarden-detail-visual > strong,
+.homegarden-kit-detail-visual > strong {
+  position: relative;
+  z-index: 1;
+  color: #f8f8f1;
+  font-size: clamp(2.6rem, 5vw, 5rem);
+  letter-spacing: -.07em;
+  line-height: .93;
+}
+
+.homegarden-detail-visual > small {
+  color: #d2e4d0;
+  font-size: .8rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+.homegarden-detail-visual figcaption {
+  position: static !important;
+  width: 100%;
+  margin-top: 22px;
+  color: #c4d8cd !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.homegarden-kit-detail-visual ol {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin: auto 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.homegarden-kit-detail-visual li {
+  padding: 9px 11px;
+  border-left: 2px solid #c7e180;
+  color: #e8f1e8;
+  background: rgba(255, 255, 255, .06);
+  font-size: .76rem;
+  line-height: 1.4;
+}
+
+.homegarden-kit-grid .homegarden-kit-card {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.homegarden-kit-card__body {
+  height: 100%;
+}
+
+.homegarden-kit-card__body > small { display: block; margin-top: 8px; }
+
+.homegarden-kit-detail-art {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  align-self: center;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 28px 28px 28px 7px;
+  background: #f5f0e4;
+}
+
+.homegarden-kit-detail-art img { object-fit: contain; }
+
+.homegarden-kit-detail-art figcaption {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  max-width: calc(100% - 24px);
+  padding: 7px 10px;
+  border-radius: 4px;
+  color: #f8f8f1;
+  background: rgba(9, 45, 34, .86);
+  font-size: .68rem;
+  font-weight: 750;
+}
+
+.homegarden-kit-includes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.homegarden-kit-includes li {
+  padding: 16px 18px;
+  border: 1px solid #d3dfd1;
+  border-radius: 14px 14px 14px 4px;
+  color: #164638;
+  background: #f4f7f0;
+  font-size: .88rem;
+  font-weight: 700;
+}
+
+.homegarden-kit-stages-heading { margin-top: clamp(48px, 7vw, 84px); }
+
+@media (max-width: 760px) {
+  .homegarden-kit-includes { grid-template-columns: 1fr 1fr; }
+  .homegarden-kit-detail-art { width: 100%; }
+}
+
+.product-related-card__media .product-orb {
+  width: 100%;
+  min-height: 160px;
+  border: 0;
+  border-radius: 0;
+}
+
+.product-related-card__media .product-orb span { color: #fff; }
+
+.product-related-card__media img.product-visual-card__image,
+.portfolio-v5-products__grid figure img.product-visual-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: cover;
+}
+
+.product-detail-content-grid--single {
+  grid-template-columns: minmax(0, 880px);
+  margin-inline: auto;
+}
+
+.portfolio-v5-products__grid figure .product-orb {
+  width: 100%;
+  height: 100%;
+  min-height: 170px;
+  border: 0;
+  border-radius: 0;
+}
+
+.portfolio-v5-products__grid figure .product-orb span { color: #fff; }
+
+.portfolio-v5-products__documented figure {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 75% 25%, #dbe9bd, transparent 28%), linear-gradient(145deg, #e6eee3, #f5f1e5);
+}
+
+.portfolio-v5-products__monogram {
+  display: grid !important;
+  width: 92px;
+  height: 92px;
+  place-items: center;
+  border: 1px solid #a8c080;
+  border-radius: 50%;
+  color: #0c6946 !important;
+  font-size: 2rem !important;
+  letter-spacing: 0 !important;
+}
+
+.portfolio-v5-products__documented > div > span,
+.portfolio-v5-products__documented > div > a {
+  color: #075b3b;
+}
+
+.home-wondergreen-products--names {
+  display: grid;
+  min-height: 360px;
+  height: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 12px;
+  padding: 32px 0;
+}
+
+.home-wondergreen-products--names article {
+  display: flex;
+  min-height: 124px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(216, 237, 156, .24);
+  border-radius: 16px 16px 16px 4px;
+  background: rgba(255, 255, 255, .055);
+}
+
+.home-wondergreen-products--names strong {
+  color: #d8ed9c;
+  font-size: clamp(1.2rem, 2.6vw, 1.75rem);
+  letter-spacing: -.04em;
+}
+
+.home-wondergreen-products--names span {
+  max-width: 18ch;
+  color: #d1e1d7;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .homegarden-v4-hero__art,
+  .homegarden-product-family-map { min-height: 360px; }
+  .homegarden-product-family-map--products { min-height: 0; }
+  .homegarden-detail-visual { min-height: 390px; }
+  .home-wondergreen-products--names { min-height: 0; padding: 20px 0; }
+  .home-wondergreen-products--names article { min-height: 108px; padding: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homegarden-v4-hero__art *,
+  .homegarden-product-family-map * { scroll-behavior: auto; }
+}
+
+.wg-solid-showcase__media:has(img) { background: #f3f0e6; }
+.wg-solid-showcase__media img { padding: clamp(18px, 3vw, 36px); object-fit: contain !important; }
+.wg-solid-showcase__media > span { color: #f7f8f1; background: rgba(17, 61, 45, .9); }
+.wg-solid-showcase__media > small { padding: 8px 10px; border: 1px solid rgba(23, 61, 46, .15); border-radius: 999px; color: #173d2e; background: rgba(250, 248, 240, .94); }
+
+.product-reference-visual--detail img { object-fit: contain; background: #f3f0e6; }
+.product-reference-visual--card { display: grid; gap: 8px; margin: 10px 0 4px; padding: 8px; overflow: hidden; border: 1px solid #e3e2d7; border-radius: 14px 14px 14px 4px; background: #f7f5eb; }
+.product-reference-visual--card img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 9px; }
+.product-reference-visual--card figcaption { display: grid; gap: 3px; color: #5b6b61; font-size: .62rem; line-height: 1.4; }
+.product-reference-visual--card figcaption strong { color: #355742; font-size: .64rem; }
+
+.wg-bio-lines__product-visual { position: relative; aspect-ratio: 1.33 / 1; margin: 0; overflow: hidden; border-radius: 10px 10px 10px 3px; background: #f3f0e6; }
+.wg-bio-lines__product-visual img { display: block; width: 100%; height: 100%; padding: 0; object-fit: cover; }
+.wg-bio-lines__product-visual figcaption { position: absolute; right: 8px; bottom: 8px; left: 8px; padding: 7px 9px; border-radius: 8px; color: #385344; background: rgba(255, 255, 255, .9); font-size: .58rem; font-weight: 750; line-height: 1.35; }

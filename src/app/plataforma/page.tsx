@@ -1,217 +1,89 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { runtimeLinks } from "@/lib/runtime-links";
 import "./plataforma-v4.css";
 
 export const metadata: Metadata = {
-  title: "Centro de plataformas y aplicaciones",
-  description:
-    "Centro único de acceso a las plataformas Greenatics: OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
+  title: "Centro Greenatics | herramientas y accesos",
+  description: "Compara las herramientas Greenatics, consulta qué recorridos están disponibles o explora un modelo ilustrativo de roles y alcances.",
   alternates: { canonical: "/plataforma/" },
   openGraph: {
-    title: "Centro Greenatics | Plataformas y aplicaciones",
-    description:
-      "Un solo lugar para conocer, explorar y entrar a las herramientas digitales de Greenatics.",
+    title: "Centro Greenatics | herramientas y accesos",
+    description: "Tres rutas para comparar herramientas, consultar condiciones de acceso y explorar un modelo ilustrativo de roles.",
     url: "/plataforma/",
     images: ["/brand/greenatics-horizontal.webp"],
   },
 };
 
-const applications = [
+const nextSteps = [
   {
-    code: "SANA",
-    state: "Demo pública disponible",
-    name: "SANA",
-    copy: "El ecosistema que articula inversión y proyectos productivos con datos de trazabilidad de AGROWAY, ciencia Greenatics, soluciones Wondergreen y acompañamiento de campo.",
-    route: "/sana/",
-    cta: "Conocer SANA",
-    accent: "sana",
-    scope: "Inversión · proyectos productivos · resultados",
-  },
-  {
-    code: "OPS",
-    state: "Demo pública disponible",
-    name: "GREENATICS OPS",
-    copy: "La estación para registrar la jornada, controlar recepciones, procesos, activos, inventario y reportes de planta.",
-    route: "/app/",
-    cta: "Abrir estación OPS",
+    number: "01",
+    label: "Catálogo",
+    title: "Conocer las herramientas",
+    copy: "Compara qué resuelve cada aplicación, para quién está pensada y qué recorrido permite explorar.",
+    scope: "OPS · Red · Huella · AGROWAY · SANA",
+    href: "/herramientas/",
+    action: "Comparar herramientas",
     accent: "ops",
-    scope: "Planta · supervisión · dirección",
   },
   {
-    code: "CO₂",
-    state: "Estimador público disponible",
-    name: "Calcula tu Huella",
-    copy: "La puerta de entrada a inventarios de emisiones, fuentes, método, escenarios, revisión y evidencia trazable.",
-    route: "/huella/",
-    cta: "Abrir Calcula tu Huella",
-    accent: "carbon",
-    scope: "Organizaciones · sostenibilidad · verificación",
-  },
-  {
-    code: "RED",
-    state: "Estación demo disponible · datos ilustrativos",
-    name: "GREENATICS Red",
-    copy: "La estación territorial para convertir contexto, generadores, rutas, FIELD, QA/QC y PMIRS en trabajo coordinado, indicadores y seguimiento con evidencia.",
-    route: "/red/app/",
-    cta: "Explorar Red",
+    number: "02",
+    label: "Accesos",
+    title: "Revisar los entornos disponibles",
+    copy: "Distingue las demostraciones, los enlaces externos configurados y las condiciones de acceso que deben consultarse para cada herramienta.",
+    scope: "Muestras públicas · acceso según herramienta",
+    href: "/acceso/#entornos-disponibles",
+    action: "Ver muestras y consultar acceso",
     accent: "red",
-    scope: "Municipios · ESP · equipos territoriales",
   },
   {
-    code: "AG",
-    state: "Demo pública disponible",
-    name: "AGROWAY",
-    copy: "La aplicación de trazabilidad agrícola: productor, finca, lote, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha.",
-    route: "/agroway/",
-    cta: "Conocer AGROWAY",
-    accent: "agro",
-    scope: "Trazabilidad · campo · datos",
+    number: "03",
+    label: "Demostración",
+    title: "Conocer el modelo de usuarios",
+    copy: "Explora un directorio ficticio y un modelo de roles y alcances. No concede accesos; la administración real requiere un entorno organizacional habilitado.",
+    scope: "Ejemplo local · roles · alcances",
+    href: "/plataforma/usuarios/",
+    action: "Ver demostración del modelo",
+    accent: "carbon",
   },
 ] as const;
-
-const foundation = [
-  ["01", "Una identidad", "Una cuenta y una organización de trabajo, con acceso por rol y contexto."],
-  ["02", "Datos relacionados", "Territorio, planta, inventario, proyecto, lote, evidencia e impacto conservan sus vínculos."],
-  ["03", "Historial auditable", "Las correcciones agregan versión, autor, fecha y motivo; no borran la fuente original."],
-  ["04", "Resultados con estado", "Registrado, validado, interpretado y derivado antes de publicar o decidir."],
-] as const;
-
-const configuredRuntimes = [
-  ["Calcula tu Huella", runtimeLinks.huella],
-  ["GREENATICS OPS", runtimeLinks.ops],
-  ["GREENATICS Red", runtimeLinks.red],
-] as const;
-
-const isLocalRuntime = (url: string) => /localhost|127\.0\.0\.1/.test(url);
 
 export default function PlatformPage() {
   return (
     <>
       <section className="platform-v4-hero">
-        <div className="container platform-v4-hero__grid">
-          <div>
-            <span className="eyebrow eyebrow--light">Centro Greenatics</span>
-            <h1>Un solo lugar para entrar, operar y demostrar.</h1>
-            <p className="lead">
-              Greenatics reúne sus herramientas bajo una misma lógica: la operación deja evidencia,
-              la evidencia mejora la decisión y cada plataforma conserva el contexto que necesita.
-              OPS ordena la planta; Red, el territorio; Huella, el inventario ambiental; AGROWAY,
-              la trazabilidad agrícola; y SANA, la articulación de proyectos e inversión.
-            </p>
-            <div className="button-row">
-              <Link className="button button--light" href="#aplicaciones">Ver aplicaciones</Link>
-              <Link className="button button--outline-light" href="/contacto/?interes=plataformas">Diseñar una implementación</Link>
-              <Link className="button button--outline-light" href="/plataforma/usuarios/">Administrar usuarios</Link>
+        <div className="container platform-v4-hero__content">
+          <span className="eyebrow eyebrow--light">Centro Greenatics</span>
+          <h1>Cada herramienta tiene un trabajo. Elige cómo continuar.</h1>
+          <p className="lead">
+            Greenatics reúne herramientas para operación, territorio, inventarios ambientales,
+            trabajo de campo y proyectos productivos. Desde aquí puedes comparar su alcance,
+            consultar cómo explorar cada una o conocer un modelo ilustrativo de roles.
+          </p>
+        </div>
+      </section>
+
+      <section className="platform-v4-apps" aria-labelledby="platform-next-steps-title">
+        <div className="container">
+          <div className="platform-v4-heading">
+            <div>
+              <span className="eyebrow">Tu siguiente paso</span>
+              <h2 id="platform-next-steps-title">Tres rutas, según lo que necesitas hacer.</h2>
             </div>
-            {configuredRuntimes.some(([, url]) => url) && (
-              <div className="platform-v4-hero__availability" role="status">
-                <span>{configuredRuntimes.every(([, url]) => url && isLocalRuntime(url)) ? "Disponible en este sitio" : "Herramientas conectadas"}</span>
-                <strong>{configuredRuntimes.filter(([, url]) => url).map(([name]) => name).join(" · ")}</strong>
-                <small>Cada acceso conserva sus permisos, usuarios y datos separados.</small>
-              </div>
-            )}
+            <p>El catálogo compara propósitos; el portal distingue muestras y condiciones de acceso; la tercera ruta ilustra cómo ordenar roles y alcances, sin administrar cuentas.</p>
           </div>
-          <aside className="platform-v4-hero__signal" aria-label="Estado de la consolidación">
-            <span>Arquitectura Greenatics</span>
-            <strong>Un ecosistema, varias experiencias.</strong>
-            <div className="platform-v4-hero__signal-line"><i /><span>Identidad</span><i /><span>Datos</span><i /><span>Decisión</span></div>
-            <p>La consolidación será progresiva. Lo que ya funciona se preserva; lo que falta integrar se construye con límites claros.</p>
-          </aside>
-        </div>
-      </section>
-
-      <section className="platform-v4-apps" id="aplicaciones">
-        <div className="container">
-          <div className="platform-v4-heading">
-            <div><span className="eyebrow">Aplicaciones y productos</span><h2>Cada herramienta tiene una tarea distinta.</h2></div>
-            <p>El centro organiza las entradas y hace visible el papel de cada capa. Puedes conocer cada solución, abrir su demo pública y, cuando trabajes con datos propios, entrar a un espacio separado por organización. AGROWAY registra y relaciona datos de campo; SANA los usa junto con Greenatics y Wondergreen para estructurar y acompañar proyectos productivos.</p>
-          </div>
-          <div className="platform-v4-apps__grid">
-            {applications.map((application) => {
-              const configuredUrl = application.code === "OPS"
-                ? runtimeLinks.opsApp
-                : application.code === "CO₂"
-                  ? runtimeLinks.huella
-                    : application.code === "RED"
-                    ? runtimeLinks.red
-                    : "";
-              const demoHref = application.code === "OPS" ? "/app/#estacion" : application.code === "CO₂" ? "/huella/#calculadora" : application.code === "RED" ? "/red/app/" : application.code === "AG" ? "/agroway/app/" : "/sana/app/";
-              const implementationInterest = application.code === "CO₂" ? "calcula-tu-huella" : application.code === "RED" ? "greenatics-red" : application.code === "AG" ? "agroway" : application.code === "SANA" ? "sana" : "greenatics-ops";
-              const state = configuredUrl
-                ? isLocalRuntime(configuredUrl) ? "Disponible en este sitio" : "Espacio operativo conectado"
-                : demoHref ? "Demo navegable disponible" : application.state;
-              const demoLabel = application.code === "OPS" ? "Explorar estación demo" : application.code === "CO₂" ? "Explorar estimador" : application.code === "RED" ? "Entrar a la estación demo" : `Abrir demo de ${application.name}`;
-
-              return (
-                <article className={`platform-v4-card platform-v4-card--${application.accent}`} key={application.code}>
-                  <div className="platform-v4-card__top"><span>{application.code}</span><small>{state}</small></div>
-                  <h3>{application.name}</h3>
-                  <p>{application.copy}</p>
-                  <div className="platform-v4-card__scope">{application.scope}</div>
-                  <div className="platform-v4-card__actions">
-                    <Link className="text-link" href={application.route}>{application.cta} <span aria-hidden="true">↗</span></Link>
-                    {configuredUrl ? (
-                      <>
-                        <a className="text-link text-link--secondary" href={configuredUrl} target={/^https?:\/\//.test(configuredUrl) ? "_blank" : undefined} rel={/^https?:\/\//.test(configuredUrl) ? "noopener noreferrer" : undefined}>Entrar al espacio operativo <span aria-hidden="true">↗</span></a>
-                        {demoHref ? <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link> : null}
-                        <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Configurar espacio real <span aria-hidden="true">→</span></Link>
-                      </>
-                    ) : demoHref ? (
-                      <>
-                        <Link className="text-link text-link--secondary" href={demoHref}>{demoLabel} <span aria-hidden="true">↗</span></Link>
-                        <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Configurar espacio real <span aria-hidden="true">→</span></Link>
-                      </>
-                    ) : (
-                      <Link className="text-link text-link--secondary" href={`/contacto/?interes=${implementationInterest}`}>Diseñar implementación <span aria-hidden="true">→</span></Link>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
+          <div className="platform-v4-apps__grid platform-v4-apps__grid--routes">
+            {nextSteps.map((step) => (
+              <article className={`platform-v4-card platform-v4-card--${step.accent}`} key={step.number}>
+                <div className="platform-v4-card__top"><span>{step.number}</span><small>{step.label}</small></div>
+                <h3>{step.title}</h3>
+                <p>{step.copy}</p>
+                <div className="platform-v4-card__scope">{step.scope}</div>
+                <Link className="text-link" href={step.href}>{step.action} <span aria-hidden="true">→</span></Link>
+              </article>
+            ))}
           </div>
         </div>
       </section>
-
-      <section className="platform-v4-access-map" aria-labelledby="platform-access-map-title">
-        <div className="container">
-          <div className="platform-v4-heading">
-            <div><span className="eyebrow">Cómo entrar</span><h2 id="platform-access-map-title">Tres puertas, una secuencia clara.</h2></div>
-            <p>No todas las personas necesitan el mismo nivel de acceso. Primero se entiende la herramienta; luego se recorre una experiencia pública; finalmente se habilita el entorno de trabajo con identidad, organización, permisos y datos propios.</p>
-          </div>
-          <div className="platform-v4-access-map__grid">
-            <article><span>01</span><div><strong>Landing</strong><p>Qué resuelve, para quién está diseñada y qué módulos reúne.</p></div><small>Leer antes de entrar</small></article>
-            <article><span>02</span><div><strong>Demo pública</strong><p>Un recorrido navegable con datos ilustrativos y acciones visibles.</p></div><small>Explorar sin configurar una cuenta</small></article>
-            <article><span>03</span><div><strong>Espacio operativo</strong><p>Un entorno separado por organización, rol, permisos, persistencia y soporte.</p></div><small>Se activa para tu organización</small></article>
-          </div>
-        </div>
-      </section>
-
-      <section className="platform-v4-foundation">
-        <div className="container">
-          <div className="platform-v4-heading platform-v4-heading--light">
-            <div><span className="eyebrow eyebrow--light">Lo que se comparte</span><h2>La plataforma común no significa una base sin límites.</h2></div>
-            <p>Compartir seguridad, hosting y contexto exige separar correctamente organizaciones, roles, datos sensibles y dominios de negocio.</p>
-          </div>
-          <div className="platform-v4-foundation__grid">
-            {foundation.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="platform-v4-roadmap">
-        <div className="container platform-v4-roadmap__grid">
-          <div><span className="eyebrow">Ruta de consolidación</span><h2>Primero el acceso. Después la integración profunda.</h2></div>
-          <ol>
-            <li><span>01</span><div><strong>Portal único</strong><p>Entradas consistentes, estados honestos y navegación entre productos.</p></div></li>
-            <li><span>02</span><div><strong>Identidad y permisos</strong><p>Organizaciones, roles, sesiones seguras, auditoría y recuperación controlada.</p></div></li>
-            <li><span>03</span><div><strong>Servicios y datos</strong><p>OPS, Huella y AGROWAY se conectan mediante contratos explícitos; SANA recibe el contexto autorizado para estructurar y acompañar proyectos, sin copiar datos ni romper sus migraciones.</p></div></li>
-            <li><span>04</span><div><strong>GREENATICS Red</strong><p>La estación demo se amplía hacia Proyecto 360, FIELD, QA/QC, PMIRS y coordinación con backend persistente.</p></div></li>
-          </ol>
-        </div>
-      </section>
-
-      <section className="platform-v4-note"><div className="container"><strong>Estado actual:</strong> este centro y sus recorridos públicos ya viven en la web Greenatics. La unificación de autenticación, base de datos y despliegue productivo es el siguiente trabajo de ingeniería, no una conexión simulada.</div></section>
     </>
   );
 }

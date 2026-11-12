@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="430" viewBox="0 0 360 430" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Cómo crece la coordinación del inventario</title>
+  <desc id="desc">Tres redes abstractas muestran cómo se conectan más fuentes y equipos en operaciones con varias áreas o sedes.</desc>
+  <rect width="360" height="430" rx="16" fill="#F1F6EF"/>
+  <path d="M18 145H342M18 285H342" stroke="#D7E4D3" stroke-width="1.5" stroke-dasharray="4 7"/>
+  <g fill="#315844" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing=".65">
+    <text x="20" y="26">OPERACIÓN CONCENTRADA</text>
+    <text x="20" y="166">VARIAS ÁREAS O SEDES</text>
+    <text x="20" y="306">MAYOR COORDINACIÓN</text>
+  </g>
+  <g stroke="#6D9E77" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M38 61L112 85M38 85H112M38 109L112 85M112 85H202M202 85H308"/>
+    <path d="M38 196L112 210M38 224L112 210M38 252L112 238M112 210L174 210M112 238L174 238M174 210L232 224M174 238L232 224M232 224H308"/>
+    <path d="M38 334L105 345M38 361L105 361M38 388L105 377M105 345L160 345M105 361L160 361M105 377L160 377M160 345L218 361M160 361H218M160 377L218 361M218 361H308"/>
+  </g>
+  <g fill="#FBFCF8" stroke="#7FA985" stroke-width="2.2">
+    <circle cx="38" cy="61" r="6"/><circle cx="38" cy="85" r="6"/><circle cx="38" cy="109" r="6"/>
+    <circle cx="38" cy="196" r="5.5"/><circle cx="38" cy="224" r="5.5"/><circle cx="38" cy="252" r="5.5"/>
+    <circle cx="38" cy="334" r="5"/><circle cx="38" cy="361" r="5"/><circle cx="38" cy="388" r="5"/>
+  </g>
+  <g fill="#D9E9C3" stroke="#4D835D" stroke-width="2.2">
+    <circle cx="112" cy="85" r="10"/><circle cx="202" cy="85" r="14"/><circle cx="308" cy="85" r="17"/>
+    <circle cx="112" cy="210" r="8"/><circle cx="112" cy="238" r="8"/><circle cx="174" cy="210" r="9"/><circle cx="174" cy="238" r="9"/><circle cx="232" cy="224" r="13"/><circle cx="308" cy="224" r="17"/>
+    <circle cx="105" cy="345" r="7"/><circle cx="105" cy="361" r="7"/><circle cx="105" cy="377" r="7"/><circle cx="160" cy="345" r="8"/><circle cx="160" cy="361" r="8"/><circle cx="160" cy="377" r="8"/><circle cx="218" cy="361" r="12"/><circle cx="308" cy="361" r="17"/>
+  </g>
+  <g fill="#123E33">
+    <circle cx="308" cy="85" r="5"/><circle cx="308" cy="224" r="5"/><circle cx="308" cy="361" r="5"/>
+  </g>
+</svg>

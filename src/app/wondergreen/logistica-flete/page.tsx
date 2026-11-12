@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export default function LogisticaFletePage() {
   const [bags, setBags] = useState<number>(120); // Bultos de 40 kg
@@ -27,9 +28,10 @@ export default function LogisticaFletePage() {
     `📦 *Pedido:* ${bags} Bultos de 40 kg (${totalWeightTons} Toneladas)\n` +
     `🪵 *Palletización:* ${palletsCount} Estibas estándar\n` +
     `🚛 *Escenario de vehículo:* ${suggestedVehicle}\n\n` +
-    `¿Me pueden cotizar el flete consolidado y tiempo de entrega a mi municipio?`
+    `¿Me pueden orientar sobre el flete consolidado y el tiempo de entrega a mi municipio?`
   );
-  const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent("Despacho y logística Wondergreen")}&prioridad=${encodeURIComponent(`${bags} bultos · ${totalWeightTons} t · ${palletsCount} estibas · ${suggestedVehicle} · destino ${destinationRegion}`)}`;
+  const assessmentDetails = `Pedido considerado: ${bags} bultos de 40 kg (${totalWeightTons} t)\nPalletización estimada: ${palletsCount} estibas\nVehículo de referencia: ${suggestedVehicle}\nDestino ingresado: ${destinationRegion}\nConfirmar disponibilidad, ruta, flete, tiempos y condiciones de despacho antes de acordar el pedido.`;
+  const contactHref = buildToolContactHref("wondergreen", "agro", "Despacho y logística Wondergreen");
 
   return (
     <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
@@ -45,20 +47,21 @@ export default function LogisticaFletePage() {
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.2fr", gap: "32px", alignItems: "flex-start" }}>
+        <div className="wg-tool-two-column">
           <div style={{ background: "#ffffff", padding: "32px", borderRadius: "24px", border: "1.5px solid var(--line)", boxShadow: "0 12px 36px rgba(0, 107, 69, 0.05)" }}>
             <h3 style={{ fontSize: "1.3rem", color: "var(--green-950)", margin: "0 0 20px" }}>
               1. Configuración del Pedido
             </h3>
 
             <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "flex", justifyContent: "space-between", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
+              <label htmlFor="freight-bags" style={{ display: "flex", justifyContent: "space-between", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "4px" }}>
                 <span>Cantidad de Bultos (40 kg):</span>
                 <span style={{ color: "var(--green-800)" }}>{bags} Bultos</span>
               </label>
               <input
                 type="range"
                 min="10"
+                id="freight-bags"
                 max="800"
                 step="10"
                 value={bags}
@@ -68,10 +71,11 @@ export default function LogisticaFletePage() {
             </div>
 
             <div style={{ marginBottom: "20px" }}>
-              <label style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "6px" }}>
+              <label htmlFor="freight-destination" style={{ display: "block", fontSize: "0.84rem", fontWeight: 700, color: "var(--green-950)", marginBottom: "6px" }}>
                 Departamento de Destino:
               </label>
               <select
+                id="freight-destination"
                 value={destinationRegion}
                 onChange={(e) => setDestinationRegion(e.target.value)}
                 style={{ width: "100%", padding: "10px 12px", borderRadius: "10px", border: "1px solid var(--line)", fontSize: "0.88rem", color: "var(--green-950)", background: "#fafcf9" }}
@@ -128,7 +132,7 @@ export default function LogisticaFletePage() {
               </small>
             </div>
 
-            <Link className="button button--light" href={contactHref} style={{ width: "100%", justifyContent: "center", marginBottom: "10px", color: "var(--green-950)" }}>Llevar despacho a Contacto →</Link>
+            <Link className="button button--light" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)} style={{ width: "100%", justifyContent: "center", marginBottom: "10px", color: "var(--green-950)" }}>Llevar despacho a Contacto →</Link>
             <a
               href={`https://wa.me/573003078822?text=${waFleteMsg}`}
               target="_blank"
@@ -150,7 +154,7 @@ export default function LogisticaFletePage() {
               }}
             >
               <span>💬</span>
-              <span>Cotizar Flete y Despacho en WhatsApp</span>
+              <span>Consultar flete y despacho en WhatsApp</span>
             </a>
           </div>
         </div>

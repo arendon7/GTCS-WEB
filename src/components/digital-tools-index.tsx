@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const entries = [
   { label: "Herramientas", href: "#plataformas", note: "elige tu punto de entrada" },
-  { label: "Evidencia", href: "/impacto/", note: "casos, método y claims" },
+  { label: "Evidencia", href: "/impacto/", note: "casos, método y resultados" },
   { label: "Campo", href: "/agroway/", note: "trazabilidad por lote" },
   { label: "Operación", href: "/app/", note: "bitácora y control" },
-  { label: "Acceso", href: "/acceso/", note: "demo o entorno real" },
+  { label: "Acceso", href: "/acceso/", note: "entorno público o espacio real" },
 ] as const;
 
 export function DigitalToolsIndex() {

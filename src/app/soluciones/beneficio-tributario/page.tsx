@@ -2,10 +2,15 @@ import { SolutionAssessment } from "@/components/solution-assessment";
 
 export default function BeneficioTributarioPage() {
   return <SolutionAssessment
-    eyebrow="Elegibilidad ambiental y expediente técnico"
     title="Primero elegibilidad. Después, cualquier beneficio."
+    contactProfile="empresa"
     lead="Una inversión ambiental puede requerir certificaciones, conceptos y soportes específicos antes de recibir tratamiento tributario. Greenatics puede estructurar la evidencia técnica, pero la aplicación fiscal exige revisión jurídica, contable y normativa vigente."
     principle="No todo activo, servicio o proyecto es elegible, y una tasa legal no equivale al beneficio efectivo de una empresa."
+    visual={{
+      src: "/services/service-consulting-editorial.webp",
+      alt: "Profesionales revisan una muestra y conversan sobre un proceso de aprovechamiento orgánico.",
+      caption: "La revisión técnica organiza los soportes ambientales que luego deben validar los responsables jurídicos y tributarios.",
+    }}
     fields={[
       { id: "company", label: "Empresa y actividad económica", help: "Identifica contribuyente, operación y ubicación.", placeholder: "Razón social, sector y territorio" },
       { id: "investment", label: "Inversión proyectada", help: "Describe activos, obras, servicios, fechas y proveedores.", placeholder: "Componentes y presupuesto preliminar" },

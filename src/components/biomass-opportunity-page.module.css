@@ -1,0 +1,259 @@
+.page {
+  color: var(--green-950);
+  background: var(--paper);
+}
+
+.container {
+  width: min(1120px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.hero {
+  padding: 16px 0 58px;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--green-800);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(2.45rem, 5vw, 4.7rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.99;
+}
+
+.lead {
+  max-width: 780px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: clamp(1.04rem, 1.5vw, 1.22rem);
+  line-height: 1.7;
+}
+
+.method {
+  max-width: 780px;
+  margin: 22px 0 0;
+  padding: 15px 18px;
+  border-left: 3px solid var(--lime-400);
+  background: var(--white);
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.evaluation,
+.inputs {
+  padding: 68px 0;
+}
+
+.sectionHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr);
+  align-items: end;
+  gap: 44px;
+  margin-bottom: 38px;
+}
+
+.sectionHeading h2,
+.inputs h2,
+.nextStep h2 {
+  max-width: 680px;
+  margin: 0;
+  font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+}
+
+.sectionHeading > p,
+.inputsIntro {
+  max-width: 500px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  min-width: 0;
+  padding-top: 17px;
+  border-top: 1px solid var(--line);
+}
+
+.stepNumber {
+  display: block;
+  margin-bottom: 26px;
+  color: var(--green-800);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.step h3 {
+  margin: 0 0 8px;
+  font-size: 1.18rem;
+  letter-spacing: -0.025em;
+}
+
+.step p {
+  max-width: 36ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+
+.inputs {
+  background: var(--white);
+  border-top: 1px solid var(--line);
+}
+
+.inputsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 70px;
+}
+
+.inputsIntro {
+  margin-top: 18px;
+}
+
+.inputList {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.inputList li {
+  display: grid;
+  gap: 4px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.inputList strong {
+  font-size: 0.95rem;
+}
+
+.inputList span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.nextStep {
+  padding: 60px 0 68px;
+  color: var(--white);
+  background: var(--green-950);
+}
+
+.nextStepGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.78fr);
+  align-items: end;
+  gap: 64px;
+}
+
+.nextStep .eyebrow {
+  color: var(--lime-400);
+}
+
+.nextStep h2 {
+  max-width: 700px;
+  color: var(--white);
+}
+
+.nextStepCopy p {
+  margin: 0 0 22px;
+  color: #d2e0d7;
+  line-height: 1.7;
+}
+
+.cta {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 11px 18px;
+  border: 1px solid var(--lime-400);
+  border-radius: var(--radius-full);
+  color: var(--green-950);
+  background: var(--lime-400);
+  font-size: 0.94rem;
+  font-weight: 800;
+  transition: transform 160ms ease, background-color 160ms ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  background: var(--lime-300);
+}
+
+.cta:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .container {
+    width: min(100% - 36px, 600px);
+  }
+
+  .hero {
+    padding: 10px 0 42px;
+  }
+
+  .sectionHeading,
+  .inputsGrid,
+  .nextStepGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .evaluation,
+  .inputs {
+    padding: 48px 0;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .stepNumber {
+    margin-bottom: 15px;
+  }
+
+  .nextStep {
+    padding: 48px 0;
+  }
+
+  .cta {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

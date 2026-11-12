@@ -3,19 +3,11 @@
 import React, { useState } from "react";
 
 const plantImages = [
-  { src: "/projects/plant/plant-evidence-01.webp", caption: "Área de compostaje y estabilización biológica de materia orgánica." },
-  { src: "/projects/plant/plant-evidence-02.webp", caption: "Módulos de digestión anaerobia y captación de bioles." },
-  { src: "/projects/plant/plant-evidence-03.webp", caption: "Zarandas de clasificación y tamizaje para acondicionadores Wondergreen." },
-  { src: "/projects/plant/plant-evidence-04.webp", caption: "Biofábrica y preparación de bioinsumos botánicos y microbiológicos." },
-  { src: "/projects/plant/plant-evidence-05.webp", caption: "Control de temperatura, humedad y parámetros fisicoquímicos en lote." },
+  { src: "/projects/plant/plant-evidence-04.webp", caption: "Pilas de compostaje bajo cubierta en el archivo fotográfico de Yarumal; no representan necesariamente la configuración actual." },
 ];
 
 const routeImages = [
-  { src: "/projects/routes/route-evidence-01.webp", caption: "Motocarguero de alta densidad en microrruta de recolección selectiva." },
-  { src: "/projects/routes/route-evidence-02.webp", caption: "Pesaje en tiempo real en báscula digital integrada a GREENATICS OPS." },
-  { src: "/projects/routes/route-evidence-03.webp", caption: "Entrega y recolección de canastillas estandarizadas en grandes generadores." },
-  { src: "/projects/routes/route-evidence-04.webp", caption: "Operadores con dotación técnica y protocolos de separación en la fuente." },
-  { src: "/projects/routes/route-evidence-05.webp", caption: "Descarga y control de calidad en tolva de recepción de planta." },
+  { src: "/projects/tamesis/reactor-uasb.jpeg", caption: "Registro fotográfico del reactor UASB en Támesis; la imagen no representa por sí sola el desempeño del sistema." },
 ];
 
 export function GalleryEvidence() {
@@ -29,8 +21,8 @@ export function GalleryEvidence() {
     <div style={{ background: "#ffffff", border: "1.5px solid var(--line)", borderRadius: "24px", padding: "32px", boxShadow: "0 16px 40px rgba(0, 107, 69, 0.06)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
         <div>
-          <span className="eyebrow">Evidencia Fotográfica en Territorio</span>
-          <h3 style={{ margin: "4px 0 0", fontSize: "1.4rem", color: "var(--green-950)" }}>Infraestructura y Operación Real en Campo</h3>
+          <span className="eyebrow">Referencias visuales documentadas</span>
+          <h3 style={{ margin: "4px 0 0", fontSize: "1.4rem", color: "var(--green-950)" }}>Archivo de proyecto y esquema técnico</h3>
         </div>
         <div style={{ display: "flex", gap: "8px", background: "rgba(0, 107, 69, 0.08)", padding: "4px", borderRadius: "999px" }}>
           <button
@@ -48,7 +40,7 @@ export function GalleryEvidence() {
               transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease"
             }}
           >
-            Planta de Bioprocesos
+            Archivo de Yarumal
           </button>
           <button
             type="button"
@@ -65,7 +57,7 @@ export function GalleryEvidence() {
               transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease"
             }}
           >
-            Rutas & Motocargueros
+            Esquema de Támesis
           </button>
         </div>
       </div>
@@ -82,7 +74,7 @@ export function GalleryEvidence() {
         />
         <div style={{ position: "absolute", bottom: 0, insetInline: 0, padding: "20px 24px", background: "linear-gradient(to top, rgba(10, 41, 32, 0.9) 0%, transparent 100%)", color: "#ffffff" }}>
           <span style={{ fontSize: "0.74rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "#98cf4f", fontWeight: 800 }}>
-            {tab === "plant" ? "Planta de Aprovechamiento" : "Ruta Selectiva de Alta Densidad"}
+            {tab === "plant" ? "Archivo técnico · Yarumal" : "Esquema de proceso · Támesis"}
           </span>
           <p style={{ margin: "4px 0 0", fontSize: "0.95rem", color: "#ffffff", fontWeight: 600 }}>{current.caption}</p>
         </div>
