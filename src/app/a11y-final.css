@@ -238,7 +238,11 @@
 }
 
 @media (max-width: 700px) {
-  .product-detail-grid,
+  /* Preserve the global .container gutters on narrow screens. */
+  .product-detail-grid {
+    min-width: 0;
+  }
+
   .product-info,
   .product-route-nav {
     min-width: 0;
