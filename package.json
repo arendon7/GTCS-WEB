@@ -35,9 +35,9 @@
     "test:red": "playwright test tests/red-app.spec.ts"
   },
   "dependencies": {
-    "next": "^16.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^16.4.1",
+    "react": "^19.2.9",
+    "react-dom": "^19.2.9"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.3",
