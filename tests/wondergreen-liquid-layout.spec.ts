@@ -45,6 +45,13 @@ test("Wondergreen liquid catalog groups four lines and five formulations respons
   await expect(profiles.nth(1)).toHaveAttribute("aria-label", /200-0-0: nitrógeno 200, fósforo 0, potasio 0/);
   await expect(profiles.first().locator("figcaption")).toContainText("escala visual común 0–200");
 
+  const processVisual = page.locator('figure[class*="liquidSystemVisual"]');
+  await processVisual.scrollIntoViewIfNeeded();
+  const processImage = processVisual.locator('img[class*="liquidSystemScene"]');
+  await expect(processImage).toHaveAttribute("alt", /Ilustración conceptual de una planta de digestión anaerobia multietapa/);
+  await expect.poll(() => processImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
+  await expect(processVisual.locator("figcaption")).toContainText("Visualización conceptual");
+
   const profileLayout = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     document: document.documentElement.scrollWidth,
