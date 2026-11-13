@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 export function EsgCalculator() {
   const [tonsPerMonth, setTonsPerMonth] = useState(120);
@@ -13,7 +14,8 @@ export function EsgCalculator() {
   const estimatedClimateImpact = annualTons * 0.95;
   const grossDisposalCost = annualTons * disposalCostPerTon;
   const estimatedSolidMatrix = annualTons * 0.42;
-  const contactHref = `/contacto/?interes=esg&perfil=empresa&diagnostico=${encodeURIComponent("Escenario ESG de escala y costo")}&prioridad=${encodeURIComponent(`${tonsPerMonth} t/mes · ${disposalCostPerTon.toLocaleString("es-CO")} COP/t · horizonte de 12 meses`)}`;
+  const assessmentDetails = `Volumen orgánico de referencia: ${tonsPerMonth} t/mes (${annualTons} t/año)\nCosto de disposición ingresado: ${disposalCostPerTon.toLocaleString("es-CO")} COP/t\nHorizonte del escenario: 12 meses\nMatriz sólida proyectada por el estimador: ${estimatedSolidMatrix.toLocaleString("es-CO", { maximumFractionDigits: 1 })} t/año\nEstimación climática ilustrativa: ${estimatedClimateImpact.toLocaleString("es-CO", { maximumFractionDigits: 1 })} t CO₂e/año\nCosto bruto de disposición de referencia: ${grossDisposalCost.toLocaleString("es-CO")} COP/año\nNecesito definir fuentes, escenario de referencia, factores, destino y periodo para validar el análisis.`;
+  const contactHref = buildToolContactHref("esg", "agroindustria", "Escenario ESG de escala y costo");
 
   return (
     <div className="esg-scenario">
@@ -31,7 +33,7 @@ export function EsgCalculator() {
           <label htmlFor={costId}>Costo unitario de referencia <strong>${disposalCostPerTon.toLocaleString("es-CO")} COP/t</strong></label>
           <input id={costId} type="range" min="40000" max="180000" step="5000" value={disposalCostPerTon} onChange={(event) => setDisposalCostPerTon(Number(event.target.value))} />
 
-          <p>Supuestos de demostración: 12 meses, factor climático de 0,95 t CO₂e/t y rendimiento de matriz sólida del 42 %.</p>
+          <p>Escenario de referencia: 12 meses, factor climático de 0,95 t CO₂e/t y rendimiento de matriz sólida del 42 %.</p>
         </div>
 
         <div className="esg-scenario__results" aria-live="polite">
@@ -42,7 +44,7 @@ export function EsgCalculator() {
         </div>
       </div>
       <div className="esg-scenario__actions">
-        <Link className="button button--dark" href={contactHref}>Llevar este escenario a Contacto →</Link>
+        <Link className="button button--dark" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)}>Llevar este escenario a Contacto →</Link>
         <span>El equipo puede ayudarte a convertirlo en una línea base verificable.</span>
       </div>
     </div>

@@ -11,7 +11,7 @@
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
 
   --duration-fast: 150ms;
-  --duration-normal: 260ms;
+  --duration-normal: 220ms;
   --duration-slow: 450ms;
   --duration-spring: 500ms;
 }
@@ -48,25 +48,78 @@ button.button:active,
   transition-duration: 60ms;
 }
 
-/* 2. Interactive Card Lift & Ambient Glow */
+/* 2. Quiet feedback for genuinely interactive cards */
 .card-interactive,
 article.universe-card,
 article[class*="__card"],
 article[class*="__serviceCard"],
 article[class*="__door"] {
-  transition: transform var(--duration-normal) var(--ease-out-quint),
-              box-shadow var(--duration-normal) var(--ease-out-quint),
-              border-color var(--duration-normal) var(--ease-out-quint);
-  will-change: transform, box-shadow;
+  transition: transform var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth),
+              border-color var(--duration-normal) var(--ease-smooth);
 }
 
 .card-interactive:hover,
 article.universe-card:hover,
 article[class*="__card"]:hover,
-article[class*="__serviceCard"]:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 107, 69, 0.12),
-              0 0 0 1px rgba(0, 107, 69, 0.15);
+article[class*="__serviceCard"]:hover,
+article[class*="__door"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -16px rgba(5, 31, 23, 0.22);
+  border-color: rgba(0, 107, 69, 0.24);
+}
+
+@media (hover: none) {
+  .card-interactive,
+  article.universe-card,
+  article[class*="__card"],
+  article[class*="__serviceCard"],
+  article[class*="__door"] {
+    transition-duration: 140ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-tactile,
+  .button,
+  a.button,
+  button.button,
+  [class*="__button"],
+  .card-interactive,
+  article.universe-card,
+  article[class*="__card"],
+  article[class*="__serviceCard"],
+  article[class*="__door"],
+  .animated-accordion-item,
+  .animated-accordion-trigger,
+  .animated-accordion-chevron,
+  .animated-accordion-body,
+  .tab-slider-btn {
+    transition: none;
+  }
+
+  .btn-tactile:hover,
+  .button:hover,
+  a.button:hover,
+  button.button:hover,
+  [class*="__button"]:hover,
+  .card-interactive:hover,
+  article.universe-card:hover,
+  article[class*="__card"]:hover,
+  article[class*="__serviceCard"]:hover,
+  article[class*="__door"]:hover,
+  .btn-tactile:active,
+  .button:active,
+  a.button:active,
+  button.button:active,
+  [class*="__button"]:active {
+    transform: none;
+  }
+
+  .pulse-dot,
+  .svg-flow-line {
+    animation: none;
+  }
 }
 
 /* 3. Smooth Accordion & Drawer Expansions */

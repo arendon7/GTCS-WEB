@@ -1,210 +1,221 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { companyServices } from "@/data/services";
-import { RouteDecisionBridge } from "@/components/route-decision-bridge";
+import { SegmentDigitalTools } from "@/components/segment-digital-tools";
 
 export const metadata: Metadata = {
-  title: "Empresas y grandes generadores",
+  title: "Organizaciones y grandes generadores",
   description:
-    "Greenatics conecta separación, PMIRS, recolección, tratamiento y datos para que empresas y grandes generadores gestionen sus residuos orgánicos con evidencia.",
+    "Greenatics conecta PMIRS, recolección, tratamiento, datos e inventario GEI para empresas, unidades residenciales, centros comerciales, instituciones y otros grandes generadores.",
   alternates: { canonical: "/empresas/" },
 };
 
 const segments = [
-  ["Alimentos y agroindustria", "Descartes de proceso, subproductos y corrientes cuya composición y estacionalidad determinan la alternativa.", "Composición, continuidad y posibilidad de reincorporar valor."],
-  ["Plazas, retail y distribución", "Muchos puntos de generación, alto volumen y necesidad de coordinar separación, almacenamiento y frecuencia.", "Densidad de puntos, ventana de atención y control de impropios."],
-  ["Hoteles, restaurantes y centros comerciales", "Corrientes recurrentes que exigen rutinas simples para el equipo y recolección programada.", "Facilidad de ejecución durante turnos de cocina, aseo y cierre."],
-  ["Pecuario", "Estiércoles y otras biomasas cuyo tratamiento depende de composición, humedad, escala y condiciones del predio.", "Balance entre carga orgánica, agua, área disponible y uso agronómico."],
-  ["Instituciones y campus", "Sedes con múltiples usuarios, necesidades de formación, rutas internas, gestores y seguimiento.", "Gobernanza entre áreas, formación continua y trazabilidad del gestor."],
-  ["Operadores y grandes complejos", "Aeropuertos, zonas francas y complejos con varios puntos, contratistas y requerimientos logísticos.", "Integración de responsables, contratistas, accesos y niveles de servicio."],
+  {
+    title: "Unidades residenciales",
+    copy: "En conjuntos y copropiedades conviven zonas comunes, residentes, equipos de operación y varios puntos de generación. El trabajo se concentra en acordar cómo separar y almacenar temporalmente, por dónde se mueve cada corriente y quién responde en cada turno.",
+    action: "Planear el PMIRS de mi copropiedad",
+    href: "/servicios/pgirs-pmirs/?perfil=empresa#pmirs-organizacional",
+  },
+  {
+    title: "Centros comerciales y plazas",
+    copy: "Los locales, las zonas de alimentos, los servicios y las áreas comunes tienen ritmos distintos. La gestión debe coordinar la separación en la fuente con los operadores, los horarios de retiro y las condiciones de cada área.",
+    action: "Diseñar la microrruta de mi centro comercial",
+    href: "/servicios/microrrutas-motocarguero/?perfil=empresa",
+  },
+  {
+    title: "Instituciones y campus",
+    copy: "Cuando una sede reúne muchos usuarios y equipos de servicios generales, la rutina necesita ser fácil de compartir. Se definen protocolos, formación y registros que permitan dar seguimiento entre áreas.",
+    action: "Organizar el PMIRS de mi institución",
+    href: "/servicios/pgirs-pmirs/?perfil=empresa#pmirs-organizacional",
+  },
+  {
+    title: "Industrias y otros grandes generadores",
+    copy: "En plantas, operaciones logísticas y organizaciones multisede, las corrientes y sus responsables varían según el proceso. La evaluación permite priorizar qué manejar, con qué frecuencia y hacia qué destino, de acuerdo con las condiciones de cada operación.",
+    action: "Caracterizar mis corrientes orgánicas",
+    href: "/servicios/diagnostico-residuos/?perfil=empresa",
+  },
 ];
 
-const evidence = [
-  ["Origen", "Punto, área, responsable y tipo de corriente."],
-  ["Cantidad", "Volumen o peso, frecuencia y estacionalidad."],
-  ["Calidad", "Separación, impropios, humedad y novedades."],
-  ["Movimiento", "Almacenamiento, atención, ruta y recepción."],
-  ["Tratamiento", "Proceso aplicado, lote y control operativo."],
-  ["Resultado", "Material gestionado, producto, destino e indicadores."],
-];
-
-const valueSteps = [
-  ["01", "Entender", "Qué se genera y qué condiciona su manejo."],
-  ["02", "Ordenar", "Personas, puntos, recipientes y rutinas internas."],
-  ["03", "Conectar", "Frecuencia, recolección y criterios de aceptación."],
-  ["04", "Transformar", "Tratamiento compatible con la corriente."],
-  ["05", "Demostrar", "Registros útiles para gestión y mejora."],
-];
+const companyRoutes = [
+  {
+    title: "Recolección, trazabilidad y tratamiento recurrentes",
+    copy: "Para sedes que generan orgánicos de forma continua: definimos cobertura, frecuencia, criterios de recepción, registro de cantidades y destino acordado. El retiro periódico es distinto del diseño de una ruta nueva.",
+    href: "/servicios/recoleccion-tratamiento/?perfil=empresa",
+    cta: "Conocer recolección y tratamiento",
+    contactHref: "/contacto/?servicio=recoleccion-tratamiento&perfil=empresa",
+    contactCta: "Evaluar el servicio para mi organización",
+    image: "/services/pmirs-generators-editorial.jpg",
+    imageAlt: "Equipo separa residuos orgánicos en el área de servicio de una organización.",
+  },
+  {
+    title: "Diseño de Microrrutas con Motocarguero",
+    copy: "Codiseñamos recorridos selectivos desde cada generador hasta la recepción. Greenatics y Auteco Mobility desarrollaron una configuración sobre base Ceronte, con un contenedor diseñado por Greenatics para apoyar la recolección selectiva de orgánicos; frecuencia, carga, topografía y accesos definen su integración a cada ruta.",
+    href: "/servicios/microrrutas-motocarguero/?perfil=empresa",
+    cta: "Conocer el diseño de microrrutas",
+    contactHref: "/contacto/?servicio=microrrutas-motocarguero&perfil=empresa",
+    contactCta: "Evaluar una ruta selectiva",
+    image: "/projects/routes/motocarguero-verde-operacion-real.webp",
+    imageAlt: "Representación del motocarguero sobre base Ceronte con contenedor diseñado por Greenatics.",
+  },
+  {
+    title: "Operación Integral y Continuidad Técnica de Plantas",
+    copy: "Cuando una planta necesita continuidad o respaldo técnico, acordamos una modalidad integral, compartida o de dirección técnica. Delimitamos responsabilidades, turnos, mantenimiento y reportes; la dirección técnica no implica por sí sola ejecutar la operación física.",
+    href: "/servicios/operacion-delegada/?perfil=empresa",
+    cta: "Comparar modalidades de operación",
+    contactHref: "/contacto/?servicio=operacion-delegada&perfil=empresa",
+    contactCta: "Conversar sobre mi planta",
+    image: "/tools/ops-plant-editorial.jpg",
+    imageAlt: "Operaria revisa material orgánico y una pila de compost en una planta cubierta.",
+  },
+  {
+    title: "Aprovechamiento Productivo y Bioeconomía",
+    copy: "Comparamos compostaje, digestión anaerobia y otras rutas según la composición de la corriente, su continuidad y las condiciones de operación. Los productos, el biogás o la energía son salidas por evaluar, no resultados que se presuponen.",
+    href: "/servicios/aprovechamiento-productivo/?perfil=empresa",
+    cta: "Explorar rutas de valorización",
+    contactHref: "/contacto/?servicio=aprovechamiento-productivo&perfil=empresa",
+    contactCta: "Evaluar mi corriente orgánica",
+    image: "/services/valorization-characterization-editorial.jpg",
+    imageAlt: "Una profesional compara muestras de subproductos orgánicos sobre una mesa de caracterización.",
+  },
+] as const;
 
 export default function CompaniesPage() {
   return (
     <>
-      <section className="gt-route-hero gt-route-hero--company">
-        <div className="container gt-route-hero__grid">
-          <div className="gt-route-hero__copy">
-            <span className="eyebrow eyebrow--light">Empresas y grandes generadores</span>
-            <h1>Gestionar orgánicos no es sacar una bolsa del edificio.</h1>
-            <p className="gt-route-hero__statement">Es conectar la operación interna con un destino verificable.</p>
-            <p className="lead">
-              Greenatics organiza lo que ocurre desde el punto de generación hasta la recepción,
-              el tratamiento y la evidencia. Podemos resolver una brecha puntual o estructurar
-              la cadena completa para que el sistema sea ejecutable y medible.
-            </p>
-            <div className="button-row">
-              <Link className="button button--light" href="/servicios/diagnostico-residuos/">Caracterizar mi corriente</Link>
-              <Link className="button button--outline-light" href="/contacto/">Conversar sobre el alcance</Link>
-            </div>
+      <section className="gt-route-hero gt-route-hero--company gt-route-hero--company-editorial" aria-labelledby="company-page-title">
+        <div className="container gt-route-hero__grid gt-segment-hero-grid gt-company-hero-grid">
+          <div className="gt-route-hero__copy gt-segment-hero__copy">
+            <h1 id="company-page-title">Organiza la gestión de residuos en <span className="gt-company-title-accent">cada sede.</span></h1>
+            <p className="lead">Cada organización combina espacios, turnos y corrientes distintas. Coordinamos separación, almacenamiento temporal, recolección y destino con quienes sostienen la operación. Cuando corresponde, articulamos el trabajo con el Plan de Manejo Integral de Residuos Sólidos (PMIRS) y acordamos medidas, responsables y seguimiento por sede.</p>
+            <Link className="gt-company-hero__pmirs" href="/servicios/pgirs-pmirs/?perfil=empresa#pmirs-organizacional">
+              Cuándo aplica el PMIRS organizacional
+            </Link>
           </div>
-          <figure className="gt-route-hero__figure">
-            <Image
-              src="/projects/routes/route-evidence-10.webp"
-              alt="Operario verificando residuos orgánicos separados en un punto de generación"
-              fill
-              priority
-              sizes="(max-width: 900px) 100vw, 48vw"
-            />
-            <figcaption>
-              <strong>El sistema comienza en el punto de generación</strong>
-              <span>Una rutina clara protege la calidad del material antes de la recolección.</span>
-            </figcaption>
+          <Link className="button button--dark gt-segment-hero__primary gt-company-hero__primary" href="/contacto/?interes=empresas&perfil=empresa&diagnostico=Ordenar%20una%20sede%20o%20corriente&prioridad=Comparte%20el%20detonante%2C%20sedes%2C%20corrientes%2C%20responsables%2C%20manejo%20actual%20y%20datos%20disponibles">Conversar sobre mi operación</Link>
+          <figure className="gt-company-hero-visual gt-segment-hero__visual">
+            <Image src="/services/large-generators-editorial-01.jpg" alt="Persona revisa contenedores en el área de servicio de un edificio urbano." fill priority sizes="(max-width: 900px) 100vw, 46vw" />
+            <figcaption><strong>Una rutina compartida entre sedes y equipos.</strong></figcaption>
+          </figure>
+          <Link className="gt-segment-hero__secondary gt-company-hero__routes" href="#puntos-de-entrada">Explorar las cuatro rutas de servicio <span aria-hidden="true">→</span></Link>
+        </div>
+      </section>
+
+      <section className="gt-route-section gt-route-section--paper" aria-labelledby="company-audiences-title">
+        <div className="container">
+          <div className="gt-route-heading gt-route-heading--split gt-company-audiences__heading">
+            <div><h2 id="company-audiences-title">El residuo y la operación definen el sistema.</h2></div>
+            <p>Una sede con un episodio concreto es suficiente para abrir la revisión. Comparamos corriente, responsables, manejo y destino en ese punto; ampliamos el análisis a otras sedes solo si los registros muestran que conviene hacerlo.</p>
+          </div>
+          <ul className="gt-company-audience">
+            {segments.map(({ title, copy, action, href }) => (
+              <li key={title}><article><h3>{title}</h3><p>{copy}</p><Link className="gt-company-audience__action" href={href}>{action}<span aria-hidden="true">→</span></Link></article></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="gt-company-evidence" aria-labelledby="company-evidence-title">
+        <div className="container gt-company-evidence__layout">
+          <div className="gt-company-evidence__story">
+            <h2 id="company-evidence-title">En una misma organización pueden convivir varias rutas.</h2>
+            <p>Servicio público, reciclaje, aprovechamiento interno y gestores externos pueden formar parte de la misma operación. Una encuesta empresarial de Bogotá y municipios de su jurisdicción muestra por qué conviene mirar cada sede, corriente y responsable antes de proponer cambios.</p>
+            <Link href="#puntos-de-entrada">Explorar rutas para mi organización <span aria-hidden="true">→</span></Link>
+          </div>
+          <figure className="gt-company-evidence__chart" aria-labelledby="company-evidence-chart-title">
+            <figcaption id="company-evidence-chart-title">Prácticas de manejo de residuos reportadas en la encuesta CCB 2023</figcaption>
+            <ul>
+              <li>
+                <div><span>Entrega al servicio público de aseo</span><strong>60,2 %</strong></div>
+                <span className="gt-company-evidence__track" aria-hidden="true"><span style={{ width: "60.2%" }} /></span>
+              </li>
+              <li>
+                <div><span>Reciclaje y entrega a organizaciones recicladoras</span><strong>43,3 %</strong></div>
+                <span className="gt-company-evidence__track" aria-hidden="true"><span style={{ width: "43.3%" }} /></span>
+              </li>
+              <li>
+                <div><span>Aprovechamiento interno</span><strong>25,1 %</strong></div>
+                <span className="gt-company-evidence__track" aria-hidden="true"><span style={{ width: "25.1%" }} /></span>
+              </li>
+              <li>
+                <div><span>Contratación de terceros para residuos no recogidos por el servicio público</span><strong>20,7 %</strong></div>
+                <span className="gt-company-evidence__track" aria-hidden="true"><span style={{ width: "20.7%" }} /></span>
+              </li>
+            </ul>
+            <p className="gt-company-evidence__note">1.500 encuestas en Bogotá y 59 municipios de la jurisdicción CCB. La pregunta permitía varias respuestas, por eso las prácticas pueden coexistir y los porcentajes no suman 100 %. Es una referencia regional de 2023, no un resultado de clientes Greenatics.</p>
+            <a className="gt-company-evidence__source" href="https://bibliotecadigital.ccb.org.co/bitstreams/300c8fb5-e67f-4004-963b-da9e6f1cc557/download" target="_blank" rel="noreferrer">Consultar encuesta y ficha técnica de la CCB <span aria-hidden="true">↗</span></a>
           </figure>
         </div>
       </section>
 
-      <section className="gt-context-strip">
-        <div className="container gt-context-strip__inner">
-          <strong>Volumen no basta.</strong>
-          <p>Composición, humedad, impropios, estacionalidad, almacenamiento, frecuencia, distancia y destino cambian la solución técnica y económica.</p>
-          <Link href="/diagnostico/">Usar el orientador inicial →</Link>
+      <section
+        className="gt-route-section gt-route-section--white gt-route-section--company-story"
+        aria-labelledby="company-pmirs-story-title"
+      >
+        <div className="container gt-pmirs-story gt-pmirs-story--company">
+          <div className="gt-pmirs-story__copy gt-company-pmirs-copy">
+            <h2 id="company-pmirs-story-title">Una gestión que se sostiene cuando cambia el turno.</h2>
+            <p className="gt-company-pmirs-copy__story">Cuando corresponde, partimos del PMIRS o del instrumento vigente y de lo que sucede en cada sede. <strong>En el punto de generación,</strong> definimos separación, recipientes y criterios para reconocer materiales que no deben mezclarse. A partir de ahí, <strong>entre áreas y gestores,</strong> acordamos responsables, almacenamiento temporal, recorridos internos y frecuencia de retiro. <strong>En el seguimiento,</strong> los registros de entrega, destino e incidencias ayudan al equipo a revisar la rutina y ajustar lo necesario.</p>
+            <Link className="gt-company-pmirs-copy__link" href="/servicios/pgirs-pmirs/?perfil=empresa#pmirs-organizacional">Ver actividades y alcance del PMIRS <span aria-hidden="true">→</span></Link>
+          </div>
+          <figure className="gt-company-pmirs-scene">
+            <Image src="/services/pmirs-large-generators-editorial.jpg" alt="Separación de residuos orgánicos en una unidad residencial y traslado a un espacio de aprovechamiento." fill sizes="(max-width: 900px) 100vw, 48vw" />
+            <figcaption><strong>Una rutina visible para todas las áreas.</strong></figcaption>
+          </figure>
         </div>
       </section>
 
-      <section className="gt-route-section gt-route-section--paper">
+      <section className="gt-route-section gt-route-section--paper gt-route-section--company-offers" id="puntos-de-entrada" aria-labelledby="company-routes-title">
         <div className="container">
-          <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Contextos de generación</span><h2>El residuo y la operación definen el sistema.</h2></div>
-            <p>Dos organizaciones con el mismo volumen pueden necesitar soluciones distintas. El proceso productivo, los espacios, las personas y la continuidad de la corriente importan tanto como las toneladas.</p>
-          </div>
-          <div className="gt-segment-grid">
-            {segments.map(([title, copy, criterion], index) => (
-              <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p><div><small>Variable decisiva</small><strong>{criterion}</strong></div></article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="gt-route-section gt-route-section--white">
-        <div className="container gt-pmirs-story">
-          <div className="gt-pmirs-story__copy">
-            <span className="eyebrow">Gestión dentro de la organización</span>
-            <h2>Un PMIRS útil se reconoce porque la gente puede ejecutarlo.</h2>
-            <p>No debería ser un documento que aparece durante una auditoría. Debe traducir el diagnóstico en responsables, puntos, recipientes, rutas internas, frecuencias, gestores, contingencias, evidencias e indicadores comprensibles.</p>
-            <blockquote>La meta no es producir instrucciones. Es reducir errores cotidianos y sostener una forma de trabajo.</blockquote>
-            <Link className="button button--dark" href="/servicios/pgirs-pmirs/">Conocer el servicio PMIRS</Link>
-          </div>
-          <div className="gt-pmirs-story__visual">
-            <figure>
-              <Image
-                src="/projects/routes/route-evidence-11.webp"
-                alt="Acompañamiento a una generadora durante la entrega de residuos orgánicos separados"
-                fill
-                sizes="(max-width: 900px) 100vw, 48vw"
-              />
-              <figcaption>La formación funciona cuando acompaña una rutina concreta de separación y entrega.</figcaption>
-            </figure>
-            <ol>
-              {["Línea base y mapa de corrientes", "Puntos, recipientes y almacenamiento", "Responsables y rutas internas", "Gestores, frecuencia y contingencias", "Formación, registros e indicadores"].map((item, index) => (
-                <li key={item}><span>{String(index + 1).padStart(2, "0")}</span><strong>{item}</strong></li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      <RouteDecisionBridge
-        eyebrow="De la necesidad al alcance"
-        title="Tres niveles de ambición que no deben confundirse."
-        intro="Ordenar la operación interna, construir una estrategia de circularidad y preparar un expediente de inversión son trabajos relacionados, pero requieren datos, responsables y validaciones diferentes."
-        cards={[
-          {
-            label: "Ejecución interna",
-            title: "Quiero que la separación y la entrega funcionen.",
-            copy: "Convierte la línea base en puntos, recipientes, responsables, rutas internas, almacenamiento, gestores y contingencias.",
-            inputs: ["Mapa de sedes, procesos y corrientes", "Rutinas, espacios y responsables", "Gestores, frecuencias y novedades"],
-            href: "/servicios/pgirs-pmirs/",
-            cta: "Estructurar PMIRS",
-          },
-          {
-            label: "Circularidad y evidencia",
-            title: "Quiero reducir disposición y demostrar la gestión.",
-            copy: "Reconcilia masa, inventarios, destinos y soportes antes de fijar una meta o publicar un indicador de desvío.",
-            inputs: ["Pesajes, compras e inventarios", "Contratos y soportes de destinos", "Frontera, periodo y uso del indicador"],
-            href: "/soluciones/vertimiento-cero/",
-            cta: "Preparar línea base circular",
-          },
-          {
-            label: "Inversión ambiental",
-            title: "Quiero evaluar elegibilidad antes de invertir.",
-            copy: "Separa activos, obras y servicios; documenta la línea base y coordina el soporte técnico con revisión jurídica y tributaria.",
-            inputs: ["Matriz de inversión y fechas", "Objetivo y línea base ambiental", "Diseños, cotizaciones y soportes"],
-            href: "/soluciones/beneficio-tributario/",
-            cta: "Revisar elegibilidad",
-          },
-        ]}
-      />
-
-      <section className="gt-company-chain">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--light">
-            <span className="eyebrow eyebrow--light">De la fuente al resultado</span>
-            <h2>La trazabilidad debe continuar después de la recolección.</h2>
-            <p>Retirar el material resuelve una necesidad logística. Una gestión completa conecta la entrega con la recepción, el tratamiento, las novedades y el resultado consolidado.</p>
-          </div>
-          <div className="gt-company-chain__photos">
-            <figure><Image src="/projects/routes/route-evidence-03.webp" alt="Carga de residuos orgánicos separados durante una operación de recolección" fill sizes="(max-width: 800px) 100vw, 50vw" /><figcaption><strong>Recolección</strong><span>Atención, calidad y novedades del material entregado.</span></figcaption></figure>
-            <figure><Image src="/projects/plant/plant-evidence-10.webp" alt="Residuos orgánicos recibidos para su proceso de aprovechamiento" fill sizes="(max-width: 800px) 100vw, 50vw" /><figcaption><strong>Transformación</strong><span>Recepción, proceso, control y salida.</span></figcaption></figure>
-          </div>
-          <ol className="gt-value-steps">
-            {valueSteps.map(([number, title, copy]) => <li key={title}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}
-          </ol>
-        </div>
-      </section>
-
-      <section className="gt-route-section gt-route-section--paper">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Cadena de evidencia</span><h2>Registrar lo necesario para demostrar y mejorar.</h2></div>
-            <p>La trazabilidad no consiste en acumular formatos. Consiste en conservar los datos que explican qué ocurrió, dónde se perdió calidad y qué decisión debería cambiar.</p>
-          </div>
-          <div className="gt-evidence-grid">
-            {evidence.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><strong>{title}</strong><p>{copy}</p></article>)}
-          </div>
-          <div className="gt-inline-action gt-inline-action--paper"><p>Los indicadores se definen según la operación y el alcance de reporte de cada organización.</p><Link href="/impacto/">Conocer el modelo de datos e impacto →</Link></div>
-        </div>
-      </section>
-
-      <section className="gt-route-section gt-route-section--white">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--split"><div><span className="eyebrow">Servicios para empresas</span><h2>Empezar por la brecha que hoy impide avanzar.</h2></div><p>Diagnóstico, PMIRS, infraestructura y datos pueden contratarse como fases independientes. Si la cadena requiere varias capacidades, Greenatics las integra bajo un solo alcance.</p></div>
-          <div className="gt-service-preview-grid gt-service-preview-grid--company">
-            {companyServices.map((service) => (
-              <article key={service.slug}>
-                <span>{service.categoryLabel}</span>
-                <h3>{service.name}</h3>
-                <p>{service.summary}</p>
-                <div className="gt-card-answer"><strong>Qué ayuda a resolver</strong><p>{service.solves}</p></div>
-                <Link href={`/servicios/${service.slug}/`}>Ver alcance y entregables →</Link>
+          <div className="gt-route-heading gt-route-heading--split gt-company-offers__heading"><div><span className="eyebrow">Servicios para orgánicos</span><h2 id="company-routes-title">¿Qué frente de tu operación necesitas resolver?</h2></div><p>Elige la necesidad actual: recolección recurrente, diseño de microrruta, continuidad de planta o evaluación de aprovechamiento. Cada ficha explica su alcance y un primer paso; conectamos servicios adicionales cuando los datos y la operación lo justifican.</p></div>
+          <div className="gt-segment-offer-links gt-segment-offer-links--detailed gt-company-service-list">
+            {companyRoutes.map((route) => (
+              <article className="gt-company-route-card" key={route.href}>
+                <figure className="gt-company-route-card__visual">
+                <Image src={route.image} alt={route.imageAlt} fill sizes="(max-width: 360px) 110px, (max-width: 620px) 140px, (max-width: 760px) 32vw, (max-width: 1100px) 20vw, 19vw" />
+                </figure>
+                <div className="gt-company-route-card__body">
+                  <div className="gt-segment-offer-links__identity">
+                    <h3>{route.title}</h3>
+                  </div>
+                  <div className="gt-segment-offer-links__details">
+                    <p>{route.copy}</p>
+                    <Link href={route.href}>{route.cta}<span aria-hidden="true">→</span></Link>
+                    <Link className="gt-company-route-card__contact" href={route.contactHref}>{route.contactCta}</Link>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="gt-route-closing gt-route-closing--company">
+      <SegmentDigitalTools
+        id="herramientas-organizaciones"
+        heading="Herramientas digitales para organizar y seguir los datos."
+        intro="Además del acompañamiento profesional, puedes explorar entornos digitales con propósitos distintos: Back 2 Green organiza inventarios de emisiones y GREENATICS OPS permite recorrer el registro operativo de una planta. Cada landing explica el acceso y el alcance disponible."
+        entries={[
+          {
+            code: "CO₂",
+            summary: "Organiza fuentes, periodos y soportes a tu ritmo con una metodología basada en GHG Protocol y acompañamiento profesional. En la landing puedes revisar el método, los planes anuales y el acceso a la plataforma. La preparación del reporte no sustituye la revisión de las obligaciones aplicables a tu organización.",
+            href: "/huella/",
+            action: "Ver método, planes y acceso",
+          },
+          {
+            code: "OPS",
+            summary: "Recorre una muestra pública del flujo de registros de planta. La configuración, los usuarios y las integraciones se revisan para cada proyecto; la muestra no equivale a un entorno propio habilitado.",
+            href: "/app/",
+            action: "Abrir muestra de GREENATICS OPS",
+            detailsHref: "/servicios/greenatics-ops/?perfil=empresa",
+            detailsAction: "Consultar configuración y acompañamiento",
+          },
+        ]}
+      />
+
+      <section className="gt-route-closing gt-route-closing--company" aria-labelledby="company-next-step-title">
         <div className="container gt-route-closing__inner">
-          <div><span className="eyebrow">Primer paso</span><h2>Muéstranos dónde nace el residuo y construiremos la ruta desde ahí.</h2></div>
-          <Link className="button button--dark" href="/servicios/diagnostico-residuos/">Solicitar caracterización</Link>
+          <div><span className="eyebrow">Siguiente paso</span><h2 id="company-next-step-title">Definamos qué necesita funcionar en tu operación.</h2><p>Cuéntanos qué sedes, corrientes o datos tienes que ordenar. Con ese contexto podemos conversar sobre el alcance técnico y la ruta adecuada.</p></div>
+          <Link className="button button--dark" href="/contacto/?interes=empresas&perfil=empresa&diagnostico=Organizar%20residuos%20en%20una%20o%20varias%20sedes&prioridad=Compartir%20sedes%2C%20corrientes%2C%20responsables%20y%20necesidad%20actual">Compartir el contexto de mi operación</Link>
         </div>
       </section>
     </>

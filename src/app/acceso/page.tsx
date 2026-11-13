@@ -1,39 +1,144 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { runtimeLinks } from "@/lib/runtime-links";
+import { digitalTools, getRuntimeEntryHref, isExternalRuntime, isLocalRuntime } from "@/data/digital-tools";
+import { LocalToolRuntimeLink } from "@/components/local-tool-runtime-link";
 
 export const metadata: Metadata = {
-  title: "Acceso a plataformas Greenatics",
-  description: "Centro de acceso a las plataformas Greenatics: OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
+  title: "Acceso a herramientas",
+  description: "Consulta las muestras públicas, el estado de cada herramienta y el siguiente paso para solicitar un entorno de trabajo.",
   alternates: { canonical: "/acceso/" },
   openGraph: {
-    title: "Acceso a plataformas Greenatics",
-    description: "Entra a demos públicas o configura entornos de OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA.",
+    title: "Acceso a herramientas | Greenatics",
+    description: "Una entrada clara a las muestras públicas y los entornos de trabajo Greenatics.",
     url: "/acceso/",
-    images: ["/campaign/06_dashboard_indicadores.jpg"],
+    images: ["/brand/greenatics-horizontal.webp"],
   },
 };
-
-const environments: Array<{ code: string; name: string; status: string; copy: string; publicHref: string; publicCta: string; access: string; accessHref: string; demoHref?: string }> = [
-  { code: "OPS", name: "GREENATICS OPS", status: "Demostración pública disponible", copy: "La demostración permite recorrer bitácora, recepción, procesos, mantenimiento, inventarios e indicadores con datos ilustrativos. Los entornos de operación se configuran por organización, planta y rol.", publicHref: "/app/", publicCta: "Abrir demostración", access: "Preparar entorno real", accessHref: "/contacto/?interes=greenatics-ops", demoHref: "/app/#estacion" },
-  { code: "CO₂", name: "Calcula tu Huella", status: "Estimador público disponible", copy: "Explora escenarios de emisiones y conoce la plataforma completa para inventarios, fuentes, cargas CSV/XLSX, validación, evidencias, historial y reportes climáticos.", publicHref: "/huella/", publicCta: "Abrir landing de Huella", access: "Preparar entorno real", accessHref: "/contacto/?interes=calcula-tu-huella", demoHref: "/huella/#calculadora" },
-  { code: "RED", name: "GREENATICS Red", status: "Estación pública navegable", copy: "Recorre una estación territorial con Proyecto 360, generadores, rutas, FIELD, QA/QC, PMIRS, indicadores, evidencias y coordinación. La demo ya permite entender el flujo; el entorno productivo se conecta después a la organización, sus roles y sus datos.", publicHref: "/red/", publicCta: "Conocer GREENATICS Red", access: "Preparar entorno real", accessHref: "/contacto/?interes=red", demoHref: "/red/app/" },
-  { code: "AG", name: "AGROWAY", status: "Demo navegable disponible", copy: "Aplicación de trazabilidad agrícola para registrar productor, finca, lote, ciclo, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha.", publicHref: "/agroway/", publicCta: "Conocer AGROWAY", access: "Diseñar implementación", accessHref: "/contacto/?interes=agroway", demoHref: "/agroway/app/" },
-  { code: "SANA", name: "SANA", status: "Demo navegable disponible", copy: "Ecosistema para estructurar y acompañar inversión en proyectos productivos con datos de AGROWAY, ciencia Greenatics, soluciones Wondergreen y seguimiento de campo.", publicHref: "/sana/", publicCta: "Conocer SANA", access: "Diseñar implementación", accessHref: "/contacto/?interes=sana", demoHref: "/sana/app/" },
-];
-
-const isLocalRuntime = (url: string) => /localhost|127\.0\.0\.1/.test(url);
 
 export default function AccessPage() {
   return (
     <>
-      <section className="access-v4-hero"><div className="container"><span className="eyebrow eyebrow--light">Acceso a entornos Greenatics</span><h1>Prueba una demo. Entra a tu espacio cuando estés listo.</h1><p className="lead">OPS, Calcula tu Huella, GREENATICS Red, AGROWAY y SANA tienen una experiencia pública para recorrer sus módulos y entender su alcance. Cuando el trabajo requiere datos propios, la misma lógica se configura por organización, roles, permisos y proyecto.</p><div className="button-row"><Link className="button button--light" href="#entornos-disponibles">Ver entornos disponibles</Link><Link className="button button--outline-light" href="/plataforma/">Abrir Centro Greenatics</Link></div></div></section>
+      <section className="access-v4-hero">
+        <div className="container access-v4-hero__inner">
+          <h1>Muestras públicas y accesos de trabajo.</h1>
+          <p className="lead">
+            Explora las experiencias abiertas o consulta cómo habilitar un espacio para tu equipo.
+            Cada herramienta muestra su estado y el siguiente paso disponible.
+          </p>
+          <div className="button-row">
+            <Link className="button button--light" href="#entornos-disponibles">Ver estados y accesos</Link>
+            <Link className="button button--outline-light" href="/herramientas/">Comparar herramientas</Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="access-v4-environments" id="entornos-disponibles" aria-labelledby="access-environments-title"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Entornos disponibles</span><h2 id="access-environments-title">Primero comprende. Después entra a trabajar.</h2></div><p>OPS controla la planta; Huella organiza la gestión climática; Red coordina territorio y PMIRS; AGROWAY registra la trazabilidad agrícola en campo; SANA articula esa información con la ciencia Greenatics, las soluciones Wondergreen y los proyectos productivos. Cada tarjeta separa la landing, la demo abierta y el espacio operativo de una organización.</p></div><div className="access-v4-environments__grid">{environments.map((environment) => { const runtimeHref = environment.code === "OPS" ? runtimeLinks.opsApp : environment.code === "CO₂" ? runtimeLinks.huella : environment.code === "RED" ? runtimeLinks.red : ""; const runtimeState = runtimeHref ? isLocalRuntime(runtimeHref) ? "Disponible en este sitio" : "Espacio operativo conectado" : environment.demoHref ? "Demo pública disponible" : environment.status; const demoLabel = environment.code === "OPS" ? "Explorar estación demo" : environment.code === "CO₂" ? "Explorar estimador" : environment.code === "RED" ? "Entrar a la estación demo" : `Abrir demo de ${environment.name}`; return <article key={environment.code}><span>{environment.code}</span><small>{runtimeState}</small><h3>{environment.name}</h3><p>{environment.copy}</p><div className="button-row"><Link className="button button--dark" href={environment.publicHref} aria-label={`${environment.publicCta}: ${environment.name}`}>{environment.publicCta}</Link>{runtimeHref ? <><a className="button button--primary" href={runtimeHref} target={/^https?:\/\//.test(runtimeHref) ? "_blank" : undefined} rel={/^https?:\/\//.test(runtimeHref) ? "noopener noreferrer" : undefined} aria-label={`Entrar a ${environment.name}`}>Entrar al espacio operativo ↗</a>{environment.demoHref && <Link className="button button--ghost" href={environment.demoHref} aria-label={`${demoLabel}: ${environment.name}`}>{demoLabel} →</Link>}</> : environment.demoHref ? <Link className="button button--primary" href={environment.demoHref} aria-label={`${demoLabel}: ${environment.name}`}>{demoLabel} ↗</Link> : <Link className="button button--ghost" href={environment.accessHref} aria-label={`${environment.access}: ${environment.name}`}>{environment.access}</Link>}</div></article>; })}</div></div></section>
+      <section
+        className="access-v4-environments"
+        id="entornos-disponibles"
+        aria-labelledby="access-environments-title"
+      >
+        <div className="container">
+          <div className="digital-v4-heading">
+            <div><h2 id="access-environments-title">Estado y siguiente paso por herramienta.</h2></div>
+            <p>Las muestras usan datos ilustrativos. Para trabajar con información de una organización, consulta el acceso y las condiciones del proyecto.</p>
+          </div>
 
-      <section className="access-v4-process"><div className="container"><div><span className="eyebrow eyebrow--light">Cómo se habilita</span><h2>Un acceso operativo claro, seguro y por organización.</h2></div><ol><li><span>01</span><strong>Alcance</strong><p>Organización, plantas o proyectos, usuarios, módulos y decisiones que debe soportar.</p></li><li><span>02</span><strong>Configuración</strong><p>Catálogos, roles, permisos, flujos, datos iniciales, indicadores y entregables.</p></li><li><span>03</span><strong>Adopción</strong><p>Formación, acompañamiento, revisión de calidad y mejora de la captura.</p></li><li><span>04</span><strong>Continuidad</strong><p>Soporte, ajustes, nuevos módulos y gobierno de reportes según el contrato.</p></li></ol><Link className="button button--light" href="/plataforma/usuarios/">Administrar usuarios y roles →</Link></div></section>
+          <div className="access-v4-directory">
+            {digitalTools.map((tool) => {
+              const runtimeHref = tool.runtimeHref;
+              const hasRuntime = Boolean(runtimeHref) && (
+                !isLocalRuntime(runtimeHref) || process.env.NODE_ENV === "development"
+              );
+              const localDevelopmentRuntime = tool.code === "CO₂" && hasRuntime && isLocalRuntime(runtimeHref);
+              const runtimeEntryHref = getRuntimeEntryHref(tool);
+              const runtimeStatus = tool.code === "CO₂"
+                ? hasRuntime
+                  ? isLocalRuntime(runtimeHref) ? "URL local configurada · requiere servidor activo" : "Demo remota · el primer acceso puede tardar"
+                  : "Acceso remoto no disponible"
+                : hasRuntime ? "Enlace externo configurado" : tool.status;
+              const isExternal = hasRuntime && isExternalRuntime(runtimeEntryHref);
 
-      <section className="access-v4-truth"><div className="container access-v4-truth__grid"><div><span className="eyebrow">Acceso operativo seguro</span><h2>Cada entorno protege sus datos, sus usuarios y sus responsabilidades.</h2></div><div><p>Las demos públicas funcionan con datos ilustrativos y no requieren contraseñas. Cuando una organización trabaja con información propia, el acceso se habilita con identidad, roles, permisos y trazabilidad; no usamos credenciales genéricas ni presentamos como conectado un sistema que aún no forma parte de la implementación.</p><Link href="/contacto/?interes=plataformas">Definir una implementación segura →</Link></div></div></section>
+              return (
+                <article
+                  className="access-v4-environment"
+                  id={tool.code === "CO₂" ? "calcula-tu-huella" : undefined}
+                  key={tool.code}
+                >
+                  <div className="access-v4-environment__identity">
+                    <span className="access-v4-environment__code">{tool.code}</span>
+                    <div>
+                      <h3>{tool.name}</h3>
+                      <p className="access-v4-environment__scope">{tool.scope}</p>
+                    </div>
+                  </div>
+
+                  <div className="access-v4-environment__status">
+                    <span>Estado</span>
+                    <strong>{runtimeStatus}</strong>
+                  </div>
+
+                  <div className="access-v4-environment__actions">
+                    <div className="access-v4-environment__actions-primary">
+                      {hasRuntime && runtimeHref && !localDevelopmentRuntime ? (
+                        <a
+                          className="access-v4-environment__entry"
+                          href={runtimeEntryHref}
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                          aria-label={tool.code === "CO₂" ? "Entrar a Back 2 Green" : `Abrir entorno configurado de ${tool.name}`}
+                        >
+                          {tool.code === "CO₂" ? "Entrar a Back 2 Green" : "Abrir entorno"} <span aria-hidden="true">↗</span>
+                        </a>
+                      ) : tool.code === "CO₂" ? (
+                        <Link
+                          className="access-v4-environment__entry"
+                          href={tool.publicHref}
+                          aria-label={`Ver el recorrido y los planes de ${tool.name}`}
+                        >
+                          Ver recorrido y planes <span aria-hidden="true">↗</span>
+                        </Link>
+                      ) : (
+                        <Link
+                          className="access-v4-environment__entry"
+                          href={tool.publicHref}
+                          aria-label={`${tool.publicLabel}: ${tool.name}`}
+                        >
+                          {tool.publicLabel} <span aria-hidden="true">↗</span>
+                        </Link>
+                      )}
+                    </div>
+                    <div className="access-v4-environment__actions-supporting">
+                      {tool.code === "CO₂" && hasRuntime && !localDevelopmentRuntime ? (
+                        <Link className="access-v4-environment__sample" href={tool.publicHref}>
+                          Ver planes y recorrido <span aria-hidden="true">↗</span>
+                        </Link>
+                      ) : null}
+                      {localDevelopmentRuntime ? (
+                        <>
+                          <small>Acceso de pruebas; requiere que el servidor local esté iniciado.</small>
+                          <LocalToolRuntimeLink code="CO₂" className="access-v4-environment__sample" ariaLabel="Abrir el login local de prueba de Back 2 Green">Abrir acceso local de pruebas</LocalToolRuntimeLink>
+                        </>
+                      ) : null}
+                      <Link
+                        className="access-v4-environment__request"
+                        href={tool.requestHref ?? `/contacto/?interes=${tool.implementationInterest}`}
+                      >
+                        {tool.requestLabel} <span aria-hidden="true">→</span>
+                      </Link>
+                      {!hasRuntime && tool.code === "OPS" ? <LocalToolRuntimeLink code="OPS" className="access-v4-environment__sample" ariaLabel="Abrir la demo local de GREENATICS OPS">Abrir demo OPS local en este equipo</LocalToolRuntimeLink> : null}
+                      {!hasRuntime && tool.code === "CO₂" ? <LocalToolRuntimeLink code="CO₂" className="access-v4-environment__sample" ariaLabel="Abrir el login local de prueba de Back 2 Green">Abrir acceso local de pruebas</LocalToolRuntimeLink> : null}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <p className="access-v4-note">
+            Una muestra no crea una cuenta ni habilita permisos. El uso con datos propios, las integraciones y las responsabilidades se acuerdan para cada proyecto.
+          </p>
+        </div>
+      </section>
     </>
   );
 }

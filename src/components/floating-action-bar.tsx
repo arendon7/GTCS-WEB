@@ -59,8 +59,8 @@ export function FloatingActionBar() {
       <Link className="floating-action-bar__primary" href="/diagnostico/" tabIndex={isVisible ? 0 : -1}>
         Orientar mi proyecto
       </Link>
-      <Link className="floating-action-bar__secondary" href="/wondergreen/cotizador/" tabIndex={isVisible ? 0 : -1}>
-        Cotizar Wondergreen
+      <Link className="floating-action-bar__secondary" href="/wondergreen/#productos" tabIndex={isVisible ? 0 : -1}>
+        Ver productos Wondergreen
       </Link>
     </aside>
   );

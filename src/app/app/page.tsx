@@ -1,80 +1,45 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { OpsWorkstationDemo } from "@/components/ops-workstation-demo";
-import { ToolAccessRail } from "@/components/tool-access-rail";
-import { runtimeLinks } from "@/lib/runtime-links";
 
 export const metadata: Metadata = {
   title: "GREENATICS OPS | Sistema operacional para plantas",
   description:
-    "Greenatics OPS conecta bitácoras, recepciones, lotes, procesos, mantenimiento, inventarios, reportes y decisiones para operar plantas con trazabilidad.",
+    "Conoce cómo GREENATICS OPS organiza calendario, actividades, recepciones, procesos, equipos, inventario y gestión operativa. Explora una muestra pública con datos ficticios.",
   alternates: { canonical: "/app/" },
   openGraph: {
     title: "GREENATICS OPS | Sistema operacional para plantas",
-    description: "Bitácora, recepción, procesos, mantenimiento, inventario y reportes en una misma historia operativa.",
+    description: "Calendario, actividades, recepciones, procesos, equipos e inventario en un modelo operativo configurable por proyecto. Explora la muestra pública con datos ficticios.",
     url: "/app/",
-    images: ["/campaign/06_dashboard_indicadores.jpg"],
+    images: ["/brand/greenatics-horizontal.webp"],
   },
 };
 
-const architecture = [
-  {
-    code: "A",
-    label: "Operar el día",
-    title: "Plan, actividad y bitácora",
-    copy: "Calendario, turnos, responsables, actividades ejecutadas, novedades, evidencias y cierre diario en una misma secuencia.",
-    modules: ["Hoy", "Calendario", "Actividades", "Bitácora", "Incidentes"],
-  },
-  {
-    code: "B",
-    label: "Controlar la transformación",
-    title: "Recepción, lotes y procesos",
-    copy: "Pesaje neto, calidad, rechazo, trazabilidad física, compostaje, digestión anaerobia, variables y balance de volúmenes.",
-    modules: ["Recepciones", "Lotes", "Compostaje", "UASB", "Balances"],
-  },
-  {
-    code: "C",
-    label: "Cuidar los activos",
-    title: "Equipos y mantenimiento",
-    copy: "Estado, disponibilidad, fallas, tiempo detenido, órdenes preventivas y correctivas, repuestos y evidencia de cierre.",
-    modules: ["Equipos", "Fallas", "Órdenes", "Preventivos", "Repuestos"],
-  },
-  {
-    code: "D",
-    label: "Cerrar el ciclo",
-    title: "Producción, inventario y salidas",
-    copy: "Producto terminado, lotes, kardex, conciliación física, insumos, despachos y destino sin perder el historial.",
-    modules: ["Producción", "Inventario", "Insumos", "Despachos", "Conciliación"],
-  },
-  {
-    code: "E",
-    label: "Dirigir con evidencia",
-    title: "Costos, documentos y reportes",
-    copy: "Compras, gastos, caja, finanzas, documentos, indicadores y cierres listos para revisión técnica, gerencial o contractual.",
-    modules: ["Solicitudes", "Gastos", "Caja", "Finanzas", "Reportes"],
-  },
-] as const;
-
 const roles = [
-  ["Operación", "Registrar sin fricción", "Ve su turno, ejecuta actividades, captura pesajes y parámetros, adjunta evidencia y reporta novedades."],
-  ["Supervisión", "Controlar excepciones", "Revisa calidad, balancea volúmenes, atiende alertas, asigna responsables y cierra el día con soporte."],
-  ["Dirección", "Decidir con contexto", "Compara plantas, periodos, disponibilidad, producción, costos y compromisos sin entrar al detalle de captura."],
-  ["Auditoría y aliados", "Consultar lo autorizado", "Accede a versiones, fuentes y evidencia pertinente según rol, sin exponer información operativa innecesaria."],
+  ["Operación", "Registrar la jornada", "Consulta el trabajo del día, inicia y cierra actividades, y registra tiempos, cantidades, lecturas técnicas y novedades vinculadas al proceso."],
+  ["Coordinación", "Comparar plan y ejecución", "Encuentra actividades pendientes, desviaciones, recepciones por revisar y cierres que necesitan seguimiento."],
+  ["Mantenimiento y calidad", "Atender lo que requiere control", "Revisa equipos, fallas abiertas, órdenes de mantenimiento, tiempo fuera de servicio y recepciones que necesitan una decisión de calidad."],
+  ["Dirección y administración", "Leer la operación por periodo", "Consulta indicadores operativos y trabaja en módulos separados de inventario, insumos, compras, gastos, ventas, caja, finanzas y documentos."],
 ] as const;
 
-const dataChain = [
-  ["01", "Capturar", "El dato nace donde ocurre el hecho: báscula, ruta, lote, equipo o despacho."],
-  ["02", "Validar", "Reglas de negocio evitan pesos imposibles, cierres incompletos y salidas sin soporte."],
-  ["03", "Relacionar", "Cada registro conserva planta, periodo, responsable, lote, activo y objeto de origen."],
-  ["04", "Interpretar", "Los indicadores explican su cálculo y permiten regresar al registro fuente."],
-  ["05", "Decidir", "La alerta se convierte en actividad, orden, compromiso o decisión con fecha de cierre."],
-  ["06", "Reportar", "Los entregables reutilizan datos validados y conservan versión, periodo y evidencia."],
+const moduleAreas = [
+	["Seguimiento", "Calendario, tablero y alertas ayudan a leer el trabajo pendiente, en curso y realizado por día, semana, mes o histórico. El tablero operativo muestra recepciones, rechazo, horas-hombre, cumplimiento del plan, paradas, excepciones y estado del compostaje cuando esos registros están disponibles."],
+	["Operación", "Recepciones registran origen, material, transporte, pesaje e inspección. Actividades relacionan proceso, responsables, horario, duración, equipo o herramientas, cantidades, lecturas y novedades. Compostaje, producción, inventario e insumos cubren etapas distintas del flujo material."],
+	["Gestión", "Equipos y mantenimiento dan seguimiento a fallas, órdenes y tiempo fuera de servicio. Solicitudes de compra, gastos, ventas, caja y finanzas organizan hechos administrativos relacionados, sin convertir una autorización en gasto, una venta en recaudo ni una compra en inventario físico."],
+	["Datos y documentos", "Las importaciones ayudan a revisar archivos, correspondencias y alertas de calidad antes de incorporar registros históricos. El centro documental consulta referencias de la fuente SharePoint configurada; los archivos originales permanecen en ese repositorio."],
+] as const;
+
+const workflowStages = [
+	["Planear la jornada", "El calendario permite revisar el día, la semana o el mes y organizar actividades por proceso. En cada programación se pueden relacionar horario previsto, responsables, equipos y notas; después se consulta si quedó programada, en curso, realizada o requiere revisión."],
+	["Recibir e inspeccionar", "La recepción puede identificar origen, tipo de material, ruta, transporte, fecha y hora, masa recibida, masa rechazada e impropios. El equipo registra la decisión de inspección y deja trazabilidad del lote físico cuando la recepción se acepta para el proceso."],
+	["Registrar el trabajo y el proceso", "Al cerrar una actividad se documentan el tiempo real, las cantidades y unidades, las lecturas técnicas, las herramientas utilizadas y las novedades. Compostaje vincula actividades y observaciones con sus pilas; los parámetros de otros procesos se definen según la operación."],
+	["Cerrar y revisar lo ocurrido", "La producción terminada se registra como una medición propia; el inventario se actualiza mediante movimientos físicos trazables. Coordinación revisa desviaciones, incidencias y mantenimientos, mientras el tablero resume los indicadores que sí tienen un registro operativo de respaldo."],
 ] as const;
 
 const operatingContexts = [
-  ["/projects/plant/plant-evidence-05.webp", "Pilas de transformación de residuos orgánicos en Yarumal", "Yarumal · operación aeróbica", "Recepciones, lotes, actividades, variables de proceso, producto e inventario necesitan conservar una misma historia operacional."],
-  ["/projects/tamesis/reactor-uasb.jpeg", "Reactor anaerobio UASB de la planta de Támesis", "Támesis · operación anaerobia", "Al balance de materia se suman alimentación, biogás, energía, filtros, activos, consumos, paradas y mantenimiento."],
+  ["Compostaje", "Relaciona entradas y criterios de calidad con lotes, actividades de turno, lecturas de proceso, producción e inventario."],
+  ["Digestión anaerobia", "Puede seguir alimentación y variables como pH, junto con biogás, filtros, activos, paradas y mantenimiento."],
 ] as const;
 
 export default function AppPage() {
@@ -83,142 +48,112 @@ export default function AppPage() {
       <section className="gt-ops-hero">
         <div className="container gt-ops-hero__grid">
           <div className="gt-ops-hero__copy">
-            <span className="eyebrow eyebrow--light">Sistema operacional para plantas</span>
-            <h1>No es un dashboard. Es la memoria operativa de Greenatics.</h1>
+            <h1>Planea, registra y entiende lo que pasa en tu planta.</h1>
             <p className="lead">
-              GREENATICS OPS conecta lo que se planeó, lo que realmente ocurrió y lo que requiere
-              decisión. Actividades, bitácoras, báscula, lotes, procesos, equipos, inventarios, costos y
-              documentos dejan de vivir en archivos separados.
+              GREENATICS OPS reúne la programación, las actividades del turno, la recepción de materiales,
+              el seguimiento de procesos, los equipos y el inventario. Así, operación, coordinación y dirección
+              pueden revisar lo planeado, lo ejecutado y lo que requiere atención con el contexto de cada registro.
+              Explora la muestra con datos ficticios; el alcance y la configuración para cada organización se acuerdan por proyecto.
             </p>
             <div className="button-row">
-              <a className="button button--light" href="#estacion">Explorar la estación</a>
-              <Link className="button button--outline-light" href="/acceso/">Ver modelo de acceso</Link>
+              <a className="button button--light" href="#estacion">Explorar la muestra pública</a>
+              <Link className="button button--outline-light" href="/acceso/">Ver opciones de acceso</Link>
             </div>
-            <div className="gt-ops-hero__principle"><span>Principio de diseño</span><strong>La aplicación captura la operación y genera el tablero, no al revés.</strong></div>
+            <div className="gt-ops-hero__principle"><span>Antes de explorar</span><strong>La muestra usa datos ficticios, no guarda cambios y no conecta con una operación real.</strong></div>
           </div>
-
-          <aside className="gt-ops-hero__ledger">
-            <div className="gt-ops-hero__ledger-head"><span>Arquitectura recuperada del aplicativo</span><strong>Una sola estación, cinco sistemas conectados</strong></div>
-            <ol>
-              {architecture.map((item) => <li key={item.code}><span>{item.code}</span><div><strong>{item.label}</strong><small>{item.title}</small></div><b>{item.modules.length}</b></li>)}
-            </ol>
-            <div className="gt-ops-hero__ledger-foot"><span /> Datos, permisos e historial atraviesan todos los módulos.</div>
-          </aside>
+          <figure className="gt-ops-hero__visual">
+            <Image
+              src="/tools/ops-plant-editorial.jpg"
+              alt="Una operaria revisa información del proceso junto a material orgánico en una planta."
+              width={1400}
+              height={934}
+              preload
+              sizes="(max-width: 900px) 100vw, 48vw"
+            />
+            <figcaption>
+              <strong>El registro acompaña el trabajo en planta.</strong>
+              <span>La configuración define qué información necesita cada proceso y quién la revisa.</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      <ToolAccessRail
-        id="ops"
-        name="GREENATICS OPS"
-        status={runtimeLinks.ops ? "Espacio operativo disponible" : "Demostración pública disponible"}
-        copy="Esta landing presenta la arquitectura completa de OPS. Desde aquí puedes recorrer la demostración y, si el entorno está disponible, entrar a la estación operativa separada. Los datos de demo no representan una planta conectada."
-        runtimeHref={runtimeLinks.opsApp}
-        runtimeLabel="Entrar a la estación OPS"
-        demoHref="/app/#estacion"
-        demoLabel="Explorar estación demo"
-        accessHref="/contacto/?interes=greenatics-ops"
-        accessLabel="Configurar un entorno propio"
-      />
-
-      <section className="gt-ops-ribbon" aria-label="Capacidades transversales de Greenatics OPS">
+      <section className="gt-ops-ribbon" aria-label="Relaciones que puedes explorar en la muestra de Greenatics OPS">
         <div className="container">
-          <div><span>01</span><strong>Bitácora trazable</strong><small>Autor, hora, planta, objeto y evidencia</small></div>
-          <div><span>02</span><strong>Plan contra real</strong><small>Desviación visible, no promedios engañosos</small></div>
-          <div><span>03</span><strong>Balance físico</strong><small>Entrada, proceso, producto y destino</small></div>
-          <div><span>04</span><strong>Control por rol</strong><small>Captura, supervisión, dirección y consulta</small></div>
+          <div><strong>Plan y jornada</strong><small>Calendario, actividad, responsable y cierre</small></div>
+          <div><strong>Materiales</strong><small>Pesaje, calidad, lote y proceso</small></div>
+          <div><strong>Continuidad</strong><small>Equipo, falla, orden y mantenimiento</small></div>
+          <div><strong>Gestión</strong><small>Producción, existencias, compras y reportes</small></div>
         </div>
       </section>
 
       <section className="gt-ops-demo-section" id="estacion">
         <div className="container">
           <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Demostración funcional</span><h2>Recorre la lógica del aplicativo, no una pantalla decorativa.</h2></div>
-            <p>Cambia de planta y módulo para explorar control del día, bitácora, recepciones, proceso, volúmenes, mantenimiento, inventario y reportes. Los valores son ilustrativos y están identificados como tales.</p>
+            <div><h2>Explora los módulos a través de una jornada de muestra.</h2></div>
+            <p>Selecciona compostaje o digestión anaerobia, cambia entre Hoy, bitácora, recepciones, procesos, balances, mantenimiento, inventario y reportes, y observa qué información reúne cada vista. Los datos son ficticios y no están conectados a una planta.</p>
           </div>
           <OpsWorkstationDemo />
         </div>
       </section>
 
-      <section className="gt-ops-proof" aria-labelledby="ops-proof-title">
+      <section className="gt-ops-module-guide">
         <div className="container">
-          <div className="gt-ops-proof__intro">
-            <div><span className="eyebrow">Referencia visual</span><h2 id="ops-proof-title">Una vista directiva para leer el sistema completo.</h2></div>
-            <p>La operación se registra en el campo, pero la dirección necesita una lectura común: entradas, aprovechamiento, producción, inventario, mantenimiento y alertas en el mismo contexto.</p>
+          <div className="gt-route-heading gt-route-heading--split">
+            <div><h2>Qué encuentras dentro de la aplicación.</h2></div>
+            <p>OPS combina espacios para registrar el trabajo, revisar su avance y llevar la gestión relacionada. Cada módulo conserva su propósito; el tablero utiliza únicamente métricas sustentadas por registros operativos.</p>
           </div>
-          <figure className="gt-ops-proof__figure">
-            <div className="gt-ops-proof__image"><Image src="/campaign/06_dashboard_indicadores.jpg" alt="Composición ilustrativa de un tablero Greenatics con indicadores de rutas, material recibido, aprovechamiento, producción, inventario y mantenimiento" fill sizes="(max-width: 900px) 100vw, 66vw" /></div>
-            <figcaption>
-              <span>Qué comunica esta pieza</span>
-              <h3>El dashboard resume; la trazabilidad explica.</h3>
-              <p>La vista directiva permite detectar cambios y priorizar conversaciones. Cada cifra debe abrir el registro que la origina: una recepción, una actividad, un lote, un movimiento de inventario o una orden de mantenimiento.</p>
-              <small>Composición de campaña con datos y etiquetas ilustrativas. No representa una conexión en vivo ni sustituye la validación de los indicadores.</small>
-              <Link className="text-link" href="#estacion">Volver a explorar la estación <span aria-hidden="true">↗</span></Link>
-            </figcaption>
-          </figure>
+          <div className="gt-ops-module-guide__body">
+            <p className="gt-ops-module-guide__intro">La aplicación conecta tareas que suelen quedar repartidas entre calendarios, formularios y archivos: asignar el trabajo, registrar lo que pasó, revisar las excepciones y regresar al detalle que explica cada cifra. Las áreas comparten contexto operativo sin confundir los hechos físicos con los administrativos.</p>
+            <div className="gt-ops-module-guide__areas">
+              {moduleAreas.map(([area, copy]) => <article key={area}><h3>{area}</h3><p>{copy}</p></article>)}
+            </div>
+          </div>
         </div>
       </section>
 
       <section className="gt-route-section gt-route-section--paper">
         <div className="container">
           <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Arquitectura funcional</span><h2>La profundidad está en las relaciones entre módulos.</h2></div>
-            <p>Una recepción puede originar rechazo, lote, incidencia y balance. Una falla puede detener una actividad, abrir mantenimiento y afectar producción. OPS conserva esas relaciones.</p>
+            <div><h2>Así acompaña OPS una jornada de trabajo.</h2></div>
+            <p>El recorrido une planeación, operación y revisión. Cada organización define los registros técnicos, responsables y controles que necesita para su proceso.</p>
           </div>
-          <div className="gt-ops-architecture">
-            {architecture.map((item) => (
-              <article key={item.code}>
-                <span>{item.code}</span>
-                <div><small>{item.label}</small><h3>{item.title}</h3></div>
-                <p>{item.copy}</p>
-                <ul>{item.modules.map((module) => <li key={module}>{module}</li>)}</ul>
-              </article>
-            ))}
+          <div className="gt-ops-workflow" aria-label="Recorrido operativo de GREENATICS OPS">
+            {workflowStages.map(([title, copy]) => <article key={title}><h3>{title}</h3><p>{copy}</p></article>)}
           </div>
-        </div>
-      </section>
-
-      <section className="gt-ops-data-chain">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--split gt-route-heading--light">
-            <div><span className="eyebrow eyebrow--light">Gobernanza del dato</span><h2>Capturar una vez. Validar. Relacionar. Reutilizar.</h2></div>
-            <p>El objetivo no es llenar formularios. Es construir una cadena de evidencia que sirva para operar mejor, explicar resultados y emitir reportes sin reconstruir el mes desde cero.</p>
-          </div>
-          <ol className="gt-ops-data-chain__steps">
-            {dataChain.map(([number, title, copy]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}
-          </ol>
         </div>
       </section>
 
       <section className="gt-ops-field-proof">
         <div className="container">
-          <div className="gt-route-heading gt-route-heading--split"><div><span className="eyebrow">Del trabajo físico al registro</span><h2>OPS cambia con el proceso, pero conserva una sola lógica de trazabilidad.</h2></div><p>Una planta de compostaje y una planta anaerobia no capturan exactamente lo mismo. Comparten, sin embargo, responsables, actividades, activos, entradas, transformaciones, salidas, incidencias y decisiones que deben poder reconstruirse.</p></div>
-          <div className="gt-ops-field-proof__grid">{operatingContexts.map(([src,alt,title,copy])=><figure key={title}><div><Image src={src} alt={alt} fill sizes="(max-width: 760px) 100vw, 50vw"/></div><figcaption><strong>{title}</strong><p>{copy}</p></figcaption></figure>)}</div>
+          <div className="gt-route-heading gt-route-heading--split"><div><h2>El proceso cambia; la trazabilidad conserva el hilo.</h2></div><p>Una planta de compostaje y una planta anaerobia no registran exactamente lo mismo. El modelo permite definir cómo relacionar responsables, actividades, activos, entradas, transformaciones, salidas, incidencias y decisiones.</p></div>
+          <div className="gt-ops-field-proof__grid">{operatingContexts.map(([title,copy])=><article key={title}><strong>{title}</strong><p>{copy}</p></article>)}</div>
         </div>
       </section>
 
       <section className="gt-route-section gt-route-section--white">
         <div className="container">
-          <div className="gt-route-heading"><span className="eyebrow">Una experiencia por rol</span><h2>Cada persona ve el nivel de detalle que necesita.</h2><p>La misma información cambia de forma según la responsabilidad. El operario ejecuta, la supervisión controla, la dirección decide y los aliados consultan lo autorizado.</p></div>
+          <div className="gt-route-heading"><h2>La información sigue las tareas de cada equipo.</h2><p>Operación, supervisión y dirección necesitan lecturas distintas. Los responsables y accesos para una organización se definen durante la configuración; esta muestra no habilita cuentas.</p></div>
           <div className="gt-ops-roles">
-            {roles.map(([role, title, copy], index) => <article key={role}><span>{String(index + 1).padStart(2, "0")} · {role}</span><h3>{title}</h3><p>{copy}</p></article>)}
+            {roles.map(([role, title, copy]) => <article key={role}><span>{role}</span><h3>{title}</h3><p>{copy}</p></article>)}
           </div>
         </div>
       </section>
 
       <section className="gt-ops-truth">
         <div className="container gt-ops-truth__grid">
-          <div><span className="eyebrow eyebrow--light">Qué estás viendo</span><h2>La demostración pública explica el producto. La aplicación productiva ejecuta la operación.</h2></div>
+          <div><h2>Una muestra permite explorar; no equivale a una operación conectada.</h2></div>
           <div>
-            <p>Esta ruta permite entender la arquitectura y probar interacciones con datos ilustrativos. No está conectada a básculas, sensores, Supabase, SUI, NUIT ni a una planta en tiempo real.</p>
-            <p>La base histórica del aplicativo sí contempla autenticación, permisos por planta, persistencia, importación, historial y módulos operativos especializados. La implementación final se parametriza según el alcance y la madurez de cada operación.</p>
+            <p>Puedes cambiar de planta y módulo y probar controles; esos cambios son temporales y se pierden al salir. Los datos son ficticios: no corresponden a Yarumal, Támesis ni a una operación conectada.</p>
+            <p>Un proyecto define qué registros, responsabilidades, reportes y controles necesita. La disponibilidad de un entorno, sus permisos, conexiones y funciones se confirma antes de acordar la implementación.</p>
           </div>
         </div>
       </section>
 
       <section className="gt-ops-closing">
         <div className="container gt-ops-closing__grid">
-          <div><span className="eyebrow">Implementación por etapas</span><h2>Empieza por el ciclo que más control necesita.</h2></div>
-          <div><p>Podemos iniciar con bitácora, recepciones y mantenimiento; después conectar procesos, inventarios, costos, reportes y control multi-planta sin crear una arquitectura paralela.</p><div className="button-row"><Link className="button button--dark" href="/contacto/">Solicitar recorrido guiado</Link><Link className="button button--ghost" href="/proyectos/tamesis/">Ver OPS aplicado a Támesis</Link></div></div>
+          <div><h2>Empieza por el ciclo que más necesita seguimiento.</h2></div>
+          <div><p>La conversación de configuración prioriza el ciclo operativo, los registros que requiere y las responsabilidades de cada equipo. El alcance, el acceso y las conexiones se confirman antes de acordar una implementación.</p><div className="button-row"><Link className="button button--dark" href="/contacto/?interes=greenatics-ops&modalidad=configuracion">Consultar alcance y configuración</Link><Link className="button button--ghost" href="/proyectos/tamesis/">Conocer el proceso anaerobio en Támesis</Link></div></div>
         </div>
       </section>
     </>

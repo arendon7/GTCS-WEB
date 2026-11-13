@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 575" role="img" aria-labelledby="title desc">
+  <title id="title">Rutas conceptuales de valorización de biomasa orgánica</title>
+  <desc id="desc">Según la corriente y el proyecto, se pueden evaluar compostaje, digestión anaerobia y destinos agronómicos. El esquema no garantiza productos ni resultados.</desc>
+  <rect width="720" height="575" fill="#eef3ec"/>
+  <rect x="18" y="18" width="684" height="539" rx="26" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="50" y="72" fill="#16764f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">BIOECONOMÍA · ALTERNATIVAS POR EVALUAR</text>
+  <text x="50" y="124" fill="#10392c" font-family="Arial,sans-serif" font-size="29" font-weight="700">Una corriente, distintas rutas posibles</text>
+  <text x="50" y="158" fill="#5f7268" font-family="Arial,sans-serif" font-size="16">La biomasa, la operación y el destino orientan la elección.</text>
+
+  <rect x="50" y="224" width="172" height="92" rx="18" fill="#0d5e42"/>
+  <text x="136" y="262" fill="#ffffff" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">Biomasa</text>
+  <text x="136" y="289" fill="#e4f2dd" font-family="Arial,sans-serif" font-size="14" text-anchor="middle">disponible y evaluada</text>
+
+  <g fill="none" stroke="#7dad64" stroke-width="3">
+    <path d="M222 270h46M268 270v-96h32M268 270h32M268 270v96h32"/>
+    <path d="m292 168 8 6-8 6m0 90 8 6-8 6m-8 84 8 6-8 6"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <rect x="300" y="190" width="350" height="104" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <text x="326" y="230" fill="#10392c" font-size="20" font-weight="700">Compostaje</text>
+    <text x="326" y="260" fill="#5f7268" font-size="15">Proceso aeróbico y manejo de sus salidas.</text>
+
+    <rect x="300" y="318" width="350" height="104" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <text x="326" y="358" fill="#10392c" font-size="20" font-weight="700">Digestión anaerobia</text>
+    <text x="326" y="388" fill="#5f7268" font-size="15">Biogás y corrientes de salida por caracterizar.</text>
+
+    <rect x="50" y="436" width="600" height="64" rx="18" fill="#f4f5eb" stroke="#d9ddc5" stroke-width="2"/>
+    <text x="76" y="463" fill="#10392c" font-size="17" font-weight="700">Destino agronómico y uso de productos</text>
+    <text x="76" y="486" fill="#5f7268" font-size="14">Se definen según proceso, calidad, requisitos y contexto de aplicación.</text>
+  </g>
+  <text x="360" y="530" fill="#5f7268" font-family="Arial,sans-serif" font-size="13" text-anchor="middle">Alternativas conceptuales; no representan una instalación ni aseguran resultados.</text>
+</svg>

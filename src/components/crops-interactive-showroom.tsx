@@ -107,10 +107,11 @@ export function CropsInteractiveShowroom() {
                   <Link href={`/wondergreen/cultivos/${crop.slug}/`}>
                     Abrir ruta técnica <span aria-hidden="true">→</span>
                   </Link>
-                  <a download href={crop.pdfFile} aria-label={`Descargar guía de ${crop.name} en PDF`} title={`Descargar guía de ${crop.name} en PDF`}>
+                  {crop.pdfFile ? <a download href={crop.pdfFile} aria-label={`Descargar guía de ${crop.name} en PDF`} title={`Descargar guía de ${crop.name} en PDF`}>
                     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
-                  </a>
+                  </a> : null}
                 </div>
+                {crop.technicalManualFile ? <a className="crop-explorer-card__manual" download href={crop.technicalManualFile}>Manual técnico · 20 páginas <span aria-hidden="true">↗</span></a> : null}
               </div>
             </article>
           ))}

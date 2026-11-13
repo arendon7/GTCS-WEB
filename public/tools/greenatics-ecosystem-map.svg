@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Herramientas Greenatics para distintos ámbitos de trabajo</title>
+  <desc id="desc">Cinco ámbitos —planta, territorio, clima, agricultura y proyectos— comparten un proceso de datos con origen, evidencia útil y decisión clara.</desc>
+  <rect width="1440" height="900" fill="#0d3529"/>
+  <circle cx="1222" cy="146" r="176" fill="#164a39" opacity=".62"/>
+  <circle cx="194" cy="804" r="228" fill="#174534" opacity=".52"/>
+  <text x="90" y="112" fill="#b6e978" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="2">ÁMBITOS DE TRABAJO DIGITAL</text>
+  <text x="90" y="190" fill="#fff" font-family="Arial,sans-serif" font-size="44" font-weight="700">Cinco contextos donde los datos ayudan a decidir</text>
+  <text x="90" y="236" fill="#d0ded5" font-family="Arial,sans-serif" font-size="21">De la continuidad de una planta al seguimiento territorial, climático, agrícola y de proyectos.</text>
+  <g>
+    <rect x="90" y="302" width="232" height="180" rx="18" fill="#f4f7f2"/>
+    <rect x="354" y="302" width="232" height="180" rx="18" fill="#e8f1e5"/>
+    <rect x="618" y="302" width="232" height="180" rx="18" fill="#f4f7f2"/>
+    <rect x="882" y="302" width="232" height="180" rx="18" fill="#e8f1e5"/>
+    <rect x="1146" y="302" width="204" height="180" rx="18" fill="#f4f7f2"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <text x="118" y="352" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.5">PLANTA</text><text x="118" y="394" fill="#10392c" font-size="24" font-weight="700">Operación</text><text x="118" y="430" fill="#5f7268" font-size="16">Registros y continuidad</text>
+    <text x="382" y="352" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.5">TERRITORIO</text><text x="382" y="394" fill="#10392c" font-size="24" font-weight="700">Actores y campo</text><text x="382" y="430" fill="#5f7268" font-size="16">Línea base y seguimiento</text>
+    <text x="646" y="352" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.5">CLIMA</text><text x="646" y="394" fill="#10392c" font-size="24" font-weight="700">Inventarios</text><text x="646" y="430" fill="#5f7268" font-size="16">Fuentes, método y revisión</text>
+    <text x="910" y="352" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.5">AGRICULTURA</text><text x="910" y="394" fill="#10392c" font-size="24" font-weight="700">Lotes y labores</text><text x="910" y="430" fill="#5f7268" font-size="16">Trazabilidad de campo</text>
+    <text x="1174" y="352" fill="#16764f" font-size="14" font-weight="700" letter-spacing="1.5">PROYECTOS</text><text x="1174" y="394" fill="#10392c" font-size="24" font-weight="700">Inversión</text><text x="1174" y="430" fill="#5f7268" font-size="16">Avance y acompañamiento</text>
+  </g>
+  <g stroke="#8bcf4b" stroke-width="2.5" fill="none"><path d="M206 482v72M470 482v72M734 482v72M998 482v72M1248 482v72"/></g>
+  <rect x="174" y="554" width="1092" height="192" rx="20" fill="#164a39" stroke="#3b6c52" stroke-width="2"/>
+  <text x="218" y="608" fill="#b6e978" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.6">UN PRINCIPIO COMÚN</text>
+  <g font-family="Arial,sans-serif">
+    <text x="220" y="670" fill="#fff" font-size="24" font-weight="700">Dato con origen</text><text x="220" y="706" fill="#d0ded5" font-size="16">Fuente y contexto</text>
+    <text x="590" y="670" fill="#fff" font-size="24" font-weight="700">Evidencia útil</text><text x="590" y="706" fill="#d0ded5" font-size="16">Revisión y seguimiento</text>
+    <text x="976" y="670" fill="#fff" font-size="24" font-weight="700">Decisión clara</text><text x="976" y="706" fill="#d0ded5" font-size="16">Siguiente paso acordado</text>
+  </g>
+  <g stroke="#8bcf4b" stroke-width="2.5" fill="none"><path d="M430 664h112M810 664h120"/><path d="M534 656l8 8-8 8M922 656l8 8-8 8"/></g>
+  <text x="90" y="822" fill="#b7cbbd" font-family="Arial,sans-serif" font-size="16">En cada ámbito, los registros y la evidencia ayudan a definir el siguiente paso de trabajo.</text>
+</svg>

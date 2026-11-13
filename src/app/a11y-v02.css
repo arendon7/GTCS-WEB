@@ -122,3 +122,39 @@
 .commercial-status--technical {
   color: #604916;
 }
+
+/* Shared contrast corrections for the editorial route families. */
+.service-detail-process .section-heading h2,
+.service-detail-inputs h2,
+.anaerobic-deep .section-heading h2,
+.anaerobic-stage-list h3,
+.science-grid > div:first-child h2,
+.product-truth-grid h2 {
+  color: #fff;
+}
+
+.gt-starting-grid article > span,
+.gt-service-card__meta em,
+.gt-moment-stack small,
+.product-route-nav__catalog {
+  color: #3f5a4d;
+}
+
+.service-detail-inputs .eyebrow--light {
+  color: #d8ffbe;
+}
+
+.service-detail-inputs ul,
+.service-detail-inputs li {
+  color: #f0f6f2;
+}
+
+.eyebrow-badge,
+.eyebrow-badge > span {
+  color: var(--green-800);
+}
+
+.municipal-service-grid article small,
+.gt-moment-stack article small {
+  color: #3f5a4d;
+}

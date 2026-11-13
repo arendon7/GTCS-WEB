@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 575" role="img" aria-labelledby="title desc">
+  <title id="title">PGIRS territorial y PMIRS organizacional: dos escalas distintas</title>
+  <desc id="desc">El PGIRS organiza corrientes, actores, metas y proyectos del territorio. El PMIRS define medidas para sedes, procesos y flujos de una organización o gran generador. Son instrumentos distintos que pueden articularse según el contexto.</desc>
+  <rect width="720" height="575" fill="#eef3ec"/>
+  <rect x="18" y="18" width="684" height="539" rx="26" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="50" y="72" fill="#16764f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">PLANEACIÓN · DOS ESCALAS</text>
+  <text x="50" y="124" fill="#10392c" font-family="Arial,sans-serif" font-size="29" font-weight="700">Instrumentos distintos, alcances claros</text>
+  <text x="50" y="158" fill="#5f7268" font-family="Arial,sans-serif" font-size="16">Territorio y organización requieren decisiones propias.</text>
+
+  <rect x="48" y="196" width="302" height="270" rx="20" fill="#f1f6ef" stroke="#cbd8ce" stroke-width="2"/>
+  <rect x="370" y="196" width="302" height="270" rx="20" fill="#f4f5eb" stroke="#d9ddc5" stroke-width="2"/>
+  <path d="M48 216a20 20 0 0 1 20-20h262v54H48z" fill="#0d5e42"/>
+  <path d="M370 216a20 20 0 0 1 20-20h262v54H370z" fill="#496f39"/>
+
+  <g font-family="Arial,sans-serif">
+    <text x="70" y="232" fill="#ffffff" font-size="16" font-weight="700">PGIRS · TERRITORIO</text>
+    <text x="70" y="302" fill="#10392c" font-size="25" font-weight="700">Municipio o región</text>
+    <text x="70" y="340" fill="#5f7268" font-size="16">Corrientes · actores · metas</text>
+    <path d="M70 365h258" stroke="#cbd8ce" stroke-width="2"/>
+    <text x="70" y="398" fill="#10392c" font-size="17" font-weight="700">Programas y proyectos</text>
+    <text x="70" y="426" fill="#5f7268" font-size="15">Responsables y seguimiento territorial</text>
+
+    <text x="392" y="232" fill="#ffffff" font-size="16" font-weight="700">PMIRS · ORGANIZACIÓN</text>
+    <text x="392" y="302" fill="#10392c" font-size="25" font-weight="700">Entidad o gran generador</text>
+    <text x="392" y="340" fill="#5f7268" font-size="16">Sedes · procesos · flujos</text>
+    <path d="M392 365h258" stroke="#d9ddc5" stroke-width="2"/>
+    <text x="392" y="398" fill="#10392c" font-size="17" font-weight="700">Medidas de manejo interno</text>
+    <text x="392" y="426" fill="#5f7268" font-size="15">Responsables, rutas y control</text>
+  </g>
+
+  <rect x="48" y="486" width="624" height="42" rx="21" fill="#0d3529"/>
+  <text x="360" y="512" fill="#e4f2dd" font-family="Arial,sans-serif" font-size="15" font-weight="700" text-anchor="middle">Se articulan cuando el contexto lo requiere; no son equivalentes.</text>
+</svg>

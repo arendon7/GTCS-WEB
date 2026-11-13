@@ -1,81 +1,260 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { ToolAccessRail } from "@/components/tool-access-rail";
 import "./sana-v1.css";
 
 export const metadata: Metadata = {
-  title: "SANA | Ecosistema de inversión en proyectos productivos",
+  title: "SANA | Estructura y seguimiento de proyectos agroproductivos",
   description:
-    "SANA articula inversión, trazabilidad Agroway, ciencia Greenatics y soluciones Wondergreen para acompañar proyectos agrícolas y productivos.",
+    "Conoce SANA: un ecosistema en desarrollo para ordenar oportunidades agroproductivas, su alcance, seguimiento, documentación y revisión humana.",
   alternates: { canonical: "/sana/" },
   openGraph: {
-    title: "SANA | Ecosistema de inversión en proyectos productivos",
-    description: "Articula datos de AGROWAY, ciencia Greenatics y soluciones Wondergreen para estructurar y acompañar proyectos agrícolas.",
+    title: "SANA | Estructura y seguimiento de proyectos agroproductivos | Greenatics",
+    description:
+      "Una ruta para pasar del contexto productivo a un proyecto organizado, con responsabilidades, soportes y próximos pasos revisables.",
     url: "/sana/",
-    images: ["/projects/tamesis/paisaje-tamesis.jpg"],
   },
 };
 
-const layers = [
-  ["01", "AGROWAY", "La aplicación de trazabilidad agrícola. Registra lo que ocurre en el productor, la finca, el lote y el ciclo, y sincroniza la información según la conectividad del campo."],
-  ["02", "Greenatics + Wondergreen", "Ciencia, diagnóstico, protocolos, fertilizantes, bioinsumos y acompañamiento técnico para orientar cada decisión."],
-  ["03", "SANA", "El ecosistema que organiza oportunidades, conecta actores, estructura inversión y lee el avance de los proyectos."],
-  ["04", "Proyecto productivo", "La realidad que se acompaña: cultivos, personas, territorio, cosecha, aprendizaje y nuevos ciclos."],
+const modules = [
+  {
+    number: "01",
+    title: "Oportunidades",
+    copy: "Describe la necesidad productiva, el territorio, las personas involucradas y la etapa en la que está la iniciativa.",
+    destination: "/sana/app/#opportunities",
+    action: "Ver oportunidades",
+  },
+  {
+    number: "02",
+    title: "Portafolio",
+    copy: "Agrupa proyectos y hace legibles su alcance, supuestos, hitos y estado declarado.",
+    destination: "/sana/app/#portfolio",
+    action: "Ver portafolio",
+  },
+  {
+    number: "03",
+    title: "Seguimiento",
+    copy: "Conecta una próxima acción con su responsable, periodo y evidencia que se necesitaría revisar.",
+    destination: "/sana/app/#followup",
+    action: "Ver seguimiento",
+  },
+  {
+    number: "04",
+    title: "Documentación",
+    copy: "Ordena categorías de soporte y los datos necesarios para interpretar su origen, versión y revisión.",
+    destination: "/sana/app/#data-room",
+    action: "Ver documentación",
+  },
+  {
+    number: "05",
+    title: "Revisión humana",
+    copy: "Pone a la vista condiciones pendientes para que las personas responsables las analicen con contexto.",
+    destination: "/sana/app/#committee",
+    action: "Ver revisión",
+  },
+  {
+    number: "06",
+    title: "Participación",
+    copy: "Distingue interés, solicitud, revisión, compromiso, documentación y aporte conciliado.",
+    destination: "/sana/app/#participation",
+    action: "Ver participación",
+  },
 ] as const;
 
-const journey = [
-  ["01", "Conocer", "Se entiende el territorio, el productor, el cultivo, la oportunidad y las condiciones que hacen viable el proyecto."],
-  ["02", "Estructurar", "Se conectan diagnóstico, plan agronómico, necesidades, presupuesto, acompañamiento y reglas de seguimiento."],
-  ["03", "Ejecutar", "Agroway captura la actividad del campo, los insumos, la evidencia, las observaciones y los cambios del ciclo."],
-  ["04", "Aprender", "SANA recibe una historia trazable para evaluar el avance, mejorar decisiones y preparar nuevos ciclos."],
-] as const;
-
-const investorView = [
-  ["Contexto", "Qué proyecto es, dónde ocurre a la escala autorizada, quién lo acompaña y en qué etapa se encuentra."],
-  ["Ejecución", "Qué actividades se han realizado, qué evidencia existe y qué pendientes o alertas requieren atención."],
-  ["Resultado", "Qué se ha cosechado, comercializado o reconciliado, siempre distinguiendo proyección, dato registrado y resultado confirmado."],
-  ["Trazabilidad", "Cómo se relacionan plan, aplicación, lote, evidencia y ciclo sin exponer información operativa sensible."],
+const stages = [
+  { title: "Entender", copy: "Contexto, actores y territorio" },
+  { title: "Estructurar", copy: "Alcance, recursos y supuestos" },
+  { title: "Acompañar", copy: "Hitos, responsables y soportes" },
+  { title: "Revisar", copy: "Faltantes y criterio humano" },
+  { title: "Acordar", copy: "Siguientes pasos y condiciones" },
 ] as const;
 
 export default function SanaPage() {
   return (
-    <>
-      <section className="sana-v1-hero">
-        <div className="container sana-v1-hero__grid">
-          <div>
-            <span className="eyebrow eyebrow--light">Ecosistema de inversión productiva</span>
-            <h1>Invertir en proyectos agrícolas con más contexto, trazabilidad y acompañamiento.</h1>
-            <p className="lead">SANA conecta oportunidades productivas con capital, ciencia agronómica y seguimiento. Usa los datos que AGROWAY registra en el campo para acompañar decisiones de inversión con una lectura más cercana a la realidad.</p>
-            <div className="button-row"><Link className="button button--neon" href="/sana/app/">Entrar como usuario demo</Link><Link className="button button--outline-light" href="#como-funciona">Cómo funciona</Link></div>
-            <p className="sana-v1-hero__note"><strong>Listo para explorar:</strong> entra como usuario demo y recorre el espacio de trabajo. AGROWAY es la aplicación de trazabilidad; SANA es el ecosistema que usa esa información para estructurar, acompañar y evaluar proyectos productivos.</p>
+    <div className="sana-v1-page">
+      <section className="sana-v1-hero" aria-labelledby="sana-title">
+        <div className="sana-v1-shell sana-v1-hero__grid">
+          <div className="sana-v1-hero__copy">
+            <p className="sana-v1-status">Estructuración agroproductiva <span aria-hidden="true">·</span> en desarrollo</p>
+            <h1 id="sana-title">De la oportunidad productiva a un proyecto que se puede revisar.</h1>
+            <p className="sana-v1-lead">
+              SANA reúne el contexto de una iniciativa, organiza su alcance y conecta
+              avances, responsables y soportes en una misma ruta de trabajo. Así,
+              quienes la estructuran y quienes la revisan pueden entender qué se sabe,
+              qué falta y cuál podría ser el siguiente paso.
+            </p>
+            <div className="sana-v1-actions">
+              <Link className="sana-v1-button sana-v1-button--primary" href="/sana/app/#overview">
+                Recorrer la muestra <span aria-hidden="true">→</span>
+              </Link>
+              <Link className="sana-v1-text-link" href="/contacto/?interes=sana">
+                Conversar sobre un proyecto
+              </Link>
+            </div>
+            <div className="sana-v1-audience" aria-label="Personas a quienes acompaña el modelo">
+              <span>Para quienes estructuran proyectos</span>
+              <span aria-hidden="true">+</span>
+              <span>y para quienes los revisan o acompañan</span>
+            </div>
           </div>
-          <figure className="sana-v1-hero__image"><Image src="/projects/tamesis/paisaje-tamesis.jpg" alt="Paisaje productivo del proyecto Támesis" fill priority sizes="(max-width: 760px) 100vw, 46vw" /><figcaption><span>Campo · ciencia · inversión</span><strong>Los proyectos se entienden mejor cuando su historia se puede seguir.</strong></figcaption></figure>
+
+          <figure className="sana-v1-product-figure sana-v1-product-figure--hero">
+            <div className="sana-v1-product-window" aria-label="Mockup conceptual del resumen de SANA">
+              <div className="sana-v1-window-bar">
+                <div className="sana-v1-window-brand"><strong>SANA</strong><span>Espacio de proyectos</span></div>
+                <span className="sana-v1-window-pill"><i aria-hidden="true" /> Muestra conceptual</span>
+              </div>
+              <div className="sana-v1-app-frame">
+                <div className="sana-v1-app-rail" aria-hidden="true">
+                  <span className="is-active">Resumen</span><span>Oportunidades</span><span>Portafolio</span><span>Seguimiento</span><span>Documentación</span><span>Revisión</span><span>Participación</span>
+                </div>
+                <div className="sana-v1-app-main">
+                  <div className="sana-v1-app-heading"><div><span className="sana-v1-eyebrow">VISTA GENERAL</span><h2>Proyectos en contexto</h2><p>Una lectura común para preparar el siguiente paso.</p></div><span className="sana-v1-app-filter">Todos los proyectos <b aria-hidden="true">⌄</b></span></div>
+                  <div className="sana-v1-app-stats">
+                    <div><span>Oportunidad de muestra</span><strong>Café de montaña</strong><small>OP-014 · escenario ficticio</small></div>
+                    <div><span>Personas productoras</span><strong>12</strong><small>dato de ejemplo</small></div>
+                    <div><span>Lotes</span><strong>18</strong><small>dato de ejemplo</small></div>
+                  </div>
+                  <div className="sana-v1-project-card">
+                    <div className="sana-v1-project-card__top"><div><span className="sana-v1-project-tag">PORTAFOLIO · PF-024</span><h3>Proyecto de café de montaña</h3><p>Alcance, avance declarado y asuntos por revisar</p></div><span className="sana-v1-status-chip">En estructuración</span></div>
+                    <div className="sana-v1-project-progress"><div><span>Avance de ejemplo</span><strong>32%</strong></div><div className="sana-v1-progress-track"><span /></div><small>No es una medición verificada</small></div>
+                    <div className="sana-v1-next-step"><span className="sana-v1-next-step__icon" aria-hidden="true">↗</span><div><small>PRÓXIMO ASUNTO</small><strong>Validar cosecha del ciclo principal</strong><span>Seguimiento SEG-108 · falta soporte verificable</span></div><b>Revisión pendiente</b></div>
+                  </div>
+                  <div className="sana-v1-app-foot"><span><i aria-hidden="true" /> Escenario ficticio</span><span>Sin archivos reales · sin datos guardados</span></div>
+                </div>
+              </div>
+            </div>
+            <figcaption>Mockup de la vista general. Los nombres, cantidades y estados son de una muestra ficticia.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <ToolAccessRail
-        id="sana"
-        name="SANA"
-        status="Demo navegable disponible"
-        copy="SANA no es la aplicación de captura: es el ecosistema que usa los datos relacionados de AGROWAY, la ciencia de Greenatics y las soluciones Wondergreen para estructurar, acompañar y evaluar proyectos productivos. Puedes recorrer un entorno demo con datos ilustrativos antes de conectar portafolios y usuarios reales."
-        demoHref="/sana/app/"
-        demoLabel="Entrar como usuario demo"
-        accessHref="/contacto/?interes=sana"
-        accessLabel="Configurar un entorno propio"
-      />
+      <section className="sana-v1-purpose" aria-labelledby="sana-purpose-title">
+        <div className="sana-v1-shell sana-v1-purpose__grid">
+          <div>
+            <p className="sana-v1-section-kicker">QUÉ HACE SANA</p>
+            <h2 id="sana-purpose-title">Le da estructura compartida a una iniciativa que todavía necesita definirse.</h2>
+          </div>
+          <div className="sana-v1-purpose__copy">
+            <p>Conectamos conocimiento técnico, proyectos agrícolas e inversión. La propuesta de SANA articula inversión, trazabilidad agrícola de AGROWAY, ciencia de Greenatics y soluciones Wondergreen para dar contexto a cada iniciativa productiva y acompañar su desarrollo.</p>
+            <p>Del contexto productivo a un siguiente paso claro. Primero se entiende la oportunidad: con esa lectura se acuerda el marco de trabajo y el acompañamiento conecta el plan con su avance. SANA ordena la información y prepara revisiones; las personas responsables conservan el criterio sobre calidad, viabilidad y participación, de acuerdo con la evidencia disponible.</p>
+            <p>Esta es la visión del producto. La muestra actual usa información ficticia y no está conectada con datos de AGROWAY ni con operaciones o inversiones reales.</p>
+            <Link className="sana-v1-text-link" href="#modulos">Conocer los seis módulos <span aria-hidden="true">↓</span></Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="sana-v1-definition"><div className="container sana-v1-definition__grid"><div><span className="eyebrow">La propuesta SANA</span><h2>La inversión productiva necesita una capa que conecte el propósito con lo que realmente ocurre.</h2></div><div><p>SANA no es una pantalla de rentabilidad aislada ni una aplicación de captura. Es un ecosistema para organizar proyectos productivos, reunir capacidades y seguir la relación entre capital, decisiones agronómicas, trabajo de campo y resultados.</p><p>La información se alimenta de AGROWAY con datos oportunos y sincronizados según la conectividad del campo, y se complementa con la ciencia, los fertilizantes, los bioinsumos y el acompañamiento de Greenatics y Wondergreen. Así, cada proyecto puede ser leído con más contexto y menos suposiciones.</p></div></div></section>
+      <section className="sana-v1-process" id="como-funciona" aria-labelledby="sana-process-title">
+        <div className="sana-v1-shell sana-v1-process__layout">
+          <header>
+            <p className="sana-v1-section-kicker">UNA RUTA DE TRABAJO</p>
+            <h2 id="sana-process-title">Del contexto al siguiente paso, sin saltarse la revisión.</h2>
+            <p>La secuencia ayuda a identificar qué está definido y qué necesita conversación, evidencia o acuerdo.</p>
+          </header>
+          <ol className="sana-v1-stages">
+            {stages.map((stage, index) => (
+              <li key={stage.title}>
+                <span className="sana-v1-stage-index">0{index + 1}</span>
+                <div><h3>{stage.title}</h3><p>{stage.copy}</p></div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
-      <section className="sana-v1-layers" aria-labelledby="sana-layers-title"><div className="container"><header className="sana-v1-heading sana-v1-heading--light"><div><span className="eyebrow eyebrow--light">Un sistema de responsabilidades claras</span><h2 id="sana-layers-title">Cada capa hace su trabajo y alimenta a la siguiente.</h2></div><p>Separar los roles evita prometer que una sola aplicación resuelve toda la inversión agrícola.</p></header><div className="sana-v1-layers__grid">{layers.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+      <section className="sana-v1-modules" id="modulos" aria-labelledby="sana-modules-title">
+        <div className="sana-v1-shell">
+          <header className="sana-v1-modules__intro">
+            <div><p className="sana-v1-section-kicker">LA PLATAFORMA</p><h2 id="sana-modules-title">Seis módulos para seguir el hilo de cada proyecto.</h2></div>
+            <p>El resumen conecta las piezas; cada módulo enfoca una tarea concreta. En la muestra puedes abrir los registros de ejemplo y recorrer sus relaciones.</p>
+          </header>
+          <div className="sana-v1-module-grid">
+            {modules.map((item) => (
+              <article key={item.number} className="sana-v1-module-card">
+                <span className="sana-v1-module-card__number">{item.number}</span>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+                <Link href={item.destination}>{item.action}<span aria-hidden="true">→</span></Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <section className="sana-v1-journey" id="como-funciona" aria-labelledby="sana-journey-title"><div className="container"><header className="sana-v1-heading"><div><span className="eyebrow">Del proyecto a la decisión</span><h2 id="sana-journey-title">Una ruta para estructurar, ejecutar y aprender.</h2></div><p>SANA permite que la conversación de inversión se apoye en una historia viva del proyecto, no únicamente en una proyección inicial.</p></header><div className="sana-v1-journey__grid">{journey.map(([number, title, copy]) => <article key={number}><span>{number}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div></div></section>
+      <section className="sana-v1-detail" aria-labelledby="sana-detail-title">
+        <div className="sana-v1-shell sana-v1-detail__grid">
+          <figure className="sana-v1-product-figure sana-v1-product-figure--detail">
+            <div className="sana-v1-review-window" aria-label="Mockup conceptual de seguimiento y revisión humana">
+              <div className="sana-v1-review-head"><div><span className="sana-v1-eyebrow">SEGUIMIENTO · SEG-108</span><h3>Validar cosecha del ciclo principal</h3><p>Proyecto de café de montaña · PF-024</p></div><span className="sana-v1-review-badge">Pendiente de revisión</span></div>
+              <div className="sana-v1-review-body">
+                <div className="sana-v1-review-task"><span>PRÓXIMA ACCIÓN</span><strong>Contrastar el registro de cosecha con el soporte y el periodo correspondiente.</strong><small>Responsable de ejemplo: comité técnico</small></div>
+                <div className="sana-v1-review-evidence"><div><span className="sana-v1-document-icon" aria-hidden="true">▤</span><div><strong>Resumen de seguimiento productivo</strong><small>Referencia DR-221 · no hay archivo adjunto</small></div></div><span className="sana-v1-evidence-state">Sin soporte</span></div>
+                <div className="sana-v1-review-note"><span aria-hidden="true">i</span><p>Con la información de esta muestra, la decisión asociada no es evaluable. Una persona tendría que revisar los soportes y las condiciones aplicables.</p></div>
+              </div>
+              <div className="sana-v1-review-footer"><span>Ficha de demostración</span><span>Datos ficticios · revisión no ejecutada</span></div>
+            </div>
+            <figcaption>Mockup de seguimiento y revisión. Muestra cómo se relacionan una acción, un soporte esperado y una condición pendiente.</figcaption>
+          </figure>
+          <div className="sana-v1-detail__copy">
+            <p className="sana-v1-section-kicker">DEL REGISTRO A LA CONVERSACIÓN</p>
+            <h2 id="sana-detail-title">No es solo una lista de proyectos: importa cómo se conectan.</h2>
+            <p>Una oportunidad puede convertirse en un proyecto de portafolio. Ese proyecto puede tener hitos, responsables y referencias documentales; cuando algo requiere atención, la revisión muestra qué falta antes de considerar una decisión.</p>
+            <ul>
+              <li><strong>Contexto:</strong> de qué iniciativa se habla y quiénes participan.</li>
+              <li><strong>Seguimiento:</strong> cuál es la próxima acción y quién la revisaría.</li>
+              <li><strong>Soporte:</strong> qué evidencia se necesitaría y si está disponible.</li>
+              <li><strong>Decisión:</strong> qué condición sigue pendiente de análisis humano.</li>
+            </ul>
+            <Link className="sana-v1-button sana-v1-button--primary" href="/sana/app/#opportunities">Explorar este recorrido <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="sana-v1-data"><div className="container sana-v1-data__grid"><div><span className="eyebrow eyebrow--light">La información que habilita SANA</span><h2>Datos de campo que se convierten en capacidad de acompañamiento.</h2><p>AGROWAY registra hechos y relaciones del ciclo. SANA puede convertirlos en contexto para el portafolio, siempre respetando permisos, privacidad y estado de revisión.</p><Link className="button button--neon" href="/agroway/">Conocer AGROWAY</Link></div><div className="sana-v1-data__cards">{investorView.map(([title, copy]) => <article key={title}><strong>{title}</strong><p>{copy}</p></article>)}</div></div></section>
+      <section className="sana-v1-ecosystem" aria-labelledby="sana-ecosystem-title">
+        <div className="sana-v1-shell">
+          <div className="sana-v1-ecosystem__intro">
+            <div><p className="sana-v1-section-kicker">VISIÓN DE ECOSISTEMA</p><h2 id="sana-ecosystem-title">Dos aplicaciones, responsabilidades separadas.</h2></div>
+            <p>Un proyecto puede necesitar tanto seguimiento de su gestión como trazabilidad de lo que ocurre en campo. La visión de SANA contempla conectar esos contextos sin mezclar quién mantiene cada registro.</p>
+          </div>
+          <div className="sana-v1-ecosystem-map" aria-label="Visión futura de lectura autorizada desde AgroWay hacia SANA">
+            <article className="sana-v1-ecosystem-node">
+              <span className="sana-v1-ecosystem-node__eyebrow">OPERACIÓN AGRÍCOLA</span>
+              <h3>AgroWay</h3>
+              <p>Registros del cultivo y su operación permanecen en la herramienta agrícola.</p>
+              <span className="sana-v1-ecosystem-node__owner">Conserva la fuente de campo</span>
+            </article>
+            <div className="sana-v1-ecosystem-bridge">
+              <span>Lectura autorizada futura</span>
+              <div aria-hidden="true"><i /><b>→</b></div>
+              <small>Por proyecto · solo lectura</small>
+            </div>
+            <article className="sana-v1-ecosystem-node sana-v1-ecosystem-node--sana">
+              <span className="sana-v1-ecosystem-node__eyebrow">GESTIÓN DEL PROYECTO</span>
+              <h3>SANA</h3>
+              <p>Alcance, portafolio, seguimiento y revisión humana en su propio contexto.</p>
+              <span className="sana-v1-ecosystem-node__owner">Organiza el proyecto y sus decisiones</span>
+            </article>
+          </div>
+          <p className="sana-v1-ecosystem-note"><strong>Estado actual:</strong> esta conexión es una dirección de diseño; la muestra local no está conectada con AgroWay ni usa datos de campo.</p>
+        </div>
+      </section>
 
-      <section className="sana-v1-boundary"><div className="container sana-v1-boundary__grid"><div><span className="eyebrow">Cómo comunicamos el resultado</span><h2>Más transparencia no significa prometer certezas.</h2></div><div><p>SANA puede comunicar avances, datos, evidencias y resultados confirmados. No convierte automáticamente una asociación temporal en eficacia, ni una proyección en rendimiento garantizado. Cada lectura debe conservar su fuente, periodo, método y nivel de revisión.</p><p>La confianza se construye mostrando qué se sabe, qué se está verificando y qué todavía requiere una decisión humana.</p></div></div></section>
+      <section className="sana-v1-boundaries" aria-labelledby="sana-boundaries-title">
+        <div className="sana-v1-shell sana-v1-boundaries__grid">
+          <div><p className="sana-v1-section-kicker">ESTADO Y ALCANCE</p><h2 id="sana-boundaries-title">Una muestra para entender el modelo, no para tramitar un proyecto real.</h2></div>
+          <div className="sana-v1-boundaries__items">
+            <article><span aria-hidden="true">01</span><div><h3>Qué puedes explorar</h3><p>Vistas, módulos y relaciones entre registros ficticios. La selección ocurre en tu navegador y no se guarda ni se comparte.</p></div></article>
+            <article><span aria-hidden="true">02</span><div><h3>Qué requiere una operación real</h3><p>Proyectos y documentos autorizados, responsables definidos, controles de acceso, persistencia y procesos de revisión acordados.</p></div></article>
+            <article><span aria-hidden="true">03</span><div><h3>Qué no hace esta muestra</h3><p>No recibe solicitudes, aprueba proyectos, acepta o transfiere inversiones, registra aportes ni estima rendimientos.</p></div></article>
+          </div>
+        </div>
+      </section>
 
-      <section className="sana-v1-cta"><div className="container"><span className="eyebrow eyebrow--light">Proyectos que merecen seguimiento</span><h2>Conectemos la oportunidad con la realidad del campo.</h2><p>Cuéntanos qué proyecto productivo quieres estructurar, acompañar o preparar para inversión.</p><Link className="button button--neon" href="/contacto/?interes=sana">Hablar sobre SANA <span aria-hidden="true">→</span></Link></div></section>
-    </>
+      <section className="sana-v1-cta" aria-labelledby="sana-contact-title">
+        <div className="sana-v1-shell sana-v1-cta__inner">
+          <div><p className="sana-v1-section-kicker">CONVERSEMOS</p><h2 id="sana-contact-title">¿Estás estructurando una iniciativa agroproductiva?</h2><p>Cuéntanos su contexto, etapa y qué necesitas organizar para explorar un posible alcance de acompañamiento.</p></div>
+          <Link className="sana-v1-button sana-v1-button--light" href="/contacto/?interes=sana">Conversar sobre un proyecto <span aria-hidden="true">→</span></Link>
+        </div>
+      </section>
+    </div>
   );
 }

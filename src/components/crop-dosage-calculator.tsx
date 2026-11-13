@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 const stageConfigs = {
   brotacion: { number: "01", label: "Establecimiento y crecimiento", product: "Wondergreen 2GROW (15-3-3)", question: "Edad del cultivo, desarrollo radicular, humedad y análisis disponible." },
@@ -20,9 +21,10 @@ export function CropDosageCalculator({ cropName, cropSlug }: { cropName: string;
     `Área aproximada: ${hectares} ha\n` +
     `Etapa: ${current.label}\n` +
     `Referencia a evaluar: ${current.product}\n` +
-    "Necesito validar diagnóstico, dosis, presentación, disponibilidad y cotización."
+    "Necesito validar diagnóstico, dosis, presentación, disponibilidad y siguiente paso."
   );
-  const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent(`${cropName} · ${current.label}`)}&prioridad=${encodeURIComponent(`${hectares} ha · referencia a evaluar: ${current.product}`)}`;
+  const assessmentDetails = `Cultivo: ${cropName}\nÁrea aproximada ingresada: ${hectares} ha\nEtapa: ${current.label}\nReferencia a evaluar: ${current.product}\nNecesito validar diagnóstico, dosis, presentación, disponibilidad y siguiente paso. Esta preparación no prescribe una dosis.`;
+  const contactHref = buildToolContactHref("wondergreen", "agro", `${cropName} · ${current.label}`);
 
   return (
     <div className="crop-preparer">
@@ -61,7 +63,7 @@ export function CropDosageCalculator({ cropName, cropSlug }: { cropName: string;
           <li>Etiqueta, presentación y compatibilidad</li>
           <li>Dosis, frecuencia y vía de aplicación</li>
         </ul>
-        <Link className="button button--primary" href={contactHref}>Llevar esta preparación a Contacto →</Link>
+        <Link className="button button--primary" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)}>Pedir revisión agronómica →</Link>
         <a className="button button--outline-light" href={`https://wa.me/573003078822?text=${waText}`} rel="noopener noreferrer" target="_blank">Validar por WhatsApp directo</a>
         <p className="crop-preparer__boundary">Esta preparación no prescribe una dosis ni sustituye la evaluación agronómica.</p>
       </aside>

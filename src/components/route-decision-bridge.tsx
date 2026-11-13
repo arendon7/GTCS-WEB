@@ -14,13 +14,14 @@ interface RouteDecisionBridgeProps {
   title: string;
   intro: string;
   cards: DecisionCard[];
+  variant?: "default" | "compact";
 }
 
-export function RouteDecisionBridge({ eyebrow, title, intro, cards }: RouteDecisionBridgeProps) {
+export function RouteDecisionBridge({ eyebrow, title, intro, cards, variant = "default" }: RouteDecisionBridgeProps) {
   const bridgeId = `gt-decision-${eyebrow.toLowerCase().replace(/[^a-z0-9]+/gi, "-")}`;
 
   return (
-    <section className="gt-decision-bridge" aria-labelledby={`${bridgeId}-title`}>
+    <section className={`gt-decision-bridge${variant === "compact" ? " gt-decision-bridge--compact" : ""}`} aria-labelledby={`${bridgeId}-title`}>
       <div className="container">
         <header className="gt-decision-bridge__header">
           <div><span className="eyebrow">{eyebrow}</span><h2 id={`${bridgeId}-title`}>{title}</h2></div>

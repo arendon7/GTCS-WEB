@@ -60,7 +60,8 @@ export default function DeficiencyGuidePage() {
             {deficiencyCrops.map((crop) => (
               <article className="deficiency-crop" key={crop.slug} id={crop.slug}>
                 <div className="deficiency-crop-head"><div><span className="eyebrow">Cultivo</span><h2>{crop.name}</h2></div><p>{crop.intro}</p></div>
-                <div className="deficiency-table-wrap"><table className="deficiency-table"><thead><tr><th>Nutriente</th><th>Dónde inicia</th><th>Señal guía</th><th>Clave de interpretación</th></tr></thead><tbody>{crop.rows.map((row) => <tr key={`${crop.slug}-${row.nutrient}`}><td><strong>{row.nutrient}</strong></td><td>{row.starts}</td><td>{row.symptom}</td><td>{row.key}</td></tr>)}</tbody></table></div>
+                <p className="deficiency-table-hint">Desliza horizontalmente para leer las cuatro columnas.</p>
+                <div className="deficiency-table-wrap" tabIndex={0} role="region" aria-label={`Comparación de señales para ${crop.name}`}><table className="deficiency-table"><thead><tr><th>Nutriente</th><th>Dónde inicia</th><th>Señal guía</th><th>Clave de interpretación</th></tr></thead><tbody>{crop.rows.map((row) => <tr key={`${crop.slug}-${row.nutrient}`}><td><strong>{row.nutrient}</strong></td><td>{row.starts}</td><td>{row.symptom}</td><td>{row.key}</td></tr>)}</tbody></table></div>
                 <div className="field-note-grid">{crop.fieldNotes.map((note) => <span key={note}>{note}</span>)}</div>
                 <Link className="knowledge-inline-link" href={`/wondergreen/cultivos/${crop.slug === "pastos" ? "pastos-gramineas" : crop.slug}/`}>Ver programa Wondergreen para {crop.name} →</Link>
               </article>

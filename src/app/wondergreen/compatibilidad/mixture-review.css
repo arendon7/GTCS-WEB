@@ -1,0 +1,27 @@
+.wg-mixture { padding: 42px 0 80px; background: #f7faf5; }
+.wg-mixture__intro { max-width: 800px; margin-bottom: 40px; }
+.wg-mixture__intro h1 { max-width: 24ch; margin: 12px 0 20px; font-size: clamp(2rem, 4.4vw, 3.4rem); line-height: 1.1; }
+.wg-mixture__intro p { max-width: 66ch; font-size: 1.05rem; }
+.wg-mixture__layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 52px); align-items: start; }
+.wg-mixture__report { min-width: 0; }
+.wg-mixture h2 { margin: 0 0 22px; font-size: clamp(1.4rem, 2vw, 1.8rem); line-height: 1.25; }
+.wg-mixture fieldset { min-width: 0; border: 0; padding: 0; margin: 0 0 24px; }
+.wg-mixture legend { font-weight: 700; margin-bottom: 14px; }
+.wg-mixture__families { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.wg-mixture__families label { display: flex; align-items: center; gap: 10px; padding: 12px; min-height: 52px; border: 1px solid #becdbf; border-radius: 9px; background: #fff; font-size: .9rem; cursor: pointer; }
+.wg-mixture input[type="checkbox"] { width: 20px; height: 20px; flex: 0 0 20px; accent-color: #237451; }
+.wg-mixture__field { display: block; margin: 24px 0 10px; }
+.wg-mixture__field > span { display: block; margin-bottom: 9px; font-size: .95rem; font-weight: 700; color: #173d31; }
+.wg-mixture textarea, .wg-mixture select { width: 100%; min-width: 0; padding: 12px; min-height: 48px; border: 1px solid #afc2b4; border-radius: 9px; background: #fff; color: #173d31; font: inherit; font-size: 1rem; }
+.wg-mixture textarea { resize: vertical; }
+.wg-mixture__help { margin: 0; font-size: .88rem; line-height: 1.6; color: #4d6358; }
+.wg-mixture__review { min-width: 0; background: #0a2920; color: #fff; padding: clamp(22px, 3vw, 36px); border-radius: 22px; }
+.wg-mixture__review h2 { color: #fff; }
+.wg-mixture__review p { color: #d4e3dc; font-size: .94rem; }
+.wg-mixture__documents { margin-top: 26px !important; }
+.wg-mixture__documents label { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 0; font-size: .93rem; cursor: pointer; }
+.wg-mixture__review .wg-mixture__status { color: #d8ed9c; margin: 20px 0; font-weight: 650; }
+.wg-mixture__review .button { width: 100%; margin: 14px 0; white-space: normal; text-align: center; }
+.wg-mixture__support { display: block; min-height: 44px; padding: 10px 0; color: #d8ed9c; font-size: .9rem; font-weight: 650; text-underline-offset: 4px; }
+@media (max-width: 900px) { .wg-mixture__layout { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .wg-mixture__families { grid-template-columns: 1fr; } }

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "holdbacks": [
+    {
+      "publicPath": "/products/wondergreen-cropper-ref-bioinput-trichoderma.jpg",
+      "sourcePath": "products/wondergreen-cropper-ref-bioinput-trichoderma.jpg",
+      "sourceSha256": "6e4d8ffa0af130747bc1647d19459945cea7f24c9135f3ad0b6b554d1c2deaec",
+      "sku": "bioinsumo-trichoderma",
+      "reason": "The visible label names a species not reconciled with the current product ficha and registration. Preserve the source original, but omit it from public static exports until the owner confirms the evidence."
+    }
+  ]
+}

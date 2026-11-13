@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { UniversalSearchModal } from "@/components/universal-search-modal";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { primaryNav } from "@/data/site";
+import { isLocalRuntime } from "@/data/digital-tools";
 import { runtimeLinks } from "@/lib/runtime-links";
-
-const featuredTools = [
-  { href: "/herramientas/", label: "Centro de herramientas", description: "Todas las plataformas y aplicaciones del sistema Greenatics" },
-  { href: "/red/app/", label: "GREENATICS Red", description: "Territorio, generadores, rutas, PMIRS y evidencias" },
-  { href: "/huella/", label: "Calcula tu Huella", description: "Inventario, indicadores y lectura de impacto" },
-  { href: "/agroway/", label: "AGROWAY", description: "Aplicación de trazabilidad agrícola y datos de campo" },
-  { href: "/sana/", label: "SANA", description: "Ecosistema de inversión en proyectos productivos" },
-] as const;
 
 const normalizePath = (value: string) => {
   const path = value.split("?")[0].split("#")[0];
@@ -37,7 +31,24 @@ export function SiteHeader() {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const mobileCloseRef = useRef<HTMLButtonElement>(null);
-  const opsUrl = runtimeLinks.opsApp || process.env.NEXT_PUBLIC_OPS_URL || "/acceso/";
+  const huellaMenuRef = useRef<HTMLDetailsElement>(null);
+  const configuredOpsUrl = runtimeLinks.opsApp || process.env.NEXT_PUBLIC_OPS_URL;
+  const isAccessHub = normalizePath(pathname) === "/acceso";
+  const isHuellaPage = normalizePath(pathname) === "/huella";
+  const hasPublicHuellaRuntime = Boolean(runtimeLinks.huella && !isLocalRuntime(runtimeLinks.huella));
+  const hasLocalHuellaRuntime = Boolean(runtimeLinks.huella && isLocalRuntime(runtimeLinks.huella));
+  const opsUrl = configuredOpsUrl || (isAccessHub ? "/app/#estacion" : "/acceso/");
+  const opsLabel = configuredOpsUrl
+    ? "Ingresar a OPS"
+    : isAccessHub
+      ? "Explorar muestra de OPS"
+      : "Herramientas y acceso";
+  const headerAppUrl = isHuellaPage
+    ? hasPublicHuellaRuntime ? `${runtimeLinks.huella}/login` : hasLocalHuellaRuntime ? "/huella/#planes-heading-start" : "/huella/#plataforma"
+    : opsUrl;
+  const headerAppLabel = isHuellaPage
+    ? hasPublicHuellaRuntime ? "Entrar a Huella" : hasLocalHuellaRuntime ? "Ver planes y precios" : "Ver módulos de Huella"
+      : opsLabel;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,6 +57,10 @@ export function SiteHeader() {
         setSearchOpen((prev) => !prev);
       }
       if (e.key === "Escape") {
+        const focusedDropdown = document.activeElement?.closest<HTMLElement>(".nav-dropdown-wrapper");
+        if (focusedDropdown) {
+          focusedDropdown.querySelector<HTMLElement>(".nav-dropdown-trigger")?.focus();
+        }
         setMobileMenuOpen(false);
         setSearchOpen(false);
         setActiveDropdown(null);
@@ -65,6 +80,54 @@ export function SiteHeader() {
       mobileToggleRef.current?.focus();
     };
   }, [mobileMenuOpen]);
+
+  if (isHuellaPage) {
+    const productAccessHref = hasPublicHuellaRuntime || hasLocalHuellaRuntime
+      ? `${runtimeLinks.huella}/login`
+      : "/acceso/#calcula-tu-huella";
+    const externalAccess = productAccessHref.startsWith("http");
+    const closeHuellaMenu = () => {
+      if (huellaMenuRef.current) huellaMenuRef.current.open = false;
+    };
+
+    return (
+      <header className="site-header huella-site-header">
+        <div className="container huella-site-header__inner">
+          <Link className="huella-site-header__brand" href="/huella/" aria-label="Back 2 Green, inicio">
+            <Image src="/brand/calcula-tu-huella/brand-primary.svg?v=back2green-20261014" alt="Back 2 Green" width={563} height={219} preload />
+          </Link>
+          <Link className="huella-site-header__site-link" href="/">Sitio Greenatics</Link>
+          <nav className="huella-site-header__nav" aria-label="Navegación de Back 2 Green">
+            <a href="#recorrido">Cómo funciona</a>
+            <a href="#planes">Planes</a>
+            <a href="#rutas-de-reporte">Normativa</a>
+          </nav>
+          <div className="huella-site-header__actions">
+            <a className="huella-site-header__plans" href="#planes">Ver planes</a>
+            <a className="huella-site-header__access" href={productAccessHref} target={externalAccess ? "_blank" : undefined} rel={externalAccess ? "noopener noreferrer" : undefined}>
+              Entrar <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <details className="huella-site-header__mobile-menu" ref={huellaMenuRef}>
+            <summary aria-label="Abrir navegación de Back 2 Green">Menú</summary>
+            <nav aria-label="Navegación de Back 2 Green y Greenatics">
+              <a href="#recorrido" onClick={closeHuellaMenu}>Cómo funciona</a>
+              <a href="#planes" onClick={closeHuellaMenu}>Planes y precios</a>
+              <a href="#rutas-de-reporte" onClick={closeHuellaMenu}>Normativa</a>
+              <a href={productAccessHref} target={externalAccess ? "_blank" : undefined} rel={externalAccess ? "noopener noreferrer" : undefined} onClick={closeHuellaMenu}>Entrar a la plataforma</a>
+              <div className="huella-site-header__global-links" role="group" aria-label="Secciones del sitio Greenatics">
+                <span>Explorar Greenatics</span>
+                <Link href="/" onClick={closeHuellaMenu}>Inicio Greenatics</Link>
+                {primaryNav.map((item) => (
+                  <Link key={item.href} href={item.href} onClick={closeHuellaMenu}>{item.label}</Link>
+                ))}
+              </div>
+            </nav>
+          </details>
+        </div>
+      </header>
+    );
+  }
 
 
   return (
@@ -101,26 +164,30 @@ export function SiteHeader() {
                     }
                   }}
                 >
-                  <Link href={item.href} className="nav-dropdown-trigger" aria-haspopup="menu" aria-expanded={isOpen} aria-controls={menuId} aria-current={isCurrent ? "page" : undefined}>
+                  <Link href={item.href} className="nav-dropdown-trigger" aria-expanded={isOpen} aria-controls={menuId} aria-current={isCurrent ? "page" : undefined}>
                     {item.label}
                     <span className="dropdown-arrow" aria-hidden="true">⌄</span>
                   </Link>
-                  {isOpen && (
-                    <div id={menuId} className="nav-dropdown-menu" role="menu">
-                      {item.subitems.map((sub) => (
-                        <Link
-                          key={sub.href}
-                          href={sub.href}
-                          className="nav-dropdown-item"
-                          aria-current={pathMatches(pathname, sub.href) ? "page" : undefined}
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          <strong>{sub.label}</strong>
-                          {sub.description && <small>{sub.description}</small>}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <div
+                    id={menuId}
+                    className="nav-dropdown-menu"
+                    role="group"
+                    aria-label={`Enlaces de ${item.label}`}
+                    hidden={!isOpen}
+                  >
+                    {item.subitems.map((sub) => (
+                      <Link
+                        key={sub.href}
+                        href={sub.href}
+                        className="nav-dropdown-item"
+                        aria-current={pathMatches(pathname, sub.href) ? "page" : undefined}
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <strong>{sub.label}</strong>
+                        {sub.description && <small>{sub.description}</small>}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               );
             }
@@ -147,9 +214,9 @@ export function SiteHeader() {
           <Link className="button button--ghost header-contact-btn" href="/contacto/">
             Hablar con nosotros
           </Link>
-          <a className="button button--dark header-ops-btn" href={opsUrl}>
+          <a className="button button--dark header-ops-btn" href={headerAppUrl}>
             <span className="ops-dot" aria-hidden="true" />
-            Ingresar a OPS
+            {headerAppLabel}
           </a>
           <button
             type="button"
@@ -166,7 +233,7 @@ export function SiteHeader() {
       </div>
 
       {/* Mobile Drawer */}
-      {mobileMenuOpen && (
+      {mobileMenuOpen && createPortal(
         <div className="mobile-drawer-overlay" role="presentation" onClick={() => setMobileMenuOpen(false)}>
           <div
             id="mobile-navigation-drawer"
@@ -204,21 +271,6 @@ export function SiteHeader() {
                 ✕
               </button>
             </div>
-            <section className="mobile-drawer-tools" aria-labelledby="mobile-tools-title">
-              <span className="eyebrow" id="mobile-tools-title">Herramientas y apps</span>
-              <div className="mobile-drawer-tools__list">
-                {featuredTools.map((tool) => (
-                  <Link key={tool.href} href={tool.href} onClick={() => setMobileMenuOpen(false)}>
-                    <strong>{tool.label}</strong>
-                    <small>{tool.description}</small>
-                  </Link>
-                ))}
-                <a href={opsUrl} onClick={() => setMobileMenuOpen(false)}>
-                  <strong>GREENATICS OPS</strong>
-                  <small>Operación, bitácora, volúmenes y control de actividades</small>
-                </a>
-              </div>
-            </section>
             <div className="mobile-drawer-links">
               {primaryNav.map((item) => (
                 <div key={item.href} className="mobile-nav-group">
@@ -255,12 +307,13 @@ export function SiteHeader() {
               >
                 Hablar con nosotros
               </Link>
-              <a className="button button--dark" href={opsUrl}>
-                Ingresar a GREENATICS OPS
+              <a className="button button--dark" href={headerAppUrl}>
+                {headerAppLabel}
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
       <UniversalSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>

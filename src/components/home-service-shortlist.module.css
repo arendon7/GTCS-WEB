@@ -1,0 +1,244 @@
+.root {
+  margin-top: clamp(40px, 5vw, 68px);
+  padding-top: clamp(24px, 3vw, 38px);
+  border-top: 1px solid #cbd8c9;
+}
+
+.heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  align-items: end;
+  gap: clamp(22px, 2.6vw, 36px);
+  margin-bottom: 22px;
+}
+
+.heading h3 {
+  max-width: none;
+  margin: 0;
+  color: #09291f;
+  font-family: var(--font-brand-heading);
+  font-size: clamp(1.38rem, 2.1vw, 1.82rem);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+
+.headingAccent {
+  color: #087451;
+}
+
+.heading p {
+  max-width: none;
+  margin: 0 0 2px;
+  color: #53645b;
+  font-size: .96rem;
+  line-height: 1.62;
+  text-wrap: pretty;
+  hyphens: none;
+}
+
+@media (min-width: 1450px) {
+  .heading p {
+    text-align: justify;
+    text-justify: inter-word;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(18px, 2.1vw, 28px);
+}
+
+.card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #d0dbcf;
+  border-radius: 18px 18px 18px 5px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(17 55 39 / 4%);
+}
+
+.media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.9 / 1;
+  background: #e6ece2;
+  color: #fff;
+  isolation: isolate;
+}
+
+.media::after {
+  position: absolute;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 35%, rgb(6 28 21 / 72%) 100%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+}
+
+.media img {
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+
+.media:hover img {
+  transform: scale(1.025);
+}
+
+.media:focus-visible,
+.cardLink:focus-visible,
+.footer a:focus-visible {
+  outline: 3px solid #86b94a;
+  outline-offset: 3px;
+}
+
+.mediaCaption {
+  position: absolute;
+  z-index: 2;
+  right: 13px;
+  bottom: 12px;
+  left: 13px;
+  color: #fff;
+  font-size: .76rem;
+  font-weight: 650;
+  line-height: 1.35;
+  text-shadow: 0 1px 5px rgb(0 0 0 / 25%);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(20px, 2.2vw, 28px);
+}
+
+.body h4 {
+  margin: 0;
+  color: #0a3628;
+  font-size: clamp(1.15rem, 1.5vw, 1.32rem);
+  letter-spacing: -.02em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.body p {
+  max-width: 58ch;
+  margin: 10px 0 18px;
+  color: #56665d;
+  font-size: .96rem;
+  line-height: 1.62;
+  text-wrap: pretty;
+  hyphens: none;
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 4px;
+  color: #075e40;
+  font-size: .9rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.cardLink:hover,
+.footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 18px;
+  padding: 17px 2px 0;
+  border-top: 1px solid #d9e1d7;
+}
+
+.footer p {
+  margin: 0;
+  color: #58685e;
+  font-size: .83rem;
+  line-height: 1.5;
+}
+
+.footer a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  color: #075e40;
+  font-size: .88rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+@media (max-width: 1020px) {
+  .heading {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .heading {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 680px) {
+  .heading,
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .heading {
+    gap: 9px;
+  }
+
+  .heading h3 {
+    max-width: 24ch;
+    font-size: clamp(1.36rem, 6vw, 1.62rem);
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+
+  .media {
+    aspect-ratio: 1.9 / 1;
+  }
+
+  .body {
+    padding: 18px;
+  }
+
+  .footer {
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media img {
+    transition: none;
+  }
+}

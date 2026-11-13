@@ -5,62 +5,282 @@ import { environmentalParkModules } from "@/data/services";
 
 export const metadata: Metadata = {
   title: "Parque Ambiental y Tecnológico",
-  description: "Concepto Greenatics de Parque Ambiental: separación, rutas selectivas, aprovechamiento biológico, biofábrica, biogás, formación y datos en una arquitectura modular.",
+  description:
+    "Una propuesta modular de Greenatics para conectar separación, tratamiento biológico, productos, energía, formación y datos según las condiciones de cada territorio.",
   alternates: { canonical: "/parque-ambiental/" },
 };
 
-const questions = [
-  ["Material", "¿Qué corrientes existen, cuánto se genera, qué tan separadas llegan y cómo cambia la oferta durante el año?"],
-  ["Territorio", "¿Dónde están los generadores, cuál es la distancia de recolección y qué infraestructura/servicios tiene el predio?"],
-  ["Proceso", "¿Qué combinación de compostaje, digestión u otras rutas responde mejor a la caracterización y a la escala?"],
-  ["Productos", "¿Quién puede usar o comprar compost, biol, fertilizantes, energía u otras salidas técnicamente viables?"],
-  ["Operación", "¿Quién recibe, opera, mantiene, controla, comercializa y reporta el sistema todos los días?"],
-  ["Economía", "¿Qué inversión, costos de operación, ingresos/ahorros, fuentes de financiación y fases de crecimiento son realistas?"],
-  ["Gobernanza", "¿Qué roles tienen municipio, ESP, generadores, operadores, comunidad, academia y aliados?"],
-  ["Datos", "¿Qué se medirá desde el primer día para demostrar funcionamiento, corregir fallas y justificar el escalamiento?"],
-] as const;
-
-const phases = [
-  ["Empezar", "Resolver la línea base y estabilizar una primera cadena funcional.", ["diagnóstico y prefactibilidad", "generadores priorizados", "ruta selectiva/piloto", "módulo de tratamiento inicial", "protocolos y datos mínimos"]],
-  ["Consolidar", "Aumentar confiabilidad, cobertura y control operacional.", ["más generadores", "equipos/áreas complementarias", "mantenimiento estructurado", "producto e inventario", "GREENATICS OPS e indicadores"]],
-  ["Escalar", "Agregar módulos o nuevos territorios cuando los datos justifican la inversión.", ["nuevas corrientes", "digestión/biogás cuando aplica", "biofábrica ampliada", "formación/demostración", "replicabilidad regional"]],
-] as const;
-
-const configurations = [
-  ["Municipal", "Puede articular PGIRS, rutas selectivas, ESP, infraestructura de aprovechamiento, formación ciudadana y metas territoriales."],
-  ["Regional", "Puede recibir corrientes de varios municipios cuando logística, gobernanza, capacidad y modelo económico justifican la concentración."],
-  ["Agroindustrial", "Puede integrar residuos de procesamiento, estiércoles u otras biomasas con producción de insumos, energía y manejo de nutrientes."],
-  ["Demostrativo / educativo", "Puede incorporar espacios de formación, huertas, viveros, parcelas, laboratorio demostrativo o transferencia tecnológica según alcance."],
-] as const;
-
-const parkEvidence = [
-  ["/projects/routes/route-evidence-04.webp", "Residuos orgánicos separados antes de su recolección", "Suministro y logística", "El parque empieza fuera del predio: generadores, calidad, frecuencia, recorrido y criterios de aceptación determinan lo que puede recibir."],
-  ["/projects/plant/plant-evidence-05.webp", "Áreas de transformación biológica de residuos orgánicos", "Transformación modular", "Recepción, mezcla, proceso, maduración, almacenamiento y circulación deben poder crecer sin interrumpir la operación."],
-  ["/projects/tamesis/reactor-uasb.jpeg", "Reactor anaerobio UASB existente en Támesis", "Materia y energía", "Cuando la corriente y la escala lo permiten, la digestión anaerobia puede sumar biogás y bioenergía a las rutas de valorización material."],
+const moduleGroups = [
+  {
+    title: "Recibir con información suficiente",
+    intro:
+      "El sistema comienza antes del tratamiento: identifica de dónde viene el material, cuánto llega, en qué condiciones y qué novedades pueden afectar el proceso.",
+    modules: [environmentalParkModules[0]],
+  },
+  {
+    title: "Elegir el proceso que responde a la corriente",
+    intro:
+      "La caracterización y la escala ayudan a definir si conviene una ruta aeróbica, anaeróbica o una combinación. No todas las corrientes ni todos los territorios requieren las mismas tecnologías.",
+    modules: [environmentalParkModules[2], environmentalParkModules[1]],
+  },
+  {
+    title: "Preparar salidas con un destino posible",
+    intro:
+      "Acondicionar el material, asegurar su calidad y entender quién podría utilizarlo son parte del diseño; no son una etapa posterior desconectada del proceso.",
+    modules: [environmentalParkModules[3], environmentalParkModules[4]],
+  },
 ] as const;
 
 export default function EnvironmentalParkPage() {
   return (
-    <>
-      <section className="park-page-hero"><div className="container park-page-hero-grid"><div><span className="eyebrow eyebrow--light">Concepto Greenatics</span><h1>Parque Ambiental: convertir una planta aislada en una plataforma territorial de aprovechamiento.</h1><p className="lead">El Parque Ambiental —también concebido como Parque Tecnológico Ambiental— es una arquitectura modular para conectar separación, logística, tratamiento biológico, productos, energía, educación y datos. No es un paquete estándar: cada parque se define mediante diagnóstico, prefactibilidad y maduración técnica.</p><div className="button-row"><Link className="button button--light" href="/servicios/plantas-modulares/">Evaluar prefactibilidad</Link><Link className="button button--outline-light" href="/municipios/">Soluciones municipales</Link></div></div><aside className="park-page-definition"><span>No es</span><strong>una lista de máquinas.</strong><p>El valor del parque está en conectar entradas, procesos, personas, salidas y datos dentro de un modelo que el territorio pueda operar.</p></aside></div></section>
+    <div className="park-concept">
+      <section className="park-concept-hero">
+        <div className="container park-concept-hero__grid">
+          <div className="park-concept-hero__copy">
+                <h1>Un parque ambiental que el territorio pueda operar.</h1>
+            <p className="park-concept-hero__lead">
+              Greenatics conecta ciencia aplicada, conocimiento del sector aseo e
+              ingeniería para convertir una oportunidad de aprovechamiento en un
+              sistema que las personas y organizaciones locales puedan sostener.
+            </p>
+            <p>
+              La propuesta puede articular separación, logística, tratamiento
+              biológico, productos, energía, formación y datos. Su configuración
+              se define a partir de las corrientes, el predio, la operación y una
+              evaluación técnica y económica; no es un paquete estándar.
+            </p>
+            <div className="park-concept-actions">
+              <Link
+                className="button button--dark"
+                href="#preguntas-factibilidad"
+              >
+                Ver qué revisa la prefactibilidad
+              </Link>
+              <Link className="park-concept-text-link" href="/municipios/">
+                Explorar soluciones para municipios y ESP
+              </Link>
+            </div>
+          </div>
+          <figure className="park-concept-hero__visual">
+            <Image
+              src="/projects/concepts/environmental-park-modular-concept.jpg"
+              alt="Área de compostaje cubierta y unidades de tratamiento en un paisaje de montaña"
+              fill
+              priority
+              sizes="(max-width: 760px) 100vw, 52vw"
+            />
+            <figcaption>
+              Una arquitectura posible conecta tratamiento, recuperación de
+              nutrientes y uso territorial.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
 
-      <section className="park-page-evidence"><div className="container"><div className="section-heading"><span className="eyebrow">El concepto en condiciones reales</span><h2>Tres momentos físicos que el diseño debe conectar.</h2><p>Estas imágenes corresponden a operaciones y activos documentados de Greenatics. Ilustran componentes posibles; no representan un único parque ya construido con todos los módulos.</p></div><div className="park-page-evidence__grid">{parkEvidence.map(([src,alt,title,copy],index)=><figure className={index===1?"is-featured":undefined} key={title}><div><Image src={src} alt={alt} fill sizes={index===1?"(max-width: 800px) 100vw, 50vw":"(max-width: 800px) 100vw, 25vw"}/></div><figcaption><span>0{index+1}</span><strong>{title}</strong><p>{copy}</p></figcaption></figure>)}</div></div></section>
+      <section className="park-concept-principle">
+        <div className="container park-concept-principle__grid">
+          <h2>La infraestructura se diseña alrededor de una operación, no al revés.</h2>
+          <div>
+            <p>
+              Definir equipos antes de entender los materiales, la logística y
+              quién estará a cargo puede dejar una planta difícil de sostener.
+              Por eso, Greenatics acompaña la lectura del territorio y de la
+              operación para comparar alternativas y precisar qué información
+              hace falta antes de invertir.
+            </p>
+            <p>
+              La experiencia de compostaje en Yarumal aporta referencias de
+              trabajo en territorio. Cada nuevo proyecto requiere revisar sus
+              propias corrientes, capacidades y responsabilidades: la experiencia
+              previa no reemplaza ese análisis.
+            </p>
+            <Link href="/proyectos/yarumal/" className="park-concept-text-link">
+              Conocer el caso de Yarumal
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-modules"><div className="container"><div className="section-heading"><span className="eyebrow">Arquitectura modular</span><h2>Ocho capas que pueden combinarse según el proyecto.</h2><p>No todos los parques necesitan todos los módulos desde el primer día.</p></div><div className="park-page-module-grid">{environmentalParkModules.map(([title,copy],index)=><article key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>
+      <section className="park-concept-modules" aria-labelledby="park-modules-title">
+        <div className="container">
+          <div className="park-concept-heading">
+            <h2 id="park-modules-title">Cinco módulos conectan el material con un uso posible.</h2>
+            <p>
+              Se pueden incorporar en momentos distintos. La corriente, la
+              capacidad local y la prefactibilidad determinan cuáles hacen falta
+              y cómo deben relacionarse.
+            </p>
+          </div>
+          <div className="park-concept-module-groups">
+            {moduleGroups.map((group) => (
+              <article key={group.title}>
+                <h3>{group.title}</h3>
+                <p>{group.intro}</p>
+                <ul>
+                  {group.modules.map(([title, copy]) => (
+                    <li key={title}>
+                      <strong>{title}.</strong> {copy}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-questions"><div className="container"><div className="section-heading"><span className="eyebrow eyebrow--light">Factibilidad</span><h2>Antes del layout vienen las preguntas que definen el sistema.</h2></div><div className="park-question-grid">{questions.map(([title,copy],index)=><article key={title}><span>{String(index+1).padStart(2,"0")}</span><strong>{title}</strong><p>{copy}</p></article>)}</div></div></section>
+      <section className="park-concept-feasibility" id="preguntas-factibilidad">
+        <div className="container park-concept-feasibility__grid">
+          <div>
+            <h2>La prefactibilidad pone a prueba el sistema completo.</h2>
+            <p>
+              Antes de definir capacidad, áreas y equipos, se comparan la
+              disponibilidad del material, las restricciones del sitio, las
+              alternativas de proceso y las condiciones para operar. El estudio
+              organiza decisiones y supuestos; no equivale a un presupuesto
+              definitivo ni garantiza la viabilidad.
+            </p>
+          </div>
+          <div className="park-concept-dimensions">
+            <article>
+              <h3>Qué llega y desde dónde</h3>
+              <p>
+                Volumen, composición, separación, variación durante el año,
+                ubicación de generadores, distancias y servicios disponibles.
+              </p>
+            </article>
+            <article>
+              <h3>Qué proceso y qué salidas tienen sentido</h3>
+              <p>
+                Rutas de tratamiento compatibles con el material, calidad
+                requerida, posibles usuarios de productos y condiciones de
+                recuperación de energía.
+              </p>
+            </article>
+            <article>
+              <h3>Quién lo sostiene y con qué recursos</h3>
+              <p>
+                Responsables, gobernanza, inversión, costos de operación,
+                mantenimiento, financiación por explorar y datos para hacer
+                seguimiento y decidir si escalar.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-phases"><div className="container"><div className="section-heading"><span className="eyebrow">Implementación gradual</span><h2>Empezar pequeño no significa pensar pequeño.</h2><p>La modularidad permite que el sistema madure con datos en lugar de sobredimensionarse desde el inicio.</p></div><div className="park-phase-grid">{phases.map(([title,copy,items],index)=><article key={title}><span>{String(index+1).padStart(2,"0")}</span><h3>{title}</h3><p>{copy}</p><ul>{items.map((item)=><li key={item}>{item}</li>)}</ul></article>)}</div></div></section>
+      <section className="park-concept-growth">
+        <div className="container park-concept-growth__grid">
+          <div>
+            <h2>El proyecto puede crecer cuando la operación y los datos lo justifican.</h2>
+            <p>
+              Una primera etapa puede ordenar la línea base, priorizar generadores,
+              probar una ruta selectiva y estabilizar un módulo de tratamiento con
+              protocolos y registros esenciales.
+            </p>
+          </div>
+          <div className="park-concept-growth__copy">
+            <p>
+              <strong>Consolidar</strong> significa mejorar confiabilidad, cobertura,
+              mantenimiento, trazabilidad e inventario de productos, con indicadores
+              que ayuden a corregir la operación.
+            </p>
+            <p>
+              <strong>Escalar</strong> puede implicar nuevas corrientes, digestión y
+              biogás cuando resulten pertinentes, una biofábrica ampliada o la
+              articulación regional. Cada ampliación depende de evidencia y de un
+              alcance acordado.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-configurations"><div className="container park-config-grid"><div><span className="eyebrow">No existe un solo parque</span><h2>La arquitectura cambia según el territorio y la corriente.</h2></div><div className="park-config-list">{configurations.map(([title,copy])=><article key={title}><strong>{title}</strong><p>{copy}</p></article>)}</div></div></section>
+      <section className="park-concept-contexts">
+        <div className="container park-concept-contexts__grid">
+          <h2>La misma idea toma formas distintas según quienes participan.</h2>
+          <div>
+            <p>
+              <strong>Municipal.</strong> Puede conectar PGIRS, rutas selectivas,
+              ESP, infraestructura de aprovechamiento, formación y prioridades
+              territoriales.
+            </p>
+            <p>
+              <strong>Regional.</strong> Puede reunir corrientes de varios municipios
+              si la logística, la capacidad, la gobernanza y el modelo económico
+              respaldan esa escala.
+            </p>
+            <p>
+              <strong>Agroindustrial.</strong> Puede integrar residuos de
+              procesamiento, estiércoles u otras biomasas con rutas para recuperar
+              nutrientes o energía, de acuerdo con sus características.
+            </p>
+            <p>
+              <strong>Demostrativa y educativa.</strong> Puede vincular formación,
+              huertas, viveros, parcelas o transferencia tecnológica cuando hagan
+              parte del propósito y del alcance.
+            </p>
+          </div>
+          <p className="park-concept-boundary">
+            El Parque Ambiental es una propuesta de arquitectura Greenatics, no la
+            descripción de una instalación completa ya construida. Capacidad,
+            equipos, inversión, productos, biogás y huella se evalúan para cada
+            proyecto.
+          </p>
+        </div>
+      </section>
 
-      <section className="park-page-biorefinery"><div className="container park-biorefinery-grid"><div><span className="eyebrow eyebrow--light">Biorefinería territorial</span><h2>Una misma corriente puede generar varias rutas de valor.</h2><p>Según caracterización y escala, el parque puede integrar procesos aeróbicos y anaeróbicos. El objetivo es recuperar materia orgánica y nutrientes, y cuando técnica/económicamente tiene sentido, recuperar energía en forma de biogás.</p><Link className="button button--light" href="/tecnologia/">Ver tecnología Greenatics</Link></div><div className="park-value-flow"><span>Residuos separados</span><b>→</b><span>Compostaje / digestión</span><b>→</b><span>Compost · biol · fertilizantes · biogás</span><b>→</b><span>Suelo · agricultura · energía · aprendizaje</span></div></div></section>
+      <section className="park-concept-value">
+        <div className="container park-concept-value__grid">
+          <h2>Una corriente puede abrir varias rutas de valor.</h2>
+          <div>
+            <p>
+              Según su composición y escala, un proyecto puede combinar procesos
+              aeróbicos y anaeróbicos para recuperar materia orgánica y nutrientes.
+              Compost, bioles, fertilizantes o biogás son salidas que se estudian
+              según la tecnología, la calidad requerida y sus posibles destinos;
+              no se producen automáticamente por instalar un módulo.
+            </p>
+            <Link className="park-concept-light-link" href="/tecnologia/">
+              Conocer las rutas de tratamiento y tecnología
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-data"><div className="container park-data-grid"><div><span className="eyebrow">Capa digital</span><h2>El parque también es un sistema de información.</h2><p>GREENATICS OPS puede conectar generadores, microrrutas, recepción, impropios, lotes, procesos, producto, inventarios, mantenimiento y destino. Los indicadores públicos se separan de la información interna y solo se publican después de conciliación y aprobación.</p></div><div className="park-data-stack">{["Generador","Ruta","Recepción","Proceso","Producto","Destino / impacto"].map((item,index)=><div key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong></div>)}</div></div></section>
+      <section className="park-concept-data">
+        <div className="container park-concept-data__grid">
+          <h2>La trazabilidad acompaña el proceso de principio a fin.</h2>
+          <div>
+            <p>
+              La información puede conectar generadores, recorridos, recepción,
+              lotes, procesos, productos, mantenimiento y destino. GREENATICS OPS
+              puede apoyar ese seguimiento; los indicadores externos se revisan y
+              concilian antes de comunicarse.
+            </p>
+            <Link className="park-concept-text-link" href="/acceso/">
+              Explorar las herramientas de Greenatics
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="park-page-boundary"><div className="container"><strong>Importante</strong><p>“Parque Ambiental” describe un concepto de arquitectura Greenatics. La web no afirma que exista un parque completo construido bajo esta configuración en una ciudad específica salvo que exista un caso documentado y aprobado. Capacidades, equipos, inversiones, producción, biogás y huella se calculan para cada proyecto.</p></div></section>
-
-      <section className="closing-cta"><div className="container closing-inner"><div><span className="eyebrow">Madurar el concepto</span><h2>El primer entregable de un Parque Ambiental no debería ser un render. Debería ser una buena prefactibilidad.</h2></div><Link className="button button--dark" href="/servicios/plantas-modulares/">Empezar prefactibilidad</Link></div></section>
-    </>
+      <section className="park-concept-cta">
+        <div className="container park-concept-cta__inner">
+          <div>
+            <h2>Conversemos sobre lo que el territorio necesita resolver.</h2>
+            <p>
+              Revisemos las corrientes disponibles, la operación existente y la
+              decisión que debe orientar una prefactibilidad.
+            </p>
+          </div>
+          <Link
+            className="button button--light"
+            href="/contacto/?servicio=prefactibilidad&perfil=municipio"
+          >
+            Consultar una prefactibilidad
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

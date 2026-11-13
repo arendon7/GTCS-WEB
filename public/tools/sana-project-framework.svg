@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" role="img" aria-labelledby="title desc">
+  <title id="title">Marco ilustrativo para estructurar proyectos productivos</title>
+  <desc id="desc">Cuatro preguntas conectan oportunidad, alcance técnico, capacidades y seguimiento. El esquema no es una oferta de inversión.</desc>
+  <defs>
+    <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#f7f5eb"/><stop offset="1" stop-color="#e6efdf"/></linearGradient>
+    <linearGradient id="field" x2="0" y2="1"><stop stop-color="#9dbb79"/><stop offset="1" stop-color="#2b6947"/></linearGradient>
+    <pattern id="contours" width="120" height="70" patternUnits="userSpaceOnUse"><path d="M-20 35Q20 4 60 35t80 0M-20 55Q20 24 60 55t80 0" fill="none" stroke="#c9dbac" stroke-width="2" opacity=".72"/></pattern>
+  </defs>
+  <rect width="960" height="700" rx="28" fill="url(#paper)"/>
+  <path d="M0 422Q179 352 351 420T666 411T960 369V700H0Z" fill="url(#field)"/>
+  <path d="M0 422Q179 352 351 420T666 411T960 369V700H0Z" fill="url(#contours)"/>
+  <g fill="none" stroke="#eff6dd" stroke-width="4" opacity=".9">
+    <path d="M480 179v115M480 295H245v74M480 295h235v74M245 369v76M715 369v76M245 445h470"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <rect x="294" y="75" width="372" height="108" rx="16" fill="#0b3a2b"/>
+    <text x="480" y="113" fill="#bde981" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="2">PUNTO DE PARTIDA</text>
+    <text x="480" y="150" fill="#fff" font-size="25" font-weight="700" text-anchor="middle">¿Qué oportunidad existe?</text>
+    <g text-anchor="middle">
+      <rect x="85" y="370" width="320" height="126" rx="14" fill="#f8f6ed" stroke="#87a47a" stroke-width="2"/>
+      <text x="245" y="411" fill="#0c6a49" font-size="13" font-weight="700" letter-spacing="1.5">01 · CONTEXTO</text>
+      <text x="245" y="447" fill="#123729" font-size="22" font-weight="700">Territorio y necesidad</text>
+      <text x="245" y="474" fill="#53695b" font-size="15">Actores · recursos · condiciones</text>
+      <rect x="555" y="370" width="320" height="126" rx="14" fill="#f8f6ed" stroke="#87a47a" stroke-width="2"/>
+      <text x="715" y="411" fill="#0c6a49" font-size="13" font-weight="700" letter-spacing="1.5">02 · ALCANCE</text>
+      <text x="715" y="447" fill="#123729" font-size="22" font-weight="700">Ciencia y capacidades</text>
+      <text x="715" y="474" fill="#53695b" font-size="15">Diseño técnico · equipo · etapas</text>
+      <rect x="85" y="526" width="320" height="110" rx="14" fill="#f8f6ed" stroke="#87a47a" stroke-width="2"/>
+      <text x="245" y="566" fill="#0c6a49" font-size="13" font-weight="700" letter-spacing="1.5">03 · ARTICULACIÓN</text>
+      <text x="245" y="602" fill="#123729" font-size="20" font-weight="700">Roles y recursos por definir</text>
+      <rect x="555" y="526" width="320" height="110" rx="14" fill="#f8f6ed" stroke="#87a47a" stroke-width="2"/>
+      <text x="715" y="566" fill="#0c6a49" font-size="13" font-weight="700" letter-spacing="1.5">04 · SEGUIMIENTO</text>
+      <text x="715" y="602" fill="#123729" font-size="20" font-weight="700">Evidencias y decisiones</text>
+    </g>
+  </g>
+  <rect x="38" y="38" width="290" height="42" rx="21" fill="#fff" stroke="#c4d1bb"/>
+  <text x="62" y="65" fill="#13543b" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.6">SANA · MARCO DE PROYECTO</text>
+  <text x="480" y="674" fill="#f3f7e8" font-family="Arial, sans-serif" font-size="15" text-anchor="middle">Esquema conceptual · no constituye oferta ni compromiso de inversión</text>
+</svg>

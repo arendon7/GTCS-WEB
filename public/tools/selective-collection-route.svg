@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 575" role="img" aria-labelledby="title desc">
+  <title id="title">Esquema conceptual para diseñar microrrutas selectivas</title>
+  <desc id="desc">Cuatro factores conectados: generadores, recorrido y frecuencia, tipo y volumen de carga, y recepción con pesaje. No representa un vehículo real ni una ruta medida.</desc>
+  <rect width="720" height="575" fill="#eef3ec"/>
+  <rect x="18" y="18" width="684" height="539" rx="26" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="50" y="72" fill="#16764f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">RECOLECCIÓN SELECTIVA · ESQUEMA CONCEPTUAL</text>
+  <text x="50" y="124" fill="#10392c" font-family="Arial,sans-serif" font-size="29" font-weight="700">Diseñar el recorrido antes de operarlo</text>
+  <text x="50" y="158" fill="#5f7268" font-family="Arial,sans-serif" font-size="16">Generadores, frecuencia, carga y recepción definen cada microrruta.</text>
+
+  <g fill="none" stroke="#7dad64" stroke-width="3">
+    <path d="M184 274h27M347 274h27M510 274h27"/>
+    <path d="m203 268 8 6-8 6m136-12 8 6-8 6m136-12 8 6-8 6"/>
+  </g>
+  <g>
+    <rect x="48" y="208" width="136" height="202" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="211" y="208" width="136" height="202" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="374" y="208" width="136" height="202" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="537" y="208" width="136" height="202" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <circle cx="74" cy="254" r="18" fill="#0d3529"/><text x="74" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">01</text>
+    <text x="66" y="307" fill="#10392c" font-size="19" font-weight="700">Generadores</text>
+    <text x="66" y="341" fill="#5f7268" font-size="14">Ubicación y</text><text x="66" y="361" fill="#5f7268" font-size="14">puntos de entrega</text>
+
+    <circle cx="237" cy="254" r="18" fill="#0d3529"/><text x="237" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">02</text>
+    <text x="229" y="307" fill="#10392c" font-size="19" font-weight="700">Recorrido</text>
+    <text x="229" y="341" fill="#5f7268" font-size="14">Accesos y</text><text x="229" y="361" fill="#5f7268" font-size="14">frecuencias</text>
+
+    <circle cx="400" cy="254" r="18" fill="#0d3529"/><text x="400" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">03</text>
+    <text x="392" y="307" fill="#10392c" font-size="19" font-weight="700">Carga</text>
+    <text x="392" y="341" fill="#5f7268" font-size="14">Tipo y volumen</text><text x="392" y="361" fill="#5f7268" font-size="14">del material</text>
+
+    <circle cx="563" cy="254" r="18" fill="#0d3529"/><text x="563" y="260" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">04</text>
+    <text x="555" y="307" fill="#10392c" font-size="19" font-weight="700">Recepción</text>
+    <text x="555" y="341" fill="#5f7268" font-size="14">Entrega, pesaje</text><text x="555" y="361" fill="#5f7268" font-size="14">y protocolo</text>
+  </g>
+</svg>

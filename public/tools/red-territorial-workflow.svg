@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Trabajo territorial con evidencia y seguimiento</title>
+  <desc id="desc">Mapa de trabajo que conecta organizaciones, generadores, cobertura, evidencia de campo, hallazgos y acciones.</desc>
+  <rect width="1440" height="900" fill="#eef3ec"/>
+  <rect x="42" y="42" width="1356" height="816" rx="28" fill="#fff" stroke="#cbd8ce" stroke-width="2"/>
+  <rect x="42" y="42" width="264" height="816" rx="28" fill="#0d3529"/>
+  <rect x="278" y="42" width="28" height="816" fill="#0d3529"/>
+  <text x="78" y="106" fill="#b6e978" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.7">TRABAJO TERRITORIAL</text>
+  <g font-family="Arial,sans-serif" font-size="18" fill="#d8e5dc"><text x="84" y="204">Organizaciones</text><text x="84" y="258">Generadores</text><text x="84" y="312">Cobertura</text><text x="84" y="366">Trabajo de campo</text><text x="84" y="420">Hallazgos</text><text x="84" y="474">Acciones y seguimiento</text></g>
+  <g fill="#8bcf4b"><circle cx="63" cy="197" r="5"/><circle cx="63" cy="251" r="5"/><circle cx="63" cy="305" r="5"/><circle cx="63" cy="359" r="5"/><circle cx="63" cy="413" r="5"/><circle cx="63" cy="467" r="5"/></g>
+  <rect x="340" y="82" width="1010" height="50" rx="12" fill="#f1f5ef"/>
+  <text x="372" y="114" fill="#426053" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="1.2">COBERTURA · CAMPO · SEGUIMIENTO</text>
+  <text x="340" y="202" fill="#10392c" font-family="Arial,sans-serif" font-size="43" font-weight="700">Del territorio a un seguimiento útil</text>
+  <text x="340" y="244" fill="#5f7268" font-family="Arial,sans-serif" font-size="21">Organiza cobertura, actores, evidencia y responsabilidades en una misma ruta de trabajo.</text>
+  <rect x="340" y="284" width="660" height="360" rx="18" fill="#edf3eb" stroke="#d5e0d7" stroke-width="2"/>
+  <path d="M382 362c100 34 115 100 208 88s101-81 194-77 110 52 170 30" fill="none" stroke="#aac39d" stroke-width="18" stroke-linecap="round"/>
+  <path d="M410 570c78-86 98-88 180-90s123 51 196 38 115-81 172-108" fill="none" stroke="#c4d4c1" stroke-width="13" stroke-linecap="round"/>
+  <path d="M510 320c36 56 16 121 50 169s88 71 83 155M770 321c-31 70-16 126 13 176s26 85 18 137M900 374c-44 22-77 83-72 123" fill="none" stroke="#d3dfd2" stroke-width="9" stroke-linecap="round"/>
+  <g fill="#16764f" stroke="#fff" stroke-width="6"><circle cx="445" cy="386" r="13"/><circle cx="590" cy="454" r="13"/><circle cx="784" cy="371" r="13"/><circle cx="674" cy="567" r="13"/><circle cx="892" cy="431" r="13"/></g>
+  <g font-family="Arial,sans-serif" font-size="15" font-weight="700" fill="#315747"><text x="420" y="353">Generadores</text><text x="562" y="424">Punto de campo</text><text x="756" y="338">Zona de servicio</text><text x="646" y="608">Hallazgo</text><text x="870" y="399">Acción</text></g>
+  <rect x="1022" y="284" width="328" height="360" rx="18" fill="#f8faf7" stroke="#d5e0d7" stroke-width="2"/>
+  <text x="1056" y="332" fill="#16764f" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">REGISTRO TERRITORIAL</text>
+  <g font-family="Arial,sans-serif">
+    <text x="1056" y="384" fill="#10392c" font-size="21" font-weight="700">Actor y origen</text><text x="1056" y="412" fill="#68796e" font-size="16">Identificar la fuente del dato</text>
+    <path d="M1056 432h258" stroke="#d9e2da" stroke-width="2"/>
+    <text x="1056" y="478" fill="#10392c" font-size="21" font-weight="700">Evidencia de campo</text><text x="1056" y="506" fill="#68796e" font-size="16">Fecha, responsable y soporte</text>
+    <path d="M1056 526h258" stroke="#d9e2da" stroke-width="2"/>
+    <text x="1056" y="572" fill="#10392c" font-size="21" font-weight="700">Revisión y acción</text><text x="1056" y="600" fill="#68796e" font-size="16">Hallazgo, prioridad y seguimiento</text>
+  </g>
+  <rect x="340" y="672" width="1010" height="104" rx="18" fill="#0d3529"/>
+  <g font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#fff"><text x="386" y="733">Línea base</text><text x="620" y="733">Campo</text><text x="838" y="733">QA/QC</text><text x="1058" y="733">Seguimiento PMIRS</text></g>
+  <g stroke="#8bcf4b" stroke-width="3" fill="none"><path d="M520 725h62M706 725h90M920 725h102"/><path d="M574 717l8 8-8 8M788 717l8 8-8 8M1014 717l8 8-8 8"/></g>
+  <text x="340" y="820" fill="#66796e" font-family="Arial,sans-serif" font-size="16">El sistema puede apoyar a municipios, ESP, organizaciones y grandes generadores según su alcance.</text>
+</svg>

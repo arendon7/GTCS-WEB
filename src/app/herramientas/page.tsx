@@ -1,53 +1,104 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { DigitalToolsIndex } from "@/components/digital-tools-index";
-import { runtimeLinks } from "@/lib/runtime-links";
+import { digitalTools, getRuntimeEntryHref, hasSeparateLanding, isExternalRuntime, isLocalRuntime } from "@/data/digital-tools";
+import { LocalToolRuntimeLink } from "@/components/local-tool-runtime-link";
 
 export const metadata: Metadata = {
   title: "Herramientas digitales | Operación, territorio, impacto y campo",
-  description: "Ecosistema digital Greenatics para registrar operación, conectar usuarios y rutas, estimar impacto y acompañar proyectos agrícolas.",
+  description: "Conoce cinco herramientas Greenatics, el trabajo que aborda cada una, sus recorridos de muestra y el siguiente paso adecuado.",
   alternates: { canonical: "/herramientas/" },
   openGraph: {
     title: "Herramientas digitales Greenatics | Operación, territorio y campo",
-    description: "Conoce OPS, GREENATICS Red, Calcula tu Huella, AGROWAY y SANA; explora sus módulos y entra a la experiencia correspondiente.",
+    description: "Compara GREENATICS OPS, GREENATICS Red, Back 2 Green, AGROWAY y SANA y elige la ruta adecuada para cada proyecto.",
     url: "/herramientas/",
-    images: ["/campaign/06_dashboard_indicadores.jpg"],
+    images: ["/brand/greenatics-horizontal.webp"],
   },
 };
-
-const platforms = [
-  { code: "OPS", name: "GREENATICS OPS", status: "Demostración funcional", title: "La memoria operativa de cada planta.", audience: "Para plantas, supervisión y dirección", copy: "Registra lo que ocurre durante la jornada y conecta cada decisión con su fuente: actividad, recepción, lote, equipo, mantenimiento, inventario o salida.", includes: ["Bitácora y control de actividades", "Ingresos, pesajes, volúmenes y lotes", "Dashboard, alertas y calidad del dato"], result: "Un historial operativo que permite entender qué ocurrió, quién lo atendió y qué requiere decisión.", image: "/campaign/06_dashboard_indicadores.jpg", href: "/app/", cta: "Explorar OPS", scope: "Operación · Supervisión · Dirección" },
-  { code: "RED", name: "GREENATICS Red", status: "Solución configurable", title: "Del diagnóstico territorial al seguimiento del PMIRS.", audience: "Para municipios, ESP y equipos territoriales", copy: "Conecta Proyecto 360, trabajo de campo, medición, QA/QC, línea base, PMIRS, acciones y evidencias. Las microrrutas de aseo son una parte del sistema, no todo el sistema.", includes: ["Usuarios, generadores y cobertura", "FIELD, novedades y evidencia de ruta", "Hallazgos, programas, responsables e indicadores"], result: "Una lectura territorial que convierte datos de campo en prioridades y planes de implementación.", image: "/projects/routes/route-evidence-01.webp", href: "/red/", cta: "Explorar GREENATICS Red", scope: "Diagnóstico · Campo · PMIRS" },
-  { code: "CO₂", name: "Calcula tu Huella", status: "Estimador público", title: "Organiza tus datos de emisiones y construye un inventario trazable.", audience: "Para organizaciones y equipos de sostenibilidad", copy: "La calculadora pública permite explorar escenarios. La plataforma completa añade inventarios, fuentes, cargas CSV/XLSX, validación por lote, corrección guiada, evidencias e historial.", includes: ["Inventarios y mapa de fuentes", "Importación y validación de CSV/XLSX", "Resultados, evidencia y revisión humana"], result: "Un inventario más claro sobre qué se sabe, qué falta medir y qué puede pasar a revisión.", image: "/tools/huella/dashboard.png", href: "/huella/", cta: "Calcular un escenario", scope: "Inventario · Método · Evidencia" },
-  { code: "AG", name: "AGROWAY", status: "Demo navegable disponible", title: "Del diagnóstico del lote a una trazabilidad de campo útil.", audience: "Para productores, proyectos agrícolas y equipos técnicos", copy: "Registra productor, finca, lote, diagnóstico, plan, abastecimiento, ejecución, evidencia, seguimiento y cosecha. La información puede alimentar a SANA junto con la ciencia y las soluciones de Greenatics y Wondergreen.", includes: ["Diagnóstico y plan por lote", "Aplicación, seguimiento y evidencia", "Abastecimiento, cosecha y nuevos ciclos"], result: "Una historia de campo que vincula recomendación, ejecución y aprendizaje productivo.", image: "/guides/guia-cafe-cover.webp", href: "/agroway/", cta: "Conocer AGROWAY", scope: "Trazabilidad · Campo · Proyecto" },
-  { code: "SANA", name: "SANA", status: "Demo navegable disponible", title: "De los datos del proyecto a una inversión mejor acompañada.", audience: "Para inversionistas, aliados y proyectos productivos", copy: "Articula oportunidades agrícolas, datos de AGROWAY, ciencia Greenatics, soluciones Wondergreen y acompañamiento para estructurar, seguir y aprender de cada proyecto.", includes: ["Lectura de oportunidad y contexto", "Seguimiento de avance y resultados", "Conexión entre capital, ciencia y campo"], result: "Una visión compartida para decidir con más información y acompañar el proyecto durante sus ciclos.", image: "/projects/tamesis/paisaje-tamesis.jpg", href: "/sana/", cta: "Conocer SANA", scope: "Inversión · Campo · Acompañamiento" },
-] as const;
-
-const dataStates = [
-  ["01", "Registrado", "El hecho se captura donde ocurre: una ruta, una recepción, una báscula, un lote, un equipo o una aplicación de campo.", "Fuente y contexto visibles"],
-  ["02", "Validado", "Se revisan unidad, fecha, responsable, evidencia, consistencia y completitud antes de usar el dato para comparar.", "Dato listo para relacionar"],
-  ["03", "Interpretado", "El equipo convierte registros en hallazgos, prioridades, mantenimiento, programas, indicadores o decisiones.", "Lectura explicable"],
-  ["04", "Derivado", "Un resultado ambiental, operativo o productivo se publica con método, periodo, alcance y nivel de revisión explícitos.", "Claim o reporte con contexto"],
-] as const;
-
-const isLocalRuntime = (url: string) => /localhost|127\.0\.0\.1/.test(url);
 
 export default function ToolsPage() {
   return (
     <>
-      <DigitalToolsIndex />
-      <section className="digital-v4-hero"><div className="container digital-v4-hero__grid"><div><span className="eyebrow eyebrow--light">Ecosistema digital Greenatics</span><h1>Herramientas para que la operación deje evidencia y la evidencia mejore la decisión.</h1><p className="lead">Cada herramienta resuelve una capa distinta: OPS organiza la planta, GREENATICS Red conecta el territorio, Calcula tu Huella construye escenarios, AGROWAY lleva la trazabilidad al campo y SANA articula datos, ciencia, acompañamiento e inversión productiva.</p><div className="button-row"><Link className="button button--light" href="#plataformas">Explorar herramientas</Link><Link className="button button--outline-light" href="/contacto/?interes=herramientas">Revisar una implementación</Link></div></div><figure><Image src="/campaign/06_dashboard_indicadores.jpg" alt="Representación conceptual de un panel de indicadores operativos Greenatics" fill priority sizes="(max-width: 900px) 100vw, 47vw" /><figcaption><strong>El tablero es una consecuencia.</strong><span>Representación de la experiencia objetivo: primero ocurre la actividad, luego se captura, valida y relaciona.</span></figcaption></figure></div></section>
+      <section className="digital-v4-hero"><div className="container digital-v4-hero__grid"><div><h1>Cinco experiencias para operar, medir y decidir.</h1><p className="lead">Cada herramienta parte de una necesidad concreta: seguir una operación, organizar el trabajo territorial, medir emisiones, dar trazabilidad al campo o estructurar un proyecto. Explora qué aporta cada experiencia y cuál es su forma de acceso.</p><div className="button-row"><Link className="button button--light" href="#plataformas">Explorar herramientas</Link><Link className="button button--outline-light" href="/contacto/?interes=herramientas">Ayudarme a elegir una herramienta</Link></div></div><figure className="digital-v4-hero__figure--photo"><Image src="/tools/digital-tools-field-v1.jpg" alt="Profesionales ambientales revisan información de operación en una planta de aprovechamiento de orgánicos." fill priority sizes="(max-width: 900px) 100vw, 47vw" /><figcaption><strong>La tecnología cobra sentido en el contexto del trabajo.</strong><span>Desde la operación y el territorio hasta los inventarios climáticos y los proyectos productivos.</span></figcaption></figure></div></section>
 
-      <section className="digital-v4-platforms" id="plataformas" aria-labelledby="digital-platforms-title"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Cinco herramientas conectadas</span><h2 id="digital-platforms-title">Una entrada clara para cada tipo de trabajo.</h2></div><p>El centro separa tres entradas: la landing para comprender, el demo para recorrer módulos y el entorno real para trabajar con usuarios, permisos y datos de una organización. Así puedes empezar por entender y terminar entrando, sin perderte en el camino.</p></div><div className="digital-v4-entry-legend" aria-label="Tipos de entrada"><div><span>01</span><strong>Conoce la solución</strong><small>Landing con alcance, módulos y casos de uso.</small></div><div><span>02</span><strong>Recorre la experiencia</strong><small>Demo pública con datos ilustrativos y navegación completa.</small></div><div><span>03</span><strong>Entra a tu entorno</strong><small>Acceso real por organización, rol y permisos.</small></div></div><div className="digital-v4-platforms__grid">{platforms.map((platform) => { const runtimeHref = platform.code === "OPS" ? runtimeLinks.opsApp : platform.code === "CO₂" ? runtimeLinks.huella : platform.code === "RED" ? runtimeLinks.red : ""; const demoHref = platform.code === "OPS" ? "/app/#estacion" : platform.code === "CO₂" ? "/huella/#calculadora" : platform.code === "RED" ? "/red/app/" : platform.code === "AG" ? "/agroway/app/" : "/sana/app/"; const environmentHref = platform.code === "RED" ? "/acceso/?interes=red" : platform.code === "CO₂" ? "/acceso/?interes=calcula-tu-huella" : platform.code === "AG" ? "/acceso/?interes=agroway" : platform.code === "SANA" ? "/acceso/?interes=sana" : "/acceso/?interes=plataformas"; const status = runtimeHref ? isLocalRuntime(runtimeHref) ? "Entorno local disponible" : "Entorno conectado" : "Demo pública disponible"; const runtimeName = platform.code === "CO₂" ? "Calcula tu Huella" : platform.code === "RED" ? "Red" : "OPS"; const demoLabel = platform.code === "CO₂" ? "Abrir estimador" : platform.code === "OPS" ? "Abrir estación demo" : platform.code === "RED" ? "Abrir estación demo" : "Entrar como usuario demo"; return <article key={platform.code}><figure><Image src={platform.image} alt={`Vista relacionada con ${platform.name}`} fill sizes="(max-width: 760px) 100vw, 46vw" /><span>{platform.code}</span></figure><div><div className="digital-v4-platforms__meta"><small>{status}</small><em>{platform.scope}</em></div><h3>{platform.name}</h3><strong>{platform.title}</strong><p>{platform.copy}</p><small className="digital-v4-platforms__audience">{platform.audience}</small><ul className="digital-v4-platforms__list">{platform.includes.map((item) => <li key={item}>{item}</li>)}</ul><div className="digital-v4-platforms__result"><small>Salida de trabajo</small><span>{platform.result}</span></div><div className="digital-v4-platforms__actions" aria-label={`Accesos de ${platform.name}`}><div className="digital-v4-platforms__action digital-v4-platforms__action--primary"><small>01 · Landing</small><Link href={platform.href} aria-label={`${platform.cta}: ${platform.title}`}>{platform.cta} <span aria-hidden="true">→</span></Link></div><div className="digital-v4-platforms__action"><small>02 · Demo pública</small><Link href={demoHref} aria-label={`${demoLabel}: ${platform.name}`}>{demoLabel} <span aria-hidden="true">↗</span></Link></div>{runtimeHref ? <div className="digital-v4-platforms__action digital-v4-platforms__action--runtime"><small>03 · Entorno real</small><a href={runtimeHref} target={/^https?:\/\//.test(runtimeHref) ? "_blank" : undefined} rel={/^https?:\/\//.test(runtimeHref) ? "noopener noreferrer" : undefined} aria-label={`Entrar a ${platform.name}`}>Entrar a {runtimeName} <span aria-hidden="true">↗</span></a></div> : <div className="digital-v4-platforms__availability"><small>03 · Entorno real</small><Link href={environmentHref} aria-label={`Configurar entorno real de ${platform.name}`}>Configurar entorno real <span aria-hidden="true">→</span></Link></div>}</div></div></article>; })}</div></div></section>
+      <section className="digital-v4-platforms" id="plataformas" aria-labelledby="digital-platforms-title">
+        <div className="container">
+          <div className="digital-v4-heading">
+            <div><span className="eyebrow">Cinco entradas, cinco trabajos</span><h2 id="digital-platforms-title">Elige la herramienta por la decisión que necesitas sostener.</h2></div>
+            <p>Consulta qué puedes explorar públicamente, qué necesita un entorno autorizado y cómo plantear tu proyecto.</p>
+          </div>
+          <div className="digital-v4-platforms__grid">
+            {digitalTools.map((platform) => {
+              const runtimeHref = platform.runtimeHref;
+              const runtimeEntryHref = getRuntimeEntryHref(platform);
+              const hasRuntime = Boolean(runtimeHref) && (
+                !isLocalRuntime(runtimeHref) || process.env.NODE_ENV === "development"
+              );
+              const localDevelopmentRuntime = hasRuntime && isLocalRuntime(runtimeHref);
+              const platformStatus = platform.code === "CO₂"
+                ? hasRuntime
+                  ? localDevelopmentRuntime ? "Acceso local de desarrollo · servidor requerido" : "Acceso con cuenta"
+                  : "Acceso remoto no disponible"
+                : platform.status;
+              const showLandingLink = hasSeparateLanding(platform.publicHref, platform.landingHref);
 
-      <section className="digital-v4-product-proof" aria-labelledby="huella-product-proof-title"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Calcula tu Huella · experiencia de producto</span><h2 id="huella-product-proof-title">La plataforma acompaña el trabajo, no solo muestra el resultado.</h2></div><p>Estas pantallas pertenecen a la experiencia funcional de Calcula tu Huella. El recorrido ordena configuración, fuentes, captura, revisión y reporte para que cada cifra conserve su origen y su nivel de confianza.</p></div><div className="digital-v4-product-proof__grid"><figure><div><Image src="/tools/huella/dashboard.png" alt="Centro de trabajo de Calcula tu Huella con avance, alertas y etapas del inventario" fill sizes="(max-width: 900px) 100vw, 34vw" /></div><figcaption><span>01 · Centro de trabajo</span><strong>Dirección y gobierno del inventario.</strong><p>Una vista ejecutiva para identificar avance, hallazgos abiertos y la siguiente acción.</p></figcaption></figure><figure><div><Image src="/tools/huella/recorrido.png" alt="Recorrido de seis etapas para completar un inventario de Calcula tu Huella" fill sizes="(max-width: 900px) 100vw, 34vw" /></div><figcaption><span>02 · Recorrido</span><strong>Seis etapas, una ruta clara.</strong><p>Configurar, recolectar, calcular, revisar, reducir y reportar sin perder el contexto.</p></figcaption></figure><figure><div><Image src="/tools/huella/diccionario.png" alt="Diccionario rápido de términos dentro de Calcula tu Huella" fill sizes="(max-width: 900px) 100vw, 34vw" /></div><figcaption><span>03 · Lenguaje claro</span><strong>Datos y conceptos que se pueden entender.</strong><p>Ayudas contextuales para que la metodología sea más accesible al equipo que captura y revisa.</p></figcaption></figure></div><div className="digital-v4-product-proof__note"><strong>Referencia visual:</strong><span>las cifras, nombres y estados visibles en estas capturas son demostrativos. Un resultado publicable requiere datos del periodo, método, evidencia y revisión definidos para cada organización.</span></div></div></section>
+              return (
+                <article key={platform.code}>
+                  <figure className={[
+                    platform.image?.endsWith(".svg") && "digital-v4-platforms__figure--diagram",
+                    !platform.image && "digital-v4-platforms__figure--text",
+                  ].filter(Boolean).join(" ")}>
+                    {platform.image ? <Image src={platform.image} alt={platform.imageAlt ?? ""} fill sizes="(max-width: 1050px) 100vw, 26vw" /> : <strong aria-label="SANA">SANA</strong>}
+                    <span>{platform.code}</span>
+                  </figure>
+                  <div>
+                    <div className="digital-v4-platforms__meta"><span>{platformStatus}</span></div>
+                    <h3>{platform.title}</h3>
+                    <strong>{platform.audience}</strong>
+                    <p>{platform.copy}</p>
+                    <details className="digital-v4-platforms__details">
+                      <summary>Ver alcance y resultado</summary>
+                      <span className="digital-v4-platforms__scope">{platform.scope}</span>
+                      <ul className="digital-v4-platforms__list">{platform.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+                      <div className="digital-v4-platforms__result"><small>Qué aporta</small><span>{platform.result}</span></div>
+                    </details>
+                    <div className="digital-v4-platforms__actions">
+                      {platform.code === "CO₂" ? (
+                        <>
+                          <div className="digital-v4-platforms__action digital-v4-platforms__action--runtime">
+                            {hasRuntime && !localDevelopmentRuntime && runtimeEntryHref ? (
+                              <a href={runtimeEntryHref} target={isExternalRuntime(runtimeEntryHref) ? "_blank" : undefined} rel={isExternalRuntime(runtimeEntryHref) ? "noopener noreferrer" : undefined}>Entrar a Back 2 Green <span aria-hidden="true">↗</span></a>
+                            ) : (
+                              <Link href={platform.publicHref}>Ver plataforma y planes <span aria-hidden="true">→</span></Link>
+                            )}
+                          </div>
+                          {localDevelopmentRuntime ? <div className="digital-v4-platforms__availability"><small>Acceso de pruebas: el servidor local de Huella debe estar iniciado.</small><LocalToolRuntimeLink code="CO₂" className="" ariaLabel="Abrir el login local de Back 2 Green">Abrir login local</LocalToolRuntimeLink></div> : null}
+                          {hasRuntime && !localDevelopmentRuntime ? <div className="digital-v4-platforms__availability"><Link href={platform.publicHref}>Ver plataforma y planes →</Link></div> : null}
+                          {platform.requestHref ? <div className="digital-v4-platforms__availability"><Link href={platform.requestHref}>{platform.requestLabel} →</Link></div> : null}
+                        </>
+                      ) : (
+                        <>
+                          <div className="digital-v4-platforms__action digital-v4-platforms__action--runtime"><Link href={platform.publicHref}>{platform.publicLabel} <span aria-hidden="true">↗</span></Link></div>
+                          {showLandingLink ? <div className="digital-v4-platforms__availability"><Link href={platform.landingHref}>{platform.landingLabel} →</Link></div> : null}
+                          {hasRuntime && runtimeEntryHref ? <div className="digital-v4-platforms__availability"><a href={runtimeEntryHref} target={isExternalRuntime(runtimeEntryHref) ? "_blank" : undefined} rel={isExternalRuntime(runtimeEntryHref) ? "noopener noreferrer" : undefined}>Entrar al espacio autorizado ↗</a></div> : null}
+                          <div className="digital-v4-platforms__availability"><Link href={platform.requestHref ?? `/contacto/?interes=${platform.implementationInterest}`}>{platform.requestLabel} →</Link></div>
+                        </>
+                      )}
+                    </div>
+                    {process.env.NODE_ENV === "development" && !hasRuntime && platform.code === "OPS" ? <div className="digital-v4-platforms__availability"><small>Vista local de desarrollo; requiere que OPS esté iniciado en este equipo.</small><LocalToolRuntimeLink code="OPS" className="" ariaLabel="Abrir la demo local de GREENATICS OPS">Abrir demo OPS local</LocalToolRuntimeLink></div> : null}
+                    {!hasRuntime && platform.code === "CO₂" ? <div className="digital-v4-platforms__availability"><small>Enlace local · requiere que Huella esté iniciada</small><LocalToolRuntimeLink code="CO₂" className="" ariaLabel="Abrir el login local de Back 2 Green">Entrar a Huella local</LocalToolRuntimeLink></div> : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <div className="digital-v4-platforms__separate">
+            <p><strong>¿Necesitas dimensionar residuos orgánicos?</strong> El estimador público proyecta masa y desvío; no calcula emisiones ni forma parte del inventario de Back 2 Green.</p>
+            <Link href="/herramientas/estimador-organicos/">Abrir estimador de flujo orgánico <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+      </section>
 
-      <section className="digital-v4-flow"><div className="container"><header><span className="eyebrow eyebrow--light">Cómo se conectan</span><h2>Territorio, planta, impacto, campo e inversión comparten una cadena de trabajo.</h2></header><div className="digital-v4-flow__track"><article><span>01 · Territorio</span><strong>GREENATICS Red</strong><p>Proyecto 360, FIELD, QA/QC y PMIRS conectan quién genera, dónde ocurre, qué se midió, qué hallazgo apareció y qué acción sigue.</p></article><article><span>02 · Operación</span><strong>OPS</strong><p>Recepción, actividades, lotes, equipos, mantenimiento, inventario y costos permiten reconstruir la jornada y encontrar el origen de una desviación.</p></article><article><span>03 · Impacto</span><strong>Huella</strong><p>Inventarios, fuentes, factores y evidencias organizan un escenario ambiental y muestran qué falta medir antes de publicar un resultado específico.</p></article><article><span>04 · Campo</span><strong>AGROWAY</strong><p>Diagnóstico, recomendación, abastecimiento, aplicación y seguimiento convierten la información técnica en decisiones observables en el lote.</p></article><article><span>05 · Inversión</span><strong>SANA</strong><p>Articula datos de campo, ciencia, soluciones, actores y acompañamiento para estructurar oportunidades productivas y aprender de sus ciclos.</p></article></div></div></section>
-
-      <section className="digital-v4-governance"><div className="container"><div className="digital-v4-heading"><div><span className="eyebrow">Del registro al resultado</span><h2>El dato cambia de estado antes de convertirse en una decisión.</h2></div><p>La trazabilidad no es una capa decorativa. Es la secuencia que permite saber de dónde salió un valor, qué revisión recibió, qué interpretación admite y con qué contexto puede comunicarse.</p></div><ol>{dataStates.map(([number, title, copy, label]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p><small>{label}</small></li>)}</ol><div className="digital-v4-governance__note"><strong>La regla práctica:</strong><span>un registro RAW no se presenta como VALIDATED; una lectura INTERPRETED no se transforma automáticamente en un claim público.</span></div></div></section>
-
-      <section className="digital-v4-implementation"><div className="container digital-v4-implementation__grid"><div><span className="eyebrow eyebrow--light">Implementación gradual</span><h2>No necesitas digitalizar todo para empezar bien.</h2></div><div><p>Elegimos primero el ciclo donde hoy se pierde más información o control. Configuramos responsables, catálogos, registros e indicadores; acompañamos la adopción; y ampliamos cuando la operación demuestra que puede sostenerlo.</p><div className="button-row"><Link className="button button--light" href="/app/">Recorrer OPS</Link><Link className="button button--outline-light" href="/contacto/?interes=herramientas">Diseñar una implementación</Link></div></div></div></section>
     </>
   );
 }

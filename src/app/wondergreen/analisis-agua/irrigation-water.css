@@ -1,0 +1,33 @@
+.wg-water { padding: clamp(32px, 6vw, 72px) 0 80px; background: #f7faf5; }
+.wg-water__intro { max-width: 760px; margin-bottom: 36px; }
+.wg-water__intro h1 { margin: 10px 0 18px; max-width: 21ch; font-size: clamp(2.2rem, 4.7vw, 3.5rem); line-height: 1.08; }
+.wg-water__intro > p { max-width: 65ch; margin: 0; font-size: 1.05rem; }
+.wg-water__layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(22px, 4vw, 44px); align-items: start; }
+.wg-water__form, .wg-water__result { min-width: 0; padding: clamp(22px, 3vw, 36px); border-radius: 22px; }
+.wg-water__form { background: #fff; border: 1px solid #d2dfd5; }
+.wg-water__form h2, .wg-water__result h2 { margin: 0 0 16px; font-size: clamp(1.4rem, 2vw, 1.8rem); line-height: 1.2; }
+.wg-water__form > p { margin: 0 0 20px; font-size: .9rem; }
+.wg-water__example-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+.wg-water__example-actions button { min-height: 44px; padding: 9px 14px; color: #174b38; background: #f2f6ed; border: 1px solid #bfcebf; border-radius: 9px; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.wg-water__form fieldset { min-width: 0; border: 0; margin: 0 0 24px; padding: 0; }
+.wg-water__form legend { margin-bottom: 14px; font-weight: 750; color: #173d31; }
+.wg-water__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.wg-water__fields--ions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.wg-water__field { min-width: 0; }
+.wg-water__field label { display: block; margin-bottom: 8px; color: #173d31; font-size: .86rem; font-weight: 700; }
+.wg-water__field input { width: 100%; min-width: 0; min-height: 48px; padding: 10px 12px; border: 1px solid #afc2b4; border-radius: 8px; background: #fbfcf8; color: #173d31; font: inherit; }
+.wg-water__field input[aria-invalid="true"] { border-color: #a23b27; }
+.wg-water__field-error { display: block; margin-top: 8px; font-size: .8rem; line-height: 1.5; color: #9a3321; }
+.wg-water__example-note { padding: 12px 14px; color: #654514; background: #fff5df; border-radius: 8px; font-size: .85rem; }
+.wg-water__result { background: #0a2920; color: #fff; }
+.wg-water__result h2 { color: #fff; }
+.wg-water__result p { color: #d4e3dc; font-size: .93rem; }
+.wg-water__ratio { display: block; margin: 20px 0 10px; color: #d8ed9c; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.wg-water__formula { margin: 0 0 24px; color: #d4e3dc; font-size: .9rem; }
+.wg-water__result h3 { margin: 28px 0 12px; color: #fff; font-size: 1.1rem; }
+.wg-water__result .button { width: 100%; white-space: normal; text-align: center; margin-top: 18px; }
+.wg-water__whatsapp, .wg-water__source { display: inline-block; color: #d8ed9c; font-weight: 650; text-underline-offset: 4px; }
+.wg-water__whatsapp { margin-top: 18px; min-height: 44px; padding: 10px 0; }
+.wg-water__source { font-size: .85rem; }
+@media (max-width: 900px) { .wg-water__layout { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .wg-water__fields, .wg-water__fields--ions { grid-template-columns: 1fr; } }

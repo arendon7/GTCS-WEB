@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ServiceAudienceLink } from "@/components/service-audience-link";
+import { tamesisImpactScenario } from "@/data/tamesis-impact";
 
 export const metadata: Metadata = {
   title: "Caso Támesis | UASB, biogás y bioenergía",
@@ -9,20 +11,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/proyectos/tamesis/" },
 };
 
-const systemSteps = [
-  ["01", "Recibir", "La ruta selectiva entrega orgánicos que se pesan, inspeccionan y reseleccionan antes de entrar al sistema.", "Corriente aceptada, cuantificada y trazable"],
-  ["02", "Preparar", "La molienda aumenta el área disponible y los dos reactores de hidrólisis separan las corrientes líquida y sólida.", "Biomasa acondicionada para dos rutas de valor"],
-  ["03", "Digerir", "El percolado alimenta el reactor anaerobio UASB de 30 m³, donde la materia orgánica se convierte biológicamente.", "Conversión anaerobia estable y controlable"],
-  ["04", "Capturar", "La red de conducción, los filtros, el medidor y la bolsa de almacenamiento permiten controlar el biogás producido.", "Gas medido, acondicionado y disponible"],
-  ["05", "Aprovechar", "El biogás se convierte en bioenergía y la fracción sólida continúa hacia estabilización y compostaje.", "Energía útil y productos orgánicos aprovechables"],
-  ["06", "Controlar", "Pesajes, bitácoras, consumos, mantenimiento, evidencias y alertas convierten el proceso en una operación gestionable.", "Balance de masa, gas, energía y decisiones"],
-] as const;
-
 const operatingRecords = [
   ["Entradas", "Toneladas recibidas, origen, fecha, calidad del material e impropios."],
   ["Tratamiento", "Lotes, alimentación al sistema, tiempos, novedades y toneladas tratadas."],
   ["Biogás y energía", "Volumen producido y capturado, calidad, destino y energía útil obtenida."],
-  ["Salidas", "Compost, líquidos estabilizados, inventario, entregas y rechazo devuelto."],
+  ["Salidas", "Compost, líquidos estabilizados, bases para biofábrica, inventario, entregas y rechazo devuelto."],
   ["Confiabilidad", "Consumos de agua y energía, equipos, paradas, mantenimiento y acciones correctivas."],
   ["Evidencia", "Fotografías, responsables, decisiones, compromisos, actas y soportes para seguimiento."],
 ] as const;
@@ -46,34 +39,7 @@ const consolidation = [
   {
     label: "Gobernanza",
     title: "Formalizar lo que ya opera.",
-    copy: "Roles, entradas, salidas, uso del espacio, reportes, conciliación y soportes documentales permiten consolidar la relación con la ESP y avanzar en NUIT.",
-  },
-] as const;
-
-const gallery = [
-  {
-    src: "/projects/tamesis/ruta-selectiva.jpeg",
-    alt: "Ruta selectiva de residuos orgánicos en el casco urbano de Támesis",
-    title: "La planta empieza en la calle",
-    caption: "La calidad de la corriente se construye con separación, recolección diferenciada e inspección en ruta.",
-  },
-  {
-    src: "/projects/tamesis/recepcion-organicos.jpg",
-    alt: "Residuos orgánicos recibidos durante la ruta selectiva de Támesis",
-    title: "Materia prima bajo inspección",
-    caption: "El registro de orgánicos e impropios permite intervenir la fuente y proteger los procesos biológicos.",
-  },
-  {
-    src: "/projects/tamesis/reactor-uasb.jpeg",
-    alt: "Vista aérea del reactor anaerobio UASB y el área de recepción en Támesis",
-    title: "Infraestructura anaerobia existente",
-    caption: "El reactor UASB forma parte de una secuencia que integra hidrólisis, digestión, captura de gas y salidas aprovechables.",
-  },
-  {
-    src: "/projects/tamesis/paisaje-tamesis.jpg",
-    alt: "Paisaje rural alrededor de la planta de aprovechamiento de Támesis",
-    title: "Una solución vinculada al territorio",
-    caption: "El valor final aparece cuando la gestión de residuos, la energía y la producción agrícola vuelven a conectarse localmente.",
+    copy: "Roles, entradas, salidas, uso del espacio, reportes, conciliación y soportes documentales ayudan a ordenar el trabajo con la ESP y dar continuidad a los acuerdos operativos.",
   },
 ] as const;
 
@@ -84,42 +50,28 @@ export default function TamesisPage() {
         <div className="container gt-case-hero__grid">
           <div className="gt-case-hero__copy">
             <Link className="gt-case-back" href="/proyectos/">Proyectos / Caso Támesis</Link>
-            <span className="eyebrow eyebrow--light">Operación existente · Suroeste de Antioquia</span>
-            <h1>Támesis transforma orgánicos en fertilizantes, biogás y bioenergía.</h1>
+            <span className="eyebrow eyebrow--light">Más de tres años de experiencia · Suroeste de Antioquia</span>
+            <h1>Támesis conecta orgánicos con biogás, bioenergía y salidas para el suelo.</h1>
             <p className="lead">
-              La planta integra ruta selectiva, preparación de la biomasa, hidrólisis, un reactor
-              anaerobio UASB, captura y acondicionamiento de biogás, aprovechamiento energético y
-              compostaje. El siguiente salto no es empezar de cero: es consolidar, medir y ampliar el
-              valor de lo que ya está operando.
+              Támesis ya cuenta con infraestructura anaerobia y rutas de aprovechamiento. La prioridad
+              es fortalecer la continuidad de la operación, documentar los balances de masa y energía
+              y convertir el biogás y las salidas orgánicas en valor verificable.
             </p>
             <div className="button-row">
               <a className="button button--light" href="#sistema">Entender el sistema</a>
               <a className="button button--outline-light" href="#control">Ver control operativo</a>
             </div>
           </div>
-
-          <div className="gt-case-hero__visual">
-            <figure className="gt-case-hero__main-image gt-tamesis-hero__main">
+          <div className="gt-case-hero__visual gt-tamesis-hero__visual">
+            <figure className="gt-case-hero__main-image">
               <Image
-                src="/projects/tamesis/reactor-uasb.jpeg"
-                alt="Reactor UASB y áreas de proceso de la planta de Támesis"
+                src="/projects/tamesis/planta-aerea.jpg"
+                alt="Vista aérea de instalaciones para aprovechamiento de biomasa en Támesis"
                 fill
                 priority
                 sizes="(max-width: 900px) 100vw, 48vw"
               />
-              <figcaption>
-                <strong>El reactor UASB ya forma parte de la operación</strong>
-                <span>Digestión anaerobia, producción y captura de biogás en una planta integrada.</span>
-              </figcaption>
-            </figure>
-            <figure className="gt-case-hero__inset gt-tamesis-hero__inset">
-              <Image
-                src="/projects/tamesis/ruta-selectiva.jpeg"
-                alt="Recolección selectiva de residuos orgánicos en Támesis"
-                fill
-                sizes="(max-width: 900px) 42vw, 17vw"
-              />
-              <figcaption>Ruta selectiva municipal</figcaption>
+              <figcaption><strong>Támesis · Suroeste de Antioquia</strong><span>Vista aérea de la planta y su contexto territorial.</span></figcaption>
             </figure>
           </div>
         </div>
@@ -134,65 +86,83 @@ export default function TamesisPage() {
           <div><strong>30 m³</strong><span>Reactor anaerobio UASB</span></div>
           <div><strong>2 etapas</strong><span>Reactores de hidrólisis</span></div>
           <div><strong>Biogás</strong><span>Captura, filtrado y almacenamiento</span></div>
-          <div><strong>Bioenergía</strong><span>Aprovechamiento energético en operación</span></div>
+          <div><strong>Salidas de valor</strong><span>Compost, digestatos y ruta hacia biofábrica</span></div>
         </div>
       </section>
 
-      <section className="gt-route-section gt-route-section--paper">
-        <div className="container gt-case-context">
-          <div className="gt-case-context__heading">
-            <span className="eyebrow">La lectura actual</span>
-            <h2>No es una planta por rescatar. Es una operación por consolidar.</h2>
-          </div>
-          <div className="gt-case-context__body">
-            <p className="lead">
-              Támesis ya cuenta con activos, conocimiento acumulado y una cadena de aprovechamiento en
-              marcha. El reto consiste en hacer más confiables las entradas, estabilizar la operación,
-              documentar sus balances y convertir el biogás y los productos en valor verificable.
-            </p>
-            <blockquote>
-              <span>Decisión de proyecto</span>
-              <strong>Ordenar lo que funciona para llevarlo a su siguiente nivel.</strong>
-              <p>La formalización, los datos y el mantenimiento protegen tanto el proceso biológico como la relación institucional.</p>
-            </blockquote>
-          </div>
-        </div>
-      </section>
-
-      <section className="gt-case-system gt-tamesis-system" id="sistema">
+      <nav className="gt-case-local-nav" aria-label="Recorrido del caso Támesis">
         <div className="container">
-          <div className="gt-route-heading gt-route-heading--split gt-route-heading--light">
-            <div><span className="eyebrow eyebrow--light">Cadena de transformación</span><h2>De la ruta selectiva a dos ciclos de valor.</h2></div>
-            <p>La fracción sólida avanza hacia compostaje y fertilizantes. La fracción líquida alimenta la digestión anaerobia para producir biogás, bioenergía y efluentes estabilizados.</p>
-          </div>
-          <ol className="gt-case-system__steps gt-tamesis-system__steps">
-            {systemSteps.map(([number, title, copy, outcome]) => (
-              <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p><em><small>Resultado operativo</small>{outcome}</em></li>
-            ))}
-          </ol>
+          <span>Recorrido del caso</span>
+          <a href="#sistema">Proceso y rutas</a>
+          <a href="#control">Registros operativos</a>
+          <a href="#impacto">Impacto y CO₂e</a>
+          <a href="#siguiente">Consolidación</a>
         </div>
-      </section>
+      </nav>
 
-      <section className="gt-route-section gt-route-section--white gt-tamesis-map">
+      <section className="gt-route-section gt-route-section--white gt-tamesis-map" id="sistema">
         <div className="container">
           <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Arquitectura existente</span><h2>El UASB no trabaja solo.</h2></div>
-            <p>La confiabilidad depende del conjunto: recepción, molienda, hidrólisis, tanque pulmón, reactor, efluente, manejo de gas, compostaje y almacenamiento.</p>
+            <div><span className="eyebrow">Proceso del caso</span><h2>Del material recibido salen dos rutas de aprovechamiento.</h2></div>
+            <p>Los orgánicos se reciben y acondicionan. La fracción líquida alimenta la digestión anaerobia; la sólida continúa hacia estabilización y compostaje. Medir ambas rutas permite entender qué entra, qué se transforma y cuál es su destino.</p>
           </div>
-          <figure className="gt-tamesis-map__figure">
-            <div>
-              <Image
-                src="/projects/tamesis/sistema-uasb.png"
-                alt="Esquema visual de los componentes de la planta Greenatics en Támesis"
-                fill
-                sizes="(max-width: 900px) 100vw, 1240px"
-              />
+          <figure className="gt-tamesis-map__figure" aria-labelledby="gt-tamesis-map-caption">
+            <div className="gt-tamesis-map__diagram">
+              <ol className="gt-tamesis-map__intake">
+                <li><span>Entrada</span><strong>Orgánicos separados</strong><small>Recepción y acondicionamiento de la biomasa.</small></li>
+                <li><span>Preparación</span><strong>Molienda e hidrólisis en dos etapas</strong><small>El proceso genera corrientes sólida y líquida.</small></li>
+              </ol>
+              <div className="gt-tamesis-map__split">
+                <h3>La salida se organiza en dos rutas</h3>
+                <div className="gt-tamesis-map__routes">
+                  <article>
+                    <span>Fracción líquida · percolado</span>
+                    <strong>Digestión anaerobia en UASB</strong>
+                    <p>El biogás capturado se mide y se evalúa para su aprovechamiento energético.</p>
+                  </article>
+                  <article>
+                    <span>Fracción sólida</span>
+                    <strong>Estabilización y compostaje</strong>
+                    <p>La biomasa continúa por una ruta de aprovechamiento orgánico; su salida se gestiona según calidad y condiciones de operación.</p>
+                  </article>
+                </div>
+              </div>
             </div>
             <figcaption>
-              <strong>Lectura funcional de la planta</strong>
-              <span>Esquema visual basado en el levantamiento del sistema. Sirve para explicar componentes y flujos; no reemplaza planos de ingeniería.</span>
+              <strong id="gt-tamesis-map-caption">Lectura funcional del sistema</strong>
+              <span>La biomasa acondicionada se separa en una ruta líquida para digestión anaerobia y otra sólida para estabilización y compostaje.</span>
             </figcaption>
           </figure>
+        </div>
+      </section>
+
+      <section className="gt-route-section gt-route-section--paper gt-tamesis-technology" aria-labelledby="gt-tamesis-technology-title">
+        <div className="container gt-tamesis-technology__grid">
+          <figure className="gt-tamesis-technology__image">
+            <Image
+              src="/projects/tamesis/reactor-uasb.jpeg"
+              alt="Reactor anaerobio UASB instalado en la infraestructura de aprovechamiento de Támesis."
+              fill
+              sizes="(max-width: 820px) 100vw, 48vw"
+            />
+            <figcaption>
+              <strong>Reactor UASB · Támesis</strong>
+              <span>Infraestructura integrada a la ruta de digestión anaerobia.</span>
+            </figcaption>
+          </figure>
+          <div className="gt-tamesis-technology__copy">
+            <span className="eyebrow">Tecnología en el territorio</span>
+            <h2 id="gt-tamesis-technology-title">La infraestructura toma sentido cuando se conecta con la operación.</h2>
+            <p>
+              En Támesis, la preparación de la biomasa y la digestión anaerobia se integran en una
+              misma cadena. El reactor UASB forma parte de la ruta líquida; su operación se relaciona
+              con el manejo y la medición del biogás y con la gestión de las salidas del proceso.
+            </p>
+            <p>
+              Esa lectura conjunta permite entender el papel de cada equipo, seguir el material entre
+              etapas y orientar las decisiones de continuidad, mantenimiento y aprovechamiento.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -203,8 +173,8 @@ export default function TamesisPage() {
             <p>Un reporte diario y un cierre mensual deben conectar recepción, tratamiento, biogás, energía, productos, consumos, incidentes y compromisos.</p>
           </div>
           <div className="gt-tamesis-records">
-            {operatingRecords.map(([title, copy], index) => (
-              <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p></article>
+            {operatingRecords.map(([title, copy]) => (
+              <article key={title}><h3>{title}</h3><p>{copy}</p></article>
             ))}
           </div>
           <div className="gt-tamesis-control-note">
@@ -214,43 +184,58 @@ export default function TamesisPage() {
         </div>
       </section>
 
-      <section className="gt-case-gallery gt-tamesis-gallery">
+      <section className="gt-tamesis-impact" id="impacto">
         <div className="container">
-          <div className="gt-route-heading gt-route-heading--split gt-route-heading--light">
-            <div><span className="eyebrow eyebrow--light">Evidencia territorial</span><h2>Una cadena que conecta municipio, planta y paisaje productivo.</h2></div>
-            <p>Registro visual de la ruta, la materia prima y la infraestructura real que sostiene el caso Támesis.</p>
+          <div className="gt-route-heading gt-route-heading--split">
+            <div>
+              <span className="eyebrow">{tamesisImpactScenario.eyebrow}</span>
+              <h2>{tamesisImpactScenario.title}</h2>
+            </div>
+            <p>{tamesisImpactScenario.intro}</p>
           </div>
-          <div className="gt-case-gallery__grid">
-            {gallery.map((item, index) => (
-              <figure className={index === 0 ? "gt-case-gallery__feature" : undefined} key={item.src}>
-                <div><Image src={item.src} alt={item.alt} fill sizes={index === 0 ? "(max-width: 900px) 100vw, 52vw" : "(max-width: 900px) 100vw, 25vw"} /></div>
-                <figcaption><strong>{item.title}</strong><span>{item.caption}</span></figcaption>
-              </figure>
+          <div className="gt-tamesis-impact__metrics">
+            {tamesisImpactScenario.metrics.filter((metric) => metric.basis !== "Infraestructura existente").map((metric) => (
+              <article key={metric.label}>
+                <strong>{metric.value}</strong>
+                <h3>{metric.label}</h3>
+                <p>{metric.detail}</p>
+                <small>{metric.basis}</small>
+              </article>
             ))}
+          </div>
+          <div className="gt-tamesis-impact__method">
+            <div>
+              <span>Cómo se valida</span>
+              <p>{tamesisImpactScenario.method}</p>
+            </div>
+            <div className="button-row">
+              <Link className="button button--dark" href="/contacto/?servicio=clima-carbono&perfil=clima&diagnostico=Evaluar%20escenario%20potencial%20de%20CO%E2%82%82e%20en%20T%C3%A1mesis&prioridad=L%C3%ADnea%20base%2C%20entradas%2C%20biog%C3%A1s%20medido%2C%20energ%C3%ADa%2C%20emisiones%20del%20proceso%2C%20digestatos%20y%20periodo">Evaluar el escenario de GEI</Link>
+              <Link className="button button--ghost" href="/impacto/#impacto-tamesis">Ver metodología de impacto</Link>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="gt-route-section gt-route-section--white">
+      <section className="gt-route-section gt-route-section--white" id="siguiente">
         <div className="container">
-          <div className="gt-route-heading"><span className="eyebrow">Siguiente etapa</span><h2>Cuatro frentes para multiplicar el valor de la planta.</h2><p>Consolidar no significa frenar la ambición. Significa crear las condiciones para que la energía, los productos y el impacto puedan crecer con trazabilidad.</p></div>
+          <div className="gt-route-heading"><span className="eyebrow">Qué falta consolidar</span><h2>Cuatro frentes conectan la capacidad instalada con un valor verificable.</h2><p>La infraestructura existe; el siguiente trabajo es sostener la operación y documentar las entradas, los resultados y los destinos de cada ruta.</p></div>
           <div className="gt-tamesis-consolidation">
-            {consolidation.map((item, index) => (
-              <article key={item.label}><span>{String(index + 1).padStart(2, "0")} · {item.label}</span><h3>{item.title}</h3><p>{item.copy}</p></article>
+            {consolidation.map((item) => (
+              <article key={item.label}><span>{item.label}</span><h3>{item.title}</h3><p>{item.copy}</p></article>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="gt-case-learning gt-tamesis-closing">
-        <div className="container gt-case-learning__grid">
-          <div><span className="eyebrow eyebrow--light">Aprendizaje transferible</span><h2>Una planta anaerobia puede ser infraestructura ambiental y energética.</h2></div>
-          <div>
-            <p>Támesis demuestra que los residuos orgánicos pueden alimentar simultáneamente una estrategia de saneamiento, producción de bioinsumos y generación de energía renovable.</p>
-            <p>El potencial se vuelve defendible cuando cada entrada, conversión y salida conserva evidencia operativa.</p>
-            <div className="button-row"><Link className="button button--light" href="/app/">Conocer Greenatics OPS</Link><Link className="button button--outline-light" href="/contacto/?interes=solucion&perfil=municipio&diagnostico=Consolidar%20una%20planta%20anaerobia%20en%20T%C3%A1mesis&prioridad=UASB%20%C2%B7%20captura%20de%20biog%C3%A1s%20%C2%B7%20bioenerg%C3%ADa%20%C2%B7%20control%20operativo">Conversar sobre una planta</Link></div>
+          <aside className="gt-tamesis-next-step" aria-labelledby="gt-tamesis-next-step-title">
+            <div>
+              <span>¿Estás evaluando una planta existente?</span>
+              <h3 id="gt-tamesis-next-step-title">Primero revisemos continuidad, datos y destinos.</h3>
+              <p>El alcance se define con el estado de la infraestructura, la operación y la información disponible. <Link href="/servicios/rehabilitacion-infraestructura/?perfil=municipio">Conoce cómo evaluamos una planta existente.</Link> <Link href="/portafolio/valorizacion/">Conoce también la ruta de biofábrica y valorización.</Link></p>
+            </div>
+            <div className="button-row">
+              <ServiceAudienceLink className="button button--dark" href="/contacto/?servicio=rehabilitacion-infraestructura&perfil=municipio&diagnostico=Evaluar%20una%20planta%20existente%20en%20T%C3%A1mesis&prioridad=Continuidad%20operativa%20%C2%B7%20balances%20%C2%B7%20destinos%20de%20valorizaci%C3%B3n" preferIncomingProfile>Evaluar una planta existente</ServiceAudienceLink>
+              <Link className="button button--ghost" href="/app/">Explorar GREENATICS OPS</Link>
+            </div>
+          </aside>
           </div>
-        </div>
       </section>
     </>
   );

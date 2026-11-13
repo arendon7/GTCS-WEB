@@ -1,0 +1,261 @@
+/* Final accessibility pass: loaded after the route-specific styles so the
+   public contrast contract is not dependent on import order. */
+.gt-starting-grid article > span,
+.gt-service-card__meta em,
+.gt-moment-stack small,
+.municipal-service-grid article small,
+.product-route-nav__catalog {
+  color: #3f5a4d !important;
+}
+
+.service-detail-process .section-heading h2,
+.service-detail-inputs h2,
+.anaerobic-deep .section-heading h2,
+.anaerobic-stage-list h3,
+.science-grid > div:first-child h2,
+.product-truth-grid h2 {
+  color: #fff !important;
+}
+
+.service-detail-inputs .eyebrow--light {
+  color: #d8ffbe !important;
+}
+
+.service-detail-inputs ul,
+.service-detail-inputs li {
+  color: #f0f6f2 !important;
+}
+
+.eyebrow-badge,
+.eyebrow-badge > span {
+  color: var(--green-800) !important;
+}
+
+/* The contact badge sits on the dark hero, so keep its text light for contrast. */
+.contact-hero .eyebrow-badge,
+.contact-hero .eyebrow-badge > span:not(:first-child) {
+  color: #d8ffbe !important;
+}
+
+.gt-service-impact__grid small,
+.gt-proof-ribbon__grid small,
+.gt-tamesis-system__steps em small {
+  color: #c7ded2 !important;
+}
+
+.gt-case-method-grid small {
+  color: #3f5a4d !important;
+}
+
+/* Keep service intake copy legible on its dark green band. */
+.service-detail-inputs p {
+  color: #f0f6f2 !important;
+}
+
+/* The product family cards use pale surfaces; labels stay dark on every card. */
+.wg-v4-levels__grid h3 {
+  color: #183d2d !important;
+}
+
+.wg-v4-levels__grid article > span {
+  color: #46594d !important;
+}
+
+/* The library's index and metadata are secondary, but still need AA contrast. */
+.library-resource-index,
+.library-resource-labels span + span,
+.library-resource-meta {
+  color: #46594d !important;
+}
+
+/* OPS station sample: explicit contrast for the pale workspace and dark rail. */
+.ops-station__breadcrumb,
+.ops-station__filters label,
+.ops-station__period-label,
+.ops-station__metrics article > span,
+.ops-station__metrics article > small,
+.ops-station__panel-head > div > span,
+.ops-station__panel-head > small,
+.ops-station__panel-head > strong,
+.ops-station__timeline time,
+.ops-station__timeline span {
+  color: #46594d !important;
+}
+
+.ops-station__rail nav button small {
+  color: #c6d9cd !important;
+}
+
+.ops-station__rail nav button.is-active small {
+  color: #fff !important;
+}
+
+.ops-station__screen button > span:nth-child(3) {
+  color: #46594d !important;
+}
+
+/* RED's navigation sits on a dark rail; workspace metadata sits on a light one. */
+.red-app__status--muted,
+.red-app__workspace-head > div > span,
+.red-app__workspace-head p,
+.red-app__metrics small,
+.red-app__panel-head > small,
+.red-app__panel-footnote,
+.red-app__state-bars > div,
+.red-app__steps small,
+.red-app__timeline time,
+.red-app__timeline small {
+  color: #46594d !important;
+}
+
+.red-app__status--warn {
+  color: #684900 !important;
+}
+
+.red-app__rail nav button > b,
+.red-app__nav-group > span {
+  color: #c6d9cd !important;
+}
+
+.red-app__rail nav button small {
+  color: #c6d9cd !important;
+}
+
+.red-app__rail nav button.is-active small {
+  color: #fff !important;
+}
+
+.red-app__steps li > span {
+  color: #496346 !important;
+}
+
+/* AGROWAY and SANA share this illustrative app shell and its light workspace. */
+.portfolio-demo__workspace-head > div > span,
+.portfolio-demo__workspace-head p,
+.portfolio-demo__notice,
+.portfolio-demo__metrics span,
+.portfolio-demo__metrics small,
+.portfolio-demo__panel:not(.portfolio-demo__panel--dark) > span,
+.portfolio-demo__panel:not(.portfolio-demo__panel--dark) .portfolio-demo__panel-head span,
+.portfolio-demo__panel:not(.portfolio-demo__panel--dark) .portfolio-demo__panel-head > small,
+.portfolio-demo__panel:not(.portfolio-demo__panel--dark) p,
+.portfolio-demo__state-list > div,
+.portfolio-demo__footnote,
+.portfolio-demo__selection,
+.portfolio-demo__timeline time,
+.portfolio-demo__timeline small {
+  color: #46594d !important;
+}
+
+.portfolio-demo__rail nav button > b,
+.portfolio-demo__rail nav small {
+  color: #c6d9cd !important;
+}
+
+.portfolio-demo__rail nav button.is-active small {
+  color: #fff !important;
+}
+
+.portfolio-demo__status--warn {
+  color: #684900 !important;
+}
+
+/* Resource routes use a lime OPS sample and a dark editorial library panel;
+   preserve readable text on each distinct surface. */
+.gt-resource-route-grid article > div small {
+  color: #4d5f54 !important;
+}
+
+.gt-resource-tool > span,
+.gt-resource-tool p,
+.gt-resource-tool li {
+  color: #234b38 !important;
+}
+
+.gt-resource-tool--paper > span { color: #c9ec68 !important; }
+.gt-resource-tool--paper p { color: #c3d4cb !important; }
+
+.home-learning-band h2,
+.knowledge-source-band h2,
+.crop-alert-section h2 { color: #f8f6ed; }
+.crop-alert-section .eyebrow,
+.homegarden-detail-route .eyebrow { color: #d8ed9c; }
+.wg-tool-two-column ul[style] li,
+.wg-tool-two-column ol[style] li,
+.wg-tool-result li { color: inherit; }
+.deficiency-table-wrap:focus-visible {
+  outline: 3px solid var(--green-700);
+  outline-offset: 4px;
+}
+
+/* Wondergreen uses several compact labels on pale cards. Keep the product
+   palette expressive while preserving readable text at every viewport. */
+.wg-bio-lines__top small,
+.wg-docs__body > small {
+  color: #425449 !important;
+}
+
+#solid-tab-2grow {
+  color: #7f4517 !important;
+}
+
+.wg-bio-method__evidence > div > .eyebrow {
+  color: #d8ffbe !important;
+}
+
+.wg-bio-method__links > span {
+  color: #3f5a4d !important;
+}
+
+.wg-docs__actions a[target="_blank"][rel="noreferrer"] {
+  color: #3f5a4d !important;
+}
+
+.gt-operating-model > div > h2 {
+  color: #fff !important;
+}
+
+.gt-operating-model > div > p,
+.gt-operating-model > ol > li,
+.gt-operating-model > ol > li > div > strong,
+.gt-operating-model > ol > li > div > p {
+  color: #f4f6ef !important;
+}
+
+.gt-operating-model > ol > li > span {
+  color: #c4f279 !important;
+}
+
+/* Portfolio v5 introduces links inside pale cards and a dark sequence band.
+   Keep both explicit here because this file is the final contrast layer. */
+.portfolio-v5-group-card a[href$="operacion-digital/"] {
+  color: #064b35 !important;
+}
+
+.portfolio-v5-sequence > .container > h2,
+.portfolio-v5-proof > .container > h2 {
+  color: #f4f6ef !important;
+}
+
+@media (max-width: 700px) {
+  /* Preserve the global .container gutters on narrow screens. */
+  .product-detail-grid {
+    min-width: 0;
+  }
+
+  .product-info,
+  .product-route-nav {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .product-route-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .product-route-nav__catalog {
+    justify-self: start;
+  }
+}

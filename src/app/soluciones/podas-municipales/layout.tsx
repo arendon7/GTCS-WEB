@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Valorización de podas municipales",
-  description: "Convierte podas, césped y material leñoso en una corriente trazable, con clasificación, logística, proceso y destino de calidad.",
+  title: "Valorización de podas y residuos vegetales municipales",
+  description: "Diseña una ruta para podas, césped y material leñoso según su origen, condición, logística y posibles destinos.",
   alternates: { canonical: "/soluciones/podas-municipales/" },
 };
 

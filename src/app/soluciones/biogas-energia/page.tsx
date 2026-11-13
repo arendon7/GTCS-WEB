@@ -2,10 +2,15 @@ import { SolutionAssessment } from "@/components/solution-assessment";
 
 export default function BiogasEnergiaPage() {
   return <SolutionAssessment
-    eyebrow="Digestión anaerobia, biogás y bioenergía"
     title="El potencial energético se mide en el sustrato y se demuestra en operación."
+    contactProfile="empresa"
     lead="Un reactor UASB, un digestor de biomasa y un sistema de captura de gas responden a alimentaciones y objetivos diferentes. La prefactibilidad debe conectar caudal, carga orgánica, biodegradabilidad, estabilidad, calidad del gas y uso energético."
     principle="Los rendimientos bibliográficos sirven para formular hipótesis, no para prometer producción. La decisión necesita datos del residuo, pruebas y balance energético."
+    visual={{
+      src: "/technology/organic-treatment-routes-concept.jpg",
+      alt: "Biomasa orgánica junto a un digestor anaerobio cerrado.",
+      caption: "La evaluación contrasta disponibilidad de sustrato, condiciones del proceso y demanda de energía.",
+    }}
     fields={[
       { id: "facility", label: "Instalación y proceso actual", help: "Reactor existente, planta nueva, tratamiento de aguas o digestión de sólidos.", placeholder: "Ubicación, tecnología y estado" },
       { id: "substrate", label: "Sustrato o corriente", help: "Origen, variabilidad, contaminantes y forma de alimentación.", placeholder: "Tipo de biomasa o agua residual" },

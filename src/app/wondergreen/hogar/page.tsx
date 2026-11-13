@@ -12,7 +12,6 @@ export const metadata: Metadata = {
     title: "Wondergreen Nutrients Hogar",
     description: "Guía Wondergreen Hogar para entender el cuidado de plantas en casa, matera y huerta urbana por objetivo y etapa.",
     url: "/wondergreen/hogar/",
-    images: ["/kits/kit-casa-completa.webp"],
   },
 };
 
@@ -63,10 +62,10 @@ export default function WondergreenHomePage() {
       </section>
 
       <section className="knowledge-section">
-        <div className="container split-knowledge"><div><span className="eyebrow">Huertas</span><h2>Casa, comunidad y educación requieren una ruta diferente al agro profesional.</h2></div><div><p>Para huertas urbanas, escolares o comunitarias priorizamos preparación del suelo, establecimiento, observación, manejo seguro y selección por objetivo. En contextos educativos, la relación comercial y técnica se dirige a la institución o responsable adulto.</p><div className="button-row"><Link className="button button--primary" href="/biblioteca/huertas/">Abrir guía de huertas</Link><Link className="button button--ghost" href="/contacto/">Consultar proyecto</Link></div></div></div>
+        <div className="container split-knowledge"><div><span className="eyebrow">Huertas</span><h2>Casa, comunidad y educación requieren una ruta diferente al agro profesional.</h2></div><div><p>Para huertas urbanas, escolares o comunitarias priorizamos preparación del suelo, establecimiento, observación, manejo seguro y selección por objetivo. En contextos educativos, la relación comercial y técnica se dirige a la institución o responsable adulto.</p><div className="button-row"><Link className="button button--primary" href="/biblioteca/huertas/">Abrir guía de huertas</Link><Link className="button button--ghost" href="/casa-jardin/kits/">Explorar kits por uso</Link></div></div></div>
       </section>
 
-      <section className="knowledge-source-band"><div className="container knowledge-source-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento Hogar</span><h2>Una recomendación clara también puede tener buen criterio.</h2></div><div><p>La orientación considera especie, etapa, luz, riego, drenaje, tamaño de matera y objetivo de cuidado. Para seleccionar una presentación o programa, el equipo Wondergreen acompaña la decisión.</p><Link href="/contacto/?interes=wondergreen-hogar">Hablar con el equipo →</Link></div></div></section>
+      <section className="knowledge-source-band"><div className="container knowledge-source-grid"><div><span className="eyebrow eyebrow--light">Acompañamiento Hogar</span><h2>Una recomendación clara también puede tener buen criterio.</h2></div><div><p>La orientación considera especie, etapa, luz, riego, drenaje, tamaño de matera y objetivo de cuidado. Para seleccionar una presentación o programa, el equipo Wondergreen acompaña la decisión.</p><Link href="/contacto/?interes=wondergreen-hogar">Pedir orientación para mis plantas →</Link></div></div></section>
     </>
   );
 }

@@ -135,7 +135,7 @@ export default function CropsPage() {
             <p>Podemos comenzar con la información disponible, identificar los vacíos que cambian la recomendación y definir el siguiente paso técnico antes de hablar de una fórmula o cantidad.</p>
           </div>
           <div className="crop-catalog-cta__actions">
-            <Link className="button button--primary" href="/contacto/?interes=wondergreen&perfil=agro&diagnostico=Orientación%20por%20cultivo">Llevar consulta a Contacto →</Link>
+            <Link className="button button--primary" href="/contacto/?interes=wondergreen&perfil=agro&diagnostico=Orientación%20por%20cultivo">Solicitar orientación por cultivo →</Link>
             <a className="crop-catalog-cta__link" href="https://wa.me/573003078822?text=Hola%20Wondergreen%2C%20necesito%20orientaci%C3%B3n%20agron%C3%B3mica%20para%20mi%20cultivo" rel="noopener noreferrer" target="_blank">Validar por WhatsApp directo <span aria-hidden="true">→</span></a>
             <Link className="crop-catalog-cta__link" href="/wondergreen/calculadora/">Preparar información del lote <span aria-hidden="true">→</span></Link>
           </div>

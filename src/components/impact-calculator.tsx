@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
+import { buildToolContactHref, storeToolContactDraft } from "@/data/tool-contact-handoff";
 
 type ProfileType = "municipio" | "empresa" | "agro";
 
@@ -99,7 +100,8 @@ export function ImpactCalculator() {
   const landfillSavingsYear = tonsPerYear * currentConfig.landfillCostPerTon;
   const economicValueCreatedYear = compostProducedTonsYear * currentConfig.productValuePerTon;
   const totalEconomicImpactYear = landfillSavingsYear + economicValueCreatedYear;
-  const contactHref = `/contacto/?interes=impacto&perfil=${encodeURIComponent(profile)}&diagnostico=${encodeURIComponent("Escenario de transformación y valorización")}&prioridad=${encodeURIComponent(`${currentConfig.label} · ${tonsPerMonth} ton/mes · escenario anual de ${formatNumber(tonsPerYear)} toneladas`)}`;
+  const assessmentDetails = `Perfil: ${currentConfig.label}\nVolumen de referencia: ${tonsPerMonth} t/mes\nMasa anual proyectada: ${formatNumber(tonsPerYear)} t/año\nProducto potencial estimado: ${formatNumber(compostProducedTonsYear)} t/año\nEscenario climático ilustrativo: ${formatNumber(co2AvoidedTonsYear)} t CO₂e/año\nCostos/valores económicos ilustrativos: ${formatCurrency(totalEconomicImpactYear)} al año\nNecesito revisar línea base, destino, factores, costos y supuestos antes de usar el escenario para decidir.`;
+  const contactHref = buildToolContactHref("impacto", profile, "Escenario de transformación y valorización");
 
   return (
     <div className="calculator-widget">
@@ -209,7 +211,7 @@ export function ImpactCalculator() {
           <span>¿Quieres estructurar este proyecto para tu municipio o empresa?</span>
         </div>
         <div className="button-row" style={{ marginTop: 0 }}>
-          <Link className="button button--primary" href={contactHref}>
+          <Link className="button button--primary" href={contactHref} onClick={() => storeToolContactDraft(assessmentDetails)}>
             Estructurar este proyecto →
           </Link>
           <Link className="button button--ghost" href="/diagnostico/">

@@ -1,166 +1,104 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { WondergreenToolTrail } from "@/components/wondergreen-tool-trail";
+import { crops } from "@/data/crops";
+import "./calendar.css";
 
-interface CropCalendarData {
-  region: string;
-  crop: string;
-  months: {
-    month: string;
-    phase: string;
-    action: string;
-    product: string;
-    intensity: "high" | "medium" | "low";
-  }[];
-}
-
-const calendarData: Record<string, CropCalendarData> = {
-  "cafe-antioquia": {
-    region: "Antioquia / Eje Cafetero",
-    crop: "Café (Coffea arabica)",
-    months: [
-      { month: "Ene", phase: "Pos-cosecha & Poda", action: "Aporte orgánico al suelo y reactivación", product: "Wondergreen 2BALANCE", intensity: "medium" },
-      { month: "Feb", phase: "Brotación & Drenaje", action: "Estimulación de ramas productivas", product: "Wondergreen 2GROW", intensity: "medium" },
-      { month: "Mar", phase: "Floración Principal", action: "Fósforo biodisponible para amarre", product: "Wondergreen 2BLOOM", intensity: "high" },
-      { month: "Abr", phase: "Llenado de Cerillos", action: "Calcio y potasio de lenta asimilación", product: "Wondergreen 2BALANCE", intensity: "high" },
-      { month: "May", phase: "Cosecha Mitaca", action: "Mantenimiento foliar y bioinsumos", product: "Biol Fermentado", intensity: "medium" },
-      { month: "Jun", phase: "Llenado de Grano", action: "Potasio para peso de café cereza", product: "Wondergreen 2FRUIT", intensity: "high" },
-      { month: "Jul", phase: "Llenado de Grano", action: "Sostenimiento de densidad de grano", product: "Wondergreen 2FRUIT", intensity: "high" },
-      { month: "Ago", phase: "Pre-cosecha", action: "Bioinsumos para sanidad de fruto", product: "Biol Fermentado", intensity: "medium" },
-      { month: "Sep", phase: "Cosecha Principal", action: "Recolección y control de broca", product: "Bioinsumos MIP", intensity: "high" },
-      { month: "Oct", phase: "Cosecha Principal", action: "Pico de cosecha y tolva", product: "Recolección", intensity: "high" },
-      { month: "Nov", phase: "Cierre de Cosecha", action: "Manejo de pulpa en biofábrica", product: "Wondergreen Suelo", intensity: "medium" },
-      { month: "Dic", phase: "Descanso & Enmiendas", action: "Corrección de acidez y C.I.C.", product: "Wondergreen 2BALANCE", intensity: "low" }
-    ]
-  },
-  "aguacate-antioquia": {
-    region: "Antioquia (Oriente y Suroeste)",
-    crop: "Aguacate Hass",
-    months: [
-      { month: "Ene", phase: "Floración Loca", action: "Fósforo y boro para amarre floral", product: "Wondergreen 2BLOOM", intensity: "high" },
-      { month: "Feb", phase: "Cuajado de Fruto", action: "Calcio quelado contra caída de cerillos", product: "Wondergreen 2BALANCE", intensity: "high" },
-      { month: "Mar", phase: "Crecimiento de Fruto", action: "Nutrición balanceada en drench", product: "Wondergreen 2BALANCE", intensity: "medium" },
-      { month: "Abr", phase: "Floración Principal", action: "Amarre de flores y sanidad de raíces", product: "Wondergreen 2BLOOM + Trichoderma", intensity: "high" },
-      { month: "May", phase: "Llenado de Calibres", action: "Potasio de lenta entrega (calibre 14-20)", product: "Wondergreen 2FRUIT", intensity: "high" },
-      { month: "Jun", phase: "Llenado de Calibres", action: "Materia seca >23% para exportación", product: "Wondergreen 2FRUIT", intensity: "high" },
-      { month: "Jul", phase: "Mantenimiento", action: "Bioles foliares y bioestimulación", product: "Biol Fermentado", intensity: "medium" },
-      { month: "Ago", phase: "Pre-cosecha Exportación", action: "Aseguramiento de firmeza", product: "Wondergreen 2FRUIT", intensity: "medium" },
-      { month: "Sep", phase: "Cosecha Principal", action: "Corte y selección para packing", product: "Recolección", intensity: "high" },
-      { month: "Oct", phase: "Cosecha & Poda", action: "Poda de iluminación pos-corte", product: "Wondergreen 2GROW", intensity: "high" },
-      { month: "Nov", phase: "Sanidad Radicular", action: "Inoculación de raíces vs Phytophthora", product: "Wondergreen 2BALANCE + Bioinsumos", intensity: "medium" },
-      { month: "Dic", phase: "Inducción Floral", action: "Preparación de yemas para floración", product: "Wondergreen 2BLOOM", intensity: "high" }
-    ]
-  }
-};
+const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+const cropOptions = crops.filter((crop) => crop.slug === "cafe" || crop.slug === "aguacate");
+const storageKey = "wondergreen-field-plan-v1";
+type FieldPlan = Record<string, Record<string, string>>;
 
 export default function CalendarioAgricolaPage() {
-  const [selectedKey, setSelectedKey] = useState<string>("cafe-antioquia");
-  const current = calendarData[selectedKey] || calendarData["cafe-antioquia"];
+  const [selectedCrop, setSelectedCrop] = useState("cafe");
+  const [plan, setPlan] = useState<FieldPlan>({});
+  const [loaded, setLoaded] = useState(false);
+  const current = cropOptions.find((crop) => crop.slug === selectedCrop) ?? cropOptions[0];
+  const currentPlan = plan[selectedCrop] ?? {};
+  const plannedCount = Object.values(currentPlan).filter(Boolean).length;
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if (saved) {
+        const parsed: unknown = JSON.parse(saved);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) setPlan(parsed as FieldPlan);
+      }
+    } catch {
+      // Browser storage is optional; the planner remains usable without it.
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(plan));
+    } catch {
+      // Continue planning if storage is blocked or full.
+    }
+  }, [loaded, plan]);
+
+  function updateMonth(month: number, value: string) {
+    setPlan((previous) => ({ ...previous, [selectedCrop]: { ...previous[selectedCrop], [String(month)]: value } }));
+  }
 
   return (
-    <div style={{ background: "#f7faf5", color: "var(--green-950)", padding: "60px 0 80px" }}>
-      <WondergreenToolTrail name="Calendario agrícola" path="/wondergreen/calendario-agricola/" />
-      <div className="container" style={{ maxWidth: "1140px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 36px" }}>
-          <span className="eyebrow">Fenología & Calendario de Nutrición</span>
-          <h1 style={{ fontSize: "2.4rem", color: "var(--green-950)", margin: "8px 0 12px" }}>
-            Calendario Agronómico de Nutrición por Mes
-          </h1>
-          <p style={{ color: "var(--muted)", fontSize: "1.02rem", lineHeight: 1.6 }}>
-            Sincroniza tus aplicaciones de Wondergreen con las fases fenológicas de floración, cuajado, llenado de fruto y poscosecha en Colombia.
-          </p>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "center", gap: "12px", marginBottom: "36px" }}>
-          <button
-            type="button"
-            onClick={() => setSelectedKey("cafe-antioquia")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "999px",
-              border: selectedKey === "cafe-antioquia" ? "2px solid var(--green-800)" : "1px solid var(--line)",
-              background: selectedKey === "cafe-antioquia" ? "#eaf5e6" : "#ffffff",
-              color: selectedKey === "cafe-antioquia" ? "var(--green-950)" : "var(--muted)",
-              fontWeight: 800,
-              fontSize: "0.9rem",
-              cursor: "pointer"
-            }}
-          >
-            ☕ Café (Antioquia y Eje Cafetero)
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedKey("aguacate-antioquia")}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "999px",
-              border: selectedKey === "aguacate-antioquia" ? "2px solid var(--green-800)" : "1px solid var(--line)",
-              background: selectedKey === "aguacate-antioquia" ? "#eaf5e6" : "#ffffff",
-              color: selectedKey === "aguacate-antioquia" ? "var(--green-950)" : "var(--muted)",
-              fontWeight: 800,
-              fontSize: "0.9rem",
-              cursor: "pointer"
-            }}
-          >
-            🥑 Aguacate Hass (Oriente y Suroeste)
-          </button>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "40px" }}>
-          {current.months.map((m) => (
-            <div
-              key={m.month}
-              style={{
-                background: "#ffffff",
-                border: "1.5px solid var(--line)",
-                borderRadius: "16px",
-                padding: "20px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                boxShadow: "0 4px 14px rgba(0, 107, 69, 0.03)"
-              }}
-            >
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                  <strong style={{ fontSize: "1.2rem", color: "var(--green-950)" }}>{m.month}</strong>
-                  <span style={{
-                    fontSize: "0.7rem",
-                    textTransform: "uppercase",
-                    fontWeight: 800,
-                    padding: "2px 6px",
-                    borderRadius: "4px",
-                    background: m.intensity === "high" ? "#fff3e8" : "#eef7eb",
-                    color: m.intensity === "high" ? "#c45100" : "var(--green-800)"
-                  }}>
-                    {m.phase}
-                  </span>
-                </div>
-                <p style={{ margin: "0 0 10px", fontSize: "0.82rem", color: "var(--muted)", lineHeight: 1.45 }}>
-                  {m.action}
-                </p>
-              </div>
-
-              <div style={{ paddingTop: "10px", borderTop: "1px solid var(--line)" }}>
-                <small style={{ fontSize: "0.7rem", color: "var(--muted)", display: "block" }}>Referencia a evaluar:</small>
-                <strong style={{ fontSize: "0.86rem", color: "var(--green-800)" }}>{m.product}</strong>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ background: "#07261d", color: "#ffffff", padding: "32px 36px", borderRadius: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+    <div className="wg-calendar">
+      <WondergreenToolTrail name="Planificador agrícola" path="/wondergreen/calendario-agricola/" />
+      <div className="container wg-calendar__container">
+        <header className="wg-calendar__hero">
           <div>
-            <span style={{ fontSize: "0.74rem", textTransform: "uppercase", color: "#98cf4f", fontWeight: 800 }}>Plan a la Medida</span>
-            <h3 style={{ fontSize: "1.5rem", color: "#ffffff", margin: "4px 0" }}>¿Quieres calibrar el calendario para la altura y clima de tu finca?</h3>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "#cbdcd3" }}>El equipo puede ayudarte a construir un cronograma ajustado al lote, la etapa, la etiqueta vigente y el seguimiento.</p>
+            <span className="eyebrow">Wondergreen · Planificación de campo</span>
+            <h1>El mes organiza el trabajo. La etapa decide la nutrición.</h1>
+            <p>Arma un mapa anual para tu lote de café o aguacate Hass. Marca la etapa que observas en cada mes y revisa qué condiciones conviene comprobar antes de elegir una línea Wondergreen.</p>
+            <a className="wg-calendar__hero-link" href="#planificar">Planificar mi lote <span aria-hidden="true">↓</span></a>
           </div>
-          <Link href="/wondergreen/calculadora/" className="button button--primary" style={{ padding: "12px 24px", fontSize: "0.92rem" }}>
-            Abrir Calculadora Agronómica →
-          </Link>
-        </div>
+          <div className="wg-calendar__hero-visual">
+            <Image src={current.coverImage} alt={`Ilustración de la guía Wondergreen para ${current.name}`} width={680} height={700} sizes="(max-width: 760px) 100vw, 38vw" />
+            <span>Guía por cultivo · {current.name}</span>
+          </div>
+        </header>
+
+        <section id="planificar" className="wg-calendar__workspace" aria-labelledby="planificar-titulo">
+          <div className="wg-calendar__intro">
+            <div>
+              <span className="eyebrow">Tu lote, no una fecha universal</span>
+              <h2 id="planificar-titulo">Planifica según lo que ocurre en campo</h2>
+              <p>Elige un cultivo y asigna una etapa a cada mes que quieras planear. Puedes dejar meses sin definir y volver a ajustarlos cuando cambie el lote.</p>
+            </div>
+            <div className="wg-calendar__summary" aria-live="polite"><strong>{plannedCount} de 12</strong><span>meses con una etapa registrada</span></div>
+          </div>
+          <div className="wg-calendar__switcher" aria-label="Cultivo del planificador">
+            {cropOptions.map((crop) => <button key={crop.slug} type="button" className="wg-calendar__switch" aria-pressed={selectedCrop === crop.slug} onClick={() => setSelectedCrop(crop.slug)}>{crop.name}</button>)}
+          </div>
+          <div className="wg-calendar__context">
+            <p><strong>Antes de asignar una etapa:</strong> {current.context}</p>
+            <Link href={`/wondergreen/cultivos/${current.slug}/`}>Ver la ruta técnica de {current.name} <span aria-hidden="true">↗</span></Link>
+          </div>
+          <div className="wg-calendar__months">
+            {months.map((month, index) => {
+              const stage = current.stages.find((item) => item.moment === currentPlan[String(index)]);
+              return <article className="wg-calendar__month" key={month}>
+                <div className="wg-calendar__month-top"><span>{String(index + 1).padStart(2, "0")}</span><h3>{month}</h3></div>
+                <label htmlFor={`stage-${selectedCrop}-${index}`}>Etapa observada</label>
+                <select id={`stage-${selectedCrop}-${index}`} value={stage?.moment ?? ""} onChange={(event) => updateMonth(index, event.target.value)}>
+                  <option value="">Por definir en el lote</option>
+                  {current.stages.map((item) => <option key={item.moment} value={item.moment}>{item.moment}</option>)}
+                </select>
+                {stage ? <div className="wg-calendar__stage-detail"><p>{stage.goal}</p><small>Línea para evaluar con el diagnóstico y la etiqueta vigente</small><strong>{stage.lines.join(" · ")}</strong></div> : null}
+              </article>;
+            })}
+          </div>
+          <div className="wg-calendar__plan-footer"><p>Tu selección se guarda únicamente en este navegador. No calcula dosis, fechas de floración ni necesidades del cultivo.</p><button type="button" onClick={() => setPlan((previous) => ({ ...previous, [selectedCrop]: {} }))} disabled={plannedCount === 0}>Borrar este plan</button></div>
+        </section>
+        <section className="wg-calendar__next" aria-labelledby="wg-calendar-next-title">
+          <div><span className="eyebrow">De la planificación a la decisión</span><h2 id="wg-calendar-next-title">Contrasta el plan con tu lote</h2><p>La guía muestra cómo leer etapa, suelo y aplicación. Si necesitas definir cantidades o ajustar el programa, prepara los datos del cultivo y habla con el equipo técnico.</p></div>
+          <div className="wg-calendar__next-links">{current.pdfFile ? <a href={current.pdfFile} target="_blank" rel="noopener noreferrer">Abrir guía de {current.name} <span aria-hidden="true">↗</span></a> : <Link href={`/wondergreen/cultivos/${current.slug}/`}>Abrir ruta técnica de {current.name} <span aria-hidden="true">→</span></Link>}<Link href="/wondergreen/calculadora/">Preparar el contexto del lote <span aria-hidden="true">↗</span></Link></div>
+        </section>
       </div>
     </div>
   );

@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Biblioteca técnica y manuales de cultivo",
-  description: "Recursos técnicos curados: manuales agronómicos, guías de aplicación Wondergreen, documentos de operación y rutas web para decidir con mejor información.",
+  title: "Biblioteca técnica, guías y análisis",
+  description: "Guías de cultivo, fichas técnicas y lecturas de Greenatics para relacionar fuentes, evidencia y decisiones de proyecto.",
   alternates: { canonical: "/biblioteca/" },
   openGraph: {
     type: "website",
     siteName: "Greenatics",
-    title: "Biblioteca técnica y manuales de cultivo | Greenatics",
-    description: "Recursos técnicos curados para conectar diagnóstico, aplicación, operación y aprendizaje en Greenatics.",
+    title: "Biblioteca técnica, guías y análisis | Greenatics",
+    description: "Guías de cultivo, fichas y lecturas de Greenatics para conectar evidencia, operación y decisiones de proyecto.",
     images: ["/brand/greenatics-horizontal.webp"],
   },
 };

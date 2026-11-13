@@ -22,8 +22,8 @@ export interface Product {
   priceCop?: number;
   presentation?: string;
   formula?: string;
+  concentrations?: string[];
   organicCarbon?: string;
-  image?: string;
 }
 
 export interface ProductSpec {
@@ -35,7 +35,6 @@ export interface ProductSpec {
   presentation: string;
   priceCop: number;
   badge: string;
-  image: string;
   pdfManual: string;
   targetRole: string;
   molecularBenefit: string;
@@ -48,26 +47,26 @@ export const products: Product[] = [
     name: "Wondergreen 2GROW",
     family: "2GROW",
     category: "solidos",
-    headline: "15-3-3 organomineral · Establecimiento y crecimiento",
-    intro: "Referencia sólida orientada a acompañar establecimiento, brotación y crecimiento vegetativo dentro de un programa ajustado al suelo y al cultivo.",
+    headline: "15-3-3 organomineral ocluido · Establecimiento y crecimiento",
+    intro: "Fertilizante sólido organomineral ocluido para acompañar establecimiento, brotación y crecimiento vegetativo. Su matriz reúne materia orgánica y nutrientes en una estructura orientada a una liberación gradual; el comportamiento depende del suelo, el agua y el manejo del lote.",
     focus: "Establecimiento, levante y crecimiento vegetativo.",
     objective: "Acompañar etapas de establecimiento, levante y desarrollo vegetativo.",
     format: "Sólido granulado",
-    presentations: ["40 kg con precio reconciliado", "5 kg en portafolio técnico"],
-    commercialStatus: "Precio público de referencia; suministro coordinado por cotización",
-    technicalRole: "Aporte organomineral orientado a la etapa vegetativa.",
+    presentations: ["40 kg", "5 kg"],
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Aporte organomineral ocluido para nutrición edáfica y desarrollo vegetativo.",
     stage: "Arranque & Crecimiento",
     idealFor: ["Café en levante", "Aguacate Hass en brotación", "Hortalizas en trasplante", "Pastos en renovación"],
-    notes: ["Conservar bajo techo en un lugar seco.", "Validar compatibilidades y programa de uso antes de aplicar."],
+    notes: ["Validar compatibilidades y programa de uso antes de aplicar."],
     benefits: [
-      "Integra una fórmula N-P-K con matriz organomineral.",
+      "Integra una fórmula N-P-K dentro de una matriz organomineral ocluida que aporta materia orgánica al sistema suelo-planta.",
+      "La oclusión está orientada a favorecer una liberación gradual; su comportamiento depende del suelo, el agua y el manejo del lote.",
       "Se posiciona para objetivos de establecimiento y crecimiento vegetativo.",
       "Permite construir un programa por etapa en conjunto con las demás líneas Wondergreen."
     ],
     specs: [
       { label: "Graduación", value: "15-3-3 Organomineral" },
-      { label: "Presentación", value: "Bulto 40 kg" },
-      { label: "Precio Referencia", value: "COP $147.400" }
+      { label: "Presentación", value: "Bulto 40 kg" }
     ],
     application: [
       "Ubicarlo en la etapa de establecimiento, brotación o crecimiento vegetativo que se quiere acompañar.",
@@ -78,34 +77,33 @@ export const products: Product[] = [
     cautions: ["No aplicar en suelo seco sin adecuada humedad.", "Conservar en lugar techado y seco."],
     priceCop: 147400,
     presentation: "Bulto 40 kg",
-    formula: "15-3-3",
-    image: "/products/wondergreen-2grow.webp"
+    formula: "15-3-3"
   },
   {
     slug: "2balance",
     name: "Wondergreen 2BALANCE",
     family: "2BALANCE",
     category: "solidos",
-    headline: "7-7-7 organomineral · Balance y mantenimiento",
-    intro: "Referencia sólida orientada a programas de nutrición balanceada y mantenimiento, sujeta a diagnóstico de suelo, cultivo y manejo.",
+    headline: "7-7-7 organomineral ocluido · Balance y mantenimiento",
+    intro: "Fertilizante sólido organomineral ocluido para programas de nutrición balanceada y mantenimiento. Aporta nutrientes y materia orgánica en una matriz diseñada para acompañar su disponibilidad de forma gradual.",
     focus: "Nutrición balanceada y mantenimiento.",
     objective: "Acompañar programas que requieren un aporte equilibrado de macronutrientes.",
     format: "Sólido granulado",
-    presentations: ["40 kg con precio reconciliado", "5 kg en portafolio técnico"],
-    commercialStatus: "Precio público de referencia; suministro coordinado por cotización",
-    technicalRole: "Aporte organomineral balanceado para mantenimiento nutricional.",
+    presentations: ["40 kg", "5 kg"],
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Aporte organomineral ocluido y balanceado para nutrición edáfica y mantenimiento.",
     stage: "Mantenimiento & Suelo",
     idealFor: ["Cafetales en producción", "Cítricos continuos", "Plátano en emisión", "Jardines y viveros"],
     notes: ["La periodicidad depende del diagnóstico y del programa de manejo."],
     benefits: [
-      "Integra una relación balanceada de macronutrientes.",
+      "Integra una relación balanceada de macronutrientes con materia orgánica funcional.",
+      "La matriz ocluida busca moderar la disponibilidad del nutriente; la respuesta debe revisarse con análisis y seguimiento del lote.",
       "Se posiciona para etapas de mantenimiento dentro del sistema Wondergreen.",
       "Su uso debe ajustarse a análisis de suelo, extracción del cultivo y manejo previo."
     ],
     specs: [
       { label: "Graduación", value: "7-7-7 Organomineral" },
-      { label: "Presentación", value: "Bulto 40 kg" },
-      { label: "Precio Referencia", value: "COP $147.400" }
+      { label: "Presentación", value: "Bulto 40 kg" }
     ],
     application: [
       "Usarlo cuando la planta ya está estable y el objetivo sea sostener una nutrición balanceada, no forzar un crecimiento puntual.",
@@ -116,34 +114,33 @@ export const products: Product[] = [
     cautions: ["Distribuir de forma homogénea en la zona de goteo."],
     priceCop: 147400,
     presentation: "Bulto 40 kg",
-    formula: "7-7-7",
-    image: "/products/wondergreen-2balance.webp"
+    formula: "7-7-7"
   },
   {
     slug: "2bloom",
     name: "Wondergreen 2BLOOM",
     family: "2BLOOM",
     category: "solidos",
-    headline: "3-8-3 organomineral · Transición reproductiva",
-    intro: "Referencia sólida orientada a acompañar la etapa de floración dentro de un programa que considere condición del cultivo, ambiente y manejo.",
+    headline: "3-8-3 organomineral ocluido · Transición reproductiva",
+    intro: "Fertilizante sólido organomineral ocluido para acompañar transición reproductiva y floración. La matriz orgánica integra nutrientes y favorece una entrega gradual conectada con el suelo y la actividad radicular.",
     focus: "Transición reproductiva y floración.",
     objective: "Acompañar programas nutricionales durante la etapa reproductiva.",
     format: "Sólido granulado",
-    presentations: ["40 kg con precio reconciliado", "5 kg en portafolio técnico"],
-    commercialStatus: "Precio público de referencia; suministro coordinado por cotización",
-    technicalRole: "Aporte organomineral orientado a la transición reproductiva.",
+    presentations: ["40 kg", "5 kg"],
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Aporte organomineral ocluido orientado a la transición reproductiva y la floración.",
     stage: "Floración & Cuajado",
     idealFor: ["Cafetales en prefloración", "Aguacate en floración", "Tomate en flor", "Pasifloras en espaldera"],
     notes: ["El momento de aplicación debe definirse según etapa, clima y manejo del cultivo."],
     benefits: [
-      "Integra una relación N-P-K orientada a la etapa reproductiva.",
+      "Integra una relación N-P-K orientada a la etapa reproductiva dentro de una matriz con materia orgánica.",
+      "La matriz ocluida acompaña una entrega gradual del aporte; el momento y la respuesta dependen de la etapa, el ambiente y el manejo.",
       "Permite diferenciar la nutrición de floración frente a las etapas vegetativa y productiva.",
       "La respuesta debe observarse y ajustarse dentro del programa del cultivo."
     ],
     specs: [
       { label: "Graduación", value: "3-8-3 Organomineral" },
-      { label: "Presentación", value: "Bulto 40 kg" },
-      { label: "Precio Referencia", value: "COP $115.500" }
+      { label: "Presentación", value: "Bulto 40 kg" }
     ],
     application: [
       "Confirmar que la planta se encuentre en transición reproductiva y que luz, agua y sanidad no estén limitando la floración.",
@@ -154,34 +151,33 @@ export const products: Product[] = [
     cautions: ["No aplicar sobre follaje mojado."],
     priceCop: 115500,
     presentation: "Bulto 40 kg",
-    formula: "3-8-3",
-    image: "/products/wondergreen-2bloom.webp"
+    formula: "3-8-3"
   },
   {
     slug: "2fruit",
     name: "Wondergreen 2FRUIT",
     family: "2FRUIT",
     category: "solidos",
-    headline: "3-3-8 organomineral · Desarrollo y llenado",
-    intro: "Referencia sólida orientada a acompañar la fase productiva y el desarrollo del fruto dentro de un programa ajustado al cultivo.",
+    headline: "3-3-8 organomineral ocluido · Desarrollo y llenado",
+    intro: "Fertilizante sólido organomineral ocluido para acompañar la fase productiva y el desarrollo del fruto. Su matriz aporta materia orgánica y favorece una entrega gradual de nutrientes en la zona radicular.",
     focus: "Fase productiva, desarrollo y llenado.",
     objective: "Acompañar programas nutricionales durante el desarrollo del fruto o del órgano cosechado.",
     format: "Sólido granulado",
-    presentations: ["40 kg con precio reconciliado", "5 kg en portafolio técnico"],
-    commercialStatus: "Precio público de referencia; suministro coordinado por cotización",
-    technicalRole: "Aporte organomineral orientado a la fase productiva.",
+    presentations: ["40 kg", "5 kg"],
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Aporte organomineral ocluido orientado a la fase productiva, el desarrollo y el llenado.",
     stage: "Llenado & Maduración",
     idealFor: ["Aguacate Hass en engorde", "Café en llenado de grano", "Cacao en desarrollo de mazorca", "Frutales"],
     notes: ["Revisar disponibilidad de agua y condición del cultivo antes de ajustar el programa."],
     benefits: [
-      "Integra una relación N-P-K orientada a la fase productiva.",
+      "Integra una relación N-P-K orientada a la fase productiva dentro de una matriz con materia orgánica.",
+      "La matriz ocluida acompaña la liberación gradual de nutrientes en la zona radicular; su aprovechamiento debe evaluarse según suelo, humedad y cultivo.",
       "Permite diferenciar la nutrición de llenado frente a las etapas vegetativa y reproductiva.",
       "El resultado debe evaluarse con indicadores propios del cultivo y del lote."
     ],
     specs: [
       { label: "Graduación", value: "3-3-8 Organomineral" },
-      { label: "Presentación", value: "Bulto 40 kg" },
-      { label: "Precio Referencia", value: "COP $121.900" }
+      { label: "Presentación", value: "Bulto 40 kg" }
     ],
     application: [
       "Usarlo cuando el cultivo esté en cuajado, desarrollo o llenado y exista una condición productiva que acompañar.",
@@ -192,8 +188,43 @@ export const products: Product[] = [
     cautions: ["Mantener humedad de suelo constante para absorción eficiente."],
     priceCop: 121900,
     presentation: "Bulto 40 kg",
-    formula: "3-3-8",
-    image: "/products/wondergreen-2fruit.webp"
+    formula: "3-3-8"
+  },
+  {
+    slug: "compost",
+    name: "Wondergreen Compost",
+    family: "Compost",
+    category: "acondicionadores",
+    headline: "Materia orgánica estabilizada · Base para suelo y sustrato",
+    intro: "Acondicionador orgánico para incorporar materia orgánica estabilizada a la preparación del suelo, el sustrato y las rutas de cultivo. Funciona como base del sistema: primero se revisa la condición física y biológica; después se define cómo complementar la nutrición.",
+    focus: "Base orgánica, suelo y preparación de sustratos.",
+    objective: "Acompañar la preparación y el acondicionamiento del suelo o sustrato antes de construir el programa nutricional.",
+    format: "Acondicionador orgánico",
+    presentations: ["40 kg"],
+    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
+    technicalRole: "Aporte de materia orgánica estabilizada para preparar la base del sistema suelo-planta.",
+    stage: "Base orgánica & suelo",
+    idealFor: ["Preparación de suelo", "Sustratos", "Huertas y jardín", "Biofábricas y programas territoriales"],
+    notes: ["La madurez, humedad y calidad se confirman según la ficha y la presentación vigentes.", "La incorporación debe responder a la condición del suelo, el sustrato y el cultivo."],
+    benefits: [
+      "Aporta materia orgánica estabilizada al sistema suelo-planta.",
+      "Su aporte se integra a la preparación del suelo o sustrato; la respuesta depende de la madurez y calidad del material, las condiciones del sitio y el manejo.",
+      "Ordena la preparación de la base antes de complementar con nutrición o bioinsumos.",
+      "Se trabaja como parte de un programa, no como sustituto de diagnóstico o fertilización."
+    ],
+    specs: [
+      { label: "Tipo", value: "Acondicionador orgánico" },
+      { label: "Presentación", value: "Bulto 40 kg" },
+      { label: "Uso de referencia", value: "Preparación de suelo y sustratos" }
+    ],
+    application: [
+      "Definir el objetivo del suelo o sustrato y revisar humedad, drenaje, estructura y manejo previo.",
+      "Incorporar de manera homogénea según la ficha vigente, el cultivo y el sistema de manejo.",
+      "Observar estructura, humedad, raíces y respuesta del sistema antes de complementar con nutrición o biología."
+    ],
+    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Pastos", "Huertas y jardín"],
+    cautions: ["Confirmar madurez, calidad y condición de uso de la presentación seleccionada.", "No asumir una dosis universal para todos los suelos, cultivos o sustratos."],
+    presentation: "Bulto 40 kg"
   },
   {
     slug: "bioinsumos",
@@ -206,10 +237,10 @@ export const products: Product[] = [
     objective: "Acompañar estrategias agronómicas definidas según diagnóstico y documentación vigente.",
     format: "Líquido soluble",
     presentations: ["1 L, 5 L y 20 L en portafolio técnico"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
     technicalRole: "Complemento botánico o microbiológico dentro del manejo integrado.",
-    stage: "Defensa & Suelo Vivo",
-    idealFor: ["Inoculación en drench", "Aspersión foliar", "Enraizamiento de esquejes", "Manejo integrado"],
+    stage: "Alcance por validar",
+    idealFor: ["Revisar la necesidad del cultivo y la documentación de la referencia seleccionada."],
     notes: ["Cada solicitud recibe la ficha, condición de uso y protocolo correspondiente a la referencia seleccionada."],
     benefits: [
       "Incluye referencias botánicas y microbiológicas diferenciadas.",
@@ -219,227 +250,258 @@ export const products: Product[] = [
     specs: [
       { label: "Tipo", value: "Referencias botánicas y microbiológicas" },
       { label: "Presentación técnica", value: "1 L / 5 L / 20 L" },
-      { label: "Estado", value: "Disponible bajo solicitud y acompañamiento técnico" }
+      { label: "Estado", value: "Portafolio técnico; presentación y suministro por consultar" }
     ],
     application: [
-      "Primero define si la necesidad es nutricional, microbiológica o preventiva; el portafolio no se aplica como una mezcla única.",
-      "Selecciona la referencia, prepara el agua y revisa compatibilidad, almacenamiento y condición regulatoria antes de abrir la aplicación.",
-      "Registra lote, fecha, vía, dosis, clima y respuesta para decidir continuidad, ajuste o rotación con evidencia.",
+      "Identifica la necesidad del cultivo y la referencia que quieres consultar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente a esa referencia.",
+      "Define pertinencia y condiciones de uso solo con la documentación vigente y la orientación técnica aplicable.",
     ],
-    crops: ["Todos los cultivos"],
-    cautions: ["No asumir compatibilidad, blanco biológico o dosis entre referencias distintas."],
+    crops: [],
+    cautions: ["No inferir cultivo, blanco biológico, eficacia, dosis o compatibilidad por la categoría del portafolio."],
     presentation: "1 L / 5 L / 20 L",
     formula: "Portafolio técnico",
-    image: "/products/wondergreen-bioinsumos.webp"
   },
   {
     slug: "bioinsumo-trichoderma",
     name: "Wondergreen Trichoderma",
     family: "Trichoderma",
     category: "bioinsumos",
-    headline: "Bioinsumo microbiológico · Acompañamiento radicular",
-    intro: "Referencia microbiológica líquida para considerar dentro de programas de establecimiento, recuperación radicular y manejo del entorno biológico del suelo.",
-    focus: "Suelo, raíz y manejo integrado.",
-    objective: "Acompañar un programa biológico del suelo con una referencia cuya concentración, uso autorizado y frecuencia deben confirmarse en la ficha vigente.",
+    headline: "Bioinsumo microbiológico · Alcance por confirmar",
+    intro: "Referencia de Trichoderma incluida en el portafolio técnico Wondergreen. La ficha, etiqueta y registro vigentes determinan su uso autorizado y condiciones.",
+    focus: "Ficha, etiqueta, registro y uso autorizado por confirmar.",
+    objective: "Confirma con el equipo técnico si esta referencia corresponde a la necesidad y a las condiciones del lote.",
     format: "Suspensión / líquido biológico",
-    presentations: ["1 L"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
-    technicalRole: "Referencia microbiológica para acompañamiento radicular y entorno biológico del suelo.",
-    stage: "Suelo & Raíz",
-    idealFor: ["Establecimiento", "Recuperación radicular", "Drench", "Fertirriego"],
-    notes: ["La presentación de 1 L identifica Trichoderma.", "La ficha técnica entregada con la solicitud define especie o cepa, concentración garantizada, dosis, registro y compatibilidades."],
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia de Trichoderma en el portafolio técnico; su uso depende de la ficha, etiqueta y registro vigentes.",
+    stage: "Uso por validar",
+    idealFor: ["Confirma en la ficha vigente el uso autorizado antes de relacionarla con una necesidad del cultivo."],
+    notes: ["La ficha técnica, etiqueta y registro vigentes deben confirmar especie o cepa, concentración, uso autorizado, dosis y compatibilidades."],
     benefits: [
-      "Hace visible una referencia microbiológica específica dentro del portafolio.",
-      "Puede evaluarse junto con humedad, materia orgánica, raíz y manejo del lote.",
-      "No reemplaza el diagnóstico ni el programa nutricional del cultivo."
+      "La ficha, etiqueta y registro deben corresponder a esta referencia.",
+      "Confirma especie o cepa, concentración y uso autorizado con el equipo técnico.",
+      "Consulta las condiciones vigentes antes de definir un programa para el lote."
     ],
     specs: [
       { label: "Tipo", value: "Bioinsumo microbiológico" },
       { label: "Ingrediente identificado", value: "Trichoderma" },
-      { label: "Presentación documentada", value: "1 L" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
     application: [
-      "Confirmar que el objetivo esté relacionado con suelo, raíz o establecimiento y que exista una condición de humedad que permita trabajar la aplicación.",
-      "Agitar antes de usar; separar la aplicación de cobres, fungicidas, desinfectantes y productos muy alcalinos salvo compatibilidad validada.",
-      "Definir vía, dosis y frecuencia con la ficha, etiqueta y recomendación técnica vigentes; registrar la respuesta radicular y del suelo.",
+      "Revisa que la ficha, etiqueta y registro vigentes correspondan exactamente a esta referencia.",
+      "Confirma especie o cepa, concentración, uso autorizado y condiciones para el cultivo y el lote.",
+      "Define vía, dosis, frecuencia y compatibilidades solo con documentación y recomendación técnica vigentes.",
     ],
-    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Viveros", "Frutales"],
-    cautions: ["No aplicar en horas de alta radiación.", "No mezclar con fungicidas, cobres, azufres, desinfectantes, aceites o productos muy alcalinos sin validación.", "Mantener fuera del alcance de niños y mascotas."],
+    crops: [],
+    cautions: ["No inferir cultivos, objetivos, vías, dosis ni efectos por el nombre Trichoderma.", "No definir aplicaciones, mezclas ni compatibilidades sin ficha, etiqueta y registro vigentes."],
     formula: "Trichoderma",
-    image: "/products/wondergreen-bioinsumos/labels-trichoderma-bacillus-1l.jpeg"
   },
   {
     slug: "bioinsumo-bacillus-subtilis",
     name: "Wondergreen Bacillus subtilis",
     family: "Bacillus subtilis",
     category: "bioinsumos",
-    headline: "Bioinsumo microbiológico · Suelo activo y desarrollo radicular",
-    intro: "Referencia microbiológica líquida para integrar a programas de suelo activo y desarrollo radicular, siempre con concentración y uso definidos por la documentación vigente.",
-    focus: "Suelo activo, raíz y manejo integrado.",
-    objective: "Complementar un programa biológico y nutricional con una referencia cuya aplicación debe ajustarse al cultivo, la etapa, el agua y el diagnóstico.",
+    headline: "Bioinsumo microbiológico · Referencia técnica",
+    intro: "Bacillus subtilis forma parte del portafolio técnico Wondergreen. Su pertinencia para un cultivo o lote y sus condiciones de uso se confirman en la ficha, etiqueta y registro vigentes de esta referencia.",
+    focus: "Identidad, uso y condiciones por confirmar.",
+    objective: "Confirmar con el equipo técnico si la documentación vigente de Bacillus subtilis corresponde a la necesidad del lote.",
     format: "Suspensión / líquido biológico",
-    presentations: ["1 L"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
-    technicalRole: "Referencia microbiológica para suelo activo y desarrollo radicular.",
-    stage: "Suelo & Raíz",
-    idealFor: ["Desarrollo radicular", "Drench", "Fertirriego", "Programas integrales"],
-    notes: ["La presentación de 1 L identifica Bacillus subtilis.", "La ficha técnica entregada con la solicitud define cepa, concentración garantizada, dosis, registro y compatibilidades."],
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia microbiológica de Bacillus subtilis en el portafolio técnico Wondergreen; la ficha, etiqueta y registro vigentes determinan su uso autorizado.",
+    stage: "Uso por confirmar",
+    idealFor: ["Revisar la necesidad del lote y la documentación vigente de esta referencia."],
+    notes: ["El portafolio técnico identifica Bacillus subtilis como ingrediente de referencia.", "Verifica la cepa, concentración, alcance y condiciones en la documentación vigente."],
     benefits: [
-      "Diferencia una referencia microbiológica concreta frente al portafolio botánico.",
-      "Permite conversar sobre raíz, humedad, materia orgánica y manejo del lote.",
-      "Se integra como complemento y no como solución aislada."
+      "La referencia está identificada por Bacillus subtilis dentro del portafolio técnico.",
+      "La documentación del SKU permite confirmar si corresponde a la necesidad consultada.",
+      "No se infieren eficacia, blanco biológico ni cultivo autorizado a partir del nombre del microorganismo."
     ],
     specs: [
       { label: "Tipo", value: "Bioinsumo microbiológico" },
       { label: "Ingrediente identificado", value: "Bacillus subtilis" },
-      { label: "Presentación documentada", value: "1 L" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
     application: [
-      "Confirmar que el programa busca suelo activo o desarrollo radicular y revisar calidad de agua, humedad y manejo previo.",
-      "Agitar antes de preparar; no mezclar con bactericidas, cobres, desinfectantes o productos muy alcalinos sin prueba previa.",
-      "Definir preparación, vía y frecuencia con la ficha, etiqueta y recomendación técnica vigentes, y observar la respuesta del lote.",
+      "Identifica la necesidad y el cultivo o lote que deseas revisar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente a Bacillus subtilis.",
+      "Define pertinencia, vía, dosis y condiciones solo con esa documentación y orientación técnica.",
     ],
-    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Viveros", "Frutales"],
-    cautions: ["No mezclar con bactericidas, cobres, desinfectantes o productos muy alcalinos sin prueba previa.", "Mantener fuera del alcance de niños y mascotas.", "No usar como bloque aislado del diagnóstico."],
+    crops: [],
+    cautions: ["No inferir cultivos, blancos o eficacia por el nombre Bacillus subtilis.", "No definir vía, dosis, mezcla o compatibilidad sin ficha, etiqueta y registro vigentes."],
     formula: "Bacillus subtilis",
-    image: "/products/wondergreen-bioinsumos/labels-trichoderma-bacillus-1l.jpeg"
   },
   {
     slug: "bioinsumo-beauveria",
     name: "Wondergreen Beauveria",
     family: "Beauveria",
     category: "bioinsumos",
-    headline: "Bioinsumo microbiológico · Manejo integrado y seguimiento",
-    intro: "Referencia microbiológica líquida para evaluar dentro de un programa de manejo integrado, con monitoreo, rotación de estrategias y recomendación técnica.",
-    focus: "Manejo integrado, monitoreo y aplicación dirigida.",
-    objective: "Acompañar decisiones de manejo integrado cuando la identificación del problema, el monitoreo y la documentación del producto están disponibles.",
+    headline: "Bioinsumo microbiológico · Referencia técnica",
+    intro: "Beauveria forma parte del portafolio técnico microbiológico Wondergreen. Su pertinencia y condiciones de uso se confirman en la ficha, etiqueta y registro vigentes de esta referencia.",
+    focus: "Identidad, uso y condiciones por confirmar.",
+    objective: "Confirmar con el equipo técnico si la documentación vigente de Beauveria corresponde a la necesidad del lote.",
     format: "Suspensión / líquido biológico",
-    presentations: ["1 L"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
-    technicalRole: "Referencia microbiológica para programas de manejo integrado y seguimiento del sistema.",
-    stage: "Manejo Integrado",
-    idealFor: ["Aplicación dirigida", "Aplicación foliar", "Aplicación al suelo", "Monitoreo de lote"],
-    notes: ["La presentación de 1 L identifica Beauveria.", "La ficha técnica entregada con la solicitud define especie, concentración, objetivo de manejo, dosis, intervalo y registro."],
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia microbiológica de Beauveria en el portafolio técnico Wondergreen; la ficha, etiqueta y registro vigentes determinan su uso autorizado.",
+    stage: "Uso por confirmar",
+    idealFor: ["Revisar la necesidad del lote y la documentación vigente de esta referencia."],
+    notes: ["El portafolio técnico identifica Beauveria como ingrediente de referencia.", "Verifica la especie, concentración, alcance y condiciones en la documentación vigente."],
     benefits: [
-      "Incorpora una referencia microbiológica a una ruta que empieza en el monitoreo.",
-      "Ayuda a ordenar la conversación entre diagnóstico, oportunidad y seguimiento.",
-      "Evita presentar un microorganismo como sustituto universal de otras estrategias."
+      "La referencia está identificada por Beauveria dentro del portafolio técnico.",
+      "La documentación del SKU permite confirmar si corresponde a la necesidad consultada.",
+      "No se infieren eficacia, blanco biológico ni cultivo autorizado a partir del nombre del microorganismo."
     ],
     specs: [
       { label: "Tipo", value: "Bioinsumo microbiológico" },
       { label: "Ingrediente identificado", value: "Beauveria" },
-      { label: "Presentación documentada", value: "1 L" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
     application: [
-      "Monitorear e identificar el problema antes de elegir la referencia; el microorganismo no sustituye la confirmación del blanco ni la oportunidad.",
-      "Planear cobertura, horario, humedad, calidad de agua y compatibilidad para proteger la viabilidad del producto durante la aplicación.",
-      "Definir objetivo, dosis, intervalo y frecuencia con monitoreo, etiqueta vigente y recomendación técnica; verificar el resultado antes de repetir.",
+      "Identifica la necesidad y el cultivo o lote que deseas revisar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente a Beauveria.",
+      "Define pertinencia, vía, dosis y condiciones solo con esa documentación y orientación técnica.",
     ],
-    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Pasifloras"],
-    cautions: ["Evitar radiación fuerte durante la aplicación.", "No mezclar con fungicidas, cobres, azufres, desinfectantes o aceites sin validación.", "La respuesta depende de monitoreo, clima, presión del problema y equipo disponible."],
+    crops: [],
+    cautions: ["No inferir cultivos, blancos o eficacia por el nombre Beauveria.", "No definir vía, dosis, mezcla o compatibilidad sin ficha, etiqueta y registro vigentes."],
     formula: "Beauveria",
-    image: "/products/wondergreen-bioinsumos/labels-beauveria-metarhizium-1l.jpeg"
   },
   {
     slug: "bioinsumo-metarhizium",
     name: "Wondergreen Metarhizium",
     family: "Metarhizium",
     category: "bioinsumos",
-    headline: "Bioinsumo microbiológico · Fortalecimiento biológico",
-    intro: "Referencia microbiológica líquida para integrar a programas de manejo integrado y fortalecimiento del sistema suelo-cultivo.",
-    focus: "Manejo integrado, suelo y aplicación dirigida.",
-    objective: "Evaluar una herramienta microbiológica en relación con monitoreo, clima, humedad, cobertura, calidad del producto y manejo del lote.",
+    headline: "Bioinsumo microbiológico · Referencia técnica",
+    intro: "Metarhizium forma parte del portafolio técnico microbiológico Wondergreen. Su pertinencia y condiciones de uso se confirman en la ficha, etiqueta y registro vigentes de esta referencia.",
+    focus: "Identidad, uso y condiciones por confirmar.",
+    objective: "Confirmar con el equipo técnico si la documentación vigente de Metarhizium corresponde a la necesidad del lote.",
     format: "Suspensión / líquido biológico",
-    presentations: ["1 L"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
-    technicalRole: "Referencia microbiológica para fortalecer un programa biológico e integrado.",
-    stage: "Manejo Integrado",
-    idealFor: ["Aplicación dirigida", "Suelo", "Drench", "Programas integrales"],
-    notes: ["La presentación de 1 L identifica Metarhizium.", "La ficha técnica entregada con la solicitud define especie, concentración, objetivo de manejo, dosis, frecuencia y registro."],
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia microbiológica de Metarhizium en el portafolio técnico Wondergreen; la ficha, etiqueta y registro vigentes determinan su uso autorizado.",
+    stage: "Uso por confirmar",
+    idealFor: ["Revisar la necesidad del lote y la documentación vigente de esta referencia."],
+    notes: ["El portafolio técnico identifica Metarhizium como ingrediente de referencia.", "Verifica la especie, concentración, alcance y condiciones en la documentación vigente."],
     benefits: [
-      "Hace explícita la necesidad de trabajar el bioinsumo dentro de un sistema.",
-      "Permite conectar aplicación con humedad, temperatura, cobertura y seguimiento.",
-      "Mantiene visible la necesidad de rotación y manejo integrado."
+      "La referencia está identificada por Metarhizium dentro del portafolio técnico.",
+      "La documentación del SKU permite confirmar si corresponde a la necesidad consultada.",
+      "No se infieren eficacia, blanco biológico ni cultivo autorizado a partir del nombre del microorganismo."
     ],
     specs: [
       { label: "Tipo", value: "Bioinsumo microbiológico" },
       { label: "Ingrediente identificado", value: "Metarhizium" },
-      { label: "Presentación documentada", value: "1 L" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
     application: [
-      "Relacionar la aplicación con el objetivo del programa, el monitoreo y las condiciones de humedad, temperatura y cobertura del lote.",
-      "Agitar antes de preparar y proteger la aplicación de radiación fuerte; validar mezcla, vía y compatibilidad antes de usar.",
-      "Definir aplicación dirigida, dosis y frecuencia con etiqueta vigente, monitoreo y recomendación técnica; registrar la respuesta.",
+      "Identifica la necesidad y el cultivo o lote que deseas revisar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente a Metarhizium.",
+      "Define pertinencia, vía, dosis y condiciones solo con esa documentación y orientación técnica.",
     ],
-    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Pasifloras"],
-    cautions: ["No aplicar con radiación fuerte.", "No mezclar con fungicidas, cobres, azufres, aceites o desinfectantes sin validación.", "La respuesta depende de humedad, temperatura, cobertura y calidad del producto."],
+    crops: [],
+    cautions: ["No inferir cultivos, blancos o eficacia por el nombre Metarhizium.", "No definir vía, dosis, mezcla o compatibilidad sin ficha, etiqueta y registro vigentes."],
     formula: "Metarhizium",
-    image: "/products/wondergreen-bioinsumos/labels-beauveria-metarhizium-1l.jpeg"
   },
   {
     slug: "bioinsumo-ajo-aji",
     name: "Wondergreen Extracto Ajo-Ají",
     family: "Ajo-Ají",
     category: "bioinsumos",
-    headline: "Bioinsumo botánico · Acompañamiento preventivo",
-    intro: "Referencia botánica líquida elaborada a partir de extractos de ajo y ají para considerar dentro de programas preventivos y de manejo integrado.",
-    focus: "Manejo preventivo, aplicación foliar y sistema productivo.",
-    objective: "Acompañar un programa preventivo con una referencia botánica cuya concentración, objetivo, dosis y frecuencia deben definirse con la documentación vigente.",
+    headline: "Bioinsumo botánico · Referencia técnica",
+    intro: "El extracto de ajo y ají forma parte del portafolio técnico botánico Wondergreen. Su pertinencia y condiciones de uso se confirman en la ficha, etiqueta y registro vigentes de esta referencia.",
+    focus: "Identidad, uso y condiciones por confirmar.",
+    objective: "Confirmar con el equipo técnico si la documentación vigente del extracto de ajo y ají corresponde a la necesidad del lote.",
     format: "Extracto líquido",
-    presentations: ["1 L"],
-    commercialStatus: "Disponible bajo solicitud y acompañamiento técnico",
-    technicalRole: "Referencia botánica para acompañamiento preventivo y manejo integrado.",
-    stage: "Prevención & Manejo Integrado",
-    idealFor: ["Aplicación foliar", "Drench", "Fertirriego", "Programas preventivos"],
-    notes: ["La presentación de 1 L identifica extracto de ajo (Allium sativum) y ají (Capsicum spp.).", "La ficha técnica entregada con la solicitud define objetivo, dosis, frecuencia, compatibilidades y condición de uso."],
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia botánica de ajo y ají en el portafolio técnico Wondergreen; la ficha, etiqueta y registro vigentes determinan su uso autorizado.",
+    stage: "Uso por confirmar",
+    idealFor: ["Revisar la necesidad del lote y la documentación vigente de esta referencia."],
+    notes: ["El portafolio técnico identifica extractos de ajo (Allium sativum) y ají (Capsicum spp.).", "Verifica composición, alcance y condiciones en la documentación vigente."],
     benefits: [
-      "Incorpora una herramienta botánica diferenciada de los microorganismos vivos.",
-      "Permite hablar de prevención, oportunidad y monitoreo antes de aplicar.",
-      "Puede evaluarse junto con prácticas culturales, físicas y biológicas."
+      "La referencia está identificada por ajo y ají dentro del portafolio técnico.",
+      "La documentación del SKU permite confirmar si corresponde a la necesidad consultada.",
+      "No se infieren eficacia, blanco biológico ni cultivo autorizado a partir del nombre de los ingredientes."
     ],
     specs: [
       { label: "Tipo", value: "Bioinsumo botánico" },
       { label: "Ingredientes identificados", value: "Ajo (Allium sativum) y ají (Capsicum spp.)" },
-      { label: "Presentación documentada", value: "1 L" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
       { label: "Concentración / dosis", value: "Definidas en la ficha técnica y el protocolo de la presentación seleccionada" }
     ],
     application: [
-      "Usarlo como herramienta preventiva dentro de un programa de manejo integrado, no como sustituto de prácticas culturales, físicas o biológicas.",
-      "Agitar antes de preparar y revisar compatibilidad, calidad de agua, radiación y vía de aplicación para reducir riesgos de fitotoxicidad o pérdida de eficacia.",
-      "Definir dosis, frecuencia y momento con etiqueta vigente, objetivo preventivo, monitoreo y recomendación técnica; registrar la respuesta.",
+      "Identifica la necesidad y el cultivo o lote que deseas revisar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente a esta referencia botánica.",
+      "Define pertinencia, vía, dosis y condiciones solo con esa documentación y orientación técnica.",
     ],
-    crops: ["Café", "Aguacate", "Cacao", "Hortalizas", "Frutales", "Jardinería"],
-    cautions: ["No mezclar con productos muy alcalinos sin prueba de compatibilidad.", "Evitar horas de alta radiación y mantener fuera del alcance de niños y mascotas.", "Ajustar dosis y frecuencia según diagnóstico, cultivo y objetivo."],
+    crops: [],
+    cautions: ["No inferir cultivos, blancos o eficacia por el nombre de los ingredientes.", "No definir vía, dosis, mezcla o compatibilidad sin ficha, etiqueta y registro vigentes."],
     formula: "Ajo + Ají",
-    image: "/products/wondergreen-bioinsumos/label-extracto-ajo-aji-1l.jpeg"
+  },
+  {
+    slug: "bioinsumo-neem",
+    name: "Wondergreen Extracto de Neem",
+    family: "Neem",
+    category: "bioinsumos",
+    headline: "Bioinsumo botánico · Referencia técnica",
+    intro: "El extracto de Neem forma parte del portafolio técnico botánico Wondergreen. Su pertinencia y condiciones de uso se confirman en la ficha, etiqueta y registro vigentes de esta referencia.",
+    focus: "Identidad, uso y condiciones por confirmar.",
+    objective: "Confirmar con el equipo técnico si la documentación vigente del extracto de Neem corresponde a la necesidad del lote.",
+    format: "Extracto botánico líquido",
+    presentations: ["1 L", "5 L", "20 L"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Referencia botánica de Neem en el portafolio técnico Wondergreen; la ficha, etiqueta y registro vigentes determinan su uso autorizado.",
+    stage: "Uso por confirmar",
+    idealFor: ["Revisar la necesidad del lote y la documentación vigente de esta referencia."],
+    notes: ["La presentación y las condiciones de uso se confirman con la documentación vigente.", "Revisa con el equipo técnico si el alcance documentado corresponde a la necesidad del lote."],
+    benefits: [
+      "La referencia está identificada por Neem dentro del portafolio técnico.",
+      "La documentación del SKU permite confirmar si corresponde a la necesidad consultada.",
+      "No se infieren eficacia, blanco biológico ni cultivo autorizado a partir del nombre del ingrediente."
+    ],
+    specs: [
+      { label: "Tipo", value: "Bioinsumo botánico" },
+      { label: "Ingrediente identificado", value: "Extracto de Neem" },
+      { label: "Presentaciones de referencia", value: "1 L / 5 L / 20 L" },
+      { label: "Aplicación", value: "Definida para el cultivo y objetivo según ficha vigente" }
+    ],
+    application: [
+      "Identifica la necesidad y el cultivo o lote que deseas revisar.",
+      "Confirma que la ficha, etiqueta y registro vigentes correspondan exactamente al extracto de Neem.",
+      "Define pertinencia, vía, dosis y condiciones solo con esa documentación y orientación técnica."
+    ],
+    crops: [],
+    cautions: ["No inferir cultivos, blancos o eficacia por el nombre Neem.", "No definir vía, dosis, mezcla o compatibilidad sin ficha, etiqueta y registro vigentes."],
+    formula: "Extracto de Neem",
   },
   {
     slug: "2grow-liquido",
     name: "Wondergreen 2GROW Líquido",
     family: "2GROW",
     category: "liquidos",
-    headline: "100-20-20 · Nutrición soluble para crecimiento",
-    intro: "Referencia líquida de la línea 2GROW para integrar nutrición soluble y acompañamiento biológico dentro de un programa de establecimiento y crecimiento.",
-    focus: "Arranque, crecimiento vegetativo y recuperación.",
-    objective: "Acompañar la nutrición soluble del cultivo durante la etapa vegetativa, con lectura de suelo, agua y manejo.",
+    headline: "Nutrición de base biológica para arranque y crecimiento",
+    intro: "2GROW lleva al sistema suelo-planta una base de bioles de digestión anaerobia multietapa, formulada y estabilizada en dos concentraciones. El 100-20-20 acompaña la nutrición NPK vegetativa; el 200-0-0 concentra más nitrógeno dentro de la línea para momentos de mayor demanda. La elección se afina con el cultivo, la etapa y el programa nutricional del lote.",
+    focus: "100-20-20 para crecimiento vegetativo; 200-0-0, la formulación de mayor concentración de nitrógeno de la línea, para momentos de alta demanda vegetativa.",
+    objective: "Complementar el programa de nutrición soluble durante el crecimiento vegetativo, seleccionando concentración y pauta según cultivo, etapa y condiciones del lote.",
     format: "Líquido soluble",
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
-    commercialStatus: "Precio público de referencia para 1 L; programa técnico por cultivo",
-    technicalRole: "Referencia líquida para integrar al programa de crecimiento junto con la ruta sólida y el diagnóstico del lote.",
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Dos perfiles líquidos para ajustar la nutrición al crecimiento y a la demanda de nitrógeno del cultivo.",
     stage: "Arranque & Crecimiento",
     idealFor: ["Viveros y establecimiento", "Café en levante", "Hortalizas en crecimiento", "Recuperación vegetativa"],
     notes: ["La ficha técnica de la presentación seleccionada define concentración, calidad de agua y compatibilidad de mezcla.", "El programa integra etapa del cultivo, calidad de aplicación y seguimiento de la respuesta."],
     benefits: [
-      "Amplía la ruta 2GROW con un formato soluble y escalable.",
-      "Puede integrarse con seguimiento de etapa, agua y respuesta del cultivo.",
-      "Su uso debe coordinarse con el manejo del suelo y no reemplaza el diagnóstico del lote."
+      "Permite elegir entre 100-20-20 y 200-0-0, la concentración de mayor nitrógeno de la línea, para estrategias vegetativas distintas.",
+      "Su base de bioles, con formulación y estabilización, integra nutrientes, materia orgánica y microorganismos benéficos al sistema suelo-planta.",
+      "La dosis se relaciona con análisis, demanda y vía de aplicación; la respuesta se sigue mediante absorción de N, crecimiento y calidad del cultivo."
     ],
     specs: [
       { label: "Graduación", value: "100-20-20" },
+      { label: "Segunda concentración de 2GROW", value: "200-0-0 · mayor concentración de nitrógeno de la línea" },
       { label: "Formato", value: "Líquido soluble" },
       { label: "Presentaciones", value: "1 L / 3,75 L / 20 L / 200 L / 1000 L" }
     ],
@@ -453,28 +515,29 @@ export const products: Product[] = [
     priceCop: 17000,
     presentation: "1 L",
     formula: "100-20-20",
-    image: "/products/wondergreen-liquids/labels-2grow-1l.jpeg"
+    concentrations: ["100-20-20", "200-0-0 · mayor concentración de nitrógeno de la línea"],
   },
   {
     slug: "2balance-liquido",
     name: "Wondergreen 2BALANCE Líquido",
     family: "2BALANCE",
     category: "liquidos",
-    headline: "70-70-70 · Nutrición soluble balanceada",
-    intro: "Referencia líquida 2BALANCE para acompañar programas de equilibrio nutricional, siempre en relación con el análisis, la etapa y la condición del cultivo.",
+    headline: "70-70-70 · Fertilizante líquido de base biológica para equilibrio nutricional",
+    intro: "2BALANCE líquido reúne nitrógeno, fósforo y potasio en el perfil declarado 70-70-70. Su relación numérica 1:1:1 ofrece una referencia soluble para programas de transición y mantenimiento cuando el análisis y la demanda del cultivo respaldan un aporte combinado. La base proviene de bioles de digestión anaerobia multietapa, formulados y estabilizados; la etiqueta vigente define su concentración analítica y las condiciones de aplicación.",
     focus: "Equilibrio, transición y mantenimiento.",
-    objective: "Apoyar la nutrición soluble en momentos de equilibrio y transición fisiológica, sin convertir la fórmula en una dosis universal.",
+    objective: "Integrar un perfil N-P-K soluble a programas de transición y mantenimiento, definiendo aporte efectivo, vía y fraccionamiento según etiqueta, análisis y demanda del lote.",
     format: "Líquido soluble",
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
-    commercialStatus: "Precio público de referencia para 1 L; programa técnico por cultivo",
-    technicalRole: "Referencia líquida de equilibrio para complementar la lectura nutricional y operativa del cultivo.",
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Fertilizante líquido N-P-K de base biológica para integrar aporte combinado durante transición y mantenimiento, cuando el diagnóstico del lote lo justifica.",
     stage: "Equilibrio & Transición",
     idealFor: ["Cultivos en producción", "Transición vegetativa-reproductiva", "Programas de mantenimiento", "Aplicaciones fraccionadas"],
     notes: ["La ficha técnica de la presentación seleccionada define concentración, calidad de agua y compatibilidad de mezcla.", "El formato líquido se integra según el sistema de aplicación y el programa del cultivo."],
     benefits: [
-      "Permite trabajar un formato soluble dentro del sistema por etapas.",
-      "Facilita ajustar la conversación a escala, vía y operación del cultivo.",
-      "Debe leerse junto con extracciones, análisis, clima y manejo previo."
+      "Reúne los valores declarados de N, P y K en una sola referencia líquida para programas que requieren evaluar un aporte combinado.",
+      "La relación 70:70:70 permite comparar el perfil numérico de los tres nutrientes; no informa por sí sola su concentración analítica ni la dosis por hectárea.",
+      "Ayuda a contrastar la recomendación con análisis de suelo o tejido, extracción esperada, aportes previos y etapa del cultivo antes de definir la pauta.",
+      "El registro de aplicación y la observación nutricional del cultivo permiten revisar el programa con el equipo técnico a lo largo del ciclo."
     ],
     specs: [
       { label: "Graduación", value: "70-70-70" },
@@ -483,41 +546,41 @@ export const products: Product[] = [
     ],
     application: [
       "Usarlo cuando el cultivo requiera equilibrio o transición y el diagnóstico no indique una limitación previa de agua, raíz o sanidad.",
-      "Revisar calidad de agua, sistema de aplicación y compatibilidad física o biológica antes de incorporarlo al tanque.",
+      "Revisar calidad de agua, sistema de aplicación y compatibilidad indicada en la ficha antes de incorporarlo al tanque.",
       "Definir dosis, vía y frecuencia con etiqueta vigente, análisis y recomendación técnica para el lote; evaluar la respuesta antes de fraccionar.",
     ],
     crops: ["Café", "Aguacate", "Cacao", "Cítricos", "Plátano", "Hortalizas"],
-    cautions: ["Verificar compatibilidad física y biológica antes de combinar.", "Separar aplicaciones cuando la etiqueta o la orientación técnica lo indiquen."],
+    cautions: ["Confirmar compatibilidad de mezcla con la ficha técnica vigente antes de combinar.", "Separar aplicaciones cuando la etiqueta o la orientación técnica lo indiquen."],
     priceCop: 19100,
     presentation: "1 L",
     formula: "70-70-70",
-    image: "/products/wondergreen-liquids/labels-2balance-2bloom-1l.jpeg"
   },
   {
     slug: "2bloom-liquido",
     name: "Wondergreen 2BLOOM Líquido",
     family: "2BLOOM",
     category: "liquidos",
-    headline: "30-80-30 · Nutrición soluble para floración",
-    intro: "Referencia líquida 2BLOOM para integrar nutrición soluble durante floración y transición reproductiva, con manejo condicionado por cultivo, ambiente y etiqueta.",
+    headline: "30-80-30 · Fertilizante líquido de base biológica para floración",
+    intro: "Fertilizante líquido de base biológica de la línea 2BLOOM, elaborado a partir de bioles de digestión anaerobia multietapa. Se considera para floración y transición reproductiva según la ficha vigente y el programa definido para el cultivo.",
     focus: "Floración, cuajado y transición reproductiva.",
     objective: "Acompañar programas de floración con una referencia soluble cuya vía, dosis y momento deben definirse técnicamente.",
     format: "Líquido soluble",
-    presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
-    commercialStatus: "Disponible bajo cotización y acompañamiento técnico",
-    technicalRole: "Referencia líquida orientada a la etapa reproductiva dentro del sistema Wondergreen.",
+    presentations: ["Formato por consultar"],
+    commercialStatus: "Portafolio técnico; presentación y suministro por consultar",
+    technicalRole: "Fertilizante líquido de base biológica, derivado de bioles de digestión anaerobia multietapa, para acompañar la floración y la transición reproductiva.",
     stage: "Floración & Cuajado",
     idealFor: ["Prefloración", "Floración plena", "Cafetales y frutales", "Pasifloras en producción"],
-    notes: ["La referencia se suministra por cotización dentro de un programa definido para el cultivo.", "La ficha técnica de la presentación seleccionada define compatibilidad con bioinsumos y calidad de agua."],
+    notes: ["La referencia se suministra dentro de un programa definido para el cultivo y una condición de entrega confirmada.", "La ficha técnica de la presentación seleccionada define compatibilidad con bioinsumos y calidad de agua."],
     benefits: [
-      "Extiende la lógica de 2BLOOM a un formato soluble.",
+      "Extiende la lógica de 2BLOOM a un formato líquido de base biológica.",
+      "La etapa reproductiva, la ficha vigente y las condiciones del lote orientan la decisión de uso.",
       "Permite conversar sobre etapa, vía y operación sin separar la fórmula del contexto.",
       "La respuesta debe observarse dentro del programa productivo."
     ],
     specs: [
       { label: "Graduación", value: "30-80-30" },
       { label: "Formato", value: "Líquido soluble" },
-      { label: "Estado", value: "Disponible bajo cotización" }
+      { label: "Estado", value: "Portafolio técnico; presentación y suministro por consultar" }
     ],
     application: [
       "Confirmar transición reproductiva, condición del cultivo y objetivo de floración antes de elegir la referencia soluble.",
@@ -527,26 +590,26 @@ export const products: Product[] = [
     crops: ["Café", "Aguacate", "Cacao", "Cítricos", "Gulupa", "Granadilla", "Uchuva"],
     cautions: ["No presentar la fórmula como garantía de floración o cuajado.", "Confirmar mezcla, intervalo y calidad de agua antes de aplicar."],
     formula: "30-80-30",
-    image: "/products/wondergreen-liquids/labels-2balance-2bloom-1l.jpeg"
   },
   {
     slug: "2fruit-liquido",
     name: "Wondergreen 2FRUIT Líquido",
     family: "2FRUIT",
     category: "liquidos",
-    headline: "30-30-80 · Nutrición soluble para fase productiva",
-    intro: "Referencia líquida 2FRUIT para acompañar desarrollo, llenado y maduración dentro de un programa que considere carga, agua, suelo y objetivo de calidad.",
+    headline: "30-30-80 · Fertilizante líquido de base biológica para desarrollo de fruto",
+    intro: "Fertilizante líquido de base biológica de la línea 2FRUIT, elaborado a partir de bioles de digestión anaerobia multietapa. Su formulación se considera para desarrollo y llenado del fruto según la ficha vigente y las condiciones del cultivo.",
     focus: "Fructificación, llenado y maduración.",
     objective: "Acompañar la nutrición soluble de la fase productiva sin reemplazar el análisis de carga, agua y condición del cultivo.",
     format: "Líquido soluble",
     presentations: ["1 L", "3,75 L", "20 L", "200 L", "1000 L"],
-    commercialStatus: "Precio público de referencia para 1 L; programa técnico por cultivo",
-    technicalRole: "Referencia líquida para la fase productiva y el seguimiento de variables de cosecha.",
+    commercialStatus: "Disponible bajo solicitud y acompañamiento agronómico",
+    technicalRole: "Referencia de nutrición soluble para la fase productiva; su uso se define con la ficha vigente y las condiciones del lote.",
     stage: "Llenado & Maduración",
     idealFor: ["Frutificación", "Llenado de fruto", "Café en llenado de grano", "Frutales y pasifloras"],
     notes: ["La ficha técnica de la presentación seleccionada define concentración, calidad de agua y compatibilidad de mezcla.", "El programa registra indicadores de calidad relevantes para cada cultivo y lote."],
     benefits: [
-      "Completa la ruta 2FRUIT con un formato soluble y escalable.",
+      "Completa la ruta 2FRUIT con un formato líquido de base biológica y escalable.",
+      "La integración al programa considera la carga productiva, la etapa y los indicadores que se observarán en el lote.",
       "Ayuda a ordenar la conversación alrededor de carga, etapa y objetivo productivo.",
       "Permite vincular aplicación y seguimiento de resultados propios del cultivo."
     ],
@@ -565,7 +628,6 @@ export const products: Product[] = [
     priceCop: 18000,
     presentation: "1 L",
     formula: "30-30-80",
-    image: "/products/wondergreen-liquids/label-2fruit-1l.jpeg"
   }
 ];
 
@@ -597,7 +659,6 @@ export const productsList: ProductSpec[] = products.map(p => ({
   presentation: p.presentation || p.presentations[0] || "Consultar",
   priceCop: p.priceCop || 0,
   badge: p.headline.split("·")[1]?.trim() || "Nutrición",
-  image: p.image || "/products/wondergreen-2grow.webp",
   pdfManual: "/downloads/catalogo-wondergreen.pdf",
   targetRole: p.focus,
   molecularBenefit: p.benefits[0] || "",

@@ -1,0 +1,78 @@
+.service-detail-page--wondergreen .service-detail-hero--wondergreen .eyebrow {
+  color: #18754d;
+}
+
+.service-detail-page--wondergreen .service-detail-hero--wondergreen .lead {
+  color: #40564a;
+}
+
+.service-detail-page--wondergreen .service-detail-visual--wondergreen .service-detail-visual__artwork {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  aspect-ratio: auto;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.service-detail-page--wondergreen .service-detail-visual--wondergreen .service-detail-visual__media {
+  position: relative;
+  inset: auto;
+  aspect-ratio: 1.48;
+}
+
+.service-detail-page--wondergreen .service-detail-visual--wondergreen figcaption {
+  position: static;
+  padding: 8px 2px 0;
+  color: #536256;
+}
+
+.service-detail-page--wondergreen .service-detail-inputs--wondergreen h2,
+.service-detail-page--wondergreen .service-detail-inputs--wondergreen p,
+.service-detail-page--wondergreen .service-detail-inputs--wondergreen ul,
+.service-detail-page--wondergreen .service-detail-inputs--wondergreen li {
+  color: #40564a !important;
+}
+
+.service-detail-page--wondergreen .service-detail-inputs--wondergreen h2 {
+  color: #10372b !important;
+}
+
+.service-detail-page--wondergreen .service-program-steps li > span,
+.service-detail-page--wondergreen .service-detail-activities li > span,
+.service-detail-page--wondergreen .deliverable-list > div > span {
+  color: #405a36;
+}
+
+.service-detail-page--wondergreen .service-program-more-crops {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 13px;
+  margin-top: 8px;
+  color: #536256;
+  font-size: .82rem;
+}
+
+.service-detail-page--wondergreen .service-program-more-crops > a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  color: #405a36;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.service-detail-page--wondergreen .service-program-more-crops > span { margin-right: 2px; }
+
+@media (max-width: 1000px) {
+  .service-detail-page--wondergreen .service-detail-visual--wondergreen .service-detail-visual__media {
+    aspect-ratio: 1.55;
+  }
+}
+
+@media (max-width: 700px) {
+  .service-detail-page--wondergreen .service-detail-visual--wondergreen .service-detail-visual__media {
+    aspect-ratio: 1.2;
+  }
+}

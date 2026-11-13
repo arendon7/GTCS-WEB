@@ -1,0 +1,24 @@
+.glossary-public { padding: 44px 0 64px; background: #f7faf5; }
+.glossary-public__intro { max-width: 760px; margin-bottom: 34px; }
+.glossary-public__intro .back-link { display: block; margin-bottom: 24px; }
+.glossary-public__intro h1 { max-width: 24ch; margin: 12px 0 20px; font-size: clamp(2.1rem, 4.5vw, 3.4rem); line-height: 1.1; }
+.glossary-public__intro p { font-size: 1.05rem; max-width: 63ch; }
+.glossary-public__controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .45fr) auto; gap: 18px; align-items: end; }
+.glossary-public__controls label { display: block; margin-bottom: 9px; font-weight: 700; color: #173d31; font-size: .93rem; }
+.glossary-public__controls input, .glossary-public__controls select { width: 100%; min-width: 0; min-height: 48px; padding: 12px; border: 1px solid #afc2b4; background: #fff; color: #173d31; border-radius: 9px; font: inherit; }
+.glossary-public__controls button { min-height: 48px; padding: 12px 18px; border: 1px solid #bfcebf; background: #edf4e8; color: #174b38; border-radius: 9px; font: inherit; font-weight: 700; cursor: pointer; }
+.glossary-public__count { margin: 20px 0 30px; color: #4d6358; font-size: .9rem; }
+.glossary-public__terms { display: grid; gap: 36px; }
+.glossary-public__terms article { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 5vw, 72px); }
+.glossary-public__terms h2 { margin: 8px 0 0; font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.25; }
+.glossary-public__terms p { margin: 0; max-width: 65ch; font-size: 1rem; line-height: 1.75; }
+.glossary-public__category { color: #216449; font-size: .85rem; font-weight: 700; }
+.glossary-public__empty { padding: 32px 0 48px; max-width: 680px; }
+.glossary-public__empty h2 { font-size: 1.6rem; }
+.glossary-public__empty button { cursor: pointer; white-space: normal; }
+.glossary-public__next { margin-top: 56px; padding-top: 28px; border-top: 1px solid #bfcebf; }
+.glossary-public__next h2 { font-size: 1.6rem; margin-bottom: 14px; }
+.glossary-public__next p { max-width: 63ch; }
+.glossary-public__next > div { display: flex; flex-wrap: wrap; gap: 10px 30px; }
+.glossary-public__next a { display: inline-block; min-height: 44px; padding: 10px 0; color: #174b38; font-weight: 700; text-underline-offset: 4px; }
+@media (max-width: 760px) { .glossary-public__controls { grid-template-columns: 1fr; } .glossary-public__terms article { grid-template-columns: 1fr; gap: 12px; } }

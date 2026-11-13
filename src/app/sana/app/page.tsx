@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { PortfolioDemoApp } from "@/components/portfolio-demo-app";
 
 export const metadata: Metadata = {
-  title: "SANA · Demo navegable",
-  description: "Entorno demo de SANA para explorar oportunidades, portafolio, seguimiento, data room y decisiones.",
+  title: "SANA · Muestra de estructuración de proyectos",
+  description: "Muestra con datos ficticios para explorar oportunidades productivas, inversión y acompañamiento.",
   alternates: { canonical: "/sana/app/" },
   openGraph: {
-    title: "SANA | Demo navegable",
-    description: "Recorre oportunidades, portafolio, seguimiento, data room y decisiones con datos ilustrativos.",
+    title: "SANA | Muestra de estructuración de proyectos",
+    description: "Explora oportunidades, portafolio, seguimiento, data room y decisiones con datos ficticios.",
     url: "/sana/app/",
     images: ["/brand/greenatics-horizontal.webp"],
   },

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" role="img" aria-labelledby="title desc">
+  <title id="title">Recorrido agrícola ilustrativo</title>
+  <desc id="desc">Una ruta conceptual conecta finca, lote, labores y cosecha. AGROWAY aparece como referencia histórica, no como una plataforma activa.</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#eaf1df"/><stop offset="1" stop-color="#f8f4e8"/></linearGradient>
+    <linearGradient id="hill" x2="0" y2="1"><stop stop-color="#91b86c"/><stop offset="1" stop-color="#477b4e"/></linearGradient>
+    <pattern id="rows" width="24" height="24" patternTransform="rotate(-24)" patternUnits="userSpaceOnUse"><path d="M0 0v24" stroke="#d5e2bb" stroke-width="3" opacity=".72"/></pattern>
+  </defs>
+  <rect width="960" height="700" rx="28" fill="url(#sky)"/>
+  <circle cx="780" cy="122" r="58" fill="#d8ed9a" opacity=".7"/>
+  <path d="M0 348Q174 280 339 350T660 330T960 307V700H0Z" fill="#bdd19d"/>
+  <path d="M0 424Q167 346 360 407T704 382T960 368V700H0Z" fill="url(#hill)"/>
+  <path d="M0 484Q186 417 355 467T675 455T960 424V700H0Z" fill="#285c3e"/>
+  <path d="M0 484Q186 417 355 467T675 455T960 424V700H0Z" fill="url(#rows)" opacity=".62"/>
+  <path d="M124 330h130v98H124z" fill="#f7f4e9" stroke="#173b2c" stroke-width="5"/>
+  <path d="M106 333l82-66 83 66" fill="#a7683c" stroke="#173b2c" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M158 374h25v54h-25zm49-20h25v31h-25z" fill="#9abc76"/>
+  <g fill="none" stroke="#e9f3d3" stroke-width="6" stroke-linecap="round" stroke-dasharray="3 13">
+    <path d="M257 383c95-39 119-81 211-57s108 83 193 59 107-53 180-24"/>
+  </g>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <g transform="translate(344 322)"><circle r="37" fill="#f9f7ee" stroke="#18714c" stroke-width="4"/><path d="M-12 7h24M-8 7V-9l8-7 8 7V7m-22 0v9h28V7" fill="none" stroke="#18714c" stroke-width="4" stroke-linejoin="round"/><text y="66" fill="#103b2c" font-size="18" font-weight="700">FINCA</text></g>
+    <g transform="translate(494 293)"><circle r="37" fill="#f9f7ee" stroke="#18714c" stroke-width="4"/><path d="M-18 14h36M-13 7l7-19 8 19 7-19 8 19" fill="none" stroke="#18714c" stroke-width="4" stroke-linejoin="round"/><text y="66" fill="#103b2c" font-size="18" font-weight="700">LOTE</text></g>
+    <g transform="translate(657 333)"><circle r="37" fill="#f9f7ee" stroke="#18714c" stroke-width="4"/><path d="M-15 14l8-25 9 25m-13-8H0m5 8 8-25 8 25m-26-4h20" fill="none" stroke="#18714c" stroke-width="4" stroke-linecap="round"/><text y="66" fill="#103b2c" font-size="18" font-weight="700">LABORES</text></g>
+    <g transform="translate(816 355)"><circle r="37" fill="#f9f7ee" stroke="#18714c" stroke-width="4"/><path d="M-15 14V-7l8-8v29m4 0V-3l8-10v27m4 0V2l8-8v20" fill="none" stroke="#18714c" stroke-width="4" stroke-linecap="round"/><text y="66" fill="#103b2c" font-size="18" font-weight="700">COSECHA</text></g>
+  </g>
+  <rect x="38" y="38" width="270" height="42" rx="21" fill="#0b3a2b"/>
+  <text x="62" y="65" fill="#ddf4b3" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.6">TRAZABILIDAD EN CAMPO</text>
+  <rect x="38" y="614" width="884" height="50" rx="8" fill="#f7f4e9" opacity=".96"/>
+  <text x="62" y="645" fill="#365847" font-family="Arial, sans-serif" font-size="16">Referencia histórica · recorrido conceptual, no plataforma activa</text>
+</svg>

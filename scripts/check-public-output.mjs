@@ -9,11 +9,15 @@ const failures = [];
 
 function visit(directory) {
   if (!fs.existsSync(directory)) return;
+  if ((fs.statSync(directory).mode & 0o001) === 0) failures.push(`${path.relative(process.cwd(), directory)} (directory is not publicly traversable)`);
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     const entryPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       visit(entryPath);
       continue;
+    }
+    if (entry.isFile() && (fs.statSync(entryPath).mode & 0o004) === 0) {
+      failures.push(`${path.relative(process.cwd(), entryPath)} (file is not publicly readable)`);
     }
     if (!/\.(?:html?|txt|json|xml|webmanifest)$/i.test(entry.name)) continue;
     const body = fs.readFileSync(entryPath, "utf8");
@@ -24,7 +28,7 @@ function visit(directory) {
 visit(outputDir);
 
 if (failures.length > 0) {
-  console.error("Public output QA FAIL: local runtime URLs found in the publishable artifact.");
+  console.error("Public output QA FAIL: local URLs or non-public file permissions found in the publishable artifact.");
   for (const file of failures) console.error(`- ${file}`);
   process.exitCode = 1;
 } else {

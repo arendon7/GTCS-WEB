@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Flujo de información operativa en GREENATICS OPS</title>
+  <desc id="desc">Diagrama que conecta actividad, recepción, proceso, lote, evidencia y revisión para apoyar decisiones operativas.</desc>
+  <rect width="1440" height="900" fill="#eef3ec"/>
+  <rect x="42" y="42" width="1356" height="816" rx="28" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <rect x="42" y="42" width="274" height="816" rx="28" fill="#0d3529"/>
+  <rect x="288" y="42" width="28" height="816" fill="#0d3529"/>
+  <text x="82" y="106" fill="#b6e978" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="2">ESPACIO DE TRABAJO</text>
+  <text x="82" y="153" fill="#ffffff" font-family="Arial,sans-serif" font-size="27" font-weight="700">Operación</text>
+  <g font-family="Arial,sans-serif" font-size="19" fill="#d8e5dc">
+    <text x="94" y="236">Bitácora</text>
+    <text x="94" y="294">Recepciones</text>
+    <text x="94" y="352">Procesos y lotes</text>
+    <text x="94" y="410">Equipos</text>
+    <text x="94" y="468">Inventario</text>
+    <text x="94" y="526">Evidencias</text>
+    <text x="94" y="584">Reportes</text>
+  </g>
+  <g fill="#8bcf4b">
+    <circle cx="72" cy="229" r="5"/><circle cx="72" cy="287" r="5"/><circle cx="72" cy="345" r="5"/>
+    <circle cx="72" cy="403" r="5"/><circle cx="72" cy="461" r="5"/><circle cx="72" cy="519" r="5"/><circle cx="72" cy="577" r="5"/>
+  </g>
+  <rect x="350" y="82" width="1000" height="50" rx="12" fill="#f1f5ef"/>
+  <text x="382" y="114" fill="#426053" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="1.2">OPERACIÓN Y TRAZABILIDAD DE PLANTA</text>
+  <text x="350" y="202" fill="#10392c" font-family="Arial,sans-serif" font-size="43" font-weight="700">De cada registro a una decisión operativa</text>
+  <text x="350" y="244" fill="#5f7268" font-family="Arial,sans-serif" font-size="21">La información conserva su origen, responsable y relación con el proceso.</text>
+  <g>
+    <rect x="350" y="292" width="226" height="226" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="598" y="292" width="226" height="226" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="846" y="292" width="226" height="226" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="1094" y="292" width="256" height="226" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <g font-family="Arial,sans-serif">
+      <text x="376" y="340" fill="#16764f" font-size="15" font-weight="700" letter-spacing="1.4">01 · ACTIVIDAD</text>
+      <text x="376" y="384" fill="#10392c" font-size="23" font-weight="700">Bitácora</text>
+      <text x="376" y="422" fill="#5f7268" font-size="17">Turno, tarea,</text><text x="376" y="448" fill="#5f7268" font-size="17">responsable y soporte</text>
+      <text x="624" y="340" fill="#16764f" font-size="15" font-weight="700" letter-spacing="1.4">02 · ENTRADA</text>
+      <text x="624" y="384" fill="#10392c" font-size="23" font-weight="700">Recepción</text>
+      <text x="624" y="422" fill="#5f7268" font-size="17">Origen, corriente,</text><text x="624" y="448" fill="#5f7268" font-size="17">pesaje y calidad</text>
+      <text x="872" y="340" fill="#16764f" font-size="15" font-weight="700" letter-spacing="1.4">03 · TRANSFORMACIÓN</text>
+      <text x="872" y="384" fill="#10392c" font-size="23" font-weight="700">Proceso y lote</text>
+      <text x="872" y="422" fill="#5f7268" font-size="17">Variables, equipo</text><text x="872" y="448" fill="#5f7268" font-size="17">y salidas relacionadas</text>
+      <text x="1120" y="340" fill="#16764f" font-size="15" font-weight="700" letter-spacing="1.4">04 · REVISIÓN</text>
+      <text x="1120" y="384" fill="#10392c" font-size="23" font-weight="700">Evidencia</text>
+      <text x="1120" y="422" fill="#5f7268" font-size="17">Fuente, revisión</text><text x="1120" y="448" fill="#5f7268" font-size="17">y siguiente decisión</text>
+    </g>
+  </g>
+  <g stroke="#7dad64" stroke-width="3" fill="none">
+    <path d="M576 405h20"/><path d="M824 405h20"/><path d="M1072 405h20"/>
+    <path d="M586 397l8 8-8 8M834 397l8 8-8 8M1082 397l8 8-8 8"/>
+  </g>
+  <rect x="350" y="566" width="1000" height="206" rx="18" fill="#0d3529"/>
+  <text x="388" y="618" fill="#b6e978" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">UNA LECTURA COMÚN PARA EL EQUIPO</text>
+  <g font-family="Arial,sans-serif">
+    <text x="390" y="686" fill="#ffffff" font-size="23" font-weight="700">Origen</text><text x="390" y="720" fill="#c6d8cd" font-size="16">de la información</text>
+    <text x="624" y="686" fill="#ffffff" font-size="23" font-weight="700">Registro</text><text x="624" y="720" fill="#c6d8cd" font-size="16">de lo ocurrido</text>
+    <text x="880" y="686" fill="#ffffff" font-size="23" font-weight="700">Revisión</text><text x="880" y="720" fill="#c6d8cd" font-size="16">de calidad y contexto</text>
+    <text x="1150" y="686" fill="#ffffff" font-size="23" font-weight="700">Decision</text><text x="1150" y="720" fill="#c6d8cd" font-size="16">con trazabilidad</text>
+  </g>
+  <g stroke="#8bcf4b" stroke-width="2.5" fill="none"><path d="M526 684h64M760 684h98M1056 684h66"/><path d="M582 677l8 7-8 7M850 677l8 7-8 7M1114 677l8 7-8 7"/></g>
+  <text x="350" y="820" fill="#66796e" font-family="Arial,sans-serif" font-size="16">Los módulos y los datos se definen para cada organización y alcance de trabajo.</text>
+</svg>

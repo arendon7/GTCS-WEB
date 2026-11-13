@@ -1,0 +1,364 @@
+.hero :global(.gt-route-hero__grid) {
+  min-height: 660px;
+  padding-block: clamp(44px, 6vw, 84px);
+}
+
+.hero :global(.gt-route-hero__copy h1) {
+  max-width: 16ch;
+  font-size: clamp(2.8rem, 4vw, 4rem);
+}
+
+.hero :global(.gt-route-hero__statement) {
+  max-width: 32ch;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+}
+
+.proof {
+  color: #fff;
+  background: #0c3b2d;
+}
+
+.proofGrid {
+  display: grid;
+  grid-template-columns: 1.25fr repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(18px, 3vw, 42px);
+  min-height: 192px;
+  padding-block: 28px;
+}
+
+.proofIntro span {
+  color: #c4ed72;
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.proofIntro h2 {
+  max-width: 230px;
+  margin-top: 8px;
+  color: #fff;
+  font-size: clamp(1rem, 1.4vw, 1.28rem);
+  line-height: 1.18;
+}
+
+.proofScope {
+  max-width: 38ch;
+  margin: 10px 0 0;
+  color: #d2e4da;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.proofItem {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  min-height: 82px;
+}
+
+.proofItem strong {
+  color: #fff;
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.proofItem span {
+  max-width: 170px;
+  color: #d2e4da;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.approach {
+  padding-block: clamp(76px, 9vw, 124px);
+  background: #f7f5ed;
+}
+
+.approachGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.8fr);
+  align-items: start;
+  gap: clamp(48px, 8vw, 116px);
+}
+
+.approachGrid h2,
+.fieldHeading h2,
+.capabilityHeading h2,
+.scienceGrid h2 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.4vw, 4rem);
+  line-height: 1.03;
+  letter-spacing: -0.055em;
+}
+
+.approachGrid > div {
+  padding-top: 0.35rem;
+}
+
+.approachGrid p,
+.fieldHeading p,
+.capabilityHeading p,
+.capabilityGrid p,
+.scienceGrid p {
+  color: #4f6258;
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  line-height: 1.72;
+}
+
+.approachGrid p + p {
+  margin-top: 18px;
+}
+
+.approachGrid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  color: #006b45;
+  font-weight: 800;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.approachGrid a:hover {
+  text-decoration-line: underline;
+}
+
+.fieldStory {
+  padding-block: clamp(74px, 8vw, 112px);
+  background: #e8eee4;
+}
+
+.fieldHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.65fr);
+  align-items: end;
+  gap: clamp(32px, 6vw, 84px);
+  margin-bottom: 38px;
+}
+
+.fieldHeading p {
+  max-width: 520px;
+  margin: 0 0 0.3rem;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  align-items: end;
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.fieldGrid figure {
+  min-width: 0;
+  margin: 0;
+}
+
+.fieldImage {
+  position: relative;
+  overflow: hidden;
+  background: #d8e2d7;
+}
+
+.fieldImage img {
+  object-fit: cover;
+}
+
+.fieldLead .fieldImage {
+  aspect-ratio: 1.55;
+  border-radius: 24px 24px 24px 6px;
+}
+
+.fieldSecondary .fieldImage {
+  aspect-ratio: 1.2;
+  border-radius: 6px 24px 24px 24px;
+}
+
+.fieldGrid figcaption {
+  max-width: 660px;
+  padding-top: 18px;
+}
+
+.fieldGrid figcaption strong {
+  color: #0a392b;
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  line-height: 1.2;
+}
+
+.fieldGrid figcaption p {
+  max-width: 62ch;
+  margin: 8px 0 0;
+  color: #4f6258;
+  line-height: 1.6;
+}
+
+.caseLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(28px, 4vw, 48px);
+  color: #075d40;
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.caseLink:focus-visible {
+  outline: 3px solid #075d40;
+  outline-offset: 5px;
+}
+
+.capabilitySection {
+  padding-block: clamp(78px, 9vw, 122px);
+  background: #fff;
+}
+
+.capabilityHeading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(310px, 0.62fr);
+  align-items: end;
+  gap: clamp(32px, 7vw, 96px);
+}
+
+.capabilityHeading p {
+  margin: 0 0 0.25rem;
+}
+
+.capabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(28px, 5vw, 70px);
+  row-gap: 34px;
+  margin-top: clamp(42px, 6vw, 76px);
+}
+
+.capabilityGrid article {
+  padding-top: 18px;
+  border-top: 1px solid #b8c9bd;
+}
+
+.capabilityGrid h3 {
+  max-width: 330px;
+  margin: 0;
+  color: #0c3b2d;
+  font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.capabilityGrid p {
+  margin: 14px 0 0;
+  font-size: 0.98rem;
+}
+
+.science {
+  padding-block: clamp(70px, 8vw, 104px);
+  color: #fff;
+  background: #0c3b2d;
+}
+
+.scienceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.62fr);
+  align-items: center;
+  gap: clamp(48px, 8vw, 116px);
+}
+
+.scienceGrid h2 {
+  max-width: 740px;
+  color: #fff;
+}
+
+.scienceGrid > div > p {
+  max-width: 690px;
+  margin-block: 22px 26px;
+  color: #d2e4da;
+}
+
+.scienceBoundary {
+  margin: 0;
+  padding-left: 22px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  color: #d2e4da !important;
+  font-size: 0.96rem !important;
+}
+
+@media (max-width: 900px) {
+  .hero :global(.gt-route-hero__grid) {
+    min-height: 0;
+    padding-block: 52px;
+  }
+
+  .proofGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    row-gap: 26px;
+  }
+
+  .proofIntro {
+    grid-column: 1 / -1;
+  }
+
+  .proofIntro h2 {
+    max-width: none;
+  }
+
+  .proofScope {
+    max-width: 58ch;
+  }
+
+  .approachGrid,
+  .scienceGrid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .fieldHeading,
+  .capabilityHeading {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .fieldGrid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(250px, 0.9fr);
+  }
+
+  .scienceBoundary {
+    max-width: 700px;
+  }
+}
+
+@media (max-width: 620px) {
+  .proofGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 18px;
+    padding-block: 32px;
+  }
+
+  .proofIntro {
+    grid-column: 1 / -1;
+  }
+
+  .proofItem {
+    min-height: 68px;
+  }
+
+  .proofItem strong {
+    font-size: clamp(1.4rem, 7vw, 1.9rem);
+  }
+
+  .fieldGrid,
+  .capabilityGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldLead .fieldImage,
+  .fieldSecondary .fieldImage {
+    aspect-ratio: 1.35;
+  }
+
+  .scienceBoundary {
+    padding-left: 16px;
+  }
+}

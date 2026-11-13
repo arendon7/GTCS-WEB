@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="1400" viewBox="0 0 390 1400" role="img" aria-labelledby="mobile-title mobile-description">
+  <title id="mobile-title">De la corriente a una decisión</title>
+  <desc id="mobile-description">Versión vertical del método de Agroindustria y proyectos productivos de Greenatics. Parte de una corriente, un sitio y un periodo; caracteriza cantidad, calidad, variación, logística, manejo actual y salida posible; compara qué dato completar y qué alternativa comparar; y permite decidir, bajo criterios, avanzar, ajustar o detener antes de comprometer inversión.</desc>
+  <defs>
+    <linearGradient id="mobile-field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8faf6"/>
+      <stop offset="1" stop-color="#f1f6ed"/>
+    </linearGradient>
+    <linearGradient id="mobile-focus" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a3327"/>
+      <stop offset="1" stop-color="#0b563b"/>
+    </linearGradient>
+    <marker id="mobile-arrow" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+      <path d="M1 1 L8 5 L1 9" fill="none" stroke="#71934b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; fill: #597451; }
+      .title { font-size: 29px; font-weight: 700; letter-spacing: -.7px; fill: #0a3327; }
+      .intro { font-size: 15px; font-weight: 400; fill: #526456; }
+      .step { font-size: 12px; font-weight: 700; letter-spacing: 1px; fill: #0a3327; }
+      .head { font-size: 20px; font-weight: 700; letter-spacing: -.3px; fill: #0a3327; }
+      .body { font-size: 15px; font-weight: 500; fill: #34483a; }
+      .chip { font-size: 14px; font-weight: 600; fill: #24452e; }
+      .outcome { font-size: 17px; font-weight: 700; fill: #0a3327; }
+      .small { font-size: 13px; font-weight: 500; fill: #617163; }
+    </style>
+  </defs>
+  <rect width="390" height="1550" rx="24" fill="url(#mobile-field)"/>
+  <path d="M0 0h390v8H0z" fill="#98cf4f"/>
+
+  <text x="24" y="43" class="eyebrow">AGROINDUSTRIA Y PROYECTOS PRODUCTIVOS</text>
+  <text x="24" y="87" class="title">De la corriente a</text>
+  <text x="24" y="122" class="title">una decisión</text>
+  <text x="24" y="156" class="intro">Evaluar el proceso antes de comprometer inversión.</text>
+  <path d="M24 184H366" stroke="#dce6d7" stroke-width="1.5"/>
+
+  <!-- Scope -->
+  <circle cx="42" cy="222" r="15" fill="#d8ed9c"/>
+  <text x="42" y="226" text-anchor="middle" class="step">01</text>
+  <text x="68" y="229" class="head">Delimitar</text>
+  <text x="24" y="261" class="body">La evaluación parte de:</text>
+  <rect x="24" y="279" width="342" height="45" rx="22" fill="#e6efdd"/>
+  <circle cx="45" cy="301" r="4.5" fill="#71934b"/>
+  <text x="61" y="307" class="chip">Una corriente</text>
+  <rect x="24" y="332" width="342" height="45" rx="22" fill="#e6efdd"/>
+  <circle cx="45" cy="354" r="4.5" fill="#71934b"/>
+  <text x="61" y="360" class="chip">Un sitio</text>
+  <rect x="24" y="385" width="342" height="45" rx="22" fill="#e6efdd"/>
+  <circle cx="45" cy="407" r="4.5" fill="#71934b"/>
+  <text x="61" y="413" class="chip">Un periodo</text>
+  <path d="M195 432v30" stroke="#71934b" stroke-width="2.5" marker-end="url(#mobile-arrow)"/>
+
+  <!-- Characterize -->
+  <circle cx="42" cy="493" r="15" fill="#d8ed9c"/>
+  <text x="42" y="497" text-anchor="middle" class="step">02</text>
+  <text x="68" y="500" class="head">Caracterizar</text>
+  <text x="24" y="531" class="body">Entender qué material tienes y cómo se produce.</text>
+  <rect x="24" y="551" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="105" y="581" text-anchor="middle" class="chip">Cantidad</text>
+  <rect x="204" y="551" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="285" y="581" text-anchor="middle" class="chip">Calidad</text>
+  <rect x="24" y="609" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="105" y="639" text-anchor="middle" class="chip">Variación</text>
+  <rect x="204" y="609" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="285" y="639" text-anchor="middle" class="chip">Logística</text>
+  <rect x="24" y="667" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="105" y="697" text-anchor="middle" class="chip">Manejo actual</text>
+  <rect x="204" y="667" width="162" height="48" rx="13" fill="#ffffff" stroke="#dce6d7"/>
+  <text x="285" y="697" text-anchor="middle" class="chip">Salida posible</text>
+  <path d="M195 719v29" stroke="#71934b" stroke-width="2.5" marker-end="url(#mobile-arrow)"/>
+
+  <!-- Compare -->
+  <circle cx="42" cy="779" r="15" fill="#d8ed9c"/>
+  <text x="42" y="783" text-anchor="middle" class="step">03</text>
+  <text x="68" y="786" class="head">Comparar alternativas</text>
+  <text x="24" y="817" class="body">La caracterización ayuda a ordenar:</text>
+  <path d="M43 848v94" stroke="#bdd09f" stroke-width="2"/>
+  <circle cx="43" cy="865" r="7" fill="#98cf4f"/>
+  <circle cx="43" cy="925" r="7" fill="#98cf4f"/>
+  <rect x="62" y="842" width="304" height="47" rx="13" fill="#e8f0df"/>
+  <text x="79" y="872" class="body">Qué dato completar</text>
+  <rect x="62" y="902" width="304" height="47" rx="13" fill="#e8f0df"/>
+  <text x="79" y="932" class="body">Qué alternativa comparar</text>
+  <path d="M195 954v29" stroke="#71934b" stroke-width="2.5" marker-end="url(#mobile-arrow)"/>
+
+  <!-- Criteria and outcomes -->
+  <circle cx="42" cy="1015" r="15" fill="#d8ed9c"/>
+  <text x="42" y="1019" text-anchor="middle" class="step">04</text>
+  <text x="68" y="1022" class="head">Decidir con criterios</text>
+  <text x="24" y="1054" class="body">La decisión puede ser:</text>
+  <path d="M195 1063 233 1101 195 1139 157 1101Z" fill="url(#mobile-focus)"/>
+  <text x="195" y="1105" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">CRITERIOS</text>
+  <path d="M195 1139v16M195 1155H79v17M195 1155v17M195 1155h116v17" fill="none" stroke="#71934b" stroke-width="2"/>
+  <rect x="24" y="1174" width="106" height="56" rx="18" fill="#e4efda"/>
+  <circle cx="44" cy="1202" r="5" fill="#5c8b42"/>
+  <text x="56" y="1208" class="outcome">Avanzar</text>
+  <rect x="142" y="1174" width="106" height="56" rx="18" fill="#edf1d8"/>
+  <circle cx="162" cy="1202" r="5" fill="#8da33e"/>
+  <text x="174" y="1208" class="outcome">Ajustar</text>
+  <rect x="260" y="1174" width="106" height="56" rx="18" fill="#f0eee3"/>
+  <circle cx="280" cy="1202" r="5" fill="#8a8773"/>
+  <text x="292" y="1208" class="outcome">Detener</text>
+
+  <path d="M24 1294H366" stroke="#dce6d7" stroke-width="1.5"/>
+  <circle cx="33" cy="1342" r="6" fill="#98cf4f"/>
+  <text x="49" y="1348" font-size="16" font-weight="700" fill="#0a3327">Antes de comprometer inversión.</text>
+</svg>

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { EsgCalculator } from "@/components/esg-calculator";
-import { ImpactCalculator } from "@/components/impact-calculator";
-import { OpsInteractivePreview } from "@/components/ops-interactive-preview";
 import { yarumalClaims } from "@/data/claims";
+import { tamesisImpactScenario } from "@/data/tamesis-impact";
 
 export const metadata: Metadata = {
   title: "Impacto y evidencia",
@@ -12,13 +10,6 @@ export const metadata: Metadata = {
     "Resultados validados, metodología, gobernanza de datos y herramientas orientativas para medir el impacto de sistemas Greenatics.",
   alternates: { canonical: "/impacto/" },
 };
-
-const governanceSteps = [
-  ["01", "Medido", "El dato nace en pesajes, recorridos, caracterizaciones, lotes, costos u otros registros identificables."],
-  ["02", "Conciliado", "Se revisan consistencia, duplicados, periodos, balance de masa y relación con la evidencia disponible."],
-  ["03", "Validado", "Se confirma qué representa la cifra, su unidad, alcance, responsable y método de cálculo."],
-  ["04", "Publicado", "El resultado se comunica con caso, periodo o escenario y un acceso claro a su metodología."],
-] as const;
 
 export default function ImpactoPage() {
   return (
@@ -34,26 +25,26 @@ export default function ImpactoPage() {
               en una promesa automática para todos los proyectos.
             </p>
             <div className="button-row">
-              <a className="button button--light" href="#resultados">Ver resultados validados</a>
-              <Link className="button button--outline-light" href="/proyectos/">Explorar los casos</Link>
+              <a className="button button--light" href="#resultados">Ver indicadores y escenario</a>
+              <Link className="button button--outline-light" href="/proyectos/">Ver Yarumal y Támesis</Link>
             </div>
           </div>
           <figure className="gt-service-hero__figure">
             <Image
-              src="/projects/routes/route-evidence-02.webp"
-              alt="Pesaje y registro de residuos orgánicos durante una operación Greenatics"
+              src="/projects/plant/plant-evidence-04.webp"
+              alt="Pilas de compostaje bajo cubierta en Yarumal"
               fill
               priority
               sizes="(max-width: 900px) 100vw, 48vw"
             />
-            <figcaption><strong>Del registro a la decisión</strong><span>Cada resultado comienza con evidencia capturada en campo.</span></figcaption>
+            <figcaption><strong>Compostaje bajo cubierta · Yarumal</strong><span>Una etapa de la ruta que conecta recolección selectiva, tratamiento y aprovechamiento.</span></figcaption>
           </figure>
         </div>
       </section>
 
-      <section className="gt-proof-ribbon" id="resultados" aria-label="Resultados validados del caso Yarumal">
+      <section className="gt-proof-ribbon gt-impact-proof-ribbon" id="resultados" aria-label="Indicadores operativos validados y escenario económico del caso Yarumal">
         <div className="container gt-proof-ribbon__grid">
-          <div className="gt-proof-ribbon__intro"><span>Caso Yarumal</span><strong>Resultados validados y publicables</strong></div>
+          <div className="gt-proof-ribbon__intro"><span>Caso Yarumal</span><strong>Resultados operativos y escenario anualizado</strong></div>
           {yarumalClaims.map((claim) => <div key={claim.id}><strong>{claim.value}</strong><span>{claim.compactLabel}</span><small>{claim.context.replace("Caso Yarumal · ", "")}</small></div>)}
         </div>
       </section>
@@ -62,13 +53,12 @@ export default function ImpactoPage() {
         <div className="container">
           <div className="gt-route-heading gt-route-heading--split">
             <div><span className="eyebrow">Lectura responsable</span><h2>Qué dice cada resultado y cómo se obtuvo.</h2></div>
-            <p>Las cuatro cifras describen el desempeño validado de Yarumal. El contexto permanece visible para que el claim sea fuerte, comprensible y transferible sin perder precisión.</p>
+            <p>Las cifras no representan el mismo tipo de dato: dos describen resultados de un periodo validado, una compara el recorrido por viaje y otra presenta un escenario anualizado de ahorro. Cada valor conserva su método y alcance; ninguno se traslada automáticamente a otro municipio.</p>
           </div>
-          <div className="gt-case-method-grid">
+          <div className="gt-case-method-grid gt-case-method-grid--method-only">
             {yarumalClaims.map((claim) => (
               <article key={claim.id}>
                 <span>{claim.evidence}</span>
-                <strong>{claim.value}</strong>
                 <h3>{claim.compactLabel}</h3>
                 <p>{claim.method}</p>
                 <small>{claim.context}</small>
@@ -76,17 +66,17 @@ export default function ImpactoPage() {
             ))}
           </div>
           <div className="gt-case-evidence-note">
-            <div><span>Claims del caso</span><p>Son resultados de impacto, eficacia y eficiencia validados para Yarumal y pueden comunicarse comercialmente con su contexto.</p></div>
+            <div><span>Resultados y alcance</span><p>Las cifras describen el caso Yarumal: dos corresponden a un periodo validado, una compara el recorrido por viaje y el ahorro en fletes es un escenario anualizado. En otros territorios, los resultados dependerán de la generación, las rutas, la infraestructura y el periodo evaluado.</p></div>
             <div><span>Proyección de un nuevo proyecto</span><p>Requiere línea base, supuestos y validación propios. Los resultados históricos orientan; no sustituyen el estudio del nuevo territorio.</p></div>
           </div>
           <aside className="gt-impact-climate-bridge" aria-label="Puente entre evidencia operativa e impacto climático">
             <div>
               <span className="eyebrow">Del dato operativo al CO₂</span>
-              <h3>La evidencia logística también puede convertirse en un claim climático.</h3>
+              <h3>¿Qué datos hacen falta para estimar las emisiones del transporte?</h3>
             </div>
             <div>
-              <p>Los 140 km de transporte evitado por viaje ya muestran una mejora operativa verificable. Para traducirla a tCO₂e hay que documentar carga, vehículo, combustible, frecuencia, factor de emisión, periodo y frontera del cálculo.</p>
-              <Link href="/huella/#calculadora">Explorar un escenario de CO₂ <span aria-hidden="true">↗</span></Link>
+              <p>La distancia comparada describe un cambio de recorrido, no una reducción de gases de efecto invernadero. Para estimar emisiones hay que documentar carga, vehículo, combustible, frecuencia, factor de emisión, periodo y límites del cálculo.</p>
+              <Link href="/contacto/?servicio=clima-carbono&perfil=clima&diagnostico=Evaluar%20escenario%20GEI%20de%20Yarumal&prioridad=Recorrido%20sustituido%2C%20carga%2C%20veh%C3%ADculo%2C%20combustible%2C%20frecuencia%2C%20periodo%20y%20l%C3%ADmites">Preparar una estimación climática</Link>
             </div>
           </aside>
         </div>
@@ -94,19 +84,16 @@ export default function ImpactoPage() {
 
       <section className="gt-impact-tamesis" id="impacto-tamesis">
         <div className="container gt-impact-tamesis__grid">
-          <figure><Image alt="Reactor UASB de Támesis visto desde el aire" fill sizes="(max-width: 900px) 100vw, 48vw" src="/projects/tamesis/reactor-uasb.jpeg" /><figcaption><span>Caso Támesis</span><strong>Materia, biogás y energía dentro del mismo balance.</strong></figcaption></figure>
+          <figure className="gt-impact-tamesis__photo"><Image alt="Reactor UASB de 30 m³ en Támesis" fill sizes="(max-width: 900px) 100vw, 48vw" src="/projects/tamesis/reactor-uasb.jpeg" /><figcaption><span>Reactor UASB · Támesis</span><strong>La estimación de CO₂e se construye a partir de variables y supuestos del proceso.</strong></figcaption></figure>
           <div>
-            <span className="eyebrow">La siguiente capa de evidencia</span>
-            <h2>En Támesis, medir impacto también significa cerrar el balance energético.</h2>
-            <p>La existencia del UASB, la captura de biogás y el aprovechamiento de bioenergía amplían la pregunta: no basta con saber cuánto material entró. La operación debe relacionar transformación, gas capturado, energía útil, productos y destinos.</p>
-            <div className="gt-impact-tamesis__variables">
-              <div><span>01</span><strong>Masa recibida y tratada</strong></div>
-              <div><span>02</span><strong>Biogás producido y capturado</strong></div>
-              <div><span>03</span><strong>Energía obtenida y utilizada</strong></div>
-              <div><span>04</span><strong>Productos, pérdidas y destinos</strong></div>
-            </div>
-            <p className="gt-impact-tamesis__truth"><strong>Límite actual:</strong> esta página no publica todavía una serie energética validada de Támesis. Presenta las variables y la arquitectura necesarias para construirla con rigor.</p>
-            <Link className="button button--dark" href="/proyectos/tamesis/">Ver el sistema de Támesis</Link>
+            <span className="eyebrow">{tamesisImpactScenario.eyebrow}</span>
+            <h2>{tamesisImpactScenario.title}</h2>
+            <p>{tamesisImpactScenario.intro}</p>
+            <dl className="gt-impact-tamesis__variables">
+              {tamesisImpactScenario.metrics.map((metric) => <div key={metric.label}><dt>{metric.label}</dt><dd>{metric.value}</dd></div>)}
+            </dl>
+            <p className="gt-impact-tamesis__truth"><strong>Base de lectura:</strong> {tamesisImpactScenario.method}</p>
+            <Link className="button button--dark" href="/proyectos/tamesis/#impacto">Ver el escenario en el caso Támesis</Link>
           </div>
         </div>
       </section>
@@ -117,39 +104,20 @@ export default function ImpactoPage() {
             <div><span className="eyebrow eyebrow--light">Gobierno de datos</span><h2>Medir, conciliar, validar y publicar.</h2></div>
             <p>La gobernanza no consiste en esconder cifras. Consiste en conservar su definición, evidencia y alcance para que sigan siendo defendibles cuando cambian el periodo o la operación.</p>
           </div>
-          <ol className="gt-impact-governance__steps">
-            {governanceSteps.map(([number, title, copy]) => <li key={number}><span>{number}</span><strong>{title}</strong><p>{copy}</p></li>)}
-          </ol>
+          <p className="gt-impact-governance__narrative">
+            Partimos de pesajes, recorridos, caracterizaciones, lotes, costos y otros registros identificables. Revisamos consistencia, duplicados, periodos y balances; confirmamos qué representa cada cifra, su unidad, alcance, responsable y método. Publicamos el resultado con el caso, periodo o escenario y la metodología disponible para entenderlo.
+          </p>
         </div>
       </section>
 
-      <section className="gt-route-section gt-route-section--white">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">GREENATICS OPS</span><h2>La trazabilidad convierte actividad diaria en memoria operativa.</h2></div>
-            <p>La demostración permite recorrer generadores, rutas, recepción, lotes e indicadores. Su propósito es mostrar la arquitectura de control, no presentar datos en vivo de una operación específica.</p>
+      <section className="gt-route-closing" id="siguiente-paso" aria-labelledby="impact-next-step-title">
+        <div className="container gt-route-closing__inner gt-impact-next-step">
+          <div>
+            <span className="eyebrow">Explorar un escenario</span>
+            <h2 id="impact-next-step-title">Prueba una hipótesis. Luego llévala a una línea base.</h2>
+            <p>El estimador público de orgánicos proyecta generación y meta de desvío; no calcula emisiones ni usa distancias. Para estimar GEI de un proyecto se acuerdan línea base, datos, factores y límites documentados.</p>
           </div>
-          <OpsInteractivePreview />
-        </div>
-      </section>
-
-      <section className="gt-route-section gt-route-section--paper">
-        <div className="container">
-          <div className="gt-route-heading gt-route-heading--split">
-            <div><span className="eyebrow">Herramientas orientativas</span><h2>Explorar escenarios antes de formular.</h2></div>
-            <p>Estas calculadoras ayudan a dimensionar preguntas y comparar escenarios. Sus resultados son estimaciones y no reemplazan caracterización, ingeniería, factores documentados ni validación contractual.</p>
-          </div>
-          <div className="gt-impact-tools">
-            <article><span>Escenario ESG</span><EsgCalculator /></article>
-            <article><span>Escenario de transformación</span><ImpactCalculator /></article>
-          </div>
-        </div>
-      </section>
-
-      <section className="gt-route-closing">
-        <div className="container gt-route-closing__inner">
-          <div><span className="eyebrow">Construir una línea base</span><h2>Podemos convertir tus registros en una ruta de medición útil.</h2></div>
-          <Link className="button button--dark" href="/contacto/">Revisar un caso con el equipo</Link>
+          <Link className="button button--dark" href="/herramientas/estimador-organicos/">Probar estimador público</Link>
         </div>
       </section>
     </>

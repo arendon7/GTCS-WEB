@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArticleJsonLd } from "@/components/article-json-ld";
 import { BreadcrumbJsonLd } from "@/components/breadcrumb-json-ld";
 import { CropDosageCalculator } from "@/components/crop-dosage-calculator";
-import { crops, fieldApplicationRules, fieldChecklist, getCrop } from "@/data/crops";
+import { crops, fieldApplicationRules, fieldChecklist, getCrop, getProductSlugForCropStageLine } from "@/data/crops";
 import { site } from "@/data/site";
 import "./crop-detail.css";
 
@@ -38,6 +38,21 @@ const decisionLayers = [
   ["03", "Definir qué validar", "Referencia, vía, compatibilidad, cantidad, frecuencia e indicadores."],
 ] as const;
 
+const localReviewDocuments: Record<string, readonly { href: string; label: string }[]> = {
+  cafe: [
+    { href: "/downloads/guia-wondergreen-cafe.pdf", label: "Guía gráfica de café · 20 páginas" },
+    { href: "/downloads/MANUAL_TECNICO_WONDERGREEN_CAFE_PROFUNDO_20P.pdf", label: "Manual técnico de café · 20 páginas" },
+  ],
+  cacao: [
+    { href: "/downloads/guia-wondergreen-cacao.pdf", label: "Guía gráfica de cacao · 20 páginas" },
+    { href: "/downloads/MANUAL_TECNICO_WONDERGREEN_CACAO_PROFUNDO_20P.pdf", label: "Manual técnico de cacao · 20 páginas" },
+  ],
+  aguacate: [
+    { href: "/downloads/guia-wondergreen-aguacate.pdf", label: "Guía gráfica de aguacate · 20 páginas" },
+    { href: "/downloads/MANUAL_TECNICO_WONDERGREEN_AGUACATE_PROFUNDO_20P.pdf", label: "Manual técnico de aguacate · 20 páginas" },
+  ],
+};
+
 export default async function CropDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const crop = getCrop(slug);
@@ -46,11 +61,18 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
   const cropUrl = `${site.url}/wondergreen/cultivos/${crop.slug}/`;
   const cropIndex = crops.findIndex((item) => item.slug === crop.slug);
   const otherCrops = Array.from({ length: 4 }, (_, index) => crops[(cropIndex + index + 1) % crops.length]);
+  const localReviewLinks = process.env.NODE_ENV === "production" ? [] : localReviewDocuments[crop.slug] ?? [];
   const waConsultMsg = encodeURIComponent(
     `Hola Wondergreen, revisé la ruta agronómica de ${crop.name}.\n` +
     "Quiero organizar la información de mi lote y validar qué referencia, dosis, vía y seguimiento pueden aplicar."
   );
-  const contactHref = `/contacto/?interes=wondergreen&perfil=agro&diagnostico=${encodeURIComponent(`Orientación para ${crop.name}`)}&prioridad=${encodeURIComponent(`${crop.name} · ruta por etapa · señales de campo y seguimiento`)}`;
+  const contactParams = new URLSearchParams({
+    servicio: "programas-wondergreen",
+    perfil: "agro",
+    diagnostico: `Programa agronómico para ${crop.name}`,
+    prioridad: `Cultivo ${crop.name}; revisar etapa y objetivo del lote`,
+  });
+  const contactHref = `/contacto/?${contactParams.toString()}`;
 
   return (
     <div className="crop-guide-page">
@@ -84,7 +106,7 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
 
               <div className="crop-guide-hero__actions">
                 <a className="button button--primary" href="#ruta-fisiologica">Recorrer la ruta técnica</a>
-                <a className="button button--outline-light" download href={crop.pdfFile}>Descargar guía PDF</a>
+                <a className="button button--outline-light" href="#documento">Ver documento y versión</a>
               </div>
             </div>
 
@@ -125,7 +147,7 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
               <article key={stage.moment}>
                 <div className="crop-stage-route__number"><span>{String(index + 1).padStart(2, "0")}</span><small>Momento</small></div>
                 <div className="crop-stage-route__goal"><h3>{stage.moment}</h3><p>{stage.goal}</p></div>
-                <div className="crop-stage-route__lines"><span>Referencias para evaluar</span><div>{stage.lines.map((line) => <strong key={line}>{line}</strong>)}</div></div>
+                <div className="crop-stage-route__lines"><span>Referencias para evaluar</span><div>{stage.lines.map((line) => { const productSlug = getProductSlugForCropStageLine(line); return productSlug ? <Link href={`/wondergreen/productos/${productSlug}/`} key={line}>{line}<span aria-hidden="true"> ↗</span></Link> : <strong key={line}>{line}</strong>; })}</div></div>
                 <div className="crop-stage-route__validation"><span>Antes de definir</span><p>Análisis, condición del lote, etiqueta, vía, frecuencia y respuesta esperada.</p></div>
               </article>
             ))}
@@ -195,8 +217,23 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
 
       <section className="crop-guide-document" id="documento">
         <div className="container crop-guide-document__card">
-          <figure><Image alt={`Portada del documento técnico para ${crop.name}`} fill loading="lazy" sizes="(max-width: 800px) 70vw, 24vw" src={crop.coverImage} /></figure>
-          <div><span className="eyebrow">Documento de orientación</span><h2>Continúa la lectura en la guía Wondergreen para {crop.name}.</h2><p>Consulta el documento disponible y confirma su versión antes de usar información técnica. Cualquier dosis, mezcla o corrección específica requiere validar lote, cultivo, producto y etiqueta.</p><div><a className="button button--primary" download href={crop.pdfFile}>Descargar guía PDF</a><Link href="/wondergreen/analisis-suelo/">Organizar análisis de suelo <span aria-hidden="true">→</span></Link></div></div>
+          <div>
+            <span className="eyebrow">{crop.technicalManualFile || crop.pdfFile ? "Documentos técnicos" : "Siguiente decisión"}</span>
+            <h2>{crop.technicalManualFile ? `Dos niveles de lectura para ${crop.name}.` : crop.pdfFile ? `Continúa la lectura en la guía Wondergreen para ${crop.name}.` : `Usa esta ruta para preparar el manejo de ${crop.name}.`}</h2>
+            <p>{crop.technicalManualFile ? "Empieza por la guía breve o consulta el manual ampliado, que organiza la lectura del cultivo por etapa y variables del lote. Ambos sirven para preparar preguntas y contrastar el manejo; la dosis final depende de la ficha, la etiqueta y el diagnóstico vigentes." : crop.pdfFile ? "Consulta el documento disponible y confirma su versión antes de usar información técnica. Cualquier dosis, mezcla o corrección específica requiere validar lote, cultivo, producto y etiqueta." : "Esta ruta web organiza etapas, señales de campo y variables del lote. Cualquier recomendación de producto, dosis o frecuencia requiere contrastar el diagnóstico con la ficha, la etiqueta y la orientación técnica vigentes."}</p>
+            <div className="crop-guide-document__links">
+              {crop.technicalManualFile ? <a className="button button--primary" download href={crop.technicalManualFile}>Abrir manual técnico · 20 páginas</a> : null}
+              {crop.pdfFile ? <a className={crop.technicalManualFile ? "button button--document-secondary" : "button button--primary"} download href={crop.pdfFile}>Descargar guía breve PDF</a> : <Link href="#ruta-fisiologica">Repasar etapas y señales <span aria-hidden="true">→</span></Link>}
+              <Link href="/wondergreen/analisis-suelo/">Organizar análisis de suelo <span aria-hidden="true">→</span></Link>
+            </div>
+            {localReviewLinks.length > 0 ? (
+              <aside className="crop-guide-review" aria-label="Material de trabajo para revisión técnica">
+                <div><strong>Material de trabajo para revisión técnica</strong><p>Estos documentos conservan el contenido y los claims de sus versiones fuente para que el equipo técnico los revise. La etiqueta señala su estado de trabajo, no una aprobación ni una conclusión sobre cada afirmación.</p></div>
+                <ul>{localReviewLinks.map((document) => <li key={document.href}><a href={document.href} target="_blank" rel="noreferrer">{document.label}<span aria-hidden="true">↗</span></a></li>)}</ul>
+                <small>Acceso disponible solo en el preview local. Los documentos originales se conservan sin cambios.</small>
+              </aside>
+            ) : null}
+          </div>
         </div>
       </section>
 
@@ -210,7 +247,7 @@ export default async function CropDetailPage({ params }: { params: Promise<{ slu
       <section className="crop-guide-cta">
         <div className="container crop-guide-cta__inner">
           <div><span className="eyebrow eyebrow--light">Recomendación con contexto</span><h2>¿Necesitas convertir esta ruta en un programa para tu lote de {crop.name}?</h2><p>Comparte análisis, área, etapa, manejo previo y objetivo. Podemos identificar qué información falta antes de definir producto, dosis, vía y seguimiento.</p></div>
-          <div><Link className="button button--primary" href={contactHref}>Llevar consulta a Contacto →</Link><a className="crop-guide-cta__link" href={`https://wa.me/573003078822?text=${waConsultMsg}`} rel="noopener noreferrer" target="_blank">Validar por WhatsApp directo <span aria-hidden="true">→</span></a><Link href="/wondergreen/cotizador/">Preparar cotización <span aria-hidden="true">→</span></Link></div>
+          <div><Link className="button button--primary" href={contactHref}>Diseñar un programa para {crop.name} <span aria-hidden="true">→</span></Link><a className="crop-guide-cta__link" href={`https://wa.me/573003078822?text=${waConsultMsg}`} rel="noopener noreferrer" target="_blank">Validar por WhatsApp directo <span aria-hidden="true">→</span></a><Link href="/wondergreen/#productos">Ver referencias Wondergreen <span aria-hidden="true">→</span></Link></div>
         </div>
       </section>
     </div>

@@ -1,34 +1,29 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const footerGroups = [
   {
-    title: "Rutas",
+    title: "Por segmento",
     links: [
-      { href: "/municipios/", label: "Municipios y ESP" },
-      { href: "/empresas/", label: "Empresas y generadores" },
-      { href: "/wondergreen/", label: "Agro y distribución" },
-      { href: "/casa-jardin/", label: "Casa y jardín" },
+      { href: "/municipios/", label: "Municipios y ESP · PGIRS" },
+      { href: "/empresas/", label: "Organizaciones y grandes generadores · PMIRS" },
+      { href: "/agroindustria/", label: "Agroindustria" },
+      { href: "/wondergreen/", label: "Wondergreen y productores" },
+      { href: "/casa-jardin/", label: "Casa y Jardín" },
     ],
   },
   {
-    title: "Sistema",
+    title: "Explora Greenatics",
     links: [
-      { href: "/plataforma/", label: "Centro Greenatics" },
-      { href: "/soluciones/", label: "Sistema Greenatics" },
       { href: "/servicios/", label: "Servicios" },
-      { href: "/tecnologia/", label: "Plantas y tecnología" },
-      { href: "/app/", label: "GREENATICS OPS" },
-      { href: "/agroway/", label: "AGROWAY" },
-      { href: "/sana/", label: "SANA" },
-    ],
-  },
-  {
-    title: "Evidencia y apoyo",
-    links: [
-      { href: "/proyectos/", label: "Casos en territorio" },
+      { href: "/portafolio/", label: "Portafolio" },
+      { href: "/proyectos/", label: "Proyectos" },
       { href: "/impacto/", label: "Impacto y metodología" },
-      { href: "/biblioteca/", label: "Biblioteca técnica" },
+      { href: "/herramientas/", label: "Herramientas digitales" },
+      { href: "/recursos/", label: "Recursos y biblioteca" },
       { href: "/nosotros/", label: "Nosotros" },
       { href: "/contacto/", label: "Contacto" },
     ],
@@ -36,6 +31,38 @@ const footerGroups = [
 ] as const;
 
 export function SiteFooter() {
+  const pathname = usePathname() || "/";
+  if (pathname.replace(/\/+$/, "") === "/huella") {
+    return (
+      <footer className="huella-site-footer">
+        <div className="container huella-site-footer__main">
+          <div className="huella-site-footer__brand">
+            <Link href="/huella/" aria-label="Back 2 Green, inicio">
+              <Image src="/brand/calcula-tu-huella/brand-primary.svg?v=back2green-20261014" alt="Back 2 Green" width={563} height={219} />
+            </Link>
+            <p>Inventario corporativo de emisiones para empresas de distintos sectores, con autogestión y acompañamiento profesional.</p>
+          </div>
+          <nav aria-label="Enlaces de Back 2 Green">
+            <Link href="#recorrido">Cómo funciona</Link>
+            <Link href="#planes">Planes y precios</Link>
+            <Link href="#rutas-de-reporte">Normativa en Colombia</Link>
+            <Link href="/contacto/?interes=calcula-tu-huella">Hablar con un especialista</Link>
+          </nav>
+          <nav aria-label="Más de Greenatics e información legal">
+            <Link href="/herramientas/">Explorar todas las herramientas</Link>
+            <Link href="/legal/privacidad/">Privacidad</Link>
+            <Link href="/legal/terminos/">Términos</Link>
+            <Link href="/">Greenatics</Link>
+          </nav>
+        </div>
+        <div className="container huella-site-footer__bottom">
+          <span>Back 2 Green · Colombia</span>
+          <span>Una herramienta de GREENATICS S.A.S.</span>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer className="site-footer">
       <div className="container site-footer__grid">
@@ -53,9 +80,6 @@ export function SiteFooter() {
             Sistemas territoriales para convertir residuos orgánicos en capacidad operativa,
             información verificable y valor para el suelo.
           </p>
-          <Link className="site-footer__diagnostic" href="/diagnostico/">
-            Encontrar mi ruta <span aria-hidden="true">→</span>
-          </Link>
         </div>
 
         {footerGroups.map((group) => (

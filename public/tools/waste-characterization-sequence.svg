@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 575" role="img" aria-labelledby="title desc">
+  <title id="title">Secuencia conceptual para caracterizar residuos orgánicos</title>
+  <desc id="desc">El diagnóstico identifica fuentes, define muestreo, construye un balance de masa y compara rutas posibles. El esquema no contiene resultados de un territorio.</desc>
+  <rect width="720" height="575" fill="#eef3ec"/>
+  <rect x="18" y="18" width="684" height="539" rx="26" fill="#ffffff" stroke="#cbd8ce" stroke-width="2"/>
+  <text x="50" y="72" fill="#16764f" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">DIAGNÓSTICO · SECUENCIA DE TRABAJO</text>
+  <text x="50" y="124" fill="#10392c" font-family="Arial,sans-serif" font-size="29" font-weight="700">Entender antes de dimensionar</text>
+  <text x="50" y="158" fill="#5f7268" font-family="Arial,sans-serif" font-size="16">La ruta se construye con datos del generador y del territorio.</text>
+
+  <g fill="none" stroke="#7dad64" stroke-width="3">
+    <path d="M184 295h27M347 295h27M510 295h27"/>
+    <path d="m203 289 8 6-8 6m136-12 8 6-8 6m136-12 8 6-8 6"/>
+  </g>
+  <g>
+    <rect x="48" y="206" width="136" height="220" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="211" y="206" width="136" height="220" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="374" y="206" width="136" height="220" rx="18" fill="#f4f7f2" stroke="#d5e0d7" stroke-width="2"/>
+    <rect x="537" y="206" width="136" height="220" rx="18" fill="#eaf2e7" stroke="#d5e0d7" stroke-width="2"/>
+  </g>
+  <g font-family="Arial,sans-serif">
+    <circle cx="74" cy="252" r="18" fill="#0d3529"/><text x="74" y="258" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">01</text>
+    <text x="66" y="310" fill="#10392c" font-size="18" font-weight="700">Identificar</text>
+    <text x="66" y="346" fill="#5f7268" font-size="14">Fuentes, actores</text><text x="66" y="367" fill="#5f7268" font-size="14">y temporadas</text>
+
+    <circle cx="237" cy="252" r="18" fill="#0d3529"/><text x="237" y="258" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">02</text>
+    <text x="229" y="310" fill="#10392c" font-size="18" font-weight="700">Muestrear</text>
+    <text x="229" y="346" fill="#5f7268" font-size="14">Aforo, composición</text><text x="229" y="367" fill="#5f7268" font-size="14">y condiciones</text>
+
+    <circle cx="400" cy="252" r="18" fill="#0d3529"/><text x="400" y="258" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">03</text>
+    <text x="392" y="310" fill="#10392c" font-size="18" font-weight="700">Balancear</text>
+    <text x="392" y="346" fill="#5f7268" font-size="14">Entradas, salidas</text><text x="392" y="367" fill="#5f7268" font-size="14">y supuestos</text>
+
+    <circle cx="563" cy="252" r="18" fill="#0d3529"/><text x="563" y="258" fill="#b6e978" text-anchor="middle" font-size="14" font-weight="700">04</text>
+    <text x="555" y="310" fill="#10392c" font-size="18" font-weight="700">Comparar</text>
+    <text x="555" y="346" fill="#5f7268" font-size="14">Rutas según</text><text x="555" y="367" fill="#5f7268" font-size="14">la decisión</text>
+  </g>
+  <text x="360" y="490" fill="#5f7268" font-family="Arial,sans-serif" font-size="14" text-anchor="middle">El método y la representatividad se definen para cada alcance.</text>
+</svg>

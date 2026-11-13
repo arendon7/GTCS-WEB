@@ -42,8 +42,8 @@ export const yarumalClaims: readonly ImpactClaim[] = [
   {
     id: "freight-savings",
     value: "$180 M COP/año",
-    label: "de ahorro validado en fletes",
-    compactLabel: "Ahorro anual en fletes",
+    label: "de ahorro anualizado en fletes",
+    compactLabel: "Ahorro anualizado en fletes",
     context: "Caso Yarumal · escenario anualizado",
     evidence: "Modelo económico validado",
     method:

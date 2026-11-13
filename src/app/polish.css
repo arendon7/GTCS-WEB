@@ -19,6 +19,12 @@
   min-width: 172px;
 }
 
+.site-header.site-header--v2 .brand-link {
+  padding: 7px 11px;
+  border-radius: 10px;
+  background-color: #f4f8ef;
+}
+
 .site-header .greenatics-header-logo {
   display: block;
   width: 172px;
@@ -79,6 +85,29 @@
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Public diagnostic tables: readable labels, with emphasis from tone and spacing. */
+.deficiency-table th {
+  padding: 15px 14px;
+  color: var(--green-900);
+  font-size: .84rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+
+.deficiency-table td {
+  padding: 16px 14px;
+  font-size: .95rem;
+  line-height: 1.55;
+}
+
+.deficiency-table td strong {
+  color: var(--green-950);
+  font-weight: 600;
 }
 
 .contact-page--expanded {
