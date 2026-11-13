@@ -68,3 +68,23 @@ export function getDowntimeMinutes(ticket: MaintenanceTicket, nowIso?: string) {
   const start = ticket.failedAt || ticket.openedAt;
   return Math.max(0, (new Date(end).getTime() - new Date(start).getTime()) / 60000);
 }
+
+const severityOrder: Record<AlertSeverity, number> = { high: 0, medium: 1, low: 2 };
+
+export function prioritizeActiveMaintenanceTickets(tickets: MaintenanceTicket[], nowIso: string) {
+  return tickets
+    .filter((ticket) => ticket.status !== "closed")
+    .sort((left, right) => severityOrder[left.severity] - severityOrder[right.severity]
+      || getDowntimeMinutes(right, nowIso) - getDowntimeMinutes(left, nowIso));
+}
+
+export function formatDowntime(minutes: number) {
+  const totalMinutes = Math.max(0, Math.floor(minutes));
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
+  const remainingMinutes = totalMinutes % 60;
+
+  if (days > 0) return [days > 1 ? `${days} d` : "1 d", hours > 0 ? `${hours} h` : ""].filter(Boolean).join(" ");
+  if (hours > 0) return [hours > 1 ? `${hours} h` : "1 h", remainingMinutes > 0 ? `${remainingMinutes} min` : ""].filter(Boolean).join(" ");
+  return `${totalMinutes} min`;
+}

@@ -41,7 +41,7 @@ export function InventoryReconciliationForm(){
       .sort((a,b)=>a.productName.localeCompare(b.productName,"es")||a.lotCode.localeCompare(b.lotCode,"es"));
   },[effectivePlantId,movements,productMap]);
   const selected=lotOptions.find((lot)=>lot.key===lotKey)??lotOptions[0];
-  const countedNumber=Number(counted);
+  const countedNumber=Number(counted.trim().replace(",", "."));
   const hasValidCount=counted.trim()!==""&&Number.isFinite(countedNumber)&&countedNumber>=0;
   const difference=selected&&hasValidCount?countedNumber-selected.expected:undefined;
 
