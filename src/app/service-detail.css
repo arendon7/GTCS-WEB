@@ -3125,6 +3125,7 @@
    This final route-specific rule takes precedence over the section defaults;
    headings, captions, source links, labels and short actions stay natural. */
 @media (min-width: 760px) {
+  #contenido .service-detail-page.service-detail-page--microrrutas .service-detail-hero-copy > .lead,
   #contenido .service-detail-page.service-detail-page--microrrutas #yarumal-route-case .service-route-evidence__copy > p,
   #contenido .service-detail-page.service-detail-page--microrrutas .service-route-design__intro > p,
   #contenido .service-detail-page.service-detail-page--microrrutas .service-route-design__narrative p,
@@ -3136,17 +3137,6 @@
     text-justify: inter-word;
     hyphens: auto;
     hyphenate-limit-chars: 12 4 4;
-  }
-}
-
-/* The hero lead is short and shares a split layout with a large image. Keep it
-   naturally aligned so justification does not create wide word gaps. */
-@media (min-width: 760px) {
-  #contenido .service-detail-page.service-detail-page--microrrutas .service-detail-hero-copy > .lead {
-    text-align: left;
-    text-align-last: auto;
-    text-justify: auto;
-    hyphens: none;
   }
 }
 
