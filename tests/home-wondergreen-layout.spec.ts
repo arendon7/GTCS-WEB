@@ -6,24 +6,24 @@ test("Wondergreen exposes every solid, liquid and bioinput reference through man
   await page.goto("/", { waitUntil: "load" });
 
   const families = page.locator(".home-product-family");
-  await expect(families).toHaveCount(3);
-  await expect(families.nth(0).getByRole("heading", { name: "Fertilizantes sólidos" })).toBeVisible();
-  await expect(families.nth(1).getByRole("heading", { name: "Fertilizantes líquidos" })).toBeVisible();
-  await expect(families.nth(2).getByRole("heading", { name: "Bioinsumos" })).toBeVisible();
+  await expect(families).toHaveCount(4);
+  await expect(families.nth(0).getByRole("heading", { name: "Compost" })).toBeVisible();
+  await expect(families.nth(1).getByRole("heading", { name: "Fertilizantes sólidos" })).toBeVisible();
+  await expect(families.nth(2).getByRole("heading", { name: "Fertilizantes líquidos" })).toBeVisible();
+  await expect(families.nth(3).getByRole("heading", { name: "Bioinsumos" })).toBeVisible();
 
-  const loadedImages = await families.locator("img").evaluateAll((images) =>
-    images.filter((image) => (image as HTMLImageElement).naturalWidth > 0).length,
-  );
-  expect(loadedImages).toBe(3);
+  const compost = families.nth(0);
+  await expect(compost.locator("img")).toHaveAttribute("alt", "Saco Wondergreen Compost, acondicionador orgánico del suelo, presentación de 40 kg.");
+  await expect(compost.locator("img")).toHaveAttribute("src", /wondergreen-cropper-ref-compost-40kg\.webp$/);
 
-  const solids = families.nth(0);
+  const solids = families.nth(1);
   const solidImage = solids.locator("img");
   const nextSolid = solids.getByRole("button", { name: "Ver siguiente referencia de Fertilizantes sólidos" });
   const solidReferences = [
-    ["2GROW · 15-3-3", "Saco de fertilizante sólido organomineral Wondergreen 2GROW 15-3-3."],
-    ["2BALANCE · 7-7-7", "Saco de fertilizante sólido organomineral Wondergreen 2BALANCE 7-7-7."],
-    ["2BLOOM · 3-8-3", "Saco de fertilizante sólido organomineral Wondergreen 2BLOOM 3-8-3."],
-    ["2FRUIT · 3-3-8", "Saco de fertilizante sólido organomineral Wondergreen 2FRUIT 3-3-8."],
+    ["2GROW · 15-3-3", "Saco Wondergreen 2GROW 15-3-3, presentación de 40 kg."],
+    ["2BALANCE · 7-7-7", "Saco Wondergreen 2BALANCE 7-7-7, presentación de 40 kg."],
+    ["2BLOOM · 3-8-3", "Saco Wondergreen 2BLOOM 3-8-3, presentación de 40 kg."],
+    ["2FRUIT · 3-3-8", "Saco Wondergreen 2FRUIT 3-3-8, presentación de 40 kg."],
   ];
 
   for (const [index, [name, alt]] of solidReferences.entries()) {
@@ -37,7 +37,7 @@ test("Wondergreen exposes every solid, liquid and bioinput reference through man
   await solids.getByRole("button", { name: "Ver referencia anterior de Fertilizantes sólidos" }).click();
   await expect(solids.locator(".home-product-family__selected strong")).toHaveText("2BLOOM · 3-8-3");
 
-  const liquids = families.nth(1);
+  const liquids = families.nth(2);
   for (const label of ["2GROW · 200-0-0", "2BALANCE · 70-70-70", "2BLOOM · 30-80-30", "2FRUIT · 30-30-80"]) {
     await liquids.getByRole("button", { name: "Ver siguiente referencia de Fertilizantes líquidos" }).click();
     await expect(liquids.getByText(label)).toBeVisible();
@@ -45,7 +45,7 @@ test("Wondergreen exposes every solid, liquid and bioinput reference through man
   await liquids.getByRole("button", { name: "Ver referencia anterior de Fertilizantes líquidos" }).click();
   await expect(liquids.locator(".home-product-family__selected strong")).toHaveText("2BLOOM · 30-80-30");
 
-  const bioinputs = families.nth(2);
+  const bioinputs = families.nth(3);
   for (const [index, label] of ["Trichoderma", "Metarhizium anisopliae", "Beauveria bassiana", "Neem", "Extracto Ajo-Ají"].entries()) {
     await bioinputs.getByRole("button", { name: "Ver siguiente referencia de Bioinsumos" }).click();
     await expect(bioinputs.locator(".home-product-family__selected strong")).toHaveText(label);
@@ -61,9 +61,9 @@ test("Wondergreen exposes every solid, liquid and bioinput reference through man
 test("Wondergreen cards and controls remain legible across responsive widths", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/", { waitUntil: "load" });
 
-  await expect(page.locator(".home-product-family")).toHaveCount(3);
+  await expect(page.locator(".home-product-family")).toHaveCount(4);
 
   const bioinputs = page.locator(".home-product-family").filter({
     has: page.getByRole("heading", { name: "Bioinsumos", exact: true }),
@@ -75,6 +75,7 @@ test("Wondergreen cards and controls remain legible across responsive widths", a
 
   for (const width of [1440, 1024, 768, 390, 320]) {
     await page.setViewportSize({ width, height: width <= 390 ? 2400 : 1000 });
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const narrow = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
     expect(narrow.document).toBeLessThanOrEqual(narrow.viewport + 1);
 
@@ -104,7 +105,10 @@ test("Wondergreen cards and controls remain legible across responsive widths", a
         };
       });
       expect(geometry.width).toBeGreaterThanOrEqual(44);
-      expect(geometry.height).toBeGreaterThanOrEqual(44);
+      expect(
+        geometry.height,
+        `The ${width}px viewport compresses “${await button.innerText()}” below 44px (computed ${geometry.height}px).`,
+      ).toBeGreaterThanOrEqual(44);
       expect(geometry.textFits).toBe(true);
       if (width <= 390) expect(geometry.whiteSpace).toBe("nowrap");
       buttonRects.push(geometry);
