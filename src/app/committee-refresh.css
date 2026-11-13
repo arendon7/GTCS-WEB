@@ -2173,6 +2173,8 @@ section.agroindustry-v4-hero figure.agroindustry-v4-hero__photo > figcaption {
   color: #e0ebe2;
   font-size: clamp(1rem, 1.25vw, 1.12rem);
   line-height: 1.68;
+  text-align: left;
+  hyphens: none;
 }
 
 .agroindustry-v4-currents .wg-v4-heading h2,
