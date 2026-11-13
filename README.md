@@ -64,9 +64,9 @@ NEXT_PUBLIC_RED_APP_URL=https://red-staging.greenatics.com
 
 Las variables no contienen secretos. No deben apuntar a dominios provisionales sin control de acceso ni reemplazar las rutas locales antes del preflight documentado.
 
-Antes de compilar un build que active enlaces externos, ejecuta `npm run qa:runtime-config`. El gate permite variables vacías para demos locales y rechaza URLs inválidas, credenciales embebidas, queries, fragmentos y dominios de ejemplo.
+Antes de compilar un build que active enlaces externos, ejecuta `pnpm run qa:runtime-config`. El gate permite variables vacías para demos locales y rechaza URLs inválidas, credenciales embebidas, queries, fragmentos y dominios de ejemplo.
 
-El build de publicación también debe pasar `npm run qa:public-output`. Los destinos locales de `.env.local` se permiten durante `next dev`, pero se ignoran automáticamente en una compilación de producción para no incrustar `localhost` en el artefacto compartible.
+El build de publicación también debe pasar `pnpm run qa:public-output`. Los destinos locales de `.env.local` se permiten durante `next dev`, pero se ignoran automáticamente en una compilación de producción para no incrustar `localhost` en el artefacto compartible.
 
 ## Fuente de verdad
 Ver `docs/knowledge/`. No se deben inventar formulaciones, dosis, registros, resultados, claims ni activos de marca.
