@@ -1,3 +1,4 @@
+from dataclasses import replace
 from io import BytesIO
 from pathlib import Path
 import zipfile
@@ -10,6 +11,7 @@ from app.database import AuditEvent, Base, ENGINE, SessionLocal, add_audit, init
 from app.main import app
 from app.operations import create_backup, verify_audit_integrity, verify_backup_archive
 from app.security import login_throttle, validate_upload_bytes
+import app.security as app_security
 
 
 @pytest.fixture(autouse=True)
@@ -27,7 +29,13 @@ def test_v024_health_and_request_id():
         assert response.headers["x-request-id"] == "test-request-024"
 
 
-def test_v024_csrf_cookie_is_issued():
+def test_v024_csrf_cookie_is_issued(monkeypatch):
+    # CI disables CSRF for most legacy integration tests; enable it explicitly here.
+    monkeypatch.setattr(
+        app_security,
+        "settings",
+        replace(app_security.settings, csrf_enabled=True),
+    )
     with TestClient(app) as client:
         response = client.get("/login")
         assert response.status_code == 200
