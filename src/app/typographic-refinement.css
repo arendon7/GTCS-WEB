@@ -1543,3 +1543,18 @@
     hyphens: none;
   }
 }
+
+/* Keep the 2GROW mobile catalog route readable independent of the page
+   surface; the dark product palette otherwise bleeds into this light slot. */
+@media (max-width: 760px) {
+  #contenido .product-detail--family-2grow:not(.product-detail--2grow-liquid) .product-route-nav__catalog {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid #cbd9ce;
+    border-radius: 999px;
+    background-color: #f6f9f4;
+    color: #3f5a4d !important;
+  }
+}
