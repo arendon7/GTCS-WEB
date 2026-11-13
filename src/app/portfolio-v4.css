@@ -2242,6 +2242,7 @@
 .homegarden-v4-kit-totals__cards article > span { color: #d8ed9c; }
 .homegarden-v4-kit-totals__cards strong { display: block; margin-top: 22px; color: #fff; font-family: var(--font-display); font-size: 1.35rem; line-height: 1.15; }
 .homegarden-v4-kit-totals__cards ul { display: grid; gap: 7px; margin: 18px 0 0; padding-left: 18px; color: #fff; font-size: .9rem; }
+.homegarden-v4-kit-totals__cards li { color: #fff; }
 .homegarden-v4-kit-totals__cards article > p { margin: 14px 0 0; color: #c5d9cd; font-size: .74rem; line-height: 1.5; }
 .homegarden-v4-kit-use { padding: clamp(58px, 7vw, 90px) 0; background: #f4f1e7; }
 .homegarden-v4-kit-use__panel { padding: clamp(25px, 4vw, 48px); border: 1px solid #d5ddcf; border-radius: 24px 24px 24px 6px; background: #fff; }
