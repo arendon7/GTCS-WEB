@@ -115,4 +115,3 @@ jobs:
           python -m alembic upgrade head
       - name: Run complete Huella regression suite
         run: PYTHONPATH=. python -m pytest -q
-9c29da2f8c59298ef8ea6dcdbb5f884c21f7c848
