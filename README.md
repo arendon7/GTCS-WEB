@@ -21,7 +21,7 @@ Para una comprobación local de la web pública:
 
 ```bash
 pnpm run check
-ppnpm run qa:runtime-config
+pnpm run qa:runtime-config
 pnpm run build
 pnpm run audit:static
 ```
