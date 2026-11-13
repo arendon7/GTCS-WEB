@@ -445,7 +445,7 @@
 .wg-volatilization__study--range h3 { color: #fff; }
 .wg-volatilization__study p { color: #526158; font-size: .8rem; line-height: 1.62; }
 .wg-volatilization__study--range p { color: #d5e5db; }
-.wg-volatilization__study > small { margin-top: auto; padding-top: 18px; color: #68766c; font-size: .68rem; line-height: 1.5; }
+.wg-volatilization__study > small { margin-top: auto; padding-top: 18px; color: #58675e; font-size: .68rem; line-height: 1.5; }
 .wg-volatilization__study--range > small { color: #c5d8cb; }
 .wg-volatilization__study > a { display: inline-flex; width: fit-content; margin-top: 12px; color: #146b47; font-size: .73rem; font-weight: 850; text-underline-offset: .2em; }
 .wg-volatilization__study--range > a { color: #d8ed9c; }
@@ -465,7 +465,7 @@
 .wg-volatilization__paired-row:nth-child(2) i { width: 65.65%; background: #93b57d; }
 .wg-volatilization__paired-row:nth-child(3) i { width: 80%; background: #28734f; }
 .wg-volatilization__paired b { flex: none; color: #183d2d; font-size: .68rem; }
-.wg-volatilization__paired-axis { display: flex; justify-content: space-between; margin-top: -4px; color: #68766c; font-size: .58rem; }
+.wg-volatilization__paired-axis { display: flex; justify-content: space-between; margin-top: -4px; color: #58675e; font-size: .58rem; }
 .wg-volatilization__method-mark { display: flex; align-items: center; gap: 8px; margin-top: 28px; color: #526158; font-size: .68rem; }
 .wg-volatilization__method-mark b { display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: #dce9d6; color: #146b47; }
 .wg-volatilization__method-mark b:last-child { margin-left: 16px; background: #e7e6df; color: #68766c; }
