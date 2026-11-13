@@ -23,7 +23,7 @@
   "dependencies": {
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
-    "next": "^16.0.0",
+    "next": "^16.4.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
@@ -35,7 +35,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
-    "eslint-config-next": "^16.0.0",
+    "eslint-config-next": "^16.4.5",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
     "vitest": "4.1.10"
