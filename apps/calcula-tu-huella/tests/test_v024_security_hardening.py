@@ -27,7 +27,13 @@ def test_v024_health_and_request_id():
         assert response.headers["x-request-id"] == "test-request-024"
 
 
-def test_v024_csrf_cookie_is_issued():
+def test_v024_csrf_cookie_is_issued(monkeypatch):
+    from dataclasses import replace
+
+    from app.config import settings
+    from app import security
+
+    monkeypatch.setattr(security, "settings", replace(settings, csrf_enabled=True))
     with TestClient(app) as client:
         response = client.get("/login")
         assert response.status_code == 200
