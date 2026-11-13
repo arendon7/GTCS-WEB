@@ -26,14 +26,15 @@ test("the homepage polish keeps its editorial hierarchy and stable audience rout
   )).toBe(true);
 
   await expect(page.locator(".home-audience-paths a").first()).toHaveAttribute("href", "/municipios/");
-  await expect(page.locator(".home-audience-path--compact")).toHaveCount(2);
+  await expect(page.locator(".home-audience-path--compact")).toHaveCount(3);
 
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const layout = await page.evaluate(() => {
       const root = document.documentElement;
-      const compactPaths = [...document.querySelectorAll<HTMLElement>(".home-audience-path--compact")];
-      const bounds = compactPaths.map((path) => {
+      const audiencePaths = [...document.querySelectorAll<HTMLElement>(".home-audience-path--compact")];
+      const bounds = audiencePaths.map((path) => {
         const rect = path.getBoundingClientRect();
         return { left: rect.left, width: rect.width };
       });
@@ -45,15 +46,10 @@ test("the homepage polish keeps its editorial hierarchy and stable audience rout
     });
 
     expect(layout.content, `homepage overflow at ${width}px`).toBe(layout.viewport);
-    expect(layout.compactPaths).toHaveLength(2);
-    if (width > 900) {
-      const ratio = layout.compactPaths[0].width / layout.compactPaths[1].width;
-      expect(ratio, `the longer organization path should receive more width at ${width}px`).toBeGreaterThan(1.2);
-      expect(ratio).toBeLessThan(1.6);
-    } else {
-      expect(Math.abs(layout.compactPaths[0].width - layout.compactPaths[1].width)).toBeLessThan(2);
-      expect(Math.abs(layout.compactPaths[0].left - layout.compactPaths[1].left)).toBeLessThan(2);
-    }
+    expect(layout.compactPaths).toHaveLength(3);
+    expect(new Set(layout.compactPaths.map(({ left }) => left)).size).toBe(width > 1050 ? 3 : 1);
+    const audienceWidths = layout.compactPaths.map(({ width }) => width);
+    expect(Math.max(...audienceWidths) - Math.min(...audienceWidths)).toBeLessThan(2);
   }
 });
 
@@ -115,6 +111,13 @@ test("the four service entries use distinct visuals and keep the full-services r
     "href",
     "/servicios/",
   );
+  await shortlist.scrollIntoViewIfNeeded();
+  await expect.poll(() => shortlist.locator("img").evaluateAll((images) =>
+    images.length === 4 && images.every((node) => {
+      const image = node as HTMLImageElement;
+      return image.complete && image.naturalWidth > 0;
+    }),
+  )).toBe(true);
 
   const media = await shortlist.locator("img").evaluateAll((images) => images.map((node) => {
     const image = node as HTMLImageElement;
@@ -128,13 +131,15 @@ test("the four service entries use distinct visuals and keep the full-services r
   await page.setViewportSize({ width: 1676, height: 834 });
   const contact = page.getByRole("link", { name: "Hablar con nosotros" });
   await expect(contact).toBeVisible();
-  await expect(contact).toHaveCSS("color", "rgb(244, 248, 239)");
+  await expect(contact).toHaveCSS("color", "rgb(6, 43, 32)");
+  await expect(contact).toHaveCSS("background-color", "rgb(216, 237, 156)");
 
   for (const width of [1440, 1024, 900, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const layout = await page.evaluate(() => {
       const root = document.documentElement;
-      const entries = [...document.querySelectorAll<HTMLElement>(".home-service-shortlist article")];
+      const entries = [...document.querySelectorAll<HTMLElement>("#home-service-shortlist article")];
       const rects = entries.map((entry) => {
         const rect = entry.getBoundingClientRect();
         return { x: Math.round(rect.x), y: Math.round(rect.y), width: rect.width, height: rect.height };
@@ -142,12 +147,13 @@ test("the four service entries use distinct visuals and keep the full-services r
       return { viewport: root.clientWidth, content: root.scrollWidth, rects };
     });
     expect(layout.content, `homepage overflow at ${width}px`).toBe(layout.viewport);
-    expect(new Set(layout.rects.map(({ x }) => x)).size, `service card columns at ${width}px`).toBe(
-      width > 1020 ? 4 : width > 680 ? 2 : 1,
-    );
-    if (width > 1020) {
-      const heights = layout.rects.map(({ height }) => height);
-      expect(Math.max(...heights) - Math.min(...heights), `unequal desktop service cards at ${width}px`).toBeLessThan(2);
+    expect(layout.rects).toHaveLength(4);
+    expect(new Set(layout.rects.map(({ x }) => x)).size, `service card columns at ${width}px`).toBe(width > 680 ? 2 : 1);
+    if (width > 680) {
+      for (const rowY of new Set(layout.rects.map(({ y }) => y))) {
+        const rowHeights = layout.rects.filter(({ y }) => y === rowY).map(({ height }) => height);
+        expect(Math.max(...rowHeights) - Math.min(...rowHeights), `unequal service cards in row at ${width}px`).toBeLessThan(2);
+      }
     }
   }
 });
