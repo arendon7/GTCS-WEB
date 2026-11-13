@@ -1286,6 +1286,30 @@
   }
 }
 
+/* Keep Támesis' four indicators on one row through the tablet layout. The
+   later generic max-width rule otherwise collapses this case back to two. */
+@media (min-width: 761px) and (max-width: 900px) {
+  #contenido .home-claims-rail__case--tamesis .home-claims-rail__intro {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: none;
+    gap: 8px;
+  }
+
+  #contenido .home-claims-rail__case--tamesis .home-claims-rail__action {
+    justify-self: start;
+  }
+
+  #contenido .home-claims-rail__metrics--tamesis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(10px, 1.5vw, 14px);
+  }
+
+  #contenido .home-claims-rail__metrics--tamesis article > strong {
+    font-size: clamp(.9rem, 1.25vw, 1.05rem);
+    text-wrap: balance;
+  }
+}
+
 /* Keep paired editorial columns proportionate on desktop. The narrow layout is
    declared outside this breakpoint so it remains one column when the viewport
    is smaller than either text measure. */
