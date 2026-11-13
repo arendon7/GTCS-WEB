@@ -8,11 +8,25 @@ Nueva plataforma pública de Greenatics: sitio institucional, Wondergreen, soluc
 - Exportación estática preparada para hosting web/CDN
 - CI por producto: web pública, GREENATICS OPS y Calcula tu Huella
 
-## Desarrollo
+## Desarrollo local
+
+Requisitos para la web pública: Node.js 22 y pnpm disponible. El CI usa Node 22 y `pnpm install --frozen-lockfile`; instala las dependencias desde el lockfile sin modificarlo.
+
 ```bash
-npm install
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
+
+Para una comprobación local de la web pública:
+
+```bash
+pnpm run check
+pnpm run qa:runtime-config
+pnpm run build
+pnpm run audit:static
+```
+
+Para reproducir los recorridos de navegador del CI, instala Chromium con `pnpm exec playwright install chromium` y ejecuta `pnpm run test:visual` y `pnpm run test:a11y`.
 
 ## Estructura inicial
 - `/` Home
