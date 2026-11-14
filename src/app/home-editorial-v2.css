@@ -2076,6 +2076,7 @@
   }
 
   .home-audience-path--compact .home-audience-path__media {
+    grid-row: auto;
     min-height: 225px;
     aspect-ratio: auto;
   }
