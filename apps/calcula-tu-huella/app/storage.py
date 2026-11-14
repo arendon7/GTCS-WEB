@@ -78,6 +78,32 @@ class StorageService:
         response = self._client.get_object(Bucket=settings.s3_bucket, Key=key)
         return response["Body"].read()
 
+    def check_exists(self, key: str) -> bool:
+        """Comprueba existencia y diferencia un 404 de un fallo del almacenamiento."""
+        if self.backend in {"local", "filesystem"}:
+            path = self.local_path(key)
+            if path is None:
+                raise StorageError("La ruta de almacenamiento no es válida")
+            try:
+                path.stat()
+                return path.is_file()
+            except FileNotFoundError:
+                return False
+            except OSError as exc:
+                raise StorageError("No fue posible consultar el almacenamiento local") from exc
+
+        assert self._client is not None
+        try:
+            self._client.head_object(Bucket=settings.s3_bucket, Key=self.normalize_key(key))
+            return True
+        except Exception as exc:
+            response = getattr(exc, "response", {})
+            error = response.get("Error", {}) if isinstance(response, dict) else {}
+            code = str(error.get("Code", "")) if isinstance(error, dict) else ""
+            if code in {"NoSuchKey", "NotFound", "404"}:
+                return False
+            raise StorageError("No fue posible consultar el almacenamiento de archivos") from exc
+
     def exists(self, key: str) -> bool:
         if self.backend in {"local", "filesystem"}:
             path = self.local_path(key)

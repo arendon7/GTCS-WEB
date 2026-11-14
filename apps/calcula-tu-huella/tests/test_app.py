@@ -76,6 +76,7 @@ from app.database import (
     init_db,
 )
 from app.main import app
+from app.storage import StorageError, StorageService, storage
 from app.scenarios import scenario_summary
 from app.impact_intelligence import impact_metrics, compare_benchmarks
 from app.climate_risk import assessment_summary, calculate_risk_scores, risk_level
@@ -369,6 +370,83 @@ def test_evidence_upload_and_download():
         response = client.get(f"/evidencias/{document_id}/descargar")
         assert response.status_code == 200
         assert b"Electricidad" in response.content
+
+
+def test_evidence_download_reports_storage_outage_without_requesting_reupload(monkeypatch):
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        uploaded = client.post(
+            "/informacion/evidencias/nueva",
+            data={"document_type": "Certificado", "period_label": "Prueba", "notes": "Archivo de prueba"},
+            files={"file": ("soporte_falla.csv", b"fuente,valor\nElectricidad,10\n", "text/csv")},
+            follow_redirects=False,
+        )
+        assert uploaded.status_code == 303
+    with SessionLocal() as session:
+        document = session.scalar(select(EvidenceDocument).where(EvidenceDocument.name == "soporte_falla.csv").order_by(EvidenceDocument.id.desc()))
+        assert document is not None
+        document_id = document.id
+
+    def unavailable(_key):
+        raise StorageError("backend temporalmente indisponible")
+
+    monkeypatch.setattr(storage, "check_exists", unavailable)
+    with TestClient(app) as client:
+        login(client)
+        response = client.get(f"/evidencias/{document_id}/descargar")
+        assert response.status_code == 503
+        assert "No pudimos consultar el archivo" in response.text
+        assert "No vuelvas a cargar el archivo todavía" in response.text
+
+
+def test_evidence_download_returns_not_found_when_storage_confirms_missing(monkeypatch):
+    with TestClient(app) as client:
+        login(client, "cliente@calculatuhuella.local")
+        uploaded = client.post(
+            "/informacion/evidencias/nueva",
+            data={"document_type": "Certificado", "period_label": "Prueba", "notes": "Archivo de prueba"},
+            files={"file": ("soporte_ausente.csv", b"fuente,valor\nElectricidad,10\n", "text/csv")},
+            follow_redirects=False,
+        )
+        assert uploaded.status_code == 303
+    with SessionLocal() as session:
+        document = session.scalar(select(EvidenceDocument).where(EvidenceDocument.name == "soporte_ausente.csv").order_by(EvidenceDocument.id.desc()))
+        assert document is not None
+        document_id = document.id
+
+    monkeypatch.setattr(storage, "check_exists", lambda _key: False)
+    with TestClient(app) as client:
+        login(client)
+        response = client.get(f"/evidencias/{document_id}/descargar")
+        assert response.status_code == 404
+
+
+def test_storage_check_exists_distinguishes_s3_missing_from_outage():
+    class FakeS3Error(Exception):
+        def __init__(self, code):
+            super().__init__(code)
+            self.response = {"Error": {"Code": code}}
+
+    class FakeS3Client:
+        def __init__(self, error):
+            self.error = error
+
+        def head_object(self, **_kwargs):
+            if self.error:
+                raise self.error
+            return {}
+
+    service = StorageService.__new__(StorageService)
+    service.backend = "s3"
+    service._client = FakeS3Client(FakeS3Error("404"))
+    assert service.check_exists("evidence/file.csv") is False
+
+    service._client = FakeS3Client(FakeS3Error("503"))
+    with pytest.raises(StorageError):
+        service.check_exists("evidence/file.csv")
+
+    service._client = FakeS3Client(None)
+    assert service.check_exists("evidence/file.csv") is True
 
 
 def test_role_restriction():
