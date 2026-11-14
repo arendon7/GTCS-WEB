@@ -35,9 +35,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const liquidScene = product.slug === "2grow-liquido"
     ? {
         src: "/products/wondergreen-2grow-liquid-process-v02.png",
-        alt: "Ilustración conceptual de una planta de digestión anaerobia multietapa: reactor vertical, tanques, tuberías y una persona para dar escala.",
-        title: "Visualización conceptual",
-        detail: "Digestión anaerobia multietapa · bioles, formulación y estabilización",
+        alt: "Planta de proceso con un reactor vertical, tanques y tuberías en un paisaje montañoso.",
+        title: "Digestión anaerobia multietapa",
+        detail: "La base biológica se formula y estabiliza para perfiles nutricionales distintos.",
         width: 1536,
         height: 1024,
       }
