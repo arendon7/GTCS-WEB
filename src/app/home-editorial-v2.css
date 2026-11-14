@@ -1538,7 +1538,7 @@
 }
 
 .home-system-map__heading h2 {
-  max-width: 17ch;
+  max-width: 22ch;
   font-size: clamp(2.1rem, 3.45vw, 3.25rem);
   line-height: 1.02;
   letter-spacing: -.025em;
@@ -1546,7 +1546,7 @@
 }
 
 .home-system-map__promise {
-  max-width: 46ch;
+  max-width: 50ch;
   margin: 0 0 0 auto;
   padding: 4px 0 4px clamp(20px, 2.2vw, 30px);
   border-left: 1px solid #c8d5c4;
@@ -1557,6 +1557,15 @@
   color: #465a4e;
   font-size: 1rem;
   line-height: 1.7;
+}
+
+@media (min-width: 1100px) {
+  .home-system-map__promise p {
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
 }
 
 .home-system-map__promise a {
@@ -2210,12 +2219,13 @@
 
 /* Avenir Next is wider than the prior fallback; keep the approved home hero balanced. */
 .home-system-hero h1 {
-  max-width: 19ch;
+  max-width: 21ch;
   font-size: clamp(2.4rem, 3.15vw, 3.15rem);
   line-height: 1.08;
   font-family: var(--font-brand-heading);
   font-weight: 600;
   letter-spacing: -0.012em;
+  text-wrap: balance;
 }
 
 /* Use the rounded brand face on the main editorial headings, while body copy
