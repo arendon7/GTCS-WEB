@@ -1582,3 +1582,19 @@
     color: #3f5a4d !important;
   }
 }
+
+/* A justified measure only helps while it remains even in the rendered column.
+   These Microrrutas passages sit beside an image or heading; at normal desktop
+   widths their short lines spread visibly. Keep the long article narrative
+   justified, but let the paired introduction and case copy read naturally. */
+@media (min-width: 760px) {
+  #contenido .service-detail-page.service-detail-page--microrrutas .service-detail-hero-copy > .lead,
+  #contenido .service-detail-page.service-detail-page--microrrutas #yarumal-route-case .service-route-evidence__copy > p,
+  #contenido .service-detail-page.service-detail-page--microrrutas .service-route-design__intro > p,
+  #contenido .service-detail-page.service-detail-page--microrrutas .service-route-design__scope {
+    text-align: left;
+    text-align-last: auto;
+    text-justify: auto;
+    hyphens: none;
+  }
+}
