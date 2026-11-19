@@ -21,7 +21,7 @@ export default function HuellaStaticLanding() {
 
   useEffect(() => {
     let active = true;
-    fetch("/huella-static-v38/landing.html.txt?v=20261104-3")
+    fetch("/huella-static-v67/landing.html.txt?v=20261119-v67")
       .then((response) => {
         if (!response.ok) throw new Error("No se pudo cargar la landing estática.");
         return response.text();
@@ -84,12 +84,12 @@ export default function HuellaStaticLanding() {
   }, [measure, staticHtml]);
 
   return (
-    <div className="huella-static-v38">
+    <div className="huella-static-v67">
       <h1 className="sr-only">Calcula la huella de carbono de tu empresa</h1>
       {staticHtml ? (
         <iframe
           ref={frameRef}
-          className="huella-static-v38__frame"
+          className="huella-static-v67__frame"
           srcDoc={staticHtml}
           title="Landing estática Back 2 Green: inventarios de gases de efecto invernadero"
           style={{ height }}
@@ -97,7 +97,7 @@ export default function HuellaStaticLanding() {
         >
           <p>La presentación de Back 2 Green está disponible en el contenido de esta página.</p>
         </iframe>
-      ) : <p className="huella-static-v38__loading" role="status">Cargando la presentación de Back 2 Green…</p>}
+      ) : <p className="huella-static-v67__loading" role="status">Cargando la presentación de Back 2 Green…</p>}
     </div>
   );
 }
