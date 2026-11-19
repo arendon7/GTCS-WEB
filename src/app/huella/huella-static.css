@@ -1,0 +1,20 @@
+.huella-static-v67 {
+  width: 100%;
+  min-width: 0;
+  background: #f7faf9;
+}
+
+.huella-static-v67__frame {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  border: 0;
+  background: #f7faf9;
+}
+
+.huella-static-v67__loading {
+  min-height: 60vh;
+  display: grid;
+  place-items: center;
+  color: #365348;
+}
