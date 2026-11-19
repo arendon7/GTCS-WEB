@@ -23,6 +23,6 @@
 ## Corrección de rutas de planes · 19 nov 2026
 
 - Los seis CTA de planes y tamaño ahora usan parámetros reconocidos por el formulario GREENATICS: `interes=calcula-tu-huella`, `tamano_empresa`, `motivo=gestion-interna`, `diagnostico` y `prioridad`.
-- La selección exacta se conserva en el resumen de consulta (por ejemplo, “Pyme Inicio”, “Pyme Acompañada”, “Mediana” o “Grande / compleja”). No se fuerza una equivalencia con nombres de planes antiguos.
+- La selección exacta se conserva en el resumen de consulta (por ejemplo, “Pyme Inicio”, “Pyme Acompañada”, “Plan Mediana” o “Plan Grande o compleja”). El título evita repetir “Plan seleccionado”; el campo de prioridad empieza con “Motivo: gestión interna de emisiones”. No se fuerza equivalencia con nombres antiguos.
 - Se verificó estáticamente que los seis enlaces fueron actualizados y que desaparecieron los parámetros no interpretados `ruta=esencial`, `ruta=gestion-carbono` y `perfil=mediana/grande`.
-- Pendiente: que el hilo propietario confirme visualmente el contexto recibido por el formulario; QA responsive y revisión de navegador siguen pendientes. El PR permanece en borrador.
+- Revisión de Huella: confirmó estáticamente que formulario reconoce los campos; recomendó naturalizar el título y hacer explícito el motivo. Corrección aplicada en `fa3bbbf519ed4dd619ce2a9143c2d919ff62f39f`; pendiente reconfirmación del hilo propietario. QA responsive y revisión de navegador siguen pendientes. El PR permanece en borrador.
