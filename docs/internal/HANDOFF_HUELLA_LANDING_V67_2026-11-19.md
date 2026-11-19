@@ -18,3 +18,11 @@
 - Enlaces internos de la app se remapearon: tras la exportación, el único destino Greenatics externo a la landing es `/contacto/`; los restantes son anchors o fuentes oficiales externas.
 - No se ejecutaron build, pruebas ni QA de navegador. Revisar en preview escritorio/tablet/móvil y validar interacción del marco antes de cerrar el PR.
 - El hilo propietario de Huella recibió solicitud de confirmar V67/CTA y revisar el diff. Mantener el PR en borrador hasta recibir ese handoff. Sin integración, publicación ni despliegue.
+
+
+## Corrección de rutas de planes · 19 nov 2026
+
+- Los seis CTA de planes y tamaño ahora usan parámetros reconocidos por el formulario GREENATICS: `interes=calcula-tu-huella`, `tamano_empresa`, `motivo=gestion-interna`, `diagnostico` y `prioridad`.
+- La selección exacta se conserva en el resumen de consulta (por ejemplo, “Pyme Inicio”, “Pyme Acompañada”, “Mediana” o “Grande / compleja”). No se fuerza una equivalencia con nombres de planes antiguos.
+- Se verificó estáticamente que los seis enlaces fueron actualizados y que desaparecieron los parámetros no interpretados `ruta=esencial`, `ruta=gestion-carbono` y `perfil=mediana/grande`.
+- Pendiente: que el hilo propietario confirme visualmente el contexto recibido por el formulario; QA responsive y revisión de navegador siguen pendientes. El PR permanece en borrador.
