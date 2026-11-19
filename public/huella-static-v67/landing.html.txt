@@ -130,35 +130,35 @@
   </section>
 
   <section class="home-pricing-section" id="planes" aria-labelledby="pricing-title">
-    <div class="home-pricing-heading"><div><p class="home-section-kicker">Acompañamiento y planes</p><h2 id="pricing-title">Una ruta anual, dimensionada para tu operación.</h2><p>Los valores que ves son precios base anuales en COP, antes de impuestos y de descuentos promocionales; orientan la conversación, no son una tarifa automática por sector o número de empleados. El precio depende también de cuántas entidades, sedes, procesos y fuentes entran, qué tan completos están los datos, quién puede aportarlos, si existen factores adecuados y cuánta revisión y acompañamiento requiere el inventario. La propuesta separa acceso anual, horas profesionales, entregables e implementación o servicios adicionales.</p></div><aside><span>¿Tu operación requiere un alcance mayor?</span><strong>Lo dimensionamos contigo.</strong><p>Revisamos sedes, fuentes, calidad de registros, complejidad técnica y apoyo esperado antes de cotizar.</p><div class="home-pricing-size-links"><a href="/contacto/?interes=calcula-tu-huella&amp;perfil=mediana" target="_top">Empresa mediana <span aria-hidden="true">→</span></a><a href="/contacto/?interes=calcula-tu-huella&amp;perfil=grande" target="_top">Empresa grande <span aria-hidden="true">→</span></a></div></aside></div>
+    <div class="home-pricing-heading"><div><p class="home-section-kicker">Acompañamiento y planes</p><h2 id="pricing-title">Una ruta anual, dimensionada para tu operación.</h2><p>Los valores que ves son precios base anuales en COP, antes de impuestos y de descuentos promocionales; orientan la conversación, no son una tarifa automática por sector o número de empleados. El precio depende también de cuántas entidades, sedes, procesos y fuentes entran, qué tan completos están los datos, quién puede aportarlos, si existen factores adecuados y cuánta revisión y acompañamiento requiere el inventario. La propuesta separa acceso anual, horas profesionales, entregables e implementación o servicios adicionales.</p></div><aside><span>¿Tu operación requiere un alcance mayor?</span><strong>Lo dimensionamos contigo.</strong><p>Revisamos sedes, fuentes, calidad de registros, complejidad técnica y apoyo esperado antes de cotizar.</p><div class="home-pricing-size-links"><a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=mediana&amp;motivo=gestion-interna&amp;diagnostico=Dimensionar%20empresa%20mediana&amp;prioridad=Quiero%20dimensionar%20el%20plan%20para%20una%20empresa%20mediana%20y%20confirmar%20alcance%2C%20horas%2C%20entregables%20y%20precio." target="_top">Empresa mediana <span aria-hidden="true">→</span></a><a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=grande&amp;motivo=gestion-interna&amp;diagnostico=Dimensionar%20empresa%20grande&amp;prioridad=Quiero%20dimensionar%20el%20plan%20para%20una%20empresa%20grande%20o%20compleja%20y%20confirmar%20alcance%2C%20horas%2C%20entregables%20y%20precio." target="_top">Empresa grande <span aria-hidden="true">→</span></a></div></aside></div>
     <div class="home-plan-cards" aria-label="Cuatro referencias de precio anual por alcance">
       
       <article>
         <span>PYME · ALCANCE INICIAL</span><h3>Pyme Inicio</h3>
         <p class="home-plan-price"><span>COP</span><strong>$2.400.000</strong><small>/ año</small></p>
         <ul class="home-plan-includes"><li>Acceso anual a Back 2 Green</li><li>Una entidad, sede y periodo anual</li><li>Alcances 1 y 2 acordados</li><li>Hasta 4 horas profesionales en el año</li></ul>
-        <a href="/contacto/?interes=calcula-tu-huella&amp;ruta=esencial" target="_top">Explorar Pyme Inicio <span aria-hidden="true">→</span></a>
+        <a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=pyme&amp;motivo=gestion-interna&amp;diagnostico=Plan%20seleccionado%3A%20Pyme%20Inicio&amp;prioridad=Quiero%20conversar%20sobre%20Pyme%20Inicio%20y%20confirmar%20alcance%2C%20elegibilidad%2C%20precio%20y%20condiciones." target="_top">Explorar Pyme Inicio <span aria-hidden="true">→</span></a>
       </article>
       
       <article>
         <span>PYME · MAYOR ACOMPAÑAMIENTO</span><h3>Pyme Acompañada</h3>
         <p class="home-plan-price"><span>COP</span><strong>$4.800.000</strong><small>/ año</small></p>
         <ul class="home-plan-includes"><li>Acceso anual a Back 2 Green</li><li>Alcance definido según la operación</li><li>Hasta 8 horas profesionales en el año</li><li>Fuentes y entregables delimitados en la propuesta</li></ul>
-        <a href="/contacto/?interes=calcula-tu-huella&amp;ruta=gestion-carbono" target="_top">Explorar Pyme Acompañada <span aria-hidden="true">→</span></a>
+        <a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=pyme&amp;motivo=gestion-interna&amp;diagnostico=Plan%20seleccionado%3A%20Pyme%20Acompa%C3%B1ada&amp;prioridad=Quiero%20conversar%20sobre%20Pyme%20Acompa%C3%B1ada%20y%20confirmar%20alcance%2C%20elegibilidad%2C%20precio%20y%20condiciones." target="_top">Explorar Pyme Acompañada <span aria-hidden="true">→</span></a>
       </article>
       
       <article>
         <span>OPERACIÓN MEDIANA</span><h3>Mediana</h3>
         <p class="home-plan-price"><span>COP</span><strong>$9.000.000</strong><small>/ año base</small></p>
         <ul class="home-plan-includes"><li>Acceso anual a Back 2 Green</li><li>Alcance y sedes definidos tras diagnóstico</li><li>Hasta 20 horas profesionales presupuestadas</li><li>Revisión según fuentes, datos y entregables acordados</li></ul>
-        <a href="/contacto/?interes=calcula-tu-huella&amp;perfil=mediana" target="_top">Dimensionar mi operación <span aria-hidden="true">→</span></a>
+        <a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=mediana&amp;motivo=gestion-interna&amp;diagnostico=Plan%20seleccionado%3A%20Mediana&amp;prioridad=Quiero%20dimensionar%20el%20plan%20Mediana%20y%20confirmar%20alcance%2C%20horas%2C%20entregables%20y%20precio." target="_top">Dimensionar mi operación <span aria-hidden="true">→</span></a>
       </article>
       
       <article>
         <span>OPERACIÓN GRANDE O COMPLEJA</span><h3>Grande / compleja</h3>
         <p class="home-plan-price"><span>COP</span><strong>Desde $18.000.000</strong><small>/ año</small></p>
         <ul class="home-plan-includes"><li>Acceso anual a Back 2 Green</li><li>Alcance y dedicación definidos tras diagnóstico</li><li>48 horas como base inicial de planeación</li><li>Propuesta ajustada a fuentes y consolidación</li></ul>
-        <a href="/contacto/?interes=calcula-tu-huella&amp;perfil=grande" target="_top">Solicitar diagnóstico de alcance <span aria-hidden="true">→</span></a>
+        <a href="/contacto/?interes=calcula-tu-huella&amp;tamano_empresa=grande&amp;motivo=gestion-interna&amp;diagnostico=Plan%20seleccionado%3A%20Grande%20o%20compleja&amp;prioridad=Quiero%20solicitar%20un%20diagn%C3%B3stico%20de%20alcance%20para%20una%20operaci%C3%B3n%20grande%20o%20compleja%20y%20confirmar%20condiciones." target="_top">Solicitar diagnóstico de alcance <span aria-hidden="true">→</span></a>
       </article>
       
     </div>
