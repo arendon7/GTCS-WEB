@@ -1,0 +1,46 @@
+name: Huella migration transaction
+
+on:
+  pull_request:
+    paths:
+      - apps/calcula-tu-huella/migrations/env.py
+      - apps/calcula-tu-huella/tests/test_migration_transaction.py
+      - apps/calcula-tu-huella/tests/test_migration_postgres.py
+      - .github/workflows/huella-migration-transaction.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-migration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: huella_migration_ci
+          POSTGRES_USER: migration_ci
+          POSTGRES_PASSWORD: disposable-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U migration_ci -d huella_migration_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: apps/calcula-tu-huella
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install locked dependencies
+        run: python -m pip install -r requirements-dev.txt -r requirements-prod.txt
+      - name: Verify transaction persistence, rollback and schema isolation
+        env:
+          HUELLA_TEST_POSTGRES_URL: postgresql+psycopg://migration_ci:disposable-ci-only@127.0.0.1:5432/huella_migration_ci
+        run: python -m unittest discover -s tests -p 'test_migration*.py' -v
